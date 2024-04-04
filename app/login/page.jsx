@@ -4,9 +4,18 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabase/supabaseClient";
 
+//imgs
+import loginBg from "@/public/images/loginBg.png";
+
+// utils
+import TextInput from "@/components/ui/TextInput";
+import FullButton from "@/components/ui/FullButton";
+import HollowButton from "@/components/ui/HollowButton";
+
 const Login = () => {
 	const router = useRouter();
 
+	const [showFailedLogin, setShowFailedLogin] = useState(false);
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
@@ -22,21 +31,37 @@ const Login = () => {
 				console.error("Login error:", error.message);
 			} else {
 				console.log("Login successful:", user);
-				router.push("/"); // Redirect to home or landing page
+				router.push("/");
 			}
 		} catch (error) {
 			console.error("Login error:", error.message);
 		}
+
+		alert("Email: " + email + " Password: " + password);
+	};
+
+	const handleCreateAccount = async (e) => {
+		e.preventDefault();
+		alert("Create Account");
 	};
 
 	return (
-		<div className="min-h-screen w-full bg-[#EBEBEB]">
+		<div
+			className="min-h-screen w-full"
+			style={{
+				backgroundImage: `url(${loginBg.src})`,
+				width: "100%",
+				height: "100%",
+				backgroundSize: "cover",
+				backgroundPosition: "center",
+			}}
+		>
 			{/* navigation bar */}
 			<div className="h-20 w-full bg-white flex flex-row justify-between items-center px-44">
 				<div className="text-2xl text-[#6B9080] font-bold">
 					WellTalk
 				</div>
-				<div className="flex flex-row gap-x-24">
+				<div className="flex flex-row gap-x-16">
 					<div className="text-sm">Home</div>
 					<div className="text-sm">About</div>
 					<div className="text-sm">Contact</div>
@@ -44,51 +69,45 @@ const Login = () => {
 			</div>
 
 			{/* login form*/}
-			<div className="bg-[#EBEBEB] flex justify-start items-center py-5 px-48 ">
+			<div className="flex justify-start items-center py-5 px-48 ">
 				<form
 					className="w-5/12 h-[650px] flex flex-col justify-center"
 					onSubmit={handleLogin}
 				>
 					<p className="text-black text-5xl">Sign in</p>
 
-					<div className="flex flex-col gap-y-3 pt-8 pb-14">
-						{/* to be made into component */}
-						<div>
-							<div className="py-2.5">Email Address</div>
-							<input
-								className="h-14 w-full px-4 py-2 border border-gray-200 drop-shadow-md focus:outline-none focus:border-green-500  bg-white rounded-lg"
-								type="email"
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
-								required
-							/>
-						</div>
-
-						{/* to be made into component */}
-						<div>
-							<div className="py-2.5">Password</div>
-							<input
-								className="h-14 w-full px-4 py-2 border border-gray-200 drop-shadow-md focus:outline-none focus:border-green-500  bg-white rounded-lg"
-								type="password"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								required
-							/>
-						</div>
+					<div className="flex flex-col gap-y-3 pt-5 pb-14">
+						<TextInput
+							label="Email Address"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							type="email"
+						/>
+						<TextInput
+							label="Password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							type="password"
+						/>
 					</div>
 
 					{/*to be made into component */}
 					<div className="w-full flex flex-row gap-x-8 pb-12">
-						<button className="w-1/2  bg-white border-2 border-black text-black font-bold rounded-3xl px-4 py-3">
+						<HollowButton className="w-1/2" onClick={handleLogin}>
 							Sign In
-						</button>
-						<button className="w-1/2 bg-black border-2 border-black text-white font-bold rounded-3xl px-4 py-3">
+						</HollowButton>
+						<FullButton
+							className="w-1/2"
+							onClick={handleCreateAccount}
+						>
 							Create Account
-						</button>
+						</FullButton>
 					</div>
 
 					{/* forgot password */}
-					<div className="text-[#6B9080] pt-7">Forgot Password?</div>
+					<div className="text-[#6B9080] text-sm pt-4 hover:text-green-800">
+						Forgot Password?
+					</div>
 				</form>
 			</div>
 		</div>
