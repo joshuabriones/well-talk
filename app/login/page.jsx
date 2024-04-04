@@ -15,12 +15,13 @@ import HollowButton from "@/components/ui/HollowButton";
 const Login = () => {
 	const router = useRouter();
 
-	const [showFailedLogin, setShowFailedLogin] = useState(false);
+	const [showInvalidCredentials, setShowInvalidCredentials] = useState(false);
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
+
 		try {
 			const { user, error } = await supabase.auth.signIn({
 				email,
@@ -36,6 +37,12 @@ const Login = () => {
 		} catch (error) {
 			console.error("Login error:", error.message);
 		}
+
+		setShowInvalidCredentials(true);
+		// Hide the message after 5 seconds
+		setTimeout(() => {
+			setShowInvalidCredentials(false);
+		}, 5000);
 
 		alert("Email: " + email + " Password: " + password);
 	};
@@ -74,9 +81,17 @@ const Login = () => {
 					className="w-5/12 h-[650px] flex flex-col justify-center"
 					onSubmit={handleLogin}
 				>
-					<p className="text-black text-5xl">Sign in</p>
+					<p className="text-black text-5xl pb-3">Sign in</p>
 
-					<div className="flex flex-col gap-y-3 pt-5 pb-14">
+					{/* error message */}
+					{showInvalidCredentials && (
+						<div className="text-red-500 font-bold text-base pt-2 pb-1.5">
+							Invalid email or password. Try Again.
+						</div>
+					)}
+
+					{/* form inputs */}
+					<div className="flex flex-col gap-y-3 pb-14">
 						<TextInput
 							label="Email Address"
 							value={email}
