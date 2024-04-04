@@ -16,7 +16,7 @@ const Login = () => {
         email,
         password,
       });
-
+      console.log("email: ", email);
       if (error) {
         console.error("Login error:", error.message);
       } else {
