@@ -9,7 +9,7 @@ export async function POST(req) {
   const formData = await req.formData();
 
   const firstname = formData.get("firstName");
-  const institutionalemail = formData.get("email");
+  const email = formData.get("email");
   const idnumber = formData.get("idno");
   const middleinitial = formData.get("middleInitial");
   const lastname = formData.get("lastName");
@@ -19,17 +19,25 @@ export async function POST(req) {
     cookies: () => cookieStore,
   });
 
-  const response = await supabase.auth.signUp({
-    firstname,
-    institutionalemail,
-    idnumber,
-    middleinitial,
-    lastname,
-    password,
-    options: {
-      emailRedirectTo: `${url.origin}/auth/callback`,
+  // const { user, error } = await supabase.auth.signUp({
+  //   email,
+  //   password,
+  // });
+
+  const { data, error } = await supabase.from("User").insert([
+    {
+      user_id: "676a923a-fa98-4bfd-aeea-058efc5a4294",
+      firstname: firstname,
+      institutionalemail: email,
+      idnumber: idnumber,
+      middleinitial: middleinitial,
+      lastname: lastname,
+      password: password,
     },
-  });
+  ]);
+
+  console.log("Datils", data);
+  console.log("Error details", error);
 
   return NextResponse.redirect(url.origin);
 }
