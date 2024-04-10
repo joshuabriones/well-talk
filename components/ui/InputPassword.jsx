@@ -24,7 +24,7 @@ const InputPassword = ({
 				/>
 				{/* error message */}
 				{showInvalidPassword && (
-					<div className="text-red-600 text-xs pt-2 pb-1.5">
+					<div className="text-green-600 text-xs pt-2 pb-1.5">
 						Choose a password with at least 8 characters, including
 						at least one uppercase letter, one lowercase letter, one
 						number, and one special character.
@@ -40,7 +40,7 @@ const InputPassword = ({
 				/>
 				{/* error message */}
 				{showPasswordDoNotMatch && (
-					<div className="text-red-600 text-xs pt-2 pb-1.5">
+					<div className="text-green-600 text-xs pt-2 pb-1.5">
 						Passwords do not match.
 					</div>
 				)}
