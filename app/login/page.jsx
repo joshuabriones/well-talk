@@ -50,6 +50,11 @@ const Login = () => {
     alert("Email: " + email + " Password: " + password);
   };
 
+	const handleCreateAccount = async (e) => {
+		e.preventDefault();
+		alert("Create Account");
+		router.push("/registration");
+	};
   const handleCreateAccount = async (e) => {
     e.preventDefault();
     alert("Create Account");
@@ -113,6 +118,17 @@ const Login = () => {
 	            />
 	          </div>
 
+					<div className="w-full flex flex-row gap-x-4 pb-12">
+						<HollowButton className="w-1/2" onClick={handleLogin}>
+							Sign In
+						</HollowButton>
+						<FullButton
+							className="w-1/2"
+							onClick={handleCreateAccount}
+						>
+							Create Account
+						</FullButton>
+					</div>
           {/*to be made into component */}
           <div className="w-full flex flex-row gap-x-8 pb-12">
             <HollowButton className="w-1/2" onClick={handleLogin}>

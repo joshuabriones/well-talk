@@ -5,58 +5,54 @@
 @tailwind utilities;
 
 /* Hide scrollbar for Firefox */
-* {
+/* * {
 	scrollbar-width: thin;
-	scrollbar-color: transparent transparent; /* hide scrollbar, but retain functionality */
+	scrollbar-color: transparent transparent; 
 }
 
-/* Hide scrollbar for Webkit/Blink */
+
 *::-webkit-scrollbar {
-	width: 6px; /* width of the scrollbar */
+	width: 6px; 
 }
 
-/* Track */
 *::-webkit-scrollbar-track {
-	background: transparent; /* background color of the track */
+	background: transparent; 
 }
 
-/* Handle */
 *::-webkit-scrollbar-thumb {
-	background: #888; /* color of the scrollbar handle */
-	border-radius: 3px; /* roundness of the scrollbar handle */
+	background: #888; 
+	border-radius: 3px;
 }
 
-/* Handle on hover */
 *::-webkit-scrollbar-thumb:hover {
-	background: #555; /* color of the scrollbar handle when hovered */
-}
+	background: #555; 
+} */
 
 /* Minimal Scrollbar */
-/* global.css */
 
 /* Simple Scrollbar */
-/* ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	background: rgba(0, 0, 0, 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.2);
+	border-radius: 10px;
+	background: rgba(0, 0, 0, 0.2);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.4);
+	background: rgba(0, 0, 0, 0.4);
 }
 
 ::-webkit-scrollbar-thumb:active {
-    background: rgba(0, 0, 0, .9);
-} */
+	background: rgba(0, 0, 0, 0.9);
+}
 
 /* Grey Scrollbar */
 /* Add similar styles for other scrollbar variations as needed */
