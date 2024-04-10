@@ -1,5 +1,5 @@
 import React from "react";
-import TextInput from "@/components/ui/TextInput";
+import TextInput from "@/components/ui/inputs/TextInput";
 
 const InputName = ({
 	firstName,

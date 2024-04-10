@@ -1,4 +1,4 @@
-import TextInput from "@/components/ui/TextInput";
+import TextInput from "@/components/ui/inputs/TextInput";
 const InputPassword = ({
 	password,
 	setPassword,

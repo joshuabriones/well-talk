@@ -7,9 +7,9 @@ import { useState } from "react";
 import loginBg from "@/public/images/loginBg.png";
 
 // utils
-import FullButton from "@/components/ui/FullButton";
-import HollowButton from "@/components/ui/HollowButton";
-import TextInput from "@/components/ui/TextInput";
+import FullButton from "@/components/ui/buttons/FullButton";
+import HollowButton from "@/components/ui/buttons/HollowButton";
+import TextInput from "@/components/ui/inputs/TextInput";
 
 const Login = () => {
 	const router = useRouter();

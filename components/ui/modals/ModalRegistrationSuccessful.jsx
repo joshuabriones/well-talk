@@ -1,5 +1,5 @@
 import registeredUser from "@/public/images/registeredUser.png";
-import FullButton from "../FullButton";
+import FullButton from "../buttons/FullButton";
 
 const ModalRegistrationSuccessful = ({
 	setShowRegistrationSuccessful,

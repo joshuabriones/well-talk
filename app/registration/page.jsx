@@ -8,16 +8,16 @@ import { supabase } from "@/utils/supabase/supabaseClient";
 import registrationBg from "@/public/images/registrationBg.png";
 
 // utils
-import TextInput from "@/components/ui/TextInput";
-import SelectInput from "@/components/ui/SelectInput";
-import FullButton from "@/components/ui/FullButton";
-import InputInstitutionalInfo from "@/components/ui/InputInstitutionalInfo";
-import InputName from "@/components/ui/InputName";
-import InputRole from "@/components/ui/InputRole";
-import PersonalInfo from "@/components/ui/InputPersonalInfo";
-import InputCollegeInformation from "@/components/ui/InputCollegeInformation";
-import InputCollege from "@/components/ui/InputCollege";
-import InputPassword from "@/components/ui/InputPassword";
+import TextInput from "@/components/ui/inputs/TextInput";
+import SelectInput from "@/components/ui/inputs/SelectInput";
+import FullButton from "@/components/ui/buttons/FullButton";
+import InputInstitutionalInfo from "@/components/ui/inputs/InputInstitutionalInfo";
+import InputName from "@/components/ui/inputs/InputName";
+import InputRole from "@/components/ui/inputs/InputRole";
+import PersonalInfo from "@/components/ui/inputs/InputPersonalInfo";
+import InputCollegeInformation from "@/components/ui/inputs/InputCollegeInformation";
+import InputCollege from "@/components/ui/inputs/InputCollege";
+import InputPassword from "@/components/ui/inputs/InputPassword";
 import ModalTermsUnchecked from "@/components/ui/modals/ModalTermsUnchecked";
 import ModalRegistrationSuccessful from "@/components/ui/modals/ModalRegistrationSuccessful";
 

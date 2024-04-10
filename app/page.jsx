@@ -1,7 +1,7 @@
 "use client";
 import Footer from "@/components/ui/Footer";
-import FullButton from "@/components/ui/FullButton";
-import HollowButton from "@/components/ui/HollowButton";
+import FullButton from "@/components/ui/buttons/FullButton";
+import HollowButton from "@/components/ui/buttons/HollowButton";
 import { Navbar } from "@/components/ui/LandingNav";
 import { useRouter } from "next/navigation";
 import { Parallax } from "react-parallax";
@@ -28,7 +28,8 @@ export default function Landing() {
 						backgroundSize: "cover",
 						backgroundPosition: "center top",
 						minHeight: "90vh",
-					}}>
+					}}
+				>
 					<div className="py-48 xl:px-96 text-center">
 						<h2 className="text-5xl sm:text-6xl lg:text-8xl font-Merriweather">
 							Supporting Student
@@ -44,12 +45,14 @@ export default function Landing() {
 						<div className="w-full flex flex-row gap-x-8 pb-12">
 							<HollowButton
 								className="w-1/2"
-								onClick={handleSignInClick}>
+								onClick={handleSignInClick}
+							>
 								Sign In
 							</HollowButton>
 							<FullButton
 								className="w-1/2"
-								onClick={handleCreateAccountClick}>
+								onClick={handleCreateAccountClick}
+							>
 								Create Account
 							</FullButton>
 						</div>
@@ -129,7 +132,8 @@ export default function Landing() {
 
 				<section
 					id="featured"
-					className="container mx-auto px-5 lg:px-0">
+					className="container mx-auto px-5 lg:px-0"
+				>
 					<div className="flex items-right justify-between">
 						<h2 className="font-heading text-4xl ml-32 font-Merriweather">
 							Featured Posts
@@ -137,27 +141,32 @@ export default function Landing() {
 						<div className="flex space-x-3">
 							<button
 								className="filter-button font-heading text-sm rounded-full hover:bg-primary hover:text-white px-4 py-2 uppercase"
-								data-filter="*">
+								data-filter="*"
+							>
 								All
 							</button>
 							<button
 								className="filter-button font-heading text-sm rounded-full hover:bg-primary hover:text-white px-4 py-2 uppercase"
-								data-filter=".love">
+								data-filter=".love"
+							>
 								Love
 							</button>
 							<button
 								className="filter-button font-heading text-sm rounded-full hover:bg-primary hover:text-white px-4 py-2 uppercase"
-								data-filter=".yoga">
+								data-filter=".yoga"
+							>
 								Yoga
 							</button>
 							<button
 								className="filter-button font-heading text-sm rounded-full hover:bg-primary hover:text-white px-4 py-2 uppercase"
-								data-filter=".recipes">
+								data-filter=".recipes"
+							>
 								Recipes
 							</button>
 							<button
 								className="filter-button font-heading text-sm rounded-full hover:bg-primary hover:text-white px-4 py-2 uppercase"
-								data-filter=".naturalherbs">
+								data-filter=".naturalherbs"
+							>
 								Natural Herbs
 							</button>
 						</div>
@@ -175,7 +184,8 @@ export default function Landing() {
 									<h3 className="font-heading text-2xl hover:text-gray-500">
 										<a
 											href="blog-single.html"
-											className="blog-link capitalize font-Merriweather">
+											className="blog-link capitalize font-Merriweather"
+										>
 											How 'Weak Ties' Can Strengthen Our
 											Relationships
 										</a>
@@ -191,7 +201,8 @@ export default function Landing() {
 									<h3 className="font-heading text-2xl font-normal hover:text-gray-500">
 										<a
 											href="blog-single.html"
-											className="blog-link capitalize font-Merriweather">
+											className="blog-link capitalize font-Merriweather"
+										>
 											How 'Weak Ties' Can Strengthen Our
 											Relationships
 										</a>
@@ -207,7 +218,8 @@ export default function Landing() {
 									<h3 className="font-heading text-2xl font-normal hover:text-gray-500">
 										<a
 											href="blog-single.html"
-											className="blog-link capitalize font-Merriweather">
+											className="blog-link capitalize font-Merriweather"
+										>
 											What It's Really Like to Date While
 											Anxious
 										</a>
@@ -223,7 +235,8 @@ export default function Landing() {
 									<h3 className="font-heading text-2xl font-normal hover:text-gray-500">
 										<a
 											href="blog-single.html"
-											className="blog-link capitalize font-Merriweather">
+											className="blog-link capitalize font-Merriweather"
+										>
 											What It's Really Like to Date While
 											Anxious
 										</a>
@@ -239,7 +252,8 @@ export default function Landing() {
 									<h3 className="font-heading text-2xl font-normal hover:text-gray-500">
 										<a
 											href="blog-single.html"
-											className="blog-link capitalize font-Merriweather">
+											className="blog-link capitalize font-Merriweather"
+										>
 											Benefits to Having Much Older
 											Friends than you
 										</a>
@@ -255,7 +269,8 @@ export default function Landing() {
 									<h3 className="font-heading text-2xl font-normal hover:text-gray-500">
 										<a
 											href="blog-single.html"
-											className="blog-link capitalize font-Merriweather">
+											className="blog-link capitalize font-Merriweather"
+										>
 											Benefits to Having Much Older
 											Friends than you
 										</a>
@@ -271,7 +286,8 @@ export default function Landing() {
 									<h3 className="font-heading text-2xl font-normal hover:text-gray-500">
 										<a
 											href="blog-single.html"
-											className="blog-link capitalize font-Merriweather">
+											className="blog-link capitalize font-Merriweather"
+										>
 											How Often You Should Wash Your Hair
 											in winter
 										</a>
@@ -287,7 +303,8 @@ export default function Landing() {
 									<h3 className="font-heading text-2xl font-normal hover:text-gray-500">
 										<a
 											href="blog-single.html"
-											className="blog-link capitalize font-Merriweather">
+											className="blog-link capitalize font-Merriweather"
+										>
 											How Often You Should Wash Your Hair
 											in winter
 										</a>
@@ -304,7 +321,8 @@ export default function Landing() {
 						<figure className="blog-block-content image-zoom relative">
 							<a
 								href="https://www.verywellmind.com/the-best-mental-health-blogs-5205192"
-								className=" ">
+								className=" "
+							>
 								<img
 									className="blog-block-img"
 									src="images/landing/blog7.png"
@@ -320,7 +338,8 @@ export default function Landing() {
 						<figure className="blog-block-content image-zoom relative">
 							<a
 								href="https://psychcentral.com/blog"
-								className=" ">
+								className=" "
+							>
 								<img
 									className="blog-block-img"
 									src="images/landing/blog8.png"
@@ -334,9 +353,7 @@ export default function Landing() {
 							</a>
 						</figure>
 						<figure className="blog-block-content image-zoom relative">
-							<a
-								href="blog-single.html"
-								className=" ">
+							<a href="blog-single.html" className=" ">
 								<img
 									className="blog-block-img"
 									src="images/landing/blog9.png"
@@ -350,9 +367,7 @@ export default function Landing() {
 							</a>
 						</figure>
 						<figure className="blog-block-content image-zoom relative">
-							<a
-								href="blog-single.html"
-								className=" ">
+							<a href="blog-single.html" className=" ">
 								<img
 									className="blog-block-img"
 									src="images/landing/blog10.png"
@@ -366,9 +381,7 @@ export default function Landing() {
 							</a>
 						</figure>
 						<figure className="blog-block-content image-zoom relative">
-							<a
-								href="blog-single.html"
-								className=" ">
+							<a href="blog-single.html" className=" ">
 								<img
 									className="blog-block-img"
 									src="images/landing/blog11.png"
@@ -384,9 +397,7 @@ export default function Landing() {
 					</div>
 				</section>
 
-				<section
-					id="cta"
-					className="bg-gray-50">
+				<section id="cta" className="bg-gray-50">
 					<div className="container mx-auto xl:px-60 py-40 px-5">
 						<div className="lg:grid grid-cols-3 gap-6">
 							<div className="grid grid-cols-subgrid col-span-2">
@@ -416,12 +427,14 @@ export default function Landing() {
 									<label className="block">
 										<textarea
 											className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-300 focus:ring-opacity-50"
-											placeholder="Your Message"></textarea>
+											placeholder="Your Message"
+										></textarea>
 									</label>
 									<button
 										className="rounded-md text-white uppercase p-3 w-full"
 										type="button"
-										style={{ backgroundColor: "#6B9080" }}>
+										style={{ backgroundColor: "#6B9080" }}
+									>
 										Subscribe Now
 									</button>
 								</div>
@@ -440,13 +453,15 @@ export default function Landing() {
 											rows={5}
 											cols={50}
 											className="mt-1 block w-full lg:w-96 rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-300 focus:ring-opacity-50"
-											placeholder="Your Message"></textarea>
+											placeholder="Your Message"
+										></textarea>
 									</label>
 
 									<button
 										className="rounded-md text-white uppercase p-3 w-full lg:w-96"
 										type="button"
-										style={{ backgroundColor: "#6B9080" }}>
+										style={{ backgroundColor: "#6B9080" }}
+									>
 										Subscribe
 									</button>
 								</div>
