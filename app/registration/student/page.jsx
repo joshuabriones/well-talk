@@ -1,20 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabase/supabaseClient";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 //imgs
 import registrationBg from "@/public/images/registrationBg.png";
 
 // utils
-import TextInput from "@/components/ui/TextInput";
+import Footer from "@/components/ui/Footer";
 import FullButton from "@/components/ui/FullButton";
+import InputCollegeInformation from "@/components/ui/InputCollegeInformation";
 import InputInstitutionalInfo from "@/components/ui/InputInstitutionalInfo";
 import InputName from "@/components/ui/InputName";
-import PersonalInfo from "@/components/ui/InputPersonalInfo";
-import InputCollegeInformation from "@/components/ui/InputCollegeInformation";
 import InputPassword from "@/components/ui/InputPassword";
+import PersonalInfo from "@/components/ui/InputPersonalInfo";
+import { Navbar } from "@/components/ui/LandingNav";
 
 const Registration = () => {
   const router = useRouter();
@@ -157,17 +158,10 @@ const Registration = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen w-full">
-      {/* navigation bar */}
-      <div className="h-20 w-full bg-white flex flex-row justify-between items-center px-44">
-        <div className="text-2xl text-[#6B9080] font-bold">WellTalk</div>
-        <div className="flex flex-row gap-x-16">
-          <div className="text-sm">Home</div>
-          <div className="text-sm">About</div>
-          <div className="text-sm">Contact</div>
-        </div>
-      </div>
+	return (
+		<div className="min-h-screen w-full">
+			{/* navigation bar */}
+			<Navbar userType="landing" />
 
       {/* main content */}
       <div

@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/utils/supabase/supabaseClient";
+import { useState } from "react";
 
 //imgs
 import loginBg from "@/public/images/loginBg.png";
 
 // utils
-import TextInput from "@/components/ui/TextInput";
 import FullButton from "@/components/ui/FullButton";
 import HollowButton from "@/components/ui/HollowButton";
+import TextInput from "@/components/ui/TextInput";
 
 const Login = () => {
   const router = useRouter();
@@ -84,29 +83,35 @@ const Login = () => {
           onSubmit={handleLogin}
         >
           <p className="text-black text-5xl pb-3">Sign in</p>
+				{/* login form*/}
+				<div className="flex justify-start items-center py-5 px-48 ">
+					<form
+						className="w-5/12 h-[700px] flex flex-col justify-center"
+						onSubmit={handleLogin}>
+						<p className="text-black text-5xl pb-3">Sign in</p>
 
-          {/* error message */}
-          {showInvalidCredentials && (
-            <div className="text-red-500 font-bold text-base pt-2 pb-1.5">
-              Invalid email or password. Try Again.
-            </div>
-          )}
+	          {/* error message */}
+	          {showInvalidCredentials && (
+	            <div className="text-red-500 font-bold text-base pt-2 pb-1.5">
+	              Invalid email or password. Try Again.
+	            </div>
+	          )}
 
-          {/* form inputs */}
-          <div className="flex flex-col gap-y-3 pb-14">
-            <TextInput
-              label="Email Address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-            />
-            <TextInput
-              label="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-            />
-          </div>
+	          {/* form inputs */}
+	          <div className="flex flex-col gap-y-3 pb-14">
+	            <TextInput
+	              label="Email Address"
+	              value={email}
+	              onChange={(e) => setEmail(e.target.value)}
+	              type="email"
+	            />
+	            <TextInput
+	              label="Password"
+	              value={password}
+	              onChange={(e) => setPassword(e.target.value)}
+	              type="password"
+	            />
+	          </div>
 
           {/*to be made into component */}
           <div className="w-full flex flex-row gap-x-8 pb-12">
@@ -124,7 +129,9 @@ const Login = () => {
           </div>
         </form>
       </div>
+	  </form>
     </div>
+	</div>
   );
 };
 
