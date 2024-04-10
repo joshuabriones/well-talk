@@ -52,7 +52,7 @@ const Login = () => {
 
 	const handleCreateAccount = async (e) => {
 		e.preventDefault();
-		alert("Create Account");
+		router.push("/registration");
 	};
 
 	return (
