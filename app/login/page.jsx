@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 //imgs
-import loginBg from "@/public/images/loginBg.png";
+import loginBg from "@/public/images/bgs/loginBg.png";
 
 // utils
 import FullButton from "@/components/ui/buttons/FullButton";

@@ -35,11 +35,8 @@ const ModalEmailSent = ({ setShowForgotPasswordModal, setShowEmailSent }) => {
 							<div className="flex justify-center py-2">
 								<img
 									src={iconSent.src}
-									alt="Close Icon"
-									className="h-28 w-28 hover:scale-90 transition-transform duration-300 cursor-pointer"
-									onClick={(e) =>
-										setShowForgotPasswordModal(false)
-									}
+									alt="Email Sent Icon"
+									className="h-28 w-28"
 								/>
 							</div>
 							<h1 className="font-Merriweather text-3xl px-10">
