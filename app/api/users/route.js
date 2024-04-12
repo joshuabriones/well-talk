@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { db } from "@/lib/db";
 
 export async function POST() {
   // User data
@@ -15,7 +13,7 @@ export async function POST() {
   const password = "testpassword";
 
   try {
-    const newUser = await prisma.user.create({
+    const newUser = await db.user.create({
       data: {
         id,
         firstName,
@@ -32,6 +30,19 @@ export async function POST() {
   } catch (error) {
     console.error("Error creating user:", error);
     // Handle error appropriately, e.g., return error message
+    return NextResponse.json(
+      { message: "Error creating user" },
+      { status: 400 }
+    );
+  }
+}
+
+export async function GET() {
+  try {
+    const users = await db.user.findMany();
+    return NextResponse.json(users);
+  } catch (error) {
+    console.error("Error creating user:", error);
     return NextResponse.json(
       { message: "Error creating user" },
       { status: 400 }
