@@ -13,19 +13,6 @@ model counselor {
   user        user @relation(fields: [userId], references: [id], map: "Counselor_userId_fkey")
 }
 
-model post {
-  postId           Int      @id @default(autoincrement())
-  blogId           Int
-  posts            String   @db.Text
-  title            String   @db.VarChar(255)
-  shortDescription String   @db.Text
-  blogURL          String   @db.VarChar(255)
-  author           String   @db.VarChar(255)
-  publishDate      DateTime @db.DateTime(0)
-  image            Bytes?   @db.Blob
-  datePosted       DateTime @default(now()) @db.DateTime(0)
-}
-
 model student {
   studentId     Int      @id @default(autoincrement())
   userId        Int      @unique(map: "Student_userId_key")
@@ -58,4 +45,18 @@ model user {
   counselor          counselor?
   student            student?
   teacher            teacher?
+}
+
+model post {
+  postId           Int      @id @default(autoincrement())
+  blogId           Int
+  posts            String   @db.Text
+  title            String   @db.VarChar(255)
+  shortDescription String   @db.Text
+  blogURL          String   @db.VarChar(255)
+  author           String   @db.VarChar(255)
+  publishDate      DateTime @db.DateTime(0)
+  image            Bytes?   @db.Blob
+  datePosted       DateTime @default(now()) @db.DateTime(0)
+  isdeleted        Boolean  @default(false)
 }

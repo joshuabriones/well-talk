@@ -14,7 +14,8 @@ export async function POST(request) {
         author,
         publishDate,
         image,
-        datePosted: new Date()
+        datePosted: new Date(),
+        isdeleted: false // Set isdeleted to false by default
       }
     });
     return NextResponse.json(newPost, { status: 201 });
@@ -26,7 +27,9 @@ export async function POST(request) {
 
 export async function getHandler(req, res) {
   try {
-    const posts = await db.post.findMany();
+    const posts = await db.post.findMany({
+      where: { isdeleted: false } // Fetch only posts that are not deleted
+    });
     return NextResponse.json(posts, { status: 200 });
   } catch (error) {
     console.error("Error fetching posts:", error);
