@@ -1,3 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Jaldi:wght@400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Hide scrollbar for Firefox */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: transparent transparent; /* hide scrollbar, but retain functionality */
+}
+
+/* Hide scrollbar for Webkit/Blink */
+*::-webkit-scrollbar {
+	width: 6px; /* width of the scrollbar */
+}
+
+/* Track */
+*::-webkit-scrollbar-track {
+	background: transparent; /* background color of the track */
+}
+
+/* Handle */
+*::-webkit-scrollbar-thumb {
+	background: #888; /* color of the scrollbar handle */
+	border-radius: 3px; /* roundness of the scrollbar handle */
+}
+
+/* Handle on hover */
+*::-webkit-scrollbar-thumb:hover {
+	background: #555; /* color of the scrollbar handle when hovered */
+}
+
+/* Minimal Scrollbar */
+/* global.css */
+
+/* Simple Scrollbar */
+/* ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: rgba(0, 0, 0, .9);
+} */
+
+/* Grey Scrollbar */
+/* Add similar styles for other scrollbar variations as needed */
