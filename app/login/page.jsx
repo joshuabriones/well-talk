@@ -11,12 +11,20 @@ import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextInput from "@/components/ui/inputs/TextInput";
 
+// modals
+import ModalForgotPassword from "@/components/ui/modals/ForgotPassword/ModalForgotPassword";
+
 const Login = () => {
 	const router = useRouter();
 
 	const [showInvalidCredentials, setShowInvalidCredentials] = useState(false);
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+
+	// forgot password
+	const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+	const [showForgotPasswordModal, setShowForgotPasswordModal] =
+		useState(false);
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
@@ -134,13 +142,27 @@ const Login = () => {
 							</div>
 
 							{/* forgot password */}
-							<div className="text-[#6B9080] text-lg font-Jaldi pt-4 hover:text-green-800">
+							<div
+								className="text-[#6B9080] text-lg font-Jaldi pt-4 hover:text-green-800 cursor-pointer"
+								onClick={(e) =>
+									setShowForgotPasswordModal(true)
+								}
+							>
 								Forgot Password?
 							</div>
 						</form>
 					</div>
 				</div>
 			</div>
+
+			{/* forgot password modal */}
+			{showForgotPasswordModal && (
+				<ModalForgotPassword
+					setShowForgotPasswordModal={setShowForgotPasswordModal}
+					forgotPasswordEmail={forgotPasswordEmail}
+					setForgotPasswordEmail={setForgotPasswordEmail}
+				/>
+			)}
 		</div>
 	);
 };
