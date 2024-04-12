@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,42 +7,55 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id                 Int        @id @default(autoincrement())
-  institutionalEmail String     @unique
-  idNumber           String     @unique
-  firstName          String
-  middleName         String
-  lastName           String
-  gender             String
-  password           String
-  dateOfCreation     DateTime   @default(now())
-  Student            Student?
-  Teacher            Teacher?
-  Counselor          Counselor?
+model counselor {
+  counselorId Int  @id @default(autoincrement())
+  userId      Int  @unique(map: "Counselor_userId_key")
+  user        user @relation(fields: [userId], references: [id], map: "Counselor_userId_fkey")
 }
 
-model Student {
+model post {
+  postId           Int      @id @default(autoincrement())
+  blogId           Int
+  posts            String   @db.Text
+  title            String   @db.VarChar(255)
+  shortDescription String   @db.Text
+  blogURL          String   @db.VarChar(255)
+  author           String   @db.VarChar(255)
+  publishDate      DateTime @db.DateTime(0)
+  image            Bytes?   @db.Blob
+  datePosted       DateTime @default(now()) @db.DateTime(0)
+}
+
+model student {
   studentId     Int      @id @default(autoincrement())
-  userId        Int      @unique
+  userId        Int      @unique(map: "Student_userId_key")
   college       String
   program       String
   year          Int
   birthDate     DateTime
   contactNumber String
   address       String
-  User          User     @relation(fields: [userId], references: [id])
+  user          user     @relation(fields: [userId], references: [id], map: "Student_userId_fkey")
 }
 
-model Teacher {
+model teacher {
   teacherId Int    @id @default(autoincrement())
-  userId    Int    @unique
+  userId    Int    @unique(map: "Teacher_userId_key")
   college   String
-  User      User   @relation(fields: [userId], references: [id])
+  user      user   @relation(fields: [userId], references: [id], map: "Teacher_userId_fkey")
 }
 
-model Counselor {
-  counselorId Int  @id @default(autoincrement())
-  userId      Int  @unique
-  User        User @relation(fields: [userId], references: [id])
+model user {
+  id                 Int        @id @default(autoincrement())
+  institutionalEmail String     @unique(map: "User_institutionalEmail_key")
+  idNumber           String     @unique(map: "User_idNumber_key")
+  firstName          String
+  middleName         String
+  lastName           String
+  gender             String
+  password           String
+  dateOfCreation     DateTime   @default(now())
+  counselor          counselor?
+  student            student?
+  teacher            teacher?
 }
