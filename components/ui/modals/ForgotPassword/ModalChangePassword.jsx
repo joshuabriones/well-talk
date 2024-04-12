@@ -110,7 +110,7 @@ const ModalChangePassword = ({}) => {
 								/>
 							</div>
 						</div>
-						<div className="flex justify-center mt-16">
+						<div className="flex justify-center mt-16 mb-4">
 							<div className="w-7/12">
 								<FullButton onClick={handleSavePassword}>
 									Save Password
@@ -124,13 +124,6 @@ const ModalChangePassword = ({}) => {
 					Close
 				</label>
 			</div>
-
-			{/* {showEmailSent && (
-				<ModalEmailSent
-					setShowForgotPasswordModal={setShowForgotPasswordModal}
-					setShowEmailSent={setShowEmailSent}
-				/>
-			)} */}
 
 			{/* modal for confirmation */}
 			{showPasswordChangeConfirm && <ModalPasswordChanged />}
