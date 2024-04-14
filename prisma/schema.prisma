@@ -8,43 +8,51 @@ datasource db {
 }
 
 model counselor {
-  counselorId Int  @id @default(autoincrement())
-  userId      Int  @unique(map: "Counselor_userId_key")
-  user        user @relation(fields: [userId], references: [id], map: "Counselor_userId_fkey")
+  counselorId Int     @id @default(autoincrement())
+  userId      Int     @unique(map: "Counselor_userId_key")
+  user        user    @relation(fields: [userId], references: [id], map: "Counselor_userId_fkey")
+  isDeleted   Boolean @default(false)
 }
 
 model student {
-  studentId     Int      @id @default(autoincrement())
-  userId        Int      @unique(map: "Student_userId_key")
+  studentId     Int             @id @default(autoincrement())
+  userId        Int             @unique(map: "Student_userId_key")
   college       String
   program       String
   year          Int
   birthDate     DateTime
   contactNumber String
   address       String
-  user          user     @relation(fields: [userId], references: [id], map: "Student_userId_fkey")
+  user          user            @relation(fields: [userId], references: [id], map: "Student_userId_fkey")
+  studentHistory StudentHistory[]
+  isDeleted     Boolean         @default(false)
 }
 
 model teacher {
-  teacherId Int    @id @default(autoincrement())
-  userId    Int    @unique(map: "Teacher_userId_key")
+  teacherId Int     @id @default(autoincrement())
+  userId    Int     @unique(map: "Teacher_userId_key")
   college   String
-  user      user   @relation(fields: [userId], references: [id], map: "Teacher_userId_fkey")
+  user      user    @relation(fields: [userId], references: [id], map: "Teacher_userId_fkey")
+  isDeleted Boolean @default(false)
 }
 
 model user {
-  id                 Int        @id @default(autoincrement())
-  institutionalEmail String     @unique(map: "User_institutionalEmail_key")
-  idNumber           String     @unique(map: "User_idNumber_key")
+  id                 Int             @id @default(autoincrement())
+  institutionalEmail String          @unique(map: "User_institutionalEmail_key")
+  idNumber           String          @unique(map: "User_idNumber_key")
   firstName          String
   middleName         String
   lastName           String
   gender             String
   password           String
-  dateOfCreation     DateTime   @default(now())
+  dateOfCreation     DateTime        @default(now())
   counselor          counselor?
   student            student?
   teacher            teacher?
+  calendars          Calendar[]
+  referrals          Referral[]
+  inquiries          Inquiry[]
+  isDeleted          Boolean         @default(false)
 }
 
 model post {
@@ -59,4 +67,84 @@ model post {
   image            Bytes?   @db.Blob
   datePosted       DateTime @default(now()) @db.DateTime(0)
   isdeleted        Boolean  @default(false)
+}
+
+model Calendar {
+  calendarId   Int          @id @default(autoincrement())
+  userId       Int
+  user         user         @relation(fields: [userId], references: [id])
+  events       Event[]
+  appointments Appointment[]
+  isDeleted    Boolean      @default(false)
+}
+
+model Event {
+  eventId      Int       @id @default(autoincrement())
+  eventName    String
+  type         String
+  location     String
+  eventDetails String
+  date         DateTime
+  timeStart    DateTime
+  timeEnd      DateTime
+  calendarId   Int
+  calendar     Calendar @relation(fields: [calendarId], references: [calendarId])
+  isDeleted    Boolean   @default(false)
+}
+
+model Appointment {
+  appointmentId   Int       @id @default(autoincrement())
+  purpose         String
+  date            DateTime
+  timeStart       DateTime
+  timeEnd         DateTime
+  additionalNotes String?
+  status          Boolean
+  notes           String?
+  calendarId      Int
+  calendar        Calendar @relation(fields: [calendarId], references: [calendarId])
+  isDeleted       Boolean   @default(false)
+}
+
+model Referral {
+  referralId      Int     @id @default(autoincrement())
+  idNumber        String
+  name            String
+  referredBy      Int
+  reason          String
+  additionalNotes String?
+  user            user    @relation(fields: [referredBy], references: [id])
+  isDeleted       Boolean @default(false)
+}
+
+model Journal {
+  journalId   Int      @id @default(autoincrement())
+  title       String
+  entry       String
+  dateOfEntry DateTime
+  isDeleted   Boolean  @default(false)
+}
+
+model Inquiry {
+  inquiryId Int      @id @default(autoincrement())
+  sender    Int
+  subject   String
+  status    String
+  date      DateTime
+  time      DateTime
+  user      user     @relation(fields: [sender], references: [id])
+  isDeleted Boolean  @default(false)
+}
+
+model StudentHistory {
+  studentRecordId Int      @id @default(autoincrement())
+  name            String
+  email           String
+  idNumber        String
+  program         String
+  year            Int
+  contactNumber   String
+  studentId       Int
+  student         student @relation(fields: [studentId], references: [studentId])
+  isDeleted       Boolean @default(false)
 }
