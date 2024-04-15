@@ -120,22 +120,15 @@ function NavList({ userType }) {
 
 export function Navbar({ userType }) {
 	const [isNavOpen, setIsNavOpen] = useState(false);
+	const [isScrolled, setIsScrolled] = useState(false);
 	const router = useRouter();
 
 	useEffect(() => {
 		const handleScroll = () => {
-			const navbar = document.getElementById("navbar");
-			if (navbar) {
-				if (window.scrollY > navbar.offsetTop) {
-					navbar.classList.add("fixed", "top-0", "z-50", "bg-white");
-				} else {
-					navbar.classList.remove(
-						"fixed",
-						"top-0",
-						"z-50",
-						"bg-white"
-					);
-				}
+			if (window.scrollY > 0) {
+				setIsScrolled(true);
+			} else {
+				setIsScrolled(false);
 			}
 		};
 
@@ -146,10 +139,21 @@ export function Navbar({ userType }) {
 		};
 	}, []);
 
+	const navbarStyles = {
+		position: "fixed",
+		top: 0,
+		left: 0,
+		width: "100%",
+		backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.9)" : "transparent",
+		zIndex: 50,
+		transition: "background-color 0.3s ease",
+	  };
+
 	return (
 		<nav
 			id="navbar"
-			className="mx-auto max-w-screen-auto p-2 lg:pl-6 bg-blue-gray-900 w-full border-b border-gray-200">
+			style={navbarStyles}
+			className="mx-auto max-w-screen-auto p-2 lg:pl-6 w-full border-b border-gray-200">
 			<div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
 				<div className="ml-24 text-2xl text-[#6B9080] font-bold">
 					WellTalk
