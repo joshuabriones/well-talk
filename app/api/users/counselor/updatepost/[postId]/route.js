@@ -1,16 +1,12 @@
-export async function PUT(req, res) {
-    const postId = parseInt(req.query.postId); // Access postId from URL query
+import { db } from "@/lib/db";
+import { NextResponse } from "next/server";
 
-    // Check if postId is not a valid number
-    if (isNaN(postId)) {
-        return res.status(400).json({ error: "Invalid postId parameter" });
-    }
-
-    const { blogId, posts, title, shortDescription, blogURL, author, publishDate, image } = await req.json();
-
+export async function PUT(request) {
+    const { blogId, posts, title, shortDescription, blogURL, author, publishDate, image } = await request.json();
+    const postId = request.nextUrl.pathname.split('/').pop(); // Extract postId from the URL
     try {
         const updatedPost = await db.post.update({
-            where: { postIdid: postId }, // Update the where condition to use id instead of postId
+            where: { postId: Number(postId) },
             data: {
                 blogId,
                 posts,
@@ -24,9 +20,9 @@ export async function PUT(req, res) {
                 isdeleted: false
             }
         });
-        return res.status(200).json(updatedPost);
+        return NextResponse.json(updatedPost, { status: 200 });
     } catch (error) {
         console.error("Error updating post:", error);
-        return res.status(500).json({ error: "Internal Server Error" });
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
