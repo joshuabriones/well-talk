@@ -8,7 +8,7 @@ CREATE TABLE `post` (
     `blogURL` VARCHAR(255) NOT NULL,
     `author` VARCHAR(255) NOT NULL,
     `publishDate` DATETIME(0) NOT NULL,
-    `image` BLOB NULL,
+    `image` VARCHAR(255) NULL,
     `datePosted` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     `isdeleted` BOOLEAN NOT NULL DEFAULT false,
 
