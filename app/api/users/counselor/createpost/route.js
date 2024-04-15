@@ -15,7 +15,7 @@ export async function POST(request) {
         publishDate,
         image,
         datePosted: new Date(),
-        isdeleted: false 
+        isdeleted: false
       }
     });
     return NextResponse.json(newPost, { status: 201 });
@@ -28,7 +28,7 @@ export async function POST(request) {
 export async function getHandler(req, res) {
   try {
     const posts = await db.post.findMany({
-      where: { isdeleted: false } 
+      where: { isdeleted: false }
     });
     return NextResponse.json(posts, { status: 200 });
   } catch (error) {
