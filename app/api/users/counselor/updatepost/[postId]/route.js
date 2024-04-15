@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function PUT(request) {
     const { blogId, posts, title, shortDescription, blogURL, author, publishDate, image } = await request.json();
-    const postId = request.nextUrl.pathname.split('/').pop(); // Extract postId from the URL
+    const postId = request.nextUrl.pathname.split('/').pop(); 
     try {
         const updatedPost = await db.post.update({
             where: { postId: Number(postId) },
