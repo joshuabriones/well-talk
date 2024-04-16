@@ -43,7 +43,6 @@ model user {
   firstName          String
   middleName         String
   lastName           String
-  gender             String
   password           String
   dateOfCreation     DateTime   @default(now())
   isDeleted          Boolean    @default(false)
