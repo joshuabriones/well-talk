@@ -28,8 +28,7 @@ export default function Landing() {
 					className="jarallax jarallax-img title-img"
 					style={{
 						backgroundSize: "contain",
-						backgroundPosition: "center", // Try different values like "top", "center", or "bottom"
-						height: "100%", // Ensure the container has full height
+						backgroundPosition: "center bottom",
 					}}>
 					<div className="py-48 xl:px-96 text-center">
 						<h2 className="text-5xl sm:text-6xl lg:text-8xl font-Merriweather">
