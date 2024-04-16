@@ -8,7 +8,7 @@ const BlogBlock = () => {
 						className=" ">
 						<img
 							className="blog-block-img"
-							src="images/landing/blog7.png"
+							src="/images/landing/blog7.png"
 							alt=""
 						/>
 						<div className="header-overlay hidden lg:flex absolute inset-x-0 bottom-0 justify-center">
@@ -24,7 +24,7 @@ const BlogBlock = () => {
 						className=" ">
 						<img
 							className="blog-block-img"
-							src="images/landing/blog8.png"
+							src="/images/landing/blog8.png"
 							alt=""
 						/>
 						<div className="header-overlay hidden lg:flex absolute inset-x-0 bottom-0 justify-center">
@@ -40,7 +40,7 @@ const BlogBlock = () => {
 						className=" ">
 						<img
 							className="blog-block-img"
-							src="images/landing/blog9.png"
+							src="/images/landing/blog9.png"
 							alt=""
 						/>
 						<div className="header-overlay hidden lg:flex absolute inset-x-0 bottom-0 justify-center">
@@ -56,7 +56,7 @@ const BlogBlock = () => {
 						className=" ">
 						<img
 							className="blog-block-img"
-							src="images/landing/blog10.png"
+							src="/images/landing/blog10.png"
 							alt=""
 						/>
 						<div className="header-overlay hidden lg:flex absolute inset-x-0 bottom-0 justify-center">
@@ -72,7 +72,7 @@ const BlogBlock = () => {
 						className=" ">
 						<img
 							className="blog-block-img"
-							src="images/landing/blog11.png"
+							src="/images/landing/blog11.png"
 							alt=""
 						/>
 						<div className="header-overlay hidden lg:flex absolute inset-x-0 bottom-0 justify-center">

@@ -1,0 +1,16 @@
+.parallax-container {
+    min-height: 90vh; /* Set the minimum height of the container */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Ensure the content doesn't overflow */
+}
+
+.parallax-img {
+    /* Adjust the background image properties */
+    background-image: url('/images/landing/hero-img.png');
+    background-size: contain; /* Fit the image within the container */
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 90vh; /* Set the minimum height */
+}

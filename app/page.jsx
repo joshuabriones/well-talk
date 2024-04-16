@@ -16,20 +16,20 @@ export default function Landing() {
 	};
 
 	const handleCreateAccountClick = () => {
-		router.push("registration/student");
+		router.push("/registration");
 	};
 	return (
-		<div>
-			<main className="min-h-screen">
+		<div className="w-full h-full flex-auto">
+			<main>
 				<Navbar userType="landing" />
 				<Parallax
 					bgImage="/images/landing/hero-img.png"
 					strength={500}
 					className="jarallax jarallax-img title-img"
 					style={{
-						backgroundSize: "cover",
-						backgroundPosition: "center top",
-						minHeight: "90vh",
+						backgroundSize: "contain",
+						backgroundPosition: "center", // Try different values like "top", "center", or "bottom"
+						height: "100%", // Ensure the container has full height
 					}}>
 					<div className="py-48 xl:px-96 text-center">
 						<h2 className="text-5xl sm:text-6xl lg:text-8xl font-Merriweather">

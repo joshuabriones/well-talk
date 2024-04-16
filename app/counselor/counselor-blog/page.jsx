@@ -36,7 +36,7 @@ export default function Home() {
 						className="w-full h-full object-contain"
 					/>
 				</div>
-				<div className="flex justify-between items-center px-44 mt-12">
+				<div className="flex justify-between items-center px-44 mt-24">
 					<div className="flex items-center">
 						<button
 							className={`text-sm sm:text-lg lg:text-base font-Merriweather mr-4 py-1 px-4 ${
