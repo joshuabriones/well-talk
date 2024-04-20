@@ -1,3 +1,4 @@
+import firebaseConfig from "@/firebase.config";
 import { db } from "@/lib/db";
 import * as dotenv from 'dotenv';
 import { initializeApp } from "firebase/app";
@@ -7,15 +8,6 @@ import { NextResponse } from "next/server";
 
 dotenv.config();
 
-const firebaseConfig = {
-    apiKey: process.env.NEXT_PUBLIC_APIKEY,
-    authDomain: process.env.NEXT_PUBLIC_AUTHDOMAIN,
-    projectId: process.env.NEXT_PUBLIC_PROJECTID,
-    storageBucket: process.env.NEXT_PUBLIC_STORAGEBUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_MESSAGINGSENDERID,
-    appId: process.env.NEXT_PUBLIC_APPID
-};
-
 initializeApp(firebaseConfig);
 
 // Initialize Cloud Storage and get a reference to the service
@@ -24,11 +16,16 @@ const storage = getStorage();
 // Setting up multer as a middleware to grab photo uploads
 const upload = multer({ storage: multer.memoryStorage() });
 
-export const config = {
-    api: {
-        bodyParser: false,
+export const route = {
+    config: {
+        api: {
+            bodyParser: {
+                sizeLimit: '1mb',
+            },
+        },
     },
 };
+
 
 const giveCurrentDateTime = () => {
     const today = new Date();
@@ -37,6 +34,7 @@ const giveCurrentDateTime = () => {
     const dateTime = date + ' ' + time;
     return dateTime;
 }
+
 
 export async function POST(req, res) {
     try {
@@ -49,9 +47,10 @@ export async function POST(req, res) {
                 resolve();
             });
         });
+
         if (!req.file) {
             console.log("Request: ", req); // Add logging here
-            throw new Error("No file provided in the request");
+            return NextResponse.json({ error: "No file provided in the request" }, { status: 400 });
         }
 
         const dateTime = giveCurrentDateTime();
