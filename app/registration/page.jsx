@@ -79,9 +79,7 @@ const Registration = () => {
       role = "counselor";
     }
 
-    console.log("Birthdate", birthdate);
-
-    // create account
+    //
     try {
       const response = await fetch("/api/users/createuser", {
         method: "POST",
@@ -105,8 +103,9 @@ const Registration = () => {
         }),
       });
 
-      const data = await response.json();
-      console.log("Succes", data);
+      if (!response.ok) {
+        console.log("Error status: ", response.status);
+      }
     } catch (error) {
       console.log("Error in creating user", error);
     }

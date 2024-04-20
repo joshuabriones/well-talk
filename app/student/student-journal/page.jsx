@@ -1,9 +1,7 @@
-import { supabase } from "@/utils/supabase/supabaseClient";
-
-export default function Home() {
+export default function StudentJournal() {
   return (
     <div>
-      <h1>Home</h1>
+      <h1>StudentJournal</h1>
     </div>
   );
 }
