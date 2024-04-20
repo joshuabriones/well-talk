@@ -1,59 +1,60 @@
-import config from " ../config/firebase.config";
-import express from "express";
-import { initializeApp } from "firebase/app";
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
-import multer from "multer";
+// import express from "express";
+// import { initializeApp } from "firebase/app";
+// import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+// import multer from "multer";
+// import config from "../firebase.config";
 
-const router = express.Router();
+// const router = express.Router()
 
-initializeApp(config.fire);
-
-// Initialize Cloud Storage and get a reference to the service
-const storage = getStorage();
-
-// Setting up multer as a middleware to grab photo uploads
-const upload = multer({ storage: multer.memoryStorage() });
+// initializeApp(config.firebaseConfig);
 
 
-router.post("/", upload.single("filename"), async (req, res) => {
-    try {
-        const dateTime = giveCurrentDateTime();
+// // Initialize Cloud Storage and get a reference to the service
+// const storage = getStorage();
 
-        const storageRef = ref(storage, 'files/${req.file.originalname} + "         " + dateTime}');
+// // Setting up multer as a middleware to grab photo uploads
+// const upload = multer({ storage: multer.memoryStorage() });
 
-        // Create file metadata including the content type
-        const metadata = {
-            contentType: req.file.mimetype,
 
-        };
+// router.post("/", upload.single("image"), async (req, res) => {
+//     try {
+//         const dateTime = giveCurrentDateTime();
 
-        // Upload the file in the bucket storage
-        const snapshot = await uploadBytesResumable(storageRef, req.file.buffer, metadata);
+//         const storageRef = ref(storage, `imageposts/${dateTime}_${req.file.originalname}`);
 
-        const downloadURL = await getDownloadURL(snapshot.ref);
+//         // Create file metadata including the content type
+//         const metadata = {
+//             contentType: req.file.mimetype,
 
-        console.log("file uploaded successfully");
+//         };
 
-        return res.send({
-            message: 'file uploaded successfully',
-            name: req.file.originalname,
-            type: req.file.mimetype,
-            downloadURL: downloadURL
-        })
+//         // Upload the file in the bucket storage
+//         const snapshot = await uploadBytesResumable(storageRef, req.file.buffer, metadata);
 
-    } catch (error) {
-        return res.status(400).send(error.message);
-    }
+//         const downloadURL = await getDownloadURL(snapshot.ref);
 
-});
+//         console.log("file uploaded successfully");
 
-const giveCurrentDateTime = () => {
-    const today = new Date();
-    const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-    const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    const dateTime = date + ' ' + time;
-    return dateTime;
+//         return res.send({
+//             message: 'file uploaded successfully',
+//             name: req.file.originalname,
+//             type: req.file.mimetype,
+//             downloadURL: downloadURL
+//         })
 
-}
+//     } catch (error) {
+//         return res.status(400).send(error.message);
+//     }
 
-export default router;
+// });
+
+// const giveCurrentDateTime = () => {
+//     const today = new Date();
+//     const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+//     const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+//     const dateTime = date + ' ' + time;
+//     return dateTime;
+
+// }
+
+// export default router;
