@@ -66,26 +66,26 @@
 // 	return (
 // 		<div
 // 			className="min-h-screen w-full"
-// 			style={{
-// 				backgroundImage: `url(${loginBg.src})`,
-// 				width: "100%",
-// 				height: "100%",
-// 				backgroundSize: "cover",
-// 				backgroundAttachment: "fixed",
-// 				backgroundPosition: "center",
-// 			}}
+// style={{
+// 	backgroundImage: `url(${loginBg.src})`,
+// 	width: "100%",
+// 	height: "100%",
+// 	backgroundSize: "cover",
+// 	backgroundAttachment: "fixed",
+// 	backgroundPosition: "center",
+// }}
 // 		>
 // 			{/* navigation bar */}
-// 			<div className="h-20 w-full bg-white flex flex-row justify-between items-center px-44">
-// 				<div className="text-2xl text-[#6B9080] font-Merriweather font-bold">
-// 					WellTalk
-// 				</div>
-// 				<div className="flex flex-row gap-x-16">
-// 					<div className="text-lg font-Jaldi">Home</div>
-// 					<div className="text-lg font-Jaldi">About</div>
-// 					<div className="text-lg font-Jaldi">Contact</div>
-// 				</div>
-// 			</div>
+// <div className="h-20 w-full bg-white flex flex-row justify-between items-center px-44">
+// 	<div className="text-2xl text-[#6B9080] font-Merriweather font-bold">
+// 		WellTalk
+// 	</div>
+// 	<div className="flex flex-row gap-x-16">
+// 		<div className="text-lg font-Jaldi">Home</div>
+// 		<div className="text-lg font-Jaldi">About</div>
+// 		<div className="text-lg font-Jaldi">Contact</div>
+// 	</div>
+// </div>
 
 // 			{/* login form*/}
 // 			<div className="flex justify-start items-center py-5 px-48 ">
@@ -172,43 +172,43 @@
 import { useSession, signOut, signIn } from "next-auth/react";
 
 export default function Login() {
-  const { data: session } = useSession();
+	const { data: session } = useSession();
 
-  console.log("User session: ", session);
+	console.log("User session: ", session);
 
-  if (session) {
-    return (
-      <>
-        <div className="container">
-          <div className="form-container">
-            <h2>Signed in as {session.user.name}</h2>
-            <h3>Email: {session.user.email}</h3>
-            <br />
-            <button type="button" onClick={() => signOut()}>
-              Logout
-            </button>
-          </div>
-        </div>
-      </>
-    );
-  }
+	if (session) {
+		return (
+			<>
+				<div className="container">
+					<div className="form-container">
+						<h2>Signed in as {session.user.name}</h2>
+						<h3>Email: {session.user.email}</h3>
+						<br />
+						<button type="button" onClick={() => signOut()}>
+							Logout
+						</button>
+					</div>
+				</div>
+			</>
+		);
+	}
 
-  return (
-    <>
-      <div className="h-screen w-full">
-        <div className="form-container">
-          <h2>Login</h2>
-          <label>Azure AD authentication using NextAuth.Js:</label>
-          <br />
-          <button
-            type="button"
-            className="w-[20%]  p-2 rounded-sm bg-red-500"
-            onClick={() => signIn()}
-          >
-            Login
-          </button>
-        </div>
-      </div>
-    </>
-  );
+	return (
+		<>
+			<div className="h-screen w-full">
+				<div className="form-container">
+					<h2>Login</h2>
+					<label>Azure AD authentication using NextAuth.Js:</label>
+					<br />
+					<button
+						type="button"
+						className="w-[20%]  p-2 rounded-sm bg-red-500"
+						onClick={() => signIn()}
+					>
+						Login
+					</button>
+				</div>
+			</div>
+		</>
+	);
 }
