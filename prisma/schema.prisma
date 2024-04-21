@@ -43,6 +43,7 @@ model user {
   firstName          String
   middleName         String
   lastName           String
+  gender             String
   password           String
   dateOfCreation     DateTime   @default(now())
   isDeleted          Boolean    @default(false)
@@ -147,15 +148,15 @@ model studenthistory {
 }
 
 model post {
-  postId           Int      @id @default(autoincrement())
-  blogId           Int
-  posts            String   @db.Text
-  title            String   @db.VarChar(255)
-  shortDescription String   @db.Text
-  blogURL          String   @db.VarChar(255)
-  author           String   @db.VarChar(255)
-  publishDate      DateTime @db.DateTime(0)
-  image            String?  @db.VarChar(255)
-  datePosted       DateTime @default(now()) @db.DateTime(0)
-  isdeleted        Boolean  @default(false)
+  postId           Int       @id @default(autoincrement())
+  blogId           Int?
+  posts            String?   @db.Text
+  title            String?   @db.VarChar(255)
+  shortDescription String?   @db.Text
+  blogURL          String?   @db.VarChar(255)
+  author           String?   @db.VarChar(255)
+  publishDate      DateTime? @db.DateTime(0)
+  image            String?   @db.VarChar(255)
+  datePosted       DateTime? @default(now()) @db.DateTime(0)
+  isdeleted        Boolean?  @default(false)
 }

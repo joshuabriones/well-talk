@@ -170,20 +170,42 @@
 // export default Login;
 
 import { useSession, signOut, signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function Login() {
 	const { data: session } = useSession();
+	const [fetchedData, setFetchedDAta] = useState({});
 
-	console.log("User session: ", session);
+	useEffect(() => {
+		fetch("https://graph.microsoft.com/v1.0/me", {
+			headers: {
+				Authorization: `Bearer ${session?.accessToken}`,
+			},
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				// Extract student ID from the response
+				setFetchedDAta(data);
+			})
+			.catch((error) => {
+				console.error("Error fetching user profile:", error);
+			});
+	}, [session?.user]);
+
+	console.log("Fetched data: ", fetchedData);
+
+	console.log(session);
 
 	if (session) {
 		return (
 			<>
 				<div className="container">
 					<div className="form-container">
-						<h2>Signed in as {session.user.name}</h2>
-						<h3>Email: {session.user.email}</h3>
+						<h2>Signed in as {session?.user.name}</h2>
+						<h3>Email: {session?.user.email}</h3>
 						<br />
+						<img src={session.user.image} />
+
 						<button type="button" onClick={() => signOut()}>
 							Logout
 						</button>
