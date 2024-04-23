@@ -1,5 +1,4 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -15,9 +14,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const imgDB = getStorage(app)
-const txtDB = getFirestore(app)
 
-export { imgDB, txtDB };
+export { imgDB };
 
 // // firebase.config.js
 // import * as dotenv from 'dotenv';
