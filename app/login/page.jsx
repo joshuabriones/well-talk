@@ -43,7 +43,6 @@ const Login = () => {
 
       if (result.ok) {
         console.log("Login successful:", result);
-        router.push("/student");
       } else {
         console.error("Login error: inside", error.message);
       }
