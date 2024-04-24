@@ -7,11 +7,10 @@ export async function POST(request) {
   try {
     const inquiry = await db.inquiry.create({
       data: {
-        sender,
+        sender: parseInt(sender),
         subject,
         message,
         date,
-        time,
       },
     });
 

@@ -106,12 +106,10 @@ model inquiry {
   message        String
   status         String   @default("open")
   date           DateTime
-  time           DateTime
   isDeleted      Boolean  @default(false)
   counselorReply String?  
   counselorId    Int?     
   replyDate      DateTime?
-  replyTime      DateTime? 
   user           user     @relation(fields: [sender], references: [id], map: "Inquiry_sender_fkey")
 
   @@index([sender], map: "Inquiry_sender_fkey")

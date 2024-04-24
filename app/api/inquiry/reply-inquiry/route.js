@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function PUT(request) {
-  const { inquiryId, counselorId, counselorReply, replyDate, replyTime } =
+  const { inquiryId, counselorId, counselorReply, replyDate } =
     await request.json();
 
   try {
@@ -14,7 +14,7 @@ export async function PUT(request) {
         counselorId,
         counselorReply,
         replyDate,
-        replyTime,
+        status: "replied",
       },
     });
 
