@@ -16,8 +16,8 @@ CREATE TABLE `student` (
     `program` VARCHAR(191) NOT NULL,
     `year` INTEGER NOT NULL,
     `birthDate` DATETIME(3) NOT NULL,
-    `contactNumber` VARCHAR(191) NOT NULL,
-    `address` VARCHAR(191) NOT NULL,
+    `contactNumber` VARCHAR(191) NULL,
+    `address` VARCHAR(191) NULL,
     `isDeleted` BOOLEAN NOT NULL DEFAULT false,
 
     UNIQUE INDEX `Student_userId_key`(`userId`),
@@ -38,18 +38,18 @@ CREATE TABLE `teacher` (
 -- CreateTable
 CREATE TABLE `user` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `institutionalEmail` VARCHAR(191) NOT NULL,
+    `institutionalEmail` VARCHAR(255) NOT NULL,
     `idNumber` VARCHAR(191) NOT NULL,
     `firstName` VARCHAR(191) NOT NULL,
-    `middleName` VARCHAR(191) NOT NULL,
     `lastName` VARCHAR(191) NOT NULL,
-    `gender` VARCHAR(191) NOT NULL,
+    `gender` ENUM('male', 'female') NOT NULL,
     `password` VARCHAR(191) NOT NULL,
-    `image` VARCHAR(191) NOT NULL,
+    `image` VARCHAR(191) NULL,
     `dateOfCreation` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `isDeleted` BOOLEAN NOT NULL DEFAULT false,
+    `role` ENUM('counselor', 'teacher', 'student') NOT NULL,
 
-    UNIQUE INDEX `User_institutionalEmail_key`(`institutionalEmail`),
+    UNIQUE INDEX `institutionalEmail`(`institutionalEmail`),
     UNIQUE INDEX `User_idNumber_key`(`idNumber`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -156,14 +156,12 @@ CREATE TABLE `studenthistory` (
 -- CreateTable
 CREATE TABLE `post` (
     `postId` INTEGER NOT NULL AUTO_INCREMENT,
-    `blogId` INTEGER NULL,
-    `posts` TEXT NULL,
     `title` VARCHAR(255) NULL,
     `shortDescription` TEXT NULL,
     `blogURL` VARCHAR(255) NULL,
     `author` VARCHAR(255) NULL,
     `publishDate` DATETIME(0) NULL,
-    `image` VARCHAR(255) NULL,
+    `image` VARCHAR(1024) NULL,
     `datePosted` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
     `isdeleted` BOOLEAN NULL DEFAULT false,
 
