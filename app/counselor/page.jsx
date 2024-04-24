@@ -4,7 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const StudentPage = () => {
+const CounselorPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -17,7 +17,7 @@ const StudentPage = () => {
   }
 
   // Redirect authenticated users who are not counselors
-  if (session.user.role !== "student") {
+  if (session.user.role !== "counselor") {
     router.push("/login"); // Redirect to homepage or appropriate page
     return null; // Prevent rendering anything if redirecting
   }
@@ -25,7 +25,7 @@ const StudentPage = () => {
   console.log(session);
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center">
-      <h1>Student Page</h1>
+      <h1>Counselor Page</h1>
       <button
         className="pointer px-4 py-8"
         onClick={() => signOut({ callbackUrl: "/login", redirect: true })}
@@ -45,4 +45,4 @@ const StudentPage = () => {
   );
 };
 
-export default StudentPage;
+export default CounselorPage;

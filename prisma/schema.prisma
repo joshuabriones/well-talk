@@ -21,8 +21,8 @@ model student {
   program        String
   year           Int
   birthDate      DateTime
-  contactNumber  String
-  address        String
+  contactNumber  String?
+  address        String?
   isDeleted      Boolean          @default(false)
   user           user             @relation(fields: [userId], references: [id], map: "Student_userId_fkey")
   studenthistory studenthistory[]
@@ -37,16 +37,17 @@ model teacher {
 }
 
 model user {
-  id                 Int        @id @default(autoincrement())
-  institutionalEmail String     @unique(map: "User_institutionalEmail_key")
-  idNumber           String     @unique(map: "User_idNumber_key")
+  id                 Int         @id @default(autoincrement())
+  institutionalEmail String      @unique(map: "institutionalEmail") @db.VarChar(255)
+  idNumber           String      @unique(map: "User_idNumber_key")
   firstName          String
-  middleName         String
   lastName           String
-  gender             String
+  gender             user_gender
   password           String
-  dateOfCreation     DateTime   @default(now())
-  isDeleted          Boolean    @default(false)
+  image              String?
+  dateOfCreation     DateTime    @default(now())
+  isDeleted          Boolean     @default(false)
+  role               user_role
   calendar           calendar[]
   counselor          counselor?
   inquiry            inquiry[]
@@ -159,4 +160,15 @@ model post {
   image            String?   @db.VarChar(255)
   datePosted       DateTime? @default(now()) @db.DateTime(0)
   isdeleted        Boolean?  @default(false)
+}
+
+enum user_gender {
+  male
+  female
+}
+
+enum user_role {
+  counselor
+  teacher
+  student
 }

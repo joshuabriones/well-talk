@@ -68,3 +68,169 @@ async function fetchUserInfo(accessToken) {
 }
 
 export { handler as GET, handler as POST };
+
+//////////////////////////////////////////////////////// THE EFFECTIVE AZURE PROVIDER <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// import NextAuth from "next-auth";
+// import AzureADProvider from "next-auth/providers/azure-ad";
+// import { setCookie } from "nookies";
+// import axios from "axios";
+
+// import { PrismaAdapter } from "@next-auth/prisma-adapter";
+// import { db } from "@/lib/db";
+
+// const handler = NextAuth({
+//   providers: [
+//     AzureADProvider({
+//       clientId: process.env.AZURE_AD_CLIENT_ID,
+//       clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
+//       tenantId: process.env.AZURE_AD_TENANT_ID,
+//       authorization: {
+//         params: {
+//           scope:
+//             "User.ReadBasic.All User.Read email profile openid offline_access",
+//         },
+//       },
+//       timeout: 3000,
+//     }),
+//   ],
+//   callbacks: {
+//     async signIn(user, account, profile) {
+//       return true;
+//     },
+//     async jwt({ token, account, profile }) {
+//       if (account) {
+//         token.accessToken = account.access_token;
+//         token.id = profile.id;
+//       }
+//       return token;
+//     },
+//     async session({ session, token }) {
+//       session.accessToken = token.accessToken;
+//       return session;
+//     },
+//   },
+//   secret: process.env.NEXTAUTH_SECRET,
+
+//   // adapter: PrismaAdapter(db),
+// });
+
+// export { handler as GET, handler as POST };
+
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AZURE LOGIN TEST >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// import { useSession, signOut, signIn } from "next-auth/react";
+// import { useEffect, useState } from "react";
+
+// export default function Login() {
+//   const { data: session } = useSession();
+//   const [fetchedData, setFetchedDAta] = useState({});
+
+//   // useEffect(() => {
+//   //   fetch("https://graph.microsoft.com/v1.0/me", {
+//   //     headers: {
+//   //       Authorization: `Bearer ${session?.accessToken}`,
+//   //     },
+//   //   })
+//   //     .then((response) => response.json())
+//   //     .then((data) => {
+//   //       // Extract student ID from the response
+//   //       setFetchedDAta(data);
+//   //     })
+//   //     .catch((error) => {
+//   //       console.error("Error fetching user profile:", error);
+//   //     });
+//   //   fetchUserInfo(session?.accessToken);
+//   // }, [session?.user]);
+//   useEffect(() => {
+//     fetch("https://graph.microsoft.com/oidc/userInfo", {
+//       headers: {
+//         Authorization: `Bearer ${session?.accessToken}`,
+//       },
+//     })
+//       .then((response) => response.json())
+//       .then((data) => {
+//         // Extract student ID from the response
+//         setFetchedDAta(data);
+//       })
+//       .catch((error) => {
+//         console.error("Error fetching user profile:", error);
+//       });
+//     fetchUserInfo(session?.accessToken);
+//   }, [session?.user]);
+
+//   console.log("Fetched data: ", fetchedData);
+
+//   useEffect(() => {
+//     fetchUserProfile(session?.accessToken, fetchedData.id);
+//   }, [fetchedData?.id]);
+
+//   console.log(session);
+
+//   if (session) {
+//     return (
+//       <>
+//         <div className="container">
+//           <div className="form-container">
+//             <h2>Signed in as {session?.user.name}</h2>
+//             <h3>Email: {session?.user.email}</h3>
+//             <br />
+//             <img src={session.user.image} />
+
+//             <button type="button" onClick={() => signOut()}>
+//               Logout
+//             </button>
+//           </div>
+//         </div>
+//       </>
+//     );
+//   }
+
+//   return (
+//     <>
+//       <div className="h-screen w-full">
+//         <div className="form-container">
+//           <h2>Login</h2>
+//           <label>Azure AD authentication using NextAuth.Js:</label>
+//           <br />
+//           <button
+//             type="button"
+//             className="w-[20%]  p-2 rounded-sm bg-red-500"
+//             onClick={() => signIn()}
+//           >
+//             Login
+//           </button>
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
+
+// async function fetchUserInfo(accessToken) {
+//   const apiUrl = "https://graph.microsoft.com/oidc/userinfo";
+//   try {
+//     const response = await axios.get(apiUrl, {
+//       headers: {
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//     });
+//     console.log("ASA KOOO: ", response.data);
+//   } catch (error) {
+//     console.error("Error fetching user info:", error);
+//   }
+// }
+
+// async function fetchUserProfile(accessToken, userId) {
+//   const apiUrl = `https://graph.microsoft.com/v1.0/users/${userId}`;
+//   try {
+//     const response = await axios.get(apiUrl, {
+//       headers: {
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//     });
+//     console.log("USER DATA: ", response.data);
+//   } catch (error) {
+//     console.error("Error fetching user profile:", error);
+//     return null;
+//   }
+// }

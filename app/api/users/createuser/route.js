@@ -1,16 +1,17 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 export async function POST(request) {
   const {
     institutionalEmail,
     idNumber,
     firstName,
-    middleName,
     lastName,
+    gender,
     password,
+    image,
     role, // 'teacher', 'student', or 'counselor'
-    // Additional fields based on the role
     college,
     program,
     year,
@@ -22,21 +23,28 @@ export async function POST(request) {
   const birthDateObj = new Date(birthDate);
   const yearInt = parseInt(year, 10);
 
-  console.log("Role:", role);
-  console.log("Password", password);
-  console.log("college", college);
-  console.log("BirthDate", birthDate);
-  console.log("role", role);
-
   try {
+    const userExists = await db.user.findUnique({
+      where: { institutionalEmail: institutionalEmail },
+    });
+
+    if (userExists) {
+      return NextResponse.json({ message: "User already exists", status: 400 });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const newUser = await db.user.create({
       data: {
         institutionalEmail,
         idNumber,
         firstName,
-        middleName,
         lastName,
-        password,
+        gender,
+        password: hashedPassword,
+        image,
+        role,
       },
     });
 

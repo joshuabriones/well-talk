@@ -1,76 +1,92 @@
 import NextAuth from "next-auth";
-import AzureADProvider from "next-auth/providers/azure-ad";
-import { setCookie } from "nookies";
-import axios from "axios";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import bcrypt from "bcrypt";
 
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "@/lib/db";
 
 const handler = NextAuth({
   providers: [
-    AzureADProvider({
-      clientId: process.env.AZURE_AD_CLIENT_ID,
-      clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
-      tenantId: process.env.AZURE_AD_TENANT_ID,
-      authorization: {
-        params: {
-          scope:
-            "User.ReadBasic.All User.Read email profile openid offline_access",
-        },
+    // to implement if kaya HAHAHAH
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    // }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {},
+      async authorize(credentials) {
+        const { email, password } = credentials;
+        try {
+          // Find user by email
+          if (!email) {
+            console.error("Missing email in credentials");
+            return null;
+          }
+
+          const user = await db.user.findUnique({
+            where: { institutionalEmail: email },
+          });
+
+          if (!user) {
+            return null;
+          }
+
+          const isValidPassword = await bcrypt.compare(password, user.password);
+
+          if (!isValidPassword) {
+            return null;
+          }
+
+          // kani na line returns the logged in user's data to the SESSION callback
+          return {
+            id: user.id.toString(),
+            name: `${user.firstName} ${user.lastName} ${user.gender} ${user.password} ${user.role} ${user.id} ${user.idNumber}`,
+            email: user.institutionalEmail,
+            image: user.image,
+            idNumber: user.idNumber,
+            gender: user.gender,
+            password: user.password,
+            role: user.role,
+          };
+        } catch (error) {
+          console.error("Error authenticating user:", error);
+          return null; // Or throw an appropriate error
+        }
       },
-      timeout: 3000,
     }),
   ],
   callbacks: {
-    async signIn(user, account, profile) {
-      console.log(profile);
-      return true;
-    },
-    async jwt({ token, account, profile }) {
-      if (account) {
-        token.accessToken = account.access_token;
-        token.id = profile.id;
+    async session({ session }) {
+      if (!session.user) {
+        console.error("Missing user in session");
+        return null;
       }
-      return token;
-    },
-    async session({ session, token }) {
-      session.accessToken = token.accessToken;
+
+      // dire sa SESSION callback ari nato gidawat ang gipasa na user data from AUTHORIZE
+      // check session sa brwoser network to see the fetched data
+      const { user } = session;
+      session.user.id = user.name.split(" ")[5];
+      session.user.idNumber = user.name.split(" ")[6];
+      session.user.password = user.name.split(" ")[3];
+      session.user.gender = user.name.split(" ")[2];
+      session.user.role = user.name.split(" ")[4];
+      session.user.email = user.email;
+      session.user.name = `${user.name.split(" ")[0]} ${
+        user.name.split(" ")[1]
+      }`;
+      session.user.image = user.image;
+
       return session;
     },
   },
+  session: {
+    strategy: "jwt",
+  },
   secret: process.env.NEXTAUTH_SECRET,
-
-  // adapter: PrismaAdapter(db),
+  pages: {
+    signIn: "/login",
+  },
 });
-
-async function fetchUserProfile(accessToken, userId) {
-  const apiUrl = `https://graph.microsoft.com/v1.0/users/${userId}`;
-  try {
-    const response = await axios.get(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching user profile:", error);
-    return null;
-  }
-}
-
-async function fetchUserInfo(accessToken) {
-  const apiUrl = "https://graph.microsoft.com/oidc/userinfo";
-  try {
-    const response = await axios.get(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching user info:", error);
-    throw error; // Handle error as per your application's logic
-  }
-}
 
 export { handler as GET, handler as POST };
