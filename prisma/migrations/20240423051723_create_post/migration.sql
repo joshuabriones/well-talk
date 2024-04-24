@@ -1,7 +1,6 @@
 -- CreateTable
 CREATE TABLE `post` (
     `postId` INTEGER NOT NULL AUTO_INCREMENT,
-    `blogId` INTEGER NULL,
     `posts` TEXT NULL,
     `title` VARCHAR(255) NULL,
     `shortDescription` TEXT NULL,

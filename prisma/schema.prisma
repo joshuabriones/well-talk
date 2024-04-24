@@ -149,8 +149,6 @@ model studenthistory {
 
 model post {
   postId           Int       @id @default(autoincrement())
-  blogId           Int?
-  posts            String?   @db.Text
   title            String?   @db.VarChar(255)
   shortDescription String?   @db.Text
   blogURL          String?   @db.VarChar(255)

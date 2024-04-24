@@ -120,3 +120,8 @@ ALTER TABLE `Inquiry` ADD CONSTRAINT `Inquiry_sender_fkey` FOREIGN KEY (`sender`
 
 -- AddForeignKey
 ALTER TABLE `StudentHistory` ADD CONSTRAINT `StudentHistory_studentId_fkey` FOREIGN KEY (`studentId`) REFERENCES `student`(`studentId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE `post` DROP COLUMN `blogId`, DROP COLUMN `posts`;
+
+
+

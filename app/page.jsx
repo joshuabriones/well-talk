@@ -19,7 +19,7 @@ export default function Landing() {
 		router.push("/registration");
 	};
 	return (
-		<div className="w-full h-full flex-auto">
+		<div className="w-full h-full flex justify-center">
 			<main>
 				<Navbar userType="landing" />
 				<Parallax
@@ -127,7 +127,6 @@ export default function Landing() {
 					</div>
 					<hr className="my-4" />
 				</div>
-
 				<section
 					id="featured"
 					className="container mx-auto px-5 lg:px-0">
