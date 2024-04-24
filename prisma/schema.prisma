@@ -100,17 +100,23 @@ model event {
 }
 
 model inquiry {
-  inquiryId Int      @id @default(autoincrement())
-  sender    Int
-  subject   String
-  status    String
-  date      DateTime
-  time      DateTime
-  isDeleted Boolean  @default(false)
-  user      user     @relation(fields: [sender], references: [id], map: "Inquiry_sender_fkey")
+  inquiryId      Int      @id @default(autoincrement())
+  sender         Int
+  subject        String
+  message        String
+  status         String   @default("open")
+  date           DateTime
+  time           DateTime
+  isDeleted      Boolean  @default(false)
+  counselorReply String?  
+  counselorId    Int?     
+  replyDate      DateTime?
+  replyTime      DateTime? 
+  user           user     @relation(fields: [sender], references: [id], map: "Inquiry_sender_fkey")
 
   @@index([sender], map: "Inquiry_sender_fkey")
 }
+
 
 model journal {
   journalId   Int      @id @default(autoincrement())
