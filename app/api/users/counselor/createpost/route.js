@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   const {
-    blogId,
     posts,
     title,
     shortDescription,
@@ -12,16 +11,16 @@ export async function POST(request) {
     publishDate,
     image,
   } = await request.json();
+  const isoPublishDate = new Date(publishDate).toISOString();
   try {
     const newPost = await db.post.create({
       data: {
-        blogId,
         posts,
         title,
         shortDescription,
         blogURL,
         author,
-        publishDate,
+        publishDate: isoPublishDate,
         image,
         datePosted: new Date(),
         isdeleted: false,

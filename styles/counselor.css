@@ -1,0 +1,22 @@
+table {
+	text-align: left;
+	border-collapse: collapse;
+}
+
+th,
+td {
+	vertical-align: top;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.modal-box th {
+	width: 30%;
+	font-family: "Merriweather", serif;
+}
+
+.modal-box td {
+	width: 70%;
+	font-family: "Merriweather", serif;
+	padding-left: 10px;
+}

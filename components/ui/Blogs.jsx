@@ -1,251 +1,113 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import ViewPost from "./modals/ViewPost";
+import "./../../css/blogimg.css";
+
 const Blogs = () => {
+	const [posts, setPosts] = useState([]);
+	const [showPost, setShowPost] = useState(false);
+	const [selectedPostId, setSelectedPostId] = useState(null); // Add selectedPostId state
+
+	useEffect(() => {
+		fetchPosts();
+	}, []);
+
+	const fetchPosts = async () => {
+		try {
+			const response = await axios.get(
+				"http://localhost:3000/api/users/viewallposts"
+			);
+			setPosts(response.data);
+		} catch (error) {
+			console.error("Error fetching posts:", error);
+		}
+	};
+
+	const handleReadMoreClick = (postId) => {
+		console.log("Clicked postId:", postId);
+		setSelectedPostId(postId); // Set selectedPostId when clicking Read More
+		setShowPost(true);
+	};
+
+	const handleClosePost = () => {
+		setShowPost(false);
+	};
+
+	const formatDate = (dateString) => {
+		const date = new Date(dateString);
+		return new Intl.DateTimeFormat("en-US", {
+			month: "short",
+			day: "numeric",
+			year: "numeric",
+		}).format(date);
+	};
+
 	return (
-        <section id="blog-card">
-					<div className="container mx-auto mt-4">
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-							<div className="blog-post py-3">
-								<div className="image-zoom">
-									<a
-										href="blog-single.html"
-										className="blog-img">
-										<img
-											src="/images/landing/blog6.png"
-											alt=""
-											className="img-fluid"
-										/>
-									</a>
-								</div>
-								<div className="pt-8">
-									<span className="blog-date uppercase font-Jaldi">
-										by <b>Author</b> on 12th Jan 2023
-									</span>
-								</div>
-								<div>
-									<h3 className="py-5">
-										<a
-											href="blog-single.html"
-											className="font-heading font-thin text-2xl hover:text-gray-500 font-Merriweather">
-											I am alone, and feel the charm of
-											existence created for the bliss
-										</a>
-									</h3>
-									<p className="pb-10 font-Jaldi">
-										I am so happy, my dear friend, so
-										absorbed in the exquisite sense of mere
-										tranquil existence, that I neglect my
-										talents. I should be incapable of
-										drawing since
-									</p>
-									<a
-										href="blog-single.html"
-										className="font-heading text-sm font-normal py-4 px-8 bg-transparent hover:bg-black text-black hover:text-white border-black border-2 hover:border-transparent rounded-full transition duration-700 ease-in-out">
-										Read More
-									</a>
-								</div>
+		<section className="mx-8">
+			<div className="container mx-auto mt-4">
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+					{posts.map((post) => (
+						<div
+							key={post.id}
+							className="blog-post py-3">
+							<div
+								className="image-zoom"
+								style={{ maxWidth: "100%", height: "auto" }}>
+								<a
+									href="blog-single.html"
+									className="blog-img">
+									<img
+										src={post.image}
+										alt=""
+										className="img-fluid"
+										style={{
+											width: "100%",
+											height: "100%",
+											objectFit: "cover",
+										}}
+									/>
+								</a>
 							</div>
-							<div className="blog-post py-3">
-								<div className="image-zoom">
-									<a
-										href="blog-single.html"
-										className="blog-img">
-										<img
-											src="/images/landing/blog5.png"
-											alt=""
-											className="img-fluid"
-										/>
-									</a>
-								</div>
-								<div className="pt-8">
-									<span className="blog-date uppercase font-Jaldi">
-										by <b>Author</b> on 12th Jan 2023
-									</span>
-								</div>
-								<div>
-									<h3 className="py-5">
-										<a
-											href="blog-single.html"
-											className="font-heading font-thin text-2xl hover:text-gray-500 font-Merriweather">
-											I am alone, and feel the charm of
-											existence created for the bliss
-										</a>
-									</h3>
-									<p className="pb-10 font-Jaldi">
-										I am so happy, my dear friend, so
-										absorbed in the exquisite sense of mere
-										tranquil existence, that I neglect my
-										talents. I should be incapable of
-										drawing since
-									</p>
-									<a
-										href="blog-single.html"
-										className="font-heading text-sm font-normal py-4 px-8 bg-transparent hover:bg-black text-black hover:text-white border-black border-2 hover:border-transparent rounded-full transition duration-700 ease-in-out">
-										Read More
-									</a>
-								</div>
+							<div className="pt-8">
+								<span className="blog-date uppercase font-Jaldi">
+									by <b>{post.author}</b> on{" "}
+									{formatDate(post.datePosted)}
+								</span>
 							</div>
-							<div className="blog-post py-3">
-								<div className="image-zoom">
+							<div>
+								<h3 className="py-5">
 									<a
 										href="blog-single.html"
-										className="blog-img">
-										<img
-											src="/images/landing/blog4.png"
-											alt=""
-											className="img-fluid"
-										/>
+										className="font-heading font-thin text-2xl hover:text-gray-500 font-Merriweather">
+										{post.title}
 									</a>
-								</div>
-								<div className="pt-8">
-									<span className="blog-date uppercase font-Jaldi">
-										by <b>Author</b> on 12th Jan 2023
-									</span>
-								</div>
-								<div>
-									<h3 className="py-5">
-										<a
-											href="blog-single.html"
-											className="font-heading font-thin text-2xl hover:text-gray-500 font-Merriweather">
-											I am alone, and feel the charm of
-											existence created for the bliss
-										</a>
-									</h3>
-									<p className="pb-10 font-Jaldi">
-										I am so happy, my dear friend, so
-										absorbed in the exquisite sense of mere
-										tranquil existence, that I neglect my
-										talents. I should be incapable of
-										drawing since
-									</p>
-									<a
-										href="blog-single.html"
-										className="font-heading text-sm font-normal py-4 px-8 bg-transparent hover:bg-black text-black hover:text-white border-black border-2 hover:border-transparent rounded-full transition duration-700 ease-in-out">
-										Read More
-									</a>
-								</div>
-							</div>
-							<div className="blog-post py-3">
-								<div className="image-zoom">
-									<a
-										href="blog-single.html"
-										className="blog-img">
-										<img
-											src="/images/landing/blog3.png"
-											alt=""
-											className="img-fluid"
-										/>
-									</a>
-								</div>
-								<div className="pt-8">
-									<span className="blog-date uppercase font-Jaldi">
-										by <b>Author</b> on 12th Jan 2023
-									</span>
-								</div>
-								<div>
-									<h3 className="py-5">
-										<a
-											href="blog-single.html"
-											className="font-heading font-thin text-2xl hover:text-gray-500 font-Merriweather">
-											I am alone, and feel the charm of
-											existence created for the bliss
-										</a>
-									</h3>
-									<p className="pb-10 font-Jaldi">
-										I am so happy, my dear friend, so
-										absorbed in the exquisite sense of mere
-										tranquil existence, that I neglect my
-										talents. I should be incapable of
-										drawing since
-									</p>
-									<a
-										href="blog-single.html"
-										className="font-heading text-sm font-normal py-4 px-8 bg-transparent hover:bg-black text-black hover:text-white border-black border-2 hover:border-transparent rounded-full transition duration-700 ease-in-out">
-										Read More
-									</a>
-								</div>
-							</div>
-							<div className="blog-post py-3">
-								<div className="image-zoom">
-									<a
-										href="blog-single.html"
-										className="blog-img">
-										<img
-											src="/images/landing/blog2.png"
-											alt=""
-											className="img-fluid"
-										/>
-									</a>
-								</div>
-								<div className="pt-8">
-									<span className="blog-date uppercase font-Jaldi">
-										by <b>Author</b> on 12th Jan 2023
-									</span>
-								</div>
-								<div>
-									<h3 className="py-5">
-										<a
-											href="blog-single.html"
-											className="font-heading font-thin text-2xl hover:text-gray-500 font-Merriweather">
-											I am alone, and feel the charm of
-											existence created for the bliss
-										</a>
-									</h3>
-									<p className="pb-10 font-Jaldi">
-										I am so happy, my dear friend, so
-										absorbed in the exquisite sense of mere
-										tranquil existence, that I neglect my
-										talents. I should be incapable of
-										drawing since
-									</p>
-									<a
-										href="blog-single.html"
-										className="font-heading text-sm font-normal py-4 px-8 bg-transparent hover:bg-black text-black hover:text-white border-black border-2 hover:border-transparent rounded-full transition duration-700 ease-in-out">
-										Read More
-									</a>
-								</div>
-							</div>
-							<div className="blog-post py-3">
-								<div className="image-zoom">
-									<a
-										href="blog-single.html"
-										className="blog-img">
-										<img
-											src="/images/landing/blog1.png"
-											alt=""
-											className="img-fluid"
-										/>
-									</a>
-								</div>
-								<div className="pt-8">
-									<span className="blog-date uppercase font-Jaldi">
-										by <b>Author</b> on 12th Jan 2023
-									</span>
-								</div>
-								<div>
-									<h3 className="py-5">
-										<a
-											href="blog-single.html"
-											className="font-heading font-thin text-2xl hover:text-gray-500 font-Merriweather">
-											I am alone, and feel the charm of
-											existence created for the bliss
-										</a>
-									</h3>
-									<p className="pb-10 font-Jaldi">
-										I am so happy, my dear friend, so
-										absorbed in the exquisite sense of mere
-										tranquil existence, that I neglect my
-										talents. I should be incapable of
-										drawing since
-									</p>
-									<a
-										href="blog-single.html"
-										className="font-heading text-sm font-normal py-4 px-8 bg-transparent hover:bg-black text-black hover:text-white border-black border-2 hover:border-transparent rounded-full transition duration-700 ease-in-out">
-										Read More
-									</a>
-								</div>
+								</h3>
+								<p className="pb-10 font-Jaldi">
+									{post.shortDescription}
+								</p>
+								<button
+									onClick={() => handleReadMoreClick(post)} // Pass postId to handleReadMoreClick
+									className="font-heading text-sm font-normal py-4 px-8 bg-transparent hover:bg-black text-black hover:text-white border-black border-2 hover:border-transparent rounded-full transition duration-700 ease-in-out">
+									Read More
+								</button>
 							</div>
 						</div>
+					))}
+				</div>
+			</div>
+			{showPost && (
+				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+					<div>
+						<ViewPost
+							postId={selectedPostId}
+							onClose={handleClosePost}
+						/>{" "}
+						{/* Pass postId to ViewPost */}
 					</div>
-				</section>
-    );
+				</div>
+			)}
+		</section>
+	);
 };
+
 export default Blogs;

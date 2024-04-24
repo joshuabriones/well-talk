@@ -155,8 +155,8 @@ export function Navbar({ userType }) {
 			style={navbarStyles}
 			className="mx-auto max-w-screen-auto p-2 lg:pl-6 w-full border-b border-gray-200">
 			<div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
-				<div className="ml-24 text-2xl text-[#6B9080] font-bold">
-					WellTalk
+				<div className="ml-24 text-2xl text-[#6B9080] font-bold flex flex-row">
+				{/*<img src="/images/logo.png" alt="WellTalk Logo" style={{ width: '70px', height: 'auto' }}/>*/} WellTalk
 				</div>
 				<div className="hidden lg:block flex items-center gap-8 lg:ml-auto">
 					<NavList
