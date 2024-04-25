@@ -31,6 +31,8 @@ const Login = () => {
     router.push(`/${session.user.role}`);
   }
 
+  if (status === "loading" || session) return <div>Loading...</div>;
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
