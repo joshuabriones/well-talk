@@ -104,7 +104,7 @@ model inquiry {
   sender         Int
   subject        String
   message        String
-  status         String   @default("open")
+  status         Boolean   @default(false)
   date           DateTime
   isDeleted      Boolean  @default(false)
   counselorReply String?  
