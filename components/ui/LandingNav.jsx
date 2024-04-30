@@ -9,9 +9,9 @@ function NavList({ userType }) {
 	switch (userType) {
 		case "landing":
 			navigationItems = [
-				{ label: "Home", route: "/student/student-home" },
-				{ label: "About Us", route: "/student//student-appointment" },
-				{ label: "Contact", route: "/student//student-journal" },
+				{ label: "Home", route: "/" },
+				{ label: "About Us", route: "/" },
+				{ label: "Contact", route: "/" },
 			];
 			break;
 		default:
@@ -60,10 +60,12 @@ export function Navbar({ userType }) {
 		top: 0,
 		left: 0,
 		width: "100%",
-		backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.9)" : "transparent",
+		backgroundColor: isScrolled
+			? "rgba(255, 255, 255, 0.9)"
+			: "transparent",
 		zIndex: 50,
 		transition: "background-color 0.3s ease",
-	  };
+	};
 
 	return (
 		<nav
