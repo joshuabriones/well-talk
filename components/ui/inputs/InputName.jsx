@@ -9,6 +9,7 @@ const InputName = ({
   setLastName,
   gender,
   setGender,
+  readOnly = false,
 }) => {
   return (
     <>
@@ -18,6 +19,7 @@ const InputName = ({
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           type="text"
+          readOnly={readOnly}
         />
       </div>
       <div className="w-5/12">
@@ -26,6 +28,7 @@ const InputName = ({
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           type="text"
+          readOnly={readOnly}
         />
       </div>
       <div className="w-2/12">
@@ -35,6 +38,7 @@ const InputName = ({
           onChange={(e) => setGender(e.target.value)}
           type="text"
           placeholder="male or female"
+          readOnly={readOnly}
         />
       </div>
     </>
