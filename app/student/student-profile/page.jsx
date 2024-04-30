@@ -6,7 +6,7 @@ import InputName from "@/components/ui/inputs/InputName";
 import TextInput from "@/components/ui/inputs/TextInput";
 import UpdateProfile from "@/components/ui/modals/counselor/updateProfile/UpdateProfile"; // Corrected import
 
-export default function Profile() {
+export default function StudentProfile() {
   const [showModal, setShowModal] = useState(false);
   const { data: session } = useSession();
 
