@@ -1,6 +1,6 @@
 "use client";
 import { Navbar } from "@/components/ui/Navbar";
-import BlogSection from "@/components/ui/BlogSection";
+import BlogSection from "@/components/ui/counselor/blogs/BlogSection";
 import CreateBlogSection from "@/components/ui/CreateBlog";
 import { useState } from "react";
 import "../../../css/createblog.css";

@@ -10,7 +10,7 @@ const ViewPost = ({ postId, onClose }) => {
 		console.log("postId:", postId);
 		const fetchPost = async () => {
 			try {
-				const response = await axios.get(`/api/users/viewpost/1`);
+				const response = await axios.get(`/api/users/viewpost/${postId}`);
 				setPost(response.data);
 			} catch (error) {
 				console.error("Error fetching post:", error);
@@ -49,8 +49,13 @@ const ViewPost = ({ postId, onClose }) => {
 						<XCircleIcon className="w-8 h-8" />
 					</button>
 					<img
-						className="w-full h-auto rounded-t-lg"
-						src="https://via.placeholder.com/1210x636"
+						className="img-fluid"
+						style={{
+							width: "100%",
+							height: "100%",
+							objectFit: "cover",
+						}}
+						src={post.image}
 						alt="Blog Post Image"
 					/>
 				</div>

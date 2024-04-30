@@ -1,24 +1,30 @@
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "./../../css/createblog.css";
-
-const profileMenuItems = [
-	{
-		label: "My Profile",
-	},
-	{
-		label: "Edit Profile",
-	},
-	{
-		label: "Sign Out",
-	},
-];
 
 function ProfileMenu() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const router = useRouter();
 
 	const closeMenu = () => setIsMenuOpen(false);
+
+	const handleSignOut = () => {
+		signOut({ callbackUrl: "/login", redirect: true });
+	};
+
+	const profileMenuItems = [
+		{
+			label: "My Profile",
+		},
+		{
+			label: "Edit Profile",
+		},
+		{
+			label: "Sign Out",
+			action: handleSignOut,
+		},
+	];
 
 	return (
 		<div className="relative">
@@ -48,10 +54,10 @@ function ProfileMenu() {
 			</button>
 			{isMenuOpen && (
 				<div className="absolute right-0 w-48 bg-white border border-gray-300 rounded-lg shadow-lg font-Jaldi ">
-					{profileMenuItems.map(({ label }, index) => (
+					{profileMenuItems.map(({ label, action }, index) => (
 						<button
 							key={index}
-							onClick={closeMenu}
+							onClick={action || closeMenu}
 							className={`block px-4 py-2 text-sm text-blue-gray-700 hover:bg-blue-gray-100 ${
 								index === profileMenuItems.length - 1
 									? "rounded-b-lg"
@@ -73,7 +79,7 @@ function NavList({ userType }) {
 	switch (userType) {
 		case "student":
 			navigationItems = [
-				{ label: "Home", route: "/student/student-home" },
+				{ label: "Home", route: "/student" },
 				{ label: "Appointment", route: "/student/student-appointment" },
 				{ label: "Journal", route: "/student/student-journal" },
 				{ label: "Inquiry", route: "/student/student-inquiry" },
@@ -144,10 +150,12 @@ export function Navbar({ userType }) {
 		top: 0,
 		left: 0,
 		width: "100%",
-		backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.9)" : "transparent",
+		backgroundColor: isScrolled
+			? "rgba(255, 255, 255, 0.9)"
+			: "transparent",
 		zIndex: 50,
 		transition: "background-color 0.3s ease",
-	  };
+	};
 
 	return (
 		<nav
@@ -156,14 +164,13 @@ export function Navbar({ userType }) {
 			className="mx-auto max-w-screen-auto p-2 lg:pl-6 w-full border-b border-gray-200">
 			<div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
 				<div className="ml-24 text-2xl text-[#6B9080] font-bold flex flex-row">
-				{/*<img src="/images/logo.png" alt="WellTalk Logo" style={{ width: '70px', height: 'auto' }}/>*/} WellTalk
+					WellTalk
 				</div>
 				<div className="hidden lg:block flex items-center gap-8 lg:ml-auto">
 					<NavList
 						userType={userType}
 						router={router}
-					/>{" "}
-					{/* pass ang router as prop */}
+					/>
 				</div>
 				<button
 					onClick={() => setIsNavOpen((prev) => !prev)}
@@ -189,8 +196,7 @@ export function Navbar({ userType }) {
 					<NavList
 						userType={userType}
 						router={router}
-					/>{" "}
-					{/* pass ang router as prop */}
+					/>
 				</div>
 			)}
 		</nav>

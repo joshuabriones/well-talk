@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
+import { Navbar } from "@/components/ui/LandingNav";
 
 //imgs
 import loginBg from "@/public/images/bgs/loginBg.png";
@@ -79,16 +80,7 @@ const Login = () => {
       }}
     >
       {/* navigation bar */}
-      <div className="h-20 w-full bg-white flex flex-row justify-between items-center px-44">
-        <div className="text-2xl text-[#6B9080] font-Merriweather font-bold">
-          WellTalk
-        </div>
-        <div className="flex flex-row gap-x-16">
-          <div className="text-lg font-Jaldi">Home</div>
-          <div className="text-lg font-Jaldi">About</div>
-          <div className="text-lg font-Jaldi">Contact</div>
-        </div>
-      </div>
+      <Navbar userType="landing"/>
 
       {/* login form*/}
       <div className="flex justify-start items-center py-5 px-48 ">
