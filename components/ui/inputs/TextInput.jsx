@@ -1,6 +1,4 @@
-import React from "react";
-
-const TextInput = ({ label, value, onChange, type }) => {
+const TextInput = ({ label, value, onChange, type, placeholder }) => {
 	return (
 		<div>
 			<div className="py-2.5 text-xl font-Jaldi ">{label}</div>
@@ -10,6 +8,7 @@ const TextInput = ({ label, value, onChange, type }) => {
 				value={value}
 				onChange={onChange}
 				required
+				placeholder={placeholder}
 			/>
 		</div>
 	);

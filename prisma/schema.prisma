@@ -21,8 +21,8 @@ model student {
   program        String
   year           Int
   birthDate      DateTime
-  contactNumber  String
-  address        String
+  contactNumber  String?
+  address        String?
   isDeleted      Boolean          @default(false)
   user           user             @relation(fields: [userId], references: [id], map: "Student_userId_fkey")
   studenthistory studenthistory[]
@@ -37,16 +37,17 @@ model teacher {
 }
 
 model user {
-  id                 Int        @id @default(autoincrement())
-  institutionalEmail String     @unique(map: "User_institutionalEmail_key")
-  idNumber           String     @unique(map: "User_idNumber_key")
+  id                 Int         @id @default(autoincrement())
+  institutionalEmail String      @unique(map: "institutionalEmail") @db.VarChar(255)
+  idNumber           String      @unique(map: "User_idNumber_key")
   firstName          String
-  middleName         String
   lastName           String
-  gender             String
+  gender             user_gender
   password           String
-  dateOfCreation     DateTime   @default(now())
-  isDeleted          Boolean    @default(false)
+  image              String?
+  dateOfCreation     DateTime    @default(now())
+  isDeleted          Boolean     @default(false)
+  role               user_role
   calendar           calendar[]
   counselor          counselor?
   inquiry            inquiry[]
@@ -99,17 +100,21 @@ model event {
 }
 
 model inquiry {
-  inquiryId Int      @id @default(autoincrement())
-  sender    Int
-  subject   String
-  status    String
-  date      DateTime
-  time      DateTime
-  isDeleted Boolean  @default(false)
-  user      user     @relation(fields: [sender], references: [id], map: "Inquiry_sender_fkey")
+  inquiryId      Int      @id @default(autoincrement())
+  sender         Int
+  subject        String
+  message        String
+  status         Boolean   @default(false)
+  date           DateTime
+  isDeleted      Boolean  @default(false)
+  counselorReply String?  
+  counselorId    Int?     
+  replyDate      DateTime?
+  user           user     @relation(fields: [sender], references: [id], map: "Inquiry_sender_fkey")
 
   @@index([sender], map: "Inquiry_sender_fkey")
 }
+
 
 model journal {
   journalId   Int      @id @default(autoincrement())
@@ -149,14 +154,23 @@ model studenthistory {
 
 model post {
   postId           Int       @id @default(autoincrement())
-  blogId           Int?
-  posts            String?   @db.Text
   title            String?   @db.VarChar(255)
   shortDescription String?   @db.Text
   blogURL          String?   @db.VarChar(255)
   author           String?   @db.VarChar(255)
   publishDate      DateTime? @db.DateTime(0)
-  image            String?   @db.VarChar(255)
+  image            String?   @db.VarChar(1024)
   datePosted       DateTime? @default(now()) @db.DateTime(0)
   isdeleted        Boolean?  @default(false)
+}
+
+enum user_gender {
+  male
+  female
+}
+
+enum user_role {
+  counselor
+  teacher
+  student
 }

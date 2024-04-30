@@ -19,7 +19,7 @@ export default function Landing() {
 		router.push("/registration");
 	};
 	return (
-		<div className="w-full h-full flex-auto">
+		<div className="w-full h-full flex justify-center">
 			<main>
 				<Navbar userType="landing" />
 				<Parallax
@@ -27,8 +27,7 @@ export default function Landing() {
 					strength={500}
 					className="jarallax jarallax-img title-img"
 					style={{
-						backgroundSize: "contain",
-						backgroundPosition: "center bottom",
+						backgroundSize: "fit",
 					}}>
 					<div className="py-48 xl:px-96 text-center">
 						<h2 className="text-5xl sm:text-6xl lg:text-8xl font-Merriweather">
@@ -127,7 +126,6 @@ export default function Landing() {
 					</div>
 					<hr className="my-4" />
 				</div>
-
 				<section
 					id="featured"
 					className="container mx-auto px-5 lg:px-0">

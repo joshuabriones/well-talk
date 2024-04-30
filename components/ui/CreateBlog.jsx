@@ -1,45 +1,74 @@
+"use client";
+import { imgDB } from "@/firebaseConfig";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useState } from "react";
+import { v4 } from "uuid";
+import AuthorInput from "./inputs/InputAuthor";
+import TitleInput from "./inputs/InputBlogTitle";
+import BlogURLInput from "./inputs/InputBlogURL";
+import PublishDateInput from "./inputs/InputPublishDate";
+import ShortDecriptionInput from "./inputs/InputShortDescription";
 
 export default function CreateBlogSection() {
+	const [selectedFile, setSelectedFile] = useState(null);
 	const [title, setTitle] = useState("");
-	const [content, setContent] = useState("");
-	const [image, setImage] = useState(null);
-	const [blogUrl, setBlogUrl] = useState("");
+	const [shortDescription, setShortDescription] = useState("");
+	const [image, setImage] = useState("null");
+	const [blogURL, setBlogUrl] = useState("");
 	const [author, setAuthor] = useState("");
 	const [publishDate, setPublishDate] = useState("");
 
-	const handleTitleChange = (e) => {
-		setTitle(e.target.value);
+	const handleFileSelection = (e) => {
+		setSelectedFile(e.target.files[0]);
 	};
-
-	const handleContentChange = (e) => {
-		setContent(e.target.value);
-	};
-
-	const handleImageChange = (e) => {
-		const file = e.target.files[0];
-		setImage(file);
-	};
-
-	const handleBlogUrlChange = (e) => {
-		setBlogUrl(e.target.value);
-	};
-
-	const handleAuthorChange = (e) => {
-		setAuthor(e.target.value);
-	};
-
-	const handlePublishDateChange = (e) => {
-		setPublishDate(e.target.value);
-	};
-
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// Handle form submission (e.g., send data to backend, create blog)
-		console.log({ title, content, image, blogUrl, author, publishDate });
-		onClose();
-	};
 
+		try {
+			if (selectedFile) {
+				const imgsRef = ref(imgDB, `Postimages/${v4()}`);
+				const snapshot = await uploadBytes(imgsRef, selectedFile);
+				const imgUrl = await getDownloadURL(snapshot.ref);
+				setImage(imgUrl);
+
+				const response = await fetch(
+					"/api/users/counselor/createpost",
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							title: title,
+							shortDescription: shortDescription,
+							blogURL: blogURL,
+							author: author,
+							publishDate: publishDate,
+							image: imgUrl, // Add the image URL to the request body
+						}),
+					}
+				);
+
+				if (response.ok) {
+					const data = await response.json();
+					console.log("Success:", data);
+					// Handle success (e.g., show success message, redirect, etc.)
+				} else {
+					console.error(
+						"Failed to create blog:",
+						response.statusText
+					);
+					// Handle error (e.g., show error message, retry logic, etc.)
+				}
+			} else {
+				console.error("No file selected");
+				// Handle case where no file is selected
+			}
+		} catch (error) {
+			console.error("Error in creating blog:", error);
+			// Handle network error or other exceptions
+		}
+	};
 	return (
 		<div>
 			<div className="flex justify-between px-44 my-6">
@@ -48,90 +77,48 @@ export default function CreateBlogSection() {
 				</h2>
 			</div>
 
-			<div className="max-w-screen-3xl h-3/5 border border-gray-300 rounded-lg px-6 py-6 mx-44 flex">
+			<div className="max-w-screen-3xl border border-gray-300 rounded-lg px-6 py-6 mx-44 flex">
 				<div className="flex-1 pr-4">
-					<form
-						onSubmit={handleSubmit}
-						className="space-y-4">
-						<div className="mb-6">
-							<label
-								htmlFor="title"
-								className="block text-xl mb-4 font-Merriweather">
-								Title
-							</label>
-							<input
-								type="text"
-								id="title"
-								name="title"
-								value={title}
-								onChange={handleTitleChange}
-								className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:border-blue-300 font-Merriweather"
-								required
-							/>
+					<form onSubmit={() => {}}>
+						<div className="flex flex-col gap-y-2.5 py-4">
+							<div className="w-full flex flex-row gap-x-6">
+								<TitleInput
+									title={title}
+									setTitle={setTitle}
+								/>
+							</div>
 						</div>
-						<div className="mb-6">
-							<label
-								htmlFor="content"
-								className="block text-xl mb-4 font-Merriweather">
-								Short Description
-							</label>
-							<textarea
-								id="content"
-								name="content"
-								value={content}
-								onChange={handleContentChange}
-								rows={2}
-								className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:border-blue-300 font-Jaldi"
-								required
-							/>
+						<div className="flex flex-col gap-y-2.5 py-4">
+							<div className="w-full flex flex-row gap-x-6">
+								<ShortDecriptionInput
+									shortDescription={shortDescription}
+									setShortDescription={setShortDescription}
+								/>
+							</div>
 						</div>
-						<div className="mb-6">
-							<label
-								htmlFor="blogUrl"
-								className="block text-xl mb-4 font-Merriweather">
-								Blog URL
-							</label>
-							<input
-								type="text"
-								id="blogUrl"
-								name="blogUrl"
-								value={blogUrl}
-								onChange={handleBlogUrlChange}
-								className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:border-blue-300 font-Merriweather"
-								required
-							/>
+						<div className="flex flex-col gap-y-2.5 py-4">
+							<div className="w-full flex flex-row gap-x-6">
+								<BlogURLInput
+									blogURL={blogURL}
+									setBlogURL={setBlogUrl}
+								/>
+							</div>
 						</div>
-						<div className="mb-6">
-							<label
-								htmlFor="author"
-								className="block text-xl mb-4 font-Merriweather">
-								Author
-							</label>
-							<input
-								type="text"
-								id="author"
-								name="author"
-								value={author}
-								onChange={handleAuthorChange}
-								className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:border-blue-300 font-Merriweather"
-								required
-							/>
+						<div className="flex flex-col gap-y-2.5 py-4">
+							<div className="w-full flex flex-row gap-x-6">
+								<AuthorInput
+									author={author}
+									setAuthor={setAuthor}
+								/>
+							</div>
 						</div>
-						<div className="mb-6">
-							<label
-								htmlFor="publishDate"
-								className="block text-xl mb-4 font-Merriweather">
-								Publish Date
-							</label>
-							<input
-								type="date"
-								id="publishDate"
-								name="publishDate"
-								value={publishDate}
-								onChange={handlePublishDateChange}
-								className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring focus:border-blue-300 font-Merriweather mb-6"
-								required
-							/>
+						<div className="flex flex-col gap-y-2.5 py-4">
+							<div className="w-full flex flex-row gap-x-6">
+								<PublishDateInput
+									publishDate={publishDate}
+									setPublishDate={setPublishDate}
+								/>
+							</div>
 						</div>
 					</form>
 				</div>
@@ -148,7 +135,7 @@ export default function CreateBlogSection() {
 								type="file"
 								id="image"
 								name="image"
-								onChange={handleImageChange}
+								onChange={handleFileSelection}
 								accept="image/*"
 								className="hidden"
 							/>
@@ -156,9 +143,18 @@ export default function CreateBlogSection() {
 								htmlFor="image"
 								className="absolute inset-0 cursor-pointer">
 								<span className="bg-gray-100 h-96 flex justify-center items-center block border border-gray-300 rounded-md">
-									<span className="text-gray-400">
-										Click or Drag Image to Upload
-									</span>
+									{image ? (
+										<image
+											src={image}
+											alt="Uploaded Image"
+											height="200px"
+											width="200px"
+										/>
+									) : (
+										<span className="text-gray-400">
+											Click or Drag Image to Upload
+										</span>
+									)}
 								</span>
 							</label>
 						</div>
@@ -166,7 +162,8 @@ export default function CreateBlogSection() {
 					<div className="flex justify-end mt-96">
 						<button
 							type="submit"
-							className="w-full bg-black border-2 border-black text-sm text-white font-semibold rounded-3xl px-4 py-3 hover:scale-95 transition-transform duration-300">
+							className="w-full bg-black border-2 border-black text-sm text-white font-semibold rounded-3xl px-4 py-3 hover:scale-95 transition-transform duration-300"
+							onClick={handleSubmit}>
 							Create Blog
 						</button>
 					</div>
