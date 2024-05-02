@@ -5,6 +5,7 @@ export async function GET(request) {
 	try {
 		const posts = await db.post.findMany({
 			where: { isDeleted: false },
+			include: { user: true },
 		});
 		return NextResponse.json(posts, { status: 200 });
 	} catch (error) {

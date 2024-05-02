@@ -6,6 +6,7 @@ export async function GET(request) {
     try {
         const journalEntry = await db.journal.findUnique({
             where: { journalId: Number(journalId) },
+            include: { user: true },
         });
         if (!journalEntry) {
             return NextResponse.json({ error: "Journal entry not found" }, { status: 404 });

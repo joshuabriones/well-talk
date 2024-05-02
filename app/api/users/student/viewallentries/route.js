@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 export async function GET(request) {
     try {
         const entries = await db.journal.findMany({
-            where: { isDeleted: false }
+            where: { isDeleted: false },
+            include: { user: true },
         });
         return NextResponse.json(entries, { status: 200 });
     } catch (error) {
