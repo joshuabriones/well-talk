@@ -38,7 +38,7 @@ export default function Appointment() {
 			status: "Responded", // Pending, Responded, Appointed
 		},
 		{
-			id: 20,
+			id: 21,
 			dateTime: "Sep 8, 2024 3:30 PM",
 			setter: {
 				name: "Charlotte Johnson",
@@ -52,7 +52,7 @@ export default function Appointment() {
 			status: "Pending", // Pending, Responded, Appointed
 		},
 		{
-			id: 20,
+			id: 22,
 			dateTime: "Sep 8, 2024 3:30 PM",
 			setter: {
 				name: "Charlotte Johnson",
@@ -80,19 +80,26 @@ export default function Appointment() {
 	const handleDelete = () => {
 		// Find
 		const selected = appointments.find(
-			(appointments) => appointments.id === selectedID
+			(appointment) => appointment.id === selectedID
 		);
 
 		// Delete
-		const newAppointment = appointments.filter(
-			(appointments) => appointments.id !== selectedID
+		const newAppointments = appointments.filter(
+			(appointment) => appointment.id !== selectedID
 		);
-		setAppointments(newAppointment);
+		setAppointments(newAppointments);
 
 		// Reset
 		setDeleteModal(false);
 		setSelectedID(null);
 	};
+
+	// handle reschedule // TO BE ADDED AFTER CALENDAR IMPLEMENTATION
+	// const handleReschedule = () => {
+	// 	// Find
+	// 	const selected = appointments.find(
+	// 		(appointment) => appointment.id === selectedID
+	// 	);
 
 	// Calculate the index range of appointment to display for the current page
 	const indexOfLastInquiry = currentPage * AppointmentPerPage;
@@ -229,7 +236,7 @@ export default function Appointment() {
 													: appointments &&
 													  appointments.status ===
 															"Responded"
-													? "badge-success" // assuming yellow for "Responded"
+													? "badge-success"
 													: appointments &&
 													  appointments.status ===
 															"Appointed"
@@ -318,6 +325,10 @@ export default function Appointment() {
 					setAppointmentModal={setAppointmentModal}
 					selectedID={selectedID}
 					appointments={appointments}
+
+					// TO BE ADDED
+					// handleRescedule={handleReschedule}
+					// handleUpdateStatus={handleUpdateStatus}
 				></ModalAppointmentInfo>
 			)}
 		</div>
