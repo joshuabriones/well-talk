@@ -51,6 +51,8 @@ model user {
   calendar           calendar[]
   counselor          counselor?
   inquiry            inquiry[]
+  journal            journal[]
+  post               post[]
   referral           referral[]
   student            student?
   teacher            teacher?
@@ -100,28 +102,19 @@ model event {
 }
 
 model inquiry {
-  inquiryId      Int      @id @default(autoincrement())
+  inquiryId      Int       @id @default(autoincrement())
   sender         Int
   subject        String
-  message        String
   status         Boolean   @default(false)
   date           DateTime
-  isDeleted      Boolean  @default(false)
-  counselorReply String?  
-  counselorId    Int?     
+  isDeleted      Boolean   @default(false)
+  counselorId    Int?
+  counselorReply String?
+  message        String
   replyDate      DateTime?
-  user           user     @relation(fields: [sender], references: [id], map: "Inquiry_sender_fkey")
+  user           user      @relation(fields: [sender], references: [id], map: "Inquiry_sender_fkey")
 
   @@index([sender], map: "Inquiry_sender_fkey")
-}
-
-
-model journal {
-  journalId   Int      @id @default(autoincrement())
-  title       String
-  entry       String
-  dateOfEntry DateTime
-  isDeleted   Boolean  @default(false)
 }
 
 model referral {
@@ -154,6 +147,7 @@ model studenthistory {
 
 model post {
   postId           Int       @id @default(autoincrement())
+  userId           Int
   title            String?   @db.VarChar(255)
   shortDescription String?   @db.Text
   blogURL          String?   @db.VarChar(255)
@@ -161,7 +155,22 @@ model post {
   publishDate      DateTime? @db.DateTime(0)
   image            String?   @db.VarChar(1024)
   datePosted       DateTime? @default(now()) @db.DateTime(0)
-  isdeleted        Boolean?  @default(false)
+  isDeleted        Boolean?  @default(false)
+  user             user      @relation(fields: [userId], references: [id], onDelete: Cascade, map: "post_ibfk_1")
+
+  @@index([userId], map: "Post_userId_idx")
+}
+
+model journal {
+  journalId   Int      @id @default(autoincrement())
+  userId      Int
+  title       String
+  entry       String
+  dateOfEntry DateTime
+  isDeleted   Boolean  @default(false)
+  user        user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "journal_ibfk_1")
+
+  @@index([userId], map: "Journal_userId_idx")
 }
 
 enum user_gender {

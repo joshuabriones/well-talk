@@ -6,7 +6,7 @@ export async function DELETE(request) {
     try {
         const post = await db.post.update({
             where: { postId: Number(postId) },
-            data: { isdeleted: true }
+            data: { isDeleted: true }
         });
         if (!post) {
             return NextResponse.json({ error: "Post not found" }, { status: 404 });
