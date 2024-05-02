@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   const {
+    userId,
     posts,
     title,
     shortDescription,
@@ -15,6 +16,7 @@ export async function POST(request) {
   try {
     const newPost = await db.post.create({
       data: {
+        userId,
         posts,
         title,
         shortDescription,
@@ -23,27 +25,12 @@ export async function POST(request) {
         publishDate: isoPublishDate,
         image,
         datePosted: new Date(),
-        isdeleted: false,
+        isDeleted: false,
       },
     });
     return NextResponse.json(newPost, { status: 201 });
   } catch (error) {
     console.error("Error creating post:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function getHandler(req, res) {
-  try {
-    const posts = await db.post.findMany({
-      where: { isdeleted: false },
-    });
-    return NextResponse.json(posts, { status: 200 });
-  } catch (error) {
-    console.error("Error fetching posts:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

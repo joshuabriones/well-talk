@@ -2,12 +2,13 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function PUT(request) {
-    const { journalId, title, entry } = await request.json();
+    const { userId, journalId, title, entry } = await request.json();
     const id = request.nextUrl.pathname.split('/').pop();
     try {
         const updatedEntry = await db.journal.update({
             where: { journalId: Number(id) },
             data: {
+                userId,
                 journalId,
                 title,
                 entry,
