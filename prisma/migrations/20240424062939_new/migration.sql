@@ -112,15 +112,17 @@ CREATE TABLE `inquiry` (
     PRIMARY KEY (`inquiryId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- CreateTable
 CREATE TABLE `journal` (
     `journalId` INTEGER NOT NULL AUTO_INCREMENT,
+    `userId` INTEGER NOT NULL, 
     `title` VARCHAR(191) NOT NULL,
     `entry` VARCHAR(191) NOT NULL,
     `dateOfEntry` DATETIME(3) NOT NULL,
     `isDeleted` BOOLEAN NOT NULL DEFAULT false,
 
-    PRIMARY KEY (`journalId`)
+    PRIMARY KEY (`journalId`),
+    INDEX `Journal_userId_idx` (`userId`),
+    FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE 
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -156,6 +158,7 @@ CREATE TABLE `studenthistory` (
 -- CreateTable
 CREATE TABLE `post` (
     `postId` INTEGER NOT NULL AUTO_INCREMENT,
+    `userId` INTEGER NOT NULL,
     `title` VARCHAR(255) NULL,
     `shortDescription` TEXT NULL,
     `blogURL` VARCHAR(255) NULL,
@@ -163,9 +166,11 @@ CREATE TABLE `post` (
     `publishDate` DATETIME(0) NULL,
     `image` VARCHAR(1024) NULL,
     `datePosted` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `isdeleted` BOOLEAN NULL DEFAULT false,
+    `isDeleted` BOOLEAN NULL DEFAULT false,
 
-    PRIMARY KEY (`postId`)
+    PRIMARY KEY (`postId`),
+    INDEX `Post_userId_idx` (`userId`),
+    FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey

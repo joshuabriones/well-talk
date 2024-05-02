@@ -2,14 +2,14 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
-    const { journalId, title, entry } = await request.json();
+    const { userId, title, entry } = await request.json();
     try {
         // Get the current date and time in the Philippines
         const dateOfEntry = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
 
         const newEntry = await db.journal.create({
             data: {
-                journalId,
+                userId,
                 title,
                 entry,
                 dateOfEntry: new Date(dateOfEntry),
