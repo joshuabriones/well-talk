@@ -4,8 +4,14 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const inquiries = await db.inquiry.findMany({
+      where: {
+        isDeleted: false,
+      },
       orderBy: {
         date: "desc",
+      },
+      include: {
+        user: true, // Include the associated user details
       },
     });
 

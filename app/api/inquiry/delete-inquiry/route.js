@@ -1,23 +1,22 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export async function GET(request) {
-  const { searchParams } = new URL(request.url);
-  const inquiryId = searchParams.get("inquiryId");
+export async function PUT(request) {
+  const { inquiryId } = await request.json();
 
   try {
-    const inquiry = await db.inquiry.findUnique({
+    const deleteInquiry = await db.inquiry.update({
       where: {
         inquiryId: parseInt(inquiryId),
       },
-      include: {
-        user: true,
+      data: {
+        isDeleted: true,
       },
     });
 
     return NextResponse.json({
-      message: "Inquiry fetched",
-      inquiry,
+      message: "Inquiry deleted",
+      inquiry: deleteInquiry,
       status: 200,
     });
   } catch (error) {

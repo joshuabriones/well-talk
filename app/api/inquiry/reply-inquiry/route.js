@@ -14,7 +14,7 @@ export async function PUT(request) {
         counselorId,
         counselorReply,
         replyDate,
-        status: "replied",
+        status: "Responded",
       },
     });
 
