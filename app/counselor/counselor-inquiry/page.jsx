@@ -68,7 +68,7 @@ export default function Home() {
 	// Calculate the index range of inquiries to display for the current page
 	const indexOfLastInquiry = currentPage * inquiriesPerPage;
 	const indexOfFirstInquiry = indexOfLastInquiry - inquiriesPerPage;
-	const currentInquiries = inquiries.slice(
+	const currentInquiries = inquiries?.slice(
 		indexOfFirstInquiry,
 		indexOfLastInquiry
 	);
@@ -94,7 +94,8 @@ export default function Home() {
 					className="absolute inset-0 bg-cover bg-center opacity-40"
 					style={{
 						backgroundImage: `url(${hdrInquiry.src})`,
-					}}></div>
+					}}
+				></div>
 
 				{/* Content */}
 				<div className="relative z-10 flex items-center justify-center h-full">
@@ -130,11 +131,12 @@ export default function Home() {
 							</tr>
 						</thead>
 						<tbody>
-							{currentInquiries.map((inquiry) => (
+							{currentInquiries?.map((inquiry) => (
 								<tr
 									key={inquiry.id}
 									onClick={() => handleRowClick(inquiry.id)}
-									className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out">
+									className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
+								>
 									<td className="text-center">
 										{inquiry.id}
 									</td>
@@ -184,7 +186,8 @@ export default function Home() {
 												inquiry.status === "Pending"
 													? "badge-warning"
 													: "badge-success"
-											}`}>
+											}`}
+										>
 											{inquiry.status}
 										</div>
 									</td>
@@ -198,7 +201,8 @@ export default function Home() {
 													// Stop event propagation to prevent row hover effect
 													e.stopPropagation();
 													showDeleteModal(inquiry.id);
-												}}>
+												}}
+											>
 												Delete
 											</button>
 											<button className="btn btn-xs text-green-700">
@@ -216,29 +220,38 @@ export default function Home() {
 						<button
 							onClick={() => setCurrentPage(currentPage - 1)}
 							disabled={currentPage === 1}
-							className="join-item btn w-28">
+							className="join-item btn w-28"
+						>
 							Previous
 						</button>
-						{[
-							...Array(
-								Math.ceil(inquiries.length / inquiriesPerPage)
-							),
-						].map((_, index) => (
-							<button
-								key={index}
-								className={`join-item btn ${
-									currentPage === index + 1
-										? "btn-active"
-										: ""
-								}`}
-								onClick={() => setCurrentPage(index + 1)}>
-								{index + 1}
-							</button>
-						))}
+
+						{inquiries &&
+							[
+								...Array(
+									Math.ceil(
+										(inquiries.length || 1) /
+											inquiriesPerPage
+									)
+								),
+							].map((_, index) => (
+								<button
+									key={index}
+									className={`join-item btn ${
+										currentPage === index + 1
+											? "btn-active"
+											: ""
+									}`}
+									onClick={() => setCurrentPage(index + 1)}
+								>
+									{index + 1}
+								</button>
+							))}
+
 						<button
 							onClick={() => setCurrentPage(currentPage + 1)}
-							disabled={inquiriesPerPage > inquiries.length}
-							className="join-item btn w-28">
+							disabled={inquiriesPerPage > inquiries?.length}
+							className="join-item btn w-28"
+						>
 							Next
 						</button>
 					</div>
@@ -249,14 +262,16 @@ export default function Home() {
 			{deleteModal && (
 				<ModalDelete
 					setDeleteModal={setDeleteModal}
-					handleDelete={handleDelete}></ModalDelete>
+					handleDelete={handleDelete}
+				></ModalDelete>
 			)}
 
 			{inquiryModal && (
 				<ModalInquiryInfo
 					setInquiryModal={setInquiryModal}
 					selectedID={selectedID}
-					inquiries={inquiries}></ModalInquiryInfo>
+					inquiries={inquiries}
+				></ModalInquiryInfo>
 			)}
 		</div>
 	);

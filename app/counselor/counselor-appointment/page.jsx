@@ -8,7 +8,6 @@ import "@/styles/counselor.css";
 
 // modals
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
-import ModalInquiryInfo from "@/components/ui/modals/counselor/inquiries/ModalInquiryInfo";
 import ModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
 
 export default function Appointment() {
@@ -26,6 +25,8 @@ export default function Appointment() {
 		{
 			id: 20,
 			dateTime: "Sep 8, 2024 3:30 PM",
+			date: "Sep 8, 2024",
+			time: "9:00 AM to 10:00 AM",
 			setter: {
 				name: "Charlotte Johnson",
 				email: "charlotte.johnson@example.com",
@@ -104,7 +105,7 @@ export default function Appointment() {
 	// Calculate the index range of appointment to display for the current page
 	const indexOfLastInquiry = currentPage * AppointmentPerPage;
 	const indexOfFirstInquiry = indexOfLastInquiry - AppointmentPerPage;
-	const currentA = appointments.slice(
+	const currentAppointments = appointments?.slice(
 		indexOfFirstInquiry,
 		indexOfLastInquiry
 	);
@@ -137,7 +138,7 @@ export default function Appointment() {
 				<div className="relative z-10 flex items-center justify-center h-full">
 					<div className="flex flex-col text-left px-44 py-10 gap-y-4">
 						<h1 className="font-Merriweather text-8xl">
-							Appointment
+							Appointments
 						</h1>
 						<p className="w-1/2 font-Jaldi text-xl">
 							Manage sessions effortlessly and provide tailored
@@ -168,7 +169,7 @@ export default function Appointment() {
 							</tr>
 						</thead>
 						<tbody>
-							{currentA.map((appointments) => (
+							{currentAppointments?.map((appointments) => (
 								<tr
 									key={appointments.id}
 									onClick={() =>
@@ -282,25 +283,28 @@ export default function Appointment() {
 						>
 							Previous
 						</button>
-						{[
-							...Array(
-								Math.ceil(
-									appointments.length / AppointmentPerPage
-								)
-							),
-						].map((_, index) => (
-							<button
-								key={index}
-								className={`join-item btn ${
-									currentPage === index + 1
-										? "btn-active"
-										: ""
-								}`}
-								onClick={() => setCurrentPage(index + 1)}
-							>
-								{index + 1}
-							</button>
-						))}
+
+						{appointments &&
+							[
+								...Array(
+									Math.ceil(
+										appointments.length / AppointmentPerPage
+									)
+								),
+							].map((_, index) => (
+								<button
+									key={index}
+									className={`join-item btn ${
+										currentPage === index + 1
+											? "btn-active"
+											: ""
+									}`}
+									onClick={() => setCurrentPage(index + 1)}
+								>
+									{index + 1}
+								</button>
+							))}
+
 						<button
 							onClick={() => setCurrentPage(currentPage + 1)}
 							disabled={AppointmentPerPage > appointments.length}

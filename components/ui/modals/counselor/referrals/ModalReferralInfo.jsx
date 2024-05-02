@@ -6,38 +6,39 @@ import FullButton from "@/components/ui/buttons/FullButton";
 
 import "@/styles/counselor.css";
 
-const ModalAppointmentInfo = ({
-	setAppointmentModal,
-	selectedID,
-	appointments,
-}) => {
+const ModalReferralInfo = ({ setReferralModal, selectedID, referrals }) => {
 	const [isChecked, setIsChecked] = useState(true);
-	const [appointment, setAppointment] = useState(null);
+	const [referral, setReferral] = useState(null);
 
 	// for dialog
 	const toggleChecked = () => {
 		setIsChecked(!isChecked);
 	};
 
-	// find appointments
+	// find referrals
 	useEffect(() => {
-		const handleFindAppointment = () => {
-			const foundAppointment = appointments.find(
-				(appointment) => appointment.id === selectedID
+		const handleFindReferral = () => {
+			const foundRefferal = referrals.find(
+				(referral) => referral.id === selectedID
 			);
-			setAppointment(foundAppointment);
+			setReferral(foundRefferal);
 		};
 
-		handleFindAppointment();
-	}, [selectedID, appointments]);
+		handleFindReferral();
+	}, [selectedID, referrals]);
 
 	// handle response
 	const handleResponse = () => {
 		console.log(response);
 
-		// logic to update appointment response, mollaeyo
+		// logic to update referral response
 
-		// set appointment.status to "Responded", "Pending", "Appointed"
+		// set referral.status to "Responded"
+	};
+
+	// handle select appointment
+	const handleSelectAppointment = () => {
+		// TO BE ADDED AFTER CALENDAR IMPLEMENTATION
 	};
 
 	return (
@@ -54,7 +55,7 @@ const ModalAppointmentInfo = ({
 					<img
 						src={iconDelete.src} // change to setter avatar
 						alt="setter avatar"
-						className="w-24 h-24 flex justify-center mx-auto"
+						className="w-24 h-24 flex justify-center mx-auto mb-3"
 					/>
 
 					<table className="my-4">
@@ -62,66 +63,74 @@ const ModalAppointmentInfo = ({
 							<tr>
 								<th>ID Number:</th>
 								<td>
-									{appointment
-										? appointment.setter.idNumber
-										: ""}
+									{referral ? referral.referred.idNumber : ""}
 								</td>
 							</tr>
 							<tr>
 								<th>Name:</th>
 								<td>
-									{appointment ? appointment.setter.name : ""}
+									{referral ? referral.referred.name : ""}
 								</td>
 							</tr>
 							<tr>
-								<th>Purpose:</th>
+								<th>Referred by:</th>
 								<td>
-									{appointment ? appointment.subject : ""}
+									{referral ? referral.referree.name : ""}
 								</td>
+							</tr>
+							<tr>
+								<th>Reason:</th>
+								<td>{referral ? referral.reason : ""}</td>
 							</tr>
 							<tr>
 								<th>Addtional Notes:</th>
 								<td>
-									{appointment ? appointment.details : ""}
+									<div className="pb-5">
+										{referral
+											? referral.additional_notes
+											: ""}
+									</div>
 								</td>
 							</tr>
+
 							<tr>
 								<th>Date:</th>
-								<td>{appointment ? appointment.date : ""}</td>
+								<td>{referral ? referral.date : ""}</td>
 							</tr>
 							<tr>
 								<th>Time:</th>
-								<td>{appointment ? appointment.time : ""}</td>
+								<div className="pb-7">
+									<td>{referral ? referral.time : ""}</td>
+								</div>
 							</tr>
 							<tr>
 								<th>Status:</th>
 								<td
 									className={`h-fit badge badge-md ${
-										appointment?.status === "Pending"
+										referral?.status === "Pending"
 											? "badge-warning"
-											: "badge-success"
+											: referral?.status === "Appointed"
+											? "badge-info"
+											: ""
 									}`}
 									style={{ width: "30%" }}
 								>
-									{appointment ? appointment.status : ""}
+									{referral ? referral.status : ""}
 								</td>
 							</tr>
 						</tbody>
 					</table>
 
-					<div className="flex flex-row gap-x-4 mt-6 px-14">
-						<HollowButton onClick={() => setConfirmResponse(true)}>
-							Reschedule
-						</HollowButton>
-						<FullButton onClick={() => setConfirmResponse(true)}>
-							Update Status
+					<div className="flex flex-row gap-x-4 mt-8 px-14">
+						<FullButton onClick={handleSelectAppointment()}>
+							Select Appointment
 						</FullButton>
 					</div>
 				</div>
 				<label
 					className="modal-backdrop"
 					htmlFor="my_modal_7"
-					onClick={() => setAppointmentModal(false)}
+					onClick={() => setReferralModal(false)}
 				>
 					Close
 				</label>
@@ -130,4 +139,4 @@ const ModalAppointmentInfo = ({
 	);
 };
 
-export default ModalAppointmentInfo;
+export default ModalReferralInfo;
