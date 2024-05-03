@@ -105,7 +105,7 @@ model inquiry {
   inquiryId      Int       @id @default(autoincrement())
   sender         Int
   subject        String
-  status         Boolean   @default(false)
+  status         String   @default("open")
   date           DateTime
   isDeleted      Boolean   @default(false)
   counselorId    Int?

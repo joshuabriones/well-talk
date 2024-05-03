@@ -8,7 +8,7 @@ export async function GET() {
         isDeleted: false,
       },
       orderBy: {
-        date: "desc",
+        inquiryId: "desc",
       },
       include: {
         user: true, // Include the associated user details
