@@ -16,7 +16,7 @@ export async function POST(request) {
   try {
     const newPost = await db.post.create({
       data: {
-        userId,
+        userId: parseInt(userId),
         posts,
         title,
         shortDescription,
