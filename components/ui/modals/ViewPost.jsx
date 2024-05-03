@@ -41,7 +41,7 @@ const ViewPost = ({ postId, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
-      <div className="bg-white w-full md:max-w-3xl lg:max-w-4xl xl:max-w-5xl rounded-lg overflow-hidden">
+      <div className="bg-white w-full max-w-4xl rounded-lg overflow-hidden">
         <div className="relative">
           <button
             onClick={onClose}
@@ -49,16 +49,14 @@ const ViewPost = ({ postId, onClose }) => {
           >
             <XCircleIcon className="w-8 h-8" />
           </button>
-          <img
-            className="img-fluid"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-            src={post.image}
-            alt="Blog Post Image"
-          />
+          <div style={{ maxHeight: "60vh", overflowY: "auto" }}>
+            {/* Ensure the image does not exceed a certain height */}
+            <img
+              className="w-full h-auto"
+              src={post.image}
+              alt="Blog Post Image"
+            />
+          </div>
         </div>
         <div className="px-6 py-8 md:px-8">
           <div className="mb-4">
@@ -83,7 +81,6 @@ const ViewPost = ({ postId, onClose }) => {
               </span>
             </div>
           </div>
-          <div className="text-right"></div>
         </div>
       </div>
     </div>

@@ -47,9 +47,16 @@ const CounselorBlogs = () => {
     console.log("dscxfdcx", showEditDialog);
   };
 
-  const handleDeletePost = (postId) => {
-    // Handle delete logic here
-    console.log("Deleting post with ID:", postId);
+  const handleDeletePost = async (postId) => {
+    try {
+      const response = await axios.delete(
+        `/api/users/counselor/deletepost/${postId}`
+      );
+      console.log("Post deleted successfully");
+      fetchPosts(); // Refresh posts after deletion
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -114,10 +121,9 @@ const CounselorBlogs = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDeletePost(post.id)}
-                    className="font-heading text-sm font-normal py-4 px-8 bg-transparent hover:bg-black text-black hover:text-white border-black border-2 hover:border-transparent rounded-full transition duration-700 ease-in-out"
+                    onClick={() => handleDeletePost(post.postId)}
+                    className="font-heading text-sm font-normal py-4 px-8 bg-transparent hover:bg-black text-black hover:text-white border-black border-2 hover:border-transparent rounded-full transition duration-700 ease-in-out mr-2"
                   >
-                    <TrashIcon className="h-5 w-5 inline-block" />
                     Delete
                   </button>
                 </div>

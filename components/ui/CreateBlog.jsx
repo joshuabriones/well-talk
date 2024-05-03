@@ -53,6 +53,14 @@ export default function CreateBlogSection() {
         if (response.ok) {
           const data = await response.json();
           console.log("Success:", data);
+
+          // Clear form fields after successful creation
+          setTitle("");
+          setShortDescription("");
+          setBlogUrl("");
+          setAuthor("");
+          setPublishDate("");
+          setSelectedFile(null); // Reset selected file state
           // Handle success (e.g., show success message, redirect, etc.)
         } else {
           console.error("Failed to create blog:", response.statusText);

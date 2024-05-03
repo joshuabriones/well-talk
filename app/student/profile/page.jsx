@@ -21,7 +21,7 @@ export default function StudentProfile() {
   return (
     <div>
       <main>
-        <Navbar userType="counselor" />
+        <Navbar userType="student" />
         <div className="mx-60 mt-24">
           {/* top part */}
           <div className="flex mt-4 pt-24">

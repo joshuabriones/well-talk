@@ -2,6 +2,7 @@
 
 import hdrInquiry from "@/public/images/headers/hdrInquiry.png";
 import { useEffect, useState } from "react";
+import { Navbar } from "@/components/ui/Navbar";
 
 // css
 import "@/styles/counselor.css";
@@ -89,16 +90,7 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full">
       {/* navigation bar */}
-      <div className="h-20 w-full bg-white flex flex-row justify-between items-center px-44">
-        <div className="text-2xl text-[#6B9080] font-Merriweather font-bold">
-          WellTalk
-        </div>
-        <div className="flex flex-row gap-x-16">
-          <div className="text-lg font-Jaldi">Home</div>
-          <div className="text-lg font-Jaldi">About</div>
-          <div className="text-lg font-Jaldi">Contact</div>
-        </div>
-      </div>
+      <Navbar userType="counselor" />
 
       {/* header */}
       <div className="w-full h-96 relative">
