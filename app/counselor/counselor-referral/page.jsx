@@ -9,6 +9,7 @@ import "@/styles/counselor.css";
 // modals
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import ModalReferralInfo from "@/components/ui/modals/counselor/referrals/ModalReferralInfo";
+import { Navbar } from "@/components/ui/LandingNav";
 
 export default function Referral() {
 	const ReferralsPerPage = 10;
@@ -130,19 +131,10 @@ export default function Referral() {
 	return (
 		<div className="min-h-screen w-full">
 			{/* navigation bar */}
-			<div className="h-20 w-full bg-white flex flex-row justify-between items-center px-44">
-				<div className="text-2xl text-[#6B9080] font-Merriweather font-bold">
-					WellTalk
-				</div>
-				<div className="flex flex-row gap-x-16">
-					<div className="text-lg font-Jaldi">Appointment</div>
-					<div className="text-lg font-Jaldi">About</div>
-					<div className="text-lg font-Jaldi">Contact</div>
-				</div>
-			</div>
+			<Navbar userType="counselor" />
 
 			{/* header */}
-			<div className="w-full h-96 relative">
+			<div className="w-full h-[55vh] relative">
 				{/* Background image */}
 				<div
 					className="absolute inset-0 bg-cover bg-center opacity-40"
