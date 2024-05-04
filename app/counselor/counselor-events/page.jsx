@@ -1,95 +1,115 @@
 "use client";
 
 import hdrEvents from "@/public/images/headers/hdrEvents.png";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Navbar } from "@/components/ui/Navbar";
 
 // css
 import "@/styles/counselor.css";
 
 // modals
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
-import ModalReferralInfo from "@/components/ui/modals/counselor/referrals/ModalReferralInfo";
+import ModalInquiryInfo from "@/components/ui/modals/counselor/inquiries/ModalInquiryInfo";
 
-export default function Events() {
-	const ReferralsPerPage = 10;
+export default function Home() {
+	const eventsPerPage = 10;
 
 	const [selectedID, setSelectedID] = useState(null);
 	const [currentPage, setCurrentPage] = useState(1);
 
 	//modals
 	const [deleteModal, setDeleteModal] = useState(false);
-	const [referralModal, setReferralModal] = useState(null);
+	const [eventModal, setEventModal] = useState(null);
 
-	// appointment sample
-	const [referrals, setReferrals] = useState([
+	// events sample
+	const [events, setEvents] = useState([
 		{
-			id: 1,
-			date: "Sep 8, 2024",
-			time: "10:00 AM",
-			referred: {
-				name: "France Gieb S. Mier",
-				email: "francegieb.mier@example.com",
-				avatar: "/avatar-charlotte.png",
-				idNumber: "21-2345-678",
+			eventId: 1,
+			date: "2024-05-04",
+			user: {
+				firstName: "John",
+				lastName: "Doe",
+				institutionalEmail: "john.doe@example.com",
+				image: "/path/to/image.jpg",
 			},
-			referree: {
-				name: "Charlotte Dela Cruz",
-				email: "",
-				avatar: "/avatar-charlotte.png",
-				idNumber: "2345",
-			},
-			reason: "Request for extended warranty",
-			additional_notes:
-				"Nam fringilla sapien sed libero finibus ultrices. Proin sed libero vestibulum, maximus nulla nec, fermentum odio.",
-			status: "Pending", // Pending, Appointed
+			subject: "Event 1 Subject",
+			location: "Location 1",
+			status: "Upcoming",
 		},
 		{
-			id: 2,
-			date: "Sep 10, 2024",
-			time: "11:30 AM",
-			referred: {
-				name: "John Doe",
-				email: "john.doe@example.com",
-				avatar: "/avatar-john.png",
-				idNumber: "32-4567-890",
+			eventId: 2,
+			date: "2024-05-05",
+			user: {
+				firstName: "Jane",
+				lastName: "Smith",
+				institutionalEmail: "jane.smith@example.com",
+				image: "/path/to/image.jpg",
 			},
-			referree: {
-				name: "Jane Smith",
-				email: "",
-				avatar: "/avatar-jane.png",
-				idNumber: "4567",
-			},
-			reason: "Product inquiry",
-			additional_notes:
-				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor nulla non nisl maximus, nec aliquam turpis laoreet.",
-			status: "Pending",
+			subject: "Event 2 Subject",
+			location: "Location 2",
+			status: "Completed",
 		},
 		{
-			id: 3,
-			date: "Sep 12, 2024",
-			time: "3:00 PM",
-			referred: {
-				name: "Alice Johnson",
-				email: "alice.johnson@example.com",
-				avatar: "/avatar-alice.png",
-				idNumber: "43-6789-012",
+			eventId: 3,
+			date: "2024-05-06",
+			user: {
+				firstName: "Alice",
+				lastName: "Johnson",
+				institutionalEmail: "alice.johnson@example.com",
+				image: "/path/to/image.jpg",
 			},
-			referree: {
-				name: "Bob Brown",
-				email: "",
-				avatar: "/avatar-bob.png",
-				idNumber: "6789",
+			subject: "Event 3 Subject",
+			location: "Location 3",
+			status: "Upcoming",
+		},
+		{
+			eventId: 4,
+			date: "2024-05-07",
+			user: {
+				firstName: "Bob",
+				lastName: "Brown",
+				institutionalEmail: "bob.brown@example.com",
+				image: "/path/to/image.jpg",
 			},
-			reason: "Technical support",
-			additional_notes:
-				"Vivamus nec magna rutrum, molestie lacus nec, eleifend libero. Nulla facilisi. Sed sed risus eu arcu tincidunt bibendum.",
-			status: "Appointed",
+			subject: "Event 4 Subject",
+			location: "Location 4",
+			status: "Cancelled",
+		},
+		{
+			eventId: 5,
+			date: "2024-05-08",
+			user: {
+				firstName: "Eve",
+				lastName: "Taylor",
+				institutionalEmail: "eve.taylor@example.com",
+				image: "/path/to/image.jpg",
+			},
+			subject: "Event 5 Subject",
+			location: "Location 5",
+			status: "Upcoming",
 		},
 	]);
 
+	// useEffect(() => {
+	// 	const fetchevents = async () => {
+	// 		try {
+	// 			const response = await fetch("/api/inquiry/view-events");
+	// 			if (!response.ok) {
+	// 				throw new Error("Failed to fetch events");
+	// 			}
+	// 			const data = await response.json();
+	// 			setEvents(data.events);
+	// 		} catch (error) {
+	// 			console.error("Error fetching events:", error);
+	// 		}
+	// 	};
+
+	// 	fetchevents();
+	// }, [events, currentPage]);
+
 	const handleRowClick = (id) => {
 		setSelectedID(id);
-		setReferralModal(true);
+		setEventModal(true);
 	};
 
 	const showDeleteModal = (id) => {
@@ -97,52 +117,46 @@ export default function Events() {
 		setDeleteModal(true);
 	};
 
-	const handleDelete = () => {
-		// Find
-		const selected = referrals.find(
-			(referral) => referral.id === selectedID
-		);
-
-		// Delete
-		const newReffera = referrals.filter(
-			//
-			(referral) => referral.id !== selectedID
-		);
-		setReferrals(newReffera);
-
-		// Reset
-		setDeleteModal(false);
-		setSelectedID(null);
+	const handleDelete = async () => {
+		// // Find
+		// const selected = events.find((inquiry) => inquiry.id === selectedID);
+		// // Delete
+		// const newevents = events.filter(
+		//   (inquiry) => inquiry.id !== selectedID
+		// );
+		// setEvents(newevents);
+		// try {
+		// 	const response = await fetch(`/api/inquiry/delete-inquiry`, {
+		// 		method: "PUT",
+		// 		headers: {
+		// 			"Content-Type": "application/json",
+		// 		},
+		// 		body: JSON.stringify({ inquiryId: selectedID }),
+		// 	});
+		// 	console.log(response);
+		// } catch {
+		// 	throw new Error("Failed to delete inquiry");
+		// }
+		// // Reset
+		// setDeleteModal(false);
+		// setSelectedID(null);
 	};
 
-	// handle reschedule // TO BE ADDED AFTER CALENDAR IMPLEMENTATION
-	// const handleReschedule = () => {
-	// 	// Find
-	// 	const selected = referrals.find(
-	// 		(refferal) => refferal.id === selectedID
-	// 	);
-
-	// Calculate the index range of refferal to display for the current page
-	const indexOfLastInquiry = currentPage * ReferralsPerPage;
-	const indexOfFirstInquiry = indexOfLastInquiry - ReferralsPerPage;
-	const currentA = referrals.slice(indexOfFirstInquiry, indexOfLastInquiry);
+	// Calculate the index range of events to display for the current page
+	const indexOfLastInquiry = currentPage * eventsPerPage;
+	const indexOfFirstInquiry = indexOfLastInquiry - eventsPerPage;
+	const currentevents = events?.slice(
+		indexOfFirstInquiry,
+		indexOfLastInquiry
+	);
 
 	return (
 		<div className="min-h-screen w-full">
 			{/* navigation bar */}
-			<div className="h-20 w-full bg-white flex flex-row justify-between items-center px-44">
-				<div className="text-2xl text-[#6B9080] font-Merriweather font-bold">
-					WellTalk
-				</div>
-				<div className="flex flex-row gap-x-16">
-					<div className="text-lg font-Jaldi">Appointment</div>
-					<div className="text-lg font-Jaldi">About</div>
-					<div className="text-lg font-Jaldi">Contact</div>
-				</div>
-			</div>
+			<Navbar userType="counselor" />
 
 			{/* header */}
-			<div className="w-full h-96 relative">
+			<div className="w-full h-[55vh] relative">
 				{/* Background image */}
 				<div
 					className="absolute inset-0 bg-cover bg-center opacity-40"
@@ -156,7 +170,7 @@ export default function Events() {
 					<div className="flex flex-col text-left px-44 py-10 gap-y-4">
 						<h1 className="font-Merriweather text-8xl">Events</h1>
 						<p className="w-1/2 font-Jaldi text-xl">
-							Facilitate student inquiries and foster meaningful
+							Facilitate student events and foster meaningful
 							connections with counselors. Students can ask
 							questions, seek guidance, and receive personalized
 							support to navigate their academic and personal
@@ -177,81 +191,83 @@ export default function Events() {
 								<th>Date and Time</th>
 								<th>Event Setter</th>
 								<th className="">Event Name</th>
-								<th className="">Location</th>
+								<th className=""></th>
 								<th className="text-center">Status</th>
 								{/* Delete and Edit*/}
 								<th className="no-hover-highlight"></th>
 							</tr>
 						</thead>
 						<tbody>
-							{currentA.map((referrals) => (
+							{currentevents?.map((event) => (
 								<tr
-									key={referrals.id}
-									onClick={() => handleRowClick(referrals.id)}
+									key={event.eventId}
+									onClick={() =>
+										handleRowClick(event.eventId)
+									}
 									className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
 								>
 									<td className="text-center">
-										{referrals.id}
+										{event.eventId}
 									</td>
 									<td>
 										<div className="flex flex-row gap-x-3">
 											<div className="text-sm">
-												{referrals.date}
+												{event.date}
 											</div>
 										</div>
 									</td>
-
 									<td>
-										<div className="flex items-	center gap-3">
+										<div className="flex items-center gap-3">
 											<div className="avatar">
 												<div className="mask mask-squircle w-12 h-12">
 													<img
-														src={
-															referrals.referred
-																.avatar
-														}
+														src={event.user.image}
 														alt="Avatar Tailwind CSS Component"
 													/>
 												</div>
 											</div>
 											<div>
 												<div className="font-bold">
-													{referrals.referred.name}
+													{event.user.firstName}{" "}
+													{event.user.lastName}
 												</div>
 												<div className="text-sm opacity-50">
-													{referrals.referred.email}
+													{
+														event.user
+															.institutionalEmail
+													}
 												</div>
 											</div>
 										</div>
 									</td>
 									<td>
 										<p>
-											{referrals.reason.length > 50
-												? `${referrals.reason.substring(
+											{event.subject.length > 50
+												? `${event.subject.substring(
 														0,
 														40
 												  )}...`
-												: referrals.reason}
+												: event.subject}
 										</p>
+									</td>
+									<td>
+										<p>{event.location}</p>
 									</td>
 									<td className="text-center">
 										<div
 											className={`w-24 h-5 badge badge-xs ${
-												referrals &&
-												referrals.status === "Pending"
+												event.status === "Upcoming"
 													? "badge-warning"
-													: referrals &&
-													  referrals.status ===
-															"Responded"
+													: event.status ===
+													  "Cancelled"
+													? "badge-error"
+													: event.status ===
+													  "Completed"
 													? "badge-success"
-													: referrals &&
-													  referrals.status ===
-															"Appointed"
-													? "badge-info"
 													: ""
 											}`}
 										>
-											{referrals.status}
+											{event.status}
 										</div>
 									</td>
 
@@ -264,7 +280,7 @@ export default function Events() {
 													// Stop event propagation to prevent row hover effect
 													e.stopPropagation();
 													showDeleteModal(
-														referrals.id
+														event.eventId
 													);
 												}}
 											>
@@ -289,26 +305,31 @@ export default function Events() {
 						>
 							Previous
 						</button>
-						{[
-							...Array(
-								Math.ceil(referrals.length / ReferralsPerPage)
-							),
-						].map((_, index) => (
-							<button
-								key={index}
-								className={`join-item btn ${
-									currentPage === index + 1
-										? "btn-active"
-										: ""
-								}`}
-								onClick={() => setCurrentPage(index + 1)}
-							>
-								{index + 1}
-							</button>
-						))}
+
+						{events &&
+							[
+								...Array(
+									Math.ceil(
+										(events?.length || 1) / eventsPerPage
+									)
+								),
+							].map((_, index) => (
+								<button
+									key={index}
+									className={`join-item btn ${
+										currentPage === index + 1
+											? "btn-active"
+											: ""
+									}`}
+									onClick={() => setCurrentPage(index + 1)}
+								>
+									{index + 1}
+								</button>
+							))}
+
 						<button
 							onClick={() => setCurrentPage(currentPage + 1)}
-							disabled={ReferralsPerPage > referrals.length}
+							disabled={eventsPerPage > events?.length}
 							className="join-item btn w-28"
 						>
 							Next
@@ -325,16 +346,12 @@ export default function Events() {
 				></ModalDelete>
 			)}
 
-			{referralModal && (
-				<ModalReferralInfo
-					setReferralModal={setReferralModal}
+			{eventModal && (
+				<ModalInquiryInfo
+					setEventModal={setEventModal}
 					selectedID={selectedID}
-					referrals={referrals}
-
-					// TO BE ADDED
-					// handleRescedule={handleReschedule}
-					// handleUpdateStatus={handleUpdateStatus}
-				></ModalReferralInfo>
+					events={events}
+				></ModalInquiryInfo>
 			)}
 		</div>
 	);

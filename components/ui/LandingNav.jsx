@@ -26,7 +26,8 @@ function NavList({ userType }) {
 					onClick={() => router.push(item.route)}
 					className={`text-base font-medium text-blue-gray-500 hover:text-blue-gray-700 cursor-pointer${
 						router.pathname === item.route ? "text-blue-900" : ""
-					} nav-list-button`}>
+					} nav-list-button`}
+				>
 					{item.label}
 				</a>
 			))}
@@ -71,7 +72,8 @@ export function Navbar({ userType }) {
 		<nav
 			id="navbar"
 			style={navbarStyles}
-			className="mx-auto max-w-screen-auto p-6 lg:pl-6 bg-blue-gray-900 w-full">
+			className="mx-auto max-w-screen-auto p-6 lg:pl-6 bg-blue-gray-900 w-full"
+		>
 			<div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
 				<div className="ml-24 text-2xl text-[#6B9080] font-bold">
 					WellTalk
@@ -81,13 +83,15 @@ export function Navbar({ userType }) {
 				</div>
 				<button
 					onClick={() => setIsNavOpen((prev) => !prev)}
-					className="ml-auto mr-2 lg:hidden">
+					className="ml-auto mr-2 lg:hidden"
+				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						className="h-6 w-6 text-blue-gray-700"
 						fill="none"
 						viewBox="0 0 24 24"
-						stroke="currentColor">
+						stroke="currentColor"
+					>
 						<path
 							strokeLinecap="round"
 							strokeLinejoin="round"
