@@ -60,25 +60,60 @@ const Registration = () => {
   const handleCreateAccount = async (e) => {
     e.preventDefault();
 
-    if (
-      email.trim() === "" ||
-      idno.trim() === "" ||
-      firstName.trim() === "" ||
-      lastName.trim() === "" ||
-      gender.trim() === "" ||
-      birthdate.trim() === "" ||
-      contactNumber.trim() === "" ||
-      address.trim() === "" ||
-      college.trim() === "" ||
-      program.trim() === "" ||
-      year.trim() === "" ||
-      password.trim() === "" ||
-      passwordCheck.trim() === "" ||
-      !termsAccepted
-    ) {
-      // Show error message or handle appropriately
-      alert("Please fill out all required fields.");
-      return;
+    if (roleStudent) {
+      if (
+        email.trim() === "" ||
+        idno.trim() === "" ||
+        firstName.trim() === "" ||
+        lastName.trim() === "" ||
+        gender.trim() === "" ||
+        birthdate.trim() === "" ||
+        contactNumber.trim() === "" ||
+        address.trim() === "" ||
+        college.trim() === "" ||
+        program.trim() === "" ||
+        year.trim() === "" ||
+        password.trim() === "" ||
+        passwordCheck.trim() === "" ||
+        !termsAccepted
+      ) {
+        // Show error message or handle appropriately
+        alert("Please fill out all required fields.");
+        return;
+      }
+    }
+    if (roleTeacher) {
+      if (
+        email.trim() === "" ||
+        idno.trim() === "" ||
+        firstName.trim() === "" ||
+        lastName.trim() === "" ||
+        gender.trim() === "" ||
+        college.trim() === "" ||
+        password.trim() === "" ||
+        passwordCheck.trim() === "" ||
+        !termsAccepted
+      ) {
+        // Show error message or handle appropriately
+        alert("Please fill out all required fields.");
+        return;
+      }
+    }
+    if (roleCounselor) {
+      if (
+        email.trim() === "" ||
+        idno.trim() === "" ||
+        firstName.trim() === "" ||
+        lastName.trim() === "" ||
+        gender.trim() === "" ||
+        password.trim() === "" ||
+        passwordCheck.trim() === "" ||
+        !termsAccepted
+      ) {
+        // Show error message or handle appropriately
+        alert("Please fill out all required fields.");
+        return;
+      }
     }
 
     if (termsAccepted === false) {

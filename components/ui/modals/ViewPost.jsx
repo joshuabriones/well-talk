@@ -73,12 +73,13 @@ const ViewPost = ({ postId, onClose }) => {
           <div className="text-right">
             <div className="text-neutral-800 text-[17px] font-normal font-Merriweather">
               Read the full blog{" "}
-              <span
+              <a
                 className="text-red-600 underline cursor-pointer"
-                onClick={onClose}
+                href={post.blogURL}
+                target="_blank"
               >
                 here
-              </span>
+              </a>
             </div>
           </div>
         </div>
