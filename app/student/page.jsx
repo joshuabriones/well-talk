@@ -4,6 +4,7 @@ import Blogs from "@/components/ui/Blogs";
 import Footer from "@/components/ui/Footer";
 import { Navbar } from "@/components/ui/Navbar";
 import LandingSlider from "@/components/ui/Slider";
+import Loading from "@/components/Loading";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,18 +19,23 @@ const StudentPage = () => {
     setSelectedButton(button);
   };
 
-  useEffect(() => {
-    if (status === "unauthenticated") router.push("/login");
-  }, [status]);
+  if (status === "unauthenticated") router.push("/not-found");
 
-  if (status === "loading" || !session) {
-    return <div>Loading...</div>;
+  // useEffect(() => {
+  //   if (status === "unauthenticated") router.push("/not-found");
+  // }, [status]);
+
+  switch (session?.user?.role) {
+    case "counselor":
+      router.push("/counselor");
+      break;
+    case "teacher":
+      router.push("/teacher");
+      break;
   }
 
-  // Redirect authenticated users who are not counselors
-  if (session.user.role !== "student") {
-    router.push("/login"); // Redirect to homepage or appropriate page
-    return null; // Prevent rendering anything if redirecting
+  if (status === "loading" || !session) {
+    return <Loading />;
   }
 
   console.log(session);
