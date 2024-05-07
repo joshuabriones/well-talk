@@ -1,7 +1,6 @@
+import bcrypt from "bcrypt";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
-import bcrypt from "bcrypt";
 
 import { db } from "@/lib/db";
 
@@ -62,19 +61,16 @@ const handler = NextAuth({
         console.error("Missing user in session");
         return null;
       }
-
       // dire sa SESSION callback ari nato gidawat ang gipasa na user data from AUTHORIZE
       // check session sa brwoser network to see the fetched data
       const { user } = session;
       session.user.id = user.name.split(" ")[5];
       session.user.idNumber = user.name.split(" ")[6];
       session.user.password = user.name.split(" ")[3];
-      session.user.gender = user.name.split(" ")[2];
       session.user.role = user.name.split(" ")[4];
       session.user.email = user.email;
-      session.user.name = `${user.name.split(" ")[0]} ${
-        user.name.split(" ")[1]
-      }`;
+      session.user.name = `${user.name.split(" ")[0]} ${user.name.split(" ")[1]
+        }`;
       session.user.image = user.image;
 
       return session;
@@ -90,3 +86,4 @@ const handler = NextAuth({
 });
 
 export { handler as GET, handler as POST };
+
