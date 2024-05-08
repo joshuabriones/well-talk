@@ -65,12 +65,10 @@ const handler = NextAuth({
       // check session sa brwoser network to see the fetched data
       const { user } = session;
       session.user.id = user.name.split(" ")[5];
-      session.user.idNumber = user.name.split(" ")[6];
-      session.user.password = user.name.split(" ")[3];
+      session.user.idNumber = user.name.split(" ")[3];
       session.user.role = user.name.split(" ")[4];
       session.user.email = user.email;
-      session.user.name = `${user.name.split(" ")[0]} ${user.name.split(" ")[1]
-        }`;
+      session.user.name = `${user.name.split(" ")[0]} ${user.name.split(" ")[1]}`;
       session.user.image = user.image;
 
       return session;
