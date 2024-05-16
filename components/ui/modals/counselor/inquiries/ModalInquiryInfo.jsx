@@ -61,6 +61,7 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          inquiry: inquiry,
           inquiryId: selectedID,
           counselorReply: currentResponse,
           replyDate: new Date().toISOString(),
