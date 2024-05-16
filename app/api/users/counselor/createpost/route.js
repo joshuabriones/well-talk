@@ -2,29 +2,16 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
-  const {
-    userId,
-    posts,
-    title,
-    shortDescription,
-    blogURL,
-    author,
-    publishDate,
-    image,
-  } = await request.json();
-  const isoPublishDate = new Date(publishDate).toISOString();
+  console.log("Request body:", request.body);
+  const { userId, postContent, image } = await request.json();
+  const isoPublishDate = new Date().toISOString();
   try {
     const newPost = await db.post.create({
       data: {
         userId: parseInt(userId),
-        posts,
-        title,
-        shortDescription,
-        blogURL,
-        author,
-        publishDate: isoPublishDate,
+        postContent,
         image,
-        datePosted: new Date(),
+        datePosted: isoPublishDate,
         isDeleted: false,
       },
     });

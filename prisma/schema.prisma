@@ -146,15 +146,13 @@ model studenthistory {
 }
 
 model post {
-  postId           Int       @id @default(autoincrement())
+  postId           Int       @id @default(autoincrement()) 
   userId           Int
-  title            String?   @db.VarChar(255)
-  shortDescription String?   @db.Text
-  blogURL          String?   @db.VarChar(255)
-  author           String?   @db.VarChar(255)
+  postContent     String
   publishDate      DateTime? @db.DateTime(0)
   image            String?   @db.VarChar(1024)
   datePosted       DateTime? @default(now()) @db.DateTime(0)
+  dateModified     DateTime? @db.DateTime(0)
   isDeleted        Boolean?  @default(false)
   user             user      @relation(fields: [userId], references: [id], onDelete: Cascade, map: "post_ibfk_1")
 

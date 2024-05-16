@@ -34,9 +34,9 @@ export default function CounselorBlog() {
             className="w-full h-full object-contain"
           />
         </div>
-        
+
         <div className="py-36">
-        <CreatePostSection />
+          <CreatePostSection />
         </div>
       </main>
     </div>

@@ -6,8 +6,9 @@ export async function GET(request) {
     const posts = await db.post.findMany({
       where: { isDeleted: false },
       include: { user: true },
+      orderBy: { datePosted: "desc" },
     });
-    return NextResponse.json(posts, { status: 200 });
+    return NextResponse.json({ message: "Posts fetchped", posts, status: 200 });
   } catch (error) {
     console.error("Error fetching posts:", error);
     return NextResponse.json(
