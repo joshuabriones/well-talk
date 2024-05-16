@@ -1,0 +1,15 @@
+/* css/landing.module.css */
+
+.hero {
+    height: 100vh; /* Adjust as needed for your design */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background-image: url('/images/landing/hdr2.png');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+  }
+  

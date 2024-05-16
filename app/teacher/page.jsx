@@ -1,9 +1,9 @@
 "use client";
-import BlogBlock from "@/components/ui/BlogBlock";
 import Blogs from "@/components/ui/Blogs";
 import Footer from "@/components/ui/Footer";
 import { Navbar } from "@/components/ui/Navbar";
-import LandingSlider from "@/components/ui/Slider";
+import BlogBlock from "@/components/ui/landing/BlogBlock";
+import LandingSlider from "@/components/ui/landing/Slider";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

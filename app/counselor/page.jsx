@@ -3,7 +3,7 @@
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-
+import { Navbar } from "@/components/ui/Navbar";
 const CounselorPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -25,6 +25,7 @@ const CounselorPage = () => {
   console.log(session);
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center">
+      <Navbar userType="counselor" />
       <h1>Counselor Page</h1>
       <button
         className="pointer px-4 py-8"

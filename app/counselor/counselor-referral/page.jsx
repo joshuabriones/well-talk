@@ -1,15 +1,15 @@
 "use client";
 
 import hdrReferrals from "@/public/images/headers/hdrReferrals.png";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // css
 import "@/styles/counselor.css";
 
 // modals
+import { Navbar } from "@/components/ui/landing/LandingNav";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import ModalReferralInfo from "@/components/ui/modals/counselor/referrals/ModalReferralInfo";
-import { Navbar } from "@/components/ui/LandingNav";
 
 export default function Referral() {
 	const ReferralsPerPage = 10;
@@ -140,8 +140,7 @@ export default function Referral() {
 					className="absolute inset-0 bg-cover bg-center opacity-40"
 					style={{
 						backgroundImage: `url(${hdrReferrals.src})`,
-					}}
-				></div>
+					}}></div>
 
 				{/* Content */}
 				<div className="relative z-10 flex items-center justify-center h-full">
@@ -182,8 +181,7 @@ export default function Referral() {
 								<tr
 									key={referrals.id}
 									onClick={() => handleRowClick(referrals.id)}
-									className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
-								>
+									className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out">
 									<td className="text-center">
 										{referrals.id}
 									</td>
@@ -249,8 +247,7 @@ export default function Referral() {
 															"Appointed"
 													? "badge-info"
 													: ""
-											}`}
-										>
+											}`}>
 											{referrals.status}
 										</div>
 									</td>
@@ -266,8 +263,7 @@ export default function Referral() {
 													showDeleteModal(
 														referrals.id
 													);
-												}}
-											>
+												}}>
 												Delete
 											</button>
 											<button className="btn btn-xs text-green-700">
@@ -285,8 +281,7 @@ export default function Referral() {
 						<button
 							onClick={() => setCurrentPage(currentPage - 1)}
 							disabled={currentPage === 1}
-							className="join-item btn w-28"
-						>
+							className="join-item btn w-28">
 							Previous
 						</button>
 						{[
@@ -301,16 +296,14 @@ export default function Referral() {
 										? "btn-active"
 										: ""
 								}`}
-								onClick={() => setCurrentPage(index + 1)}
-							>
+								onClick={() => setCurrentPage(index + 1)}>
 								{index + 1}
 							</button>
 						))}
 						<button
 							onClick={() => setCurrentPage(currentPage + 1)}
 							disabled={ReferralsPerPage > referrals.length}
-							className="join-item btn w-28"
-						>
+							className="join-item btn w-28">
 							Next
 						</button>
 					</div>
@@ -321,8 +314,7 @@ export default function Referral() {
 			{deleteModal && (
 				<ModalDelete
 					setDeleteModal={setDeleteModal}
-					handleDelete={handleDelete}
-				></ModalDelete>
+					handleDelete={handleDelete}></ModalDelete>
 			)}
 
 			{referralModal && (

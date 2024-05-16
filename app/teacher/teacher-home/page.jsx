@@ -1,9 +1,9 @@
 "use client";
+import Blogs from "@/components/ui/Blogs";
 import Footer from "@/components/ui/Footer";
 import { Navbar } from "@/components/ui/Navbar";
-import LandingSlider from "@/components/ui/Slider";
-import BlogBlock from "@/components/ui/BlogBlock";
-import Blogs from "@/components/ui/Blogs";
+import BlogBlock from "@/components/ui/landing/BlogBlock";
+import LandingSlider from "@/components/ui/landing/Slider";
 import { useState } from "react";
 export default function Home() {
 	const [selectedButton, setSelectedButton] = useState("featured");
@@ -89,7 +89,7 @@ export default function Home() {
 						</form>
 					</div>
 				</div>
-				
+
 				<Blogs />
 				<BlogBlock />
 

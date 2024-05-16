@@ -4,6 +4,7 @@ import BlogSection from "@/components/ui/counselor/blogs/BlogSection";
 import CreateBlogSection from "@/components/ui/CreateBlog";
 import { useState } from "react";
 import "../../../css/createblog.css";
+import CreatePostSection from "@/components/ui/CreatePost";
 
 export default function CounselorBlog() {
   const [selectedButton, setSelectedButton] = useState("view");
@@ -35,35 +36,10 @@ export default function CounselorBlog() {
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="flex justify-between items-center px-44 mt-24">
-          <div className="flex items-center">
-            <button
-              className={`text-sm sm:text-lg lg:text-base font-Merriweather mr-4 py-1 px-4 ${
-                selectedButton === "view"
-                  ? "border-b-2 border-[#6B9080] text-[#6B9080]"
-                  : "text-[#6B9080] hover:border-b-2 hover:border-[#6B9080]"
-              }`}
-              onClick={() => handleButtonClick("view")}
-            >
-              View Blogs
-            </button>
-            <button
-              className={`text-sm sm:text-lg lg:text-base font-Merriweather py-1 px-4 ${
-                selectedButton === "create"
-                  ? "border-b-2 border-[#6B9080] text-[#6B9080]"
-                  : "text-[#6B9080] hover:border-b-2 hover:border-[#6B9080]"
-              }`}
-              onClick={() => handleButtonClick("create")}
-            >
-              Create Blog
-            </button>
-          </div>
+        
+        <div className="py-36">
+        <CreatePostSection />
         </div>
-
-        {selectedButton === "view" && <BlogSection />}
-        {selectedButton === "create" && (
-          <CreateBlogSection isOpen={isCreateModalOpen} />
-        )}
       </main>
     </div>
   );

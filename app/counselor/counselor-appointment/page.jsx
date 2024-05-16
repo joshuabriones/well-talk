@@ -1,15 +1,15 @@
 "use client";
 
 import hdrAppointment from "@/public/images/headers/hdrAppointment.png";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // css
 import "@/styles/counselor.css";
 
 // modals
-import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
+import { Navbar } from "@/components/ui/landing/LandingNav";
 import ModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
-import { Navbar } from "@/components/ui/LandingNav";
+import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 
 export default function Appointment() {
 	const AppointmentPerPage = 10;
@@ -123,8 +123,7 @@ export default function Appointment() {
 					className="absolute inset-0 bg-cover bg-center opacity-40"
 					style={{
 						backgroundImage: `url(${hdrAppointment.src})`,
-					}}
-				></div>
+					}}></div>
 
 				{/* Content */}
 				<div className="relative z-10 flex items-center justify-center h-full">
@@ -167,8 +166,7 @@ export default function Appointment() {
 									onClick={() =>
 										handleRowClick(appointments.id)
 									}
-									className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
-								>
+									className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out">
 									<td className="text-center">
 										{appointments.id}
 									</td>
@@ -235,8 +233,7 @@ export default function Appointment() {
 															"Appointed"
 													? "badge-info"
 													: ""
-											}`}
-										>
+											}`}>
 											{appointments.status}
 										</div>
 									</td>
@@ -252,8 +249,7 @@ export default function Appointment() {
 													showDeleteModal(
 														appointments.id
 													);
-												}}
-											>
+												}}>
 												Delete
 											</button>
 											<button className="btn btn-xs text-green-700">
@@ -271,8 +267,7 @@ export default function Appointment() {
 						<button
 							onClick={() => setCurrentPage(currentPage - 1)}
 							disabled={currentPage === 1}
-							className="join-item btn w-28"
-						>
+							className="join-item btn w-28">
 							Previous
 						</button>
 
@@ -291,8 +286,7 @@ export default function Appointment() {
 											? "btn-active"
 											: ""
 									}`}
-									onClick={() => setCurrentPage(index + 1)}
-								>
+									onClick={() => setCurrentPage(index + 1)}>
 									{index + 1}
 								</button>
 							))}
@@ -300,8 +294,7 @@ export default function Appointment() {
 						<button
 							onClick={() => setCurrentPage(currentPage + 1)}
 							disabled={AppointmentPerPage > appointments.length}
-							className="join-item btn w-28"
-						>
+							className="join-item btn w-28">
 							Next
 						</button>
 					</div>
@@ -312,8 +305,7 @@ export default function Appointment() {
 			{deleteModal && (
 				<ModalDelete
 					setDeleteModal={setDeleteModal}
-					handleDelete={handleDelete}
-				></ModalDelete>
+					handleDelete={handleDelete}></ModalDelete>
 			)}
 
 			{appointmentModal && (

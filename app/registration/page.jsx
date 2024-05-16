@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 // utils
-import { Navbar } from "@/components/ui/LandingNav";
 import FullButton from "@/components/ui/buttons/FullButton";
 import InputCollege from "@/components/ui/inputs/InputCollege";
 import InputCollegeInformation from "@/components/ui/inputs/InputCollegeInformation";
@@ -14,389 +13,404 @@ import InputName from "@/components/ui/inputs/InputName";
 import InputPassword from "@/components/ui/inputs/InputPassword";
 import PersonalInfo from "@/components/ui/inputs/InputPersonalInfo";
 import InputRole from "@/components/ui/inputs/InputRole";
+import { Navbar } from "@/components/ui/landing/LandingNav";
 import ModalRegistrationSuccessful from "@/components/ui/modals/ModalRegistrationSuccessful";
 import ModalTermsUnchecked from "@/components/ui/modals/ModalTermsUnchecked";
 
 const Registration = () => {
-  const router = useRouter();
+	const router = useRouter();
 
-  // properties
-  const [email, setEmail] = useState("");
-  const [idno, setIdNo] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [gender, setGender] = useState("");
+	// properties
+	const [email, setEmail] = useState("");
+	const [idno, setIdNo] = useState("");
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [gender, setGender] = useState("");
 
-  const [birthdate, setBirthdate] = useState("");
-  const [contactNumber, setContactNumber] = useState("");
-  const [address, setAddress] = useState("");
+	const [birthdate, setBirthdate] = useState("");
+	const [contactNumber, setContactNumber] = useState("");
+	const [address, setAddress] = useState("");
 
-  const [role, setRole] = useState("");
-  const [roleStudent, setRoleStudent] = useState(false);
-  const [roleTeacher, setRoleTeacher] = useState(false);
-  const [roleCounselor, setRoleCounselor] = useState(false);
+	const [role, setRole] = useState("");
+	const [roleStudent, setRoleStudent] = useState(false);
+	const [roleTeacher, setRoleTeacher] = useState(false);
+	const [roleCounselor, setRoleCounselor] = useState(false);
 
-  const [college, setCollege] = useState("");
-  const [program, setProgram] = useState("");
-  const [year, setYear] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordCheck, setPasswordCheck] = useState("");
-  const [termsAccepted, setTermsAccepted] = useState(false);
+	const [college, setCollege] = useState("");
+	const [program, setProgram] = useState("");
+	const [year, setYear] = useState("");
+	const [password, setPassword] = useState("");
+	const [passwordCheck, setPasswordCheck] = useState("");
+	const [termsAccepted, setTermsAccepted] = useState(false);
 
-  const handleTermsChange = (e) => {
-    setTermsAccepted(e.target.checked);
-  };
+	const handleTermsChange = (e) => {
+		setTermsAccepted(e.target.checked);
+	};
 
-  // pop ups
-  const [showInvalidPassword, setShowInvalidPassword] = useState(false);
-  const [showPasswordDoNotMatch, setShowPasswordDoNotMatch] = useState(false);
+	// pop ups
+	const [showInvalidPassword, setShowInvalidPassword] = useState(false);
+	const [showPasswordDoNotMatch, setShowPasswordDoNotMatch] = useState(false);
 
-  // modal
-  const [showTermsNotAccepted, setShowTermsNotAccepted] = useState(false);
-  const [showRegistrationSuccessful, setShowRegistrationSuccessful] =
-    useState(false);
+	// modal
+	const [showTermsNotAccepted, setShowTermsNotAccepted] = useState(false);
+	const [showRegistrationSuccessful, setShowRegistrationSuccessful] =
+		useState(false);
 
-  // create account
-  const handleCreateAccount = async (e) => {
-    e.preventDefault();
+	// create account
+	const handleCreateAccount = async (e) => {
+		e.preventDefault();
 
-    if (roleStudent) {
-      if (
-        email.trim() === "" ||
-        idno.trim() === "" ||
-        firstName.trim() === "" ||
-        lastName.trim() === "" ||
-        gender.trim() === "" ||
-        birthdate.trim() === "" ||
-        contactNumber.trim() === "" ||
-        address.trim() === "" ||
-        college.trim() === "" ||
-        program.trim() === "" ||
-        year.trim() === "" ||
-        password.trim() === "" ||
-        passwordCheck.trim() === "" ||
-        !termsAccepted
-      ) {
-        // Show error message or handle appropriately
-        alert("Please fill out all required fields.");
-        return;
-      }
-    }
-    if (roleTeacher) {
-      if (
-        email.trim() === "" ||
-        idno.trim() === "" ||
-        firstName.trim() === "" ||
-        lastName.trim() === "" ||
-        gender.trim() === "" ||
-        college.trim() === "" ||
-        password.trim() === "" ||
-        passwordCheck.trim() === "" ||
-        !termsAccepted
-      ) {
-        // Show error message or handle appropriately
-        alert("Please fill out all required fields.");
-        return;
-      }
-    }
-    if (roleCounselor) {
-      if (
-        email.trim() === "" ||
-        idno.trim() === "" ||
-        firstName.trim() === "" ||
-        lastName.trim() === "" ||
-        gender.trim() === "" ||
-        password.trim() === "" ||
-        passwordCheck.trim() === "" ||
-        !termsAccepted
-      ) {
-        // Show error message or handle appropriately
-        alert("Please fill out all required fields.");
-        return;
-      }
-    }
+		if (roleStudent) {
+			if (
+				email.trim() === "" ||
+				idno.trim() === "" ||
+				firstName.trim() === "" ||
+				lastName.trim() === "" ||
+				gender.trim() === "" ||
+				birthdate.trim() === "" ||
+				contactNumber.trim() === "" ||
+				address.trim() === "" ||
+				college.trim() === "" ||
+				program.trim() === "" ||
+				year.trim() === "" ||
+				password.trim() === "" ||
+				passwordCheck.trim() === "" ||
+				!termsAccepted
+			) {
+				// Show error message or handle appropriately
+				alert("Please fill out all required fields.");
+				return;
+			}
+		}
+		if (roleTeacher) {
+			if (
+				email.trim() === "" ||
+				idno.trim() === "" ||
+				firstName.trim() === "" ||
+				lastName.trim() === "" ||
+				gender.trim() === "" ||
+				college.trim() === "" ||
+				password.trim() === "" ||
+				passwordCheck.trim() === "" ||
+				!termsAccepted
+			) {
+				// Show error message or handle appropriately
+				alert("Please fill out all required fields.");
+				return;
+			}
+		}
+		if (roleCounselor) {
+			if (
+				email.trim() === "" ||
+				idno.trim() === "" ||
+				firstName.trim() === "" ||
+				lastName.trim() === "" ||
+				gender.trim() === "" ||
+				password.trim() === "" ||
+				passwordCheck.trim() === "" ||
+				!termsAccepted
+			) {
+				// Show error message or handle appropriately
+				alert("Please fill out all required fields.");
+				return;
+			}
+		}
 
-    if (termsAccepted === false) {
-      setShowTermsNotAccepted(true);
-      return;
-    }
+		if (termsAccepted === false) {
+			setShowTermsNotAccepted(true);
+			return;
+		}
 
-    let role;
+		let role;
 
-    if (roleStudent) {
-      role = "student";
-    } else if (roleTeacher) {
-      role = "teacher";
-    } else if (roleCounselor) {
-      role = "counselor";
-    }
+		if (roleStudent) {
+			role = "student";
+		} else if (roleTeacher) {
+			role = "teacher";
+		} else if (roleCounselor) {
+			role = "counselor";
+		}
 
-    //
-    try {
-      const response = await fetch("/api/users/createuser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          institutionalEmail: email,
-          idNumber: idno,
-          firstName: firstName,
-          lastName: lastName,
-          gender: gender,
-          password: password,
-          gender: gender,
-          image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
-          birthDate: birthdate,
-          contactNumber: contactNumber,
-          address: address,
-          college: college,
-          program: program,
-          year: year,
-          role: role,
-        }),
-      });
+		//
+		try {
+			const response = await fetch("/api/users/createuser", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					institutionalEmail: email,
+					idNumber: idno,
+					firstName: firstName,
+					lastName: lastName,
+					gender: gender,
+					password: password,
+					gender: gender,
+					image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
+					birthDate: birthdate,
+					contactNumber: contactNumber,
+					address: address,
+					college: college,
+					program: program,
+					year: year,
+					role: role,
+				}),
+			});
 
-      if (!response.ok) {
-        console.log("Error status: ", response.status);
-      }
-      setTimeout(() => {
-        router.push("/login");
-      }, 5000);
-    } catch (error) {
-      console.log("Error in creating user", error);
-    }
+			if (!response.ok) {
+				console.log("Error status: ", response.status);
+			}
+			setTimeout(() => {
+				router.push("/login");
+			}, 5000);
+		} catch (error) {
+			console.log("Error in creating user", error);
+		}
 
-    // successful registration
-    setShowRegistrationSuccessful(true);
-  };
+		// successful registration
+		setShowRegistrationSuccessful(true);
+	};
 
-  // password validation function
-  const validatePassword = (password) => {
-    const regex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return regex.test(password);
-  };
+	// password validation function
+	const validatePassword = (password) => {
+		const regex =
+			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+		return regex.test(password);
+	};
 
-  const handlePasswordChange = (e) => {
-    const newPassword = e.target.value;
-    setPassword(newPassword);
+	const handlePasswordChange = (e) => {
+		const newPassword = e.target.value;
+		setPassword(newPassword);
 
-    if (!validatePassword(newPassword)) {
-      // password is not valid
-      setShowInvalidPassword(true);
-    } else {
-      // password is valid
-      setShowInvalidPassword(false);
-    }
-  };
+		if (!validatePassword(newPassword)) {
+			// password is not valid
+			setShowInvalidPassword(true);
+		} else {
+			// password is valid
+			setShowInvalidPassword(false);
+		}
+	};
 
-  const handlePasswordCheck = (e) => {
-    const newPasswordCheck = e.target.value;
-    setPasswordCheck(newPasswordCheck);
+	const handlePasswordCheck = (e) => {
+		const newPasswordCheck = e.target.value;
+		setPasswordCheck(newPasswordCheck);
 
-    if (newPasswordCheck.trim() === "") {
-      // password is empty
-      setShowPasswordDoNotMatch(false);
-    } else if (validatePassword(password)) {
-      // password is valid
-      if (newPasswordCheck !== password) {
-        // passwords do not match
-        setShowPasswordDoNotMatch(true);
-      } else {
-        // passwords match
-        setShowPasswordDoNotMatch(false);
-      }
-    } else {
-      // default
-      setShowPasswordDoNotMatch(false);
-    }
-  };
+		if (newPasswordCheck.trim() === "") {
+			// password is empty
+			setShowPasswordDoNotMatch(false);
+		} else if (validatePassword(password)) {
+			// password is valid
+			if (newPasswordCheck !== password) {
+				// passwords do not match
+				setShowPasswordDoNotMatch(true);
+			} else {
+				// passwords match
+				setShowPasswordDoNotMatch(false);
+			}
+		} else {
+			// default
+			setShowPasswordDoNotMatch(false);
+		}
+	};
 
-  const handleRoleChange = (e) => {
-    const newRole = e.target.value;
-    setRole(newRole);
+	const handleRoleChange = (e) => {
+		const newRole = e.target.value;
+		setRole(newRole);
 
-    console.log(newRole);
-    if (newRole === "student") {
-      setRoleStudent(true);
-      setRoleTeacher(false);
-      setRoleCounselor(false);
-    } else if (newRole === "teacher") {
-      setRoleStudent(false);
-      setRoleTeacher(true);
-      setRoleCounselor(false);
-    } else if (newRole === "counselor") {
-      setRoleStudent(false);
-      setRoleTeacher(false);
-      setRoleCounselor(true);
-    } else {
-      setRoleStudent(false);
-      setRoleTeacher(false);
-      setRoleCounselor(false);
-    }
-  };
+		console.log(newRole);
+		if (newRole === "student") {
+			setRoleStudent(true);
+			setRoleTeacher(false);
+			setRoleCounselor(false);
+		} else if (newRole === "teacher") {
+			setRoleStudent(false);
+			setRoleTeacher(true);
+			setRoleCounselor(false);
+		} else if (newRole === "counselor") {
+			setRoleStudent(false);
+			setRoleTeacher(false);
+			setRoleCounselor(true);
+		} else {
+			setRoleStudent(false);
+			setRoleTeacher(false);
+			setRoleCounselor(false);
+		}
+	};
 
-  const handleLoginClick = () => {
-    router.push("/login");
-  };
+	const handleLoginClick = () => {
+		router.push("/login");
+	};
 
-  return (
-    <div
-      className="min-h-screen w-full"
-      style={{
-        backgroundImage: `url(${registrationBg.src})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center right",
-        backgroundAttachment: "fixed",
-        minHeight: "100vh",
-      }}
-    >
-      {/* navigation bar */}
-      <Navbar userType="landing" />
+	return (
+		<div
+			className="min-h-screen w-full"
+			style={{
+				backgroundImage: `url(${registrationBg.src})`,
+				backgroundSize: "cover",
+				backgroundPosition: "center right",
+				backgroundAttachment: "fixed",
+				minHeight: "100vh",
+			}}>
+			{/* navigation bar */}
+			<Navbar userType="landing" />
 
-      {/* main content */}
-      <div>
-        {/* registration form*/}
-        <div className="flex justify-start items-center py-32 px-36 flex-row">
-          <div className="w-4/12"></div> {/* empty div for spacing */}
-          <div className="w-8/12 h-fit pr-2.5 ">
-            <form
-              className="h-full flex flex-col justify-center"
-              onSubmit={() => {}}
-            >
-              <p className="text-black text-5xl font-Merriweather pt-5">
-                Registration
-              </p>
-              {/* form inputs */}
-              <div className="flex flex-col gap-y-2.5 py-4">
-                <div className="w-full flex flex-row gap-x-6">
-                  <InputInstitutionalInfo
-                    email={email}
-                    setEmail={setEmail}
-                    idno={idno}
-                    setIdNo={setIdNo}
-                  />
-                </div>
-                <div className="w-full flex flex-row gap-x-6">
-                  <InputName
-                    firstName={firstName}
-                    setFirstName={setFirstName}
-                    lastName={lastName}
-                    setLastName={setLastName}
-                    gender={gender}
-                    setGender={setGender}
-                  />
-                </div>
-                <div className="w-full flex flex-row gap-x-6">
-                  <InputPassword
-                    password={password}
-                    passwordCheck={passwordCheck}
-                    showInvalidPassword={showInvalidPassword}
-                    showPasswordDoNotMatch={showPasswordDoNotMatch}
-                    handlePasswordChange={handlePasswordChange}
-                    handlePasswordCheck={handlePasswordCheck}
-                  />
-                </div>
+			{/* main content */}
+			<div>
+				{/* registration form*/}
+				<div className="flex justify-start items-center py-32 px-36 flex-row">
+					<div className="w-4/12"></div> {/* empty div for spacing */}
+					<div className="w-8/12 h-fit pr-2.5 ">
+						<form
+							className="h-full flex flex-col justify-center"
+							onSubmit={() => {}}>
+							<p className="text-black text-5xl font-Merriweather pt-5">
+								Registration
+							</p>
+							{/* form inputs */}
+							<div className="flex flex-col gap-y-2.5 py-4">
+								<div className="w-full flex flex-row gap-x-6">
+									<InputInstitutionalInfo
+										email={email}
+										setEmail={setEmail}
+										idno={idno}
+										setIdNo={setIdNo}
+									/>
+								</div>
+								<div className="w-full flex flex-row gap-x-6">
+									<InputName
+										firstName={firstName}
+										setFirstName={setFirstName}
+										lastName={lastName}
+										setLastName={setLastName}
+										gender={gender}
+										setGender={setGender}
+									/>
+								</div>
+								<div className="w-full flex flex-row gap-x-6">
+									<InputPassword
+										password={password}
+										passwordCheck={passwordCheck}
+										showInvalidPassword={
+											showInvalidPassword
+										}
+										showPasswordDoNotMatch={
+											showPasswordDoNotMatch
+										}
+										handlePasswordChange={
+											handlePasswordChange
+										}
+										handlePasswordCheck={
+											handlePasswordCheck
+										}
+									/>
+								</div>
 
-                {/* choose role */}
-                <div className="flex flex-col">
-                  <div className="w-1/3 flex flex-row gap-x-6 pt-2">
-                    <div className="w-full">
-                      <InputRole
-                        role={role}
-                        setRole={setRole}
-                        handleRoleChange={handleRoleChange}
-                      />
-                    </div>
-                  </div>
-                </div>
+								{/* choose role */}
+								<div className="flex flex-col">
+									<div className="w-1/3 flex flex-row gap-x-6 pt-2">
+										<div className="w-full">
+											<InputRole
+												role={role}
+												setRole={setRole}
+												handleRoleChange={
+													handleRoleChange
+												}
+											/>
+										</div>
+									</div>
+								</div>
 
-                {/* role === student */}
-                {roleStudent && (
-                  <>
-                    <div className="w-full flex flex-row gap-x-6">
-                      <PersonalInfo
-                        birthdate={birthdate}
-                        setBirthdate={setBirthdate}
-                        contactNumber={contactNumber}
-                        setContactNumber={setContactNumber}
-                        address={address}
-                        setAddress={setAddress}
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <div className="w-full flex flex-row gap-x-6">
-                        <InputCollegeInformation
-                          college={college}
-                          setCollege={setCollege}
-                          program={program}
-                          setProgram={setProgram}
-                          year={year}
-                          setYear={setYear}
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
+								{/* role === student */}
+								{roleStudent && (
+									<>
+										<div className="w-full flex flex-row gap-x-6">
+											<PersonalInfo
+												birthdate={birthdate}
+												setBirthdate={setBirthdate}
+												contactNumber={contactNumber}
+												setContactNumber={
+													setContactNumber
+												}
+												address={address}
+												setAddress={setAddress}
+											/>
+										</div>
+										<div className="flex flex-col">
+											<div className="w-full flex flex-row gap-x-6">
+												<InputCollegeInformation
+													college={college}
+													setCollege={setCollege}
+													program={program}
+													setProgram={setProgram}
+													year={year}
+													setYear={setYear}
+												/>
+											</div>
+										</div>
+									</>
+								)}
 
-                {/* role === teacher */}
-                {roleTeacher && (
-                  <>
-                    <div className="flex flex-col">
-                      <div className="w-3/5 flex flex-row gap-x-6">
-                        <InputCollege
-                          college={college}
-                          setCollege={setCollege}
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
+								{/* role === teacher */}
+								{roleTeacher && (
+									<>
+										<div className="flex flex-col">
+											<div className="w-3/5 flex flex-row gap-x-6">
+												<InputCollege
+													college={college}
+													setCollege={setCollege}
+												/>
+											</div>
+										</div>
+									</>
+								)}
 
-                {/* role === counselor */}
-                {roleTeacher && <></>}
-              </div>
+								{/* role === counselor */}
+								{roleTeacher && <></>}
+							</div>
 
-              <div className="w-full flex flex-row gap-x-3 py-6 pb-1.5 items-center">
-                <input
-                  type="checkbox"
-                  checked={termsAccepted}
-                  onChange={handleTermsChange}
-                  className="h-5 w-5"
-                  required
-                />
-                <label htmlFor="terms" className="font-Jaldi text-lg">
-                  I agree to the Terms and Conditions
-                </label>
-              </div>
+							<div className="w-full flex flex-row gap-x-3 py-6 pb-1.5 items-center">
+								<input
+									type="checkbox"
+									checked={termsAccepted}
+									onChange={handleTermsChange}
+									className="h-5 w-5"
+									required
+								/>
+								<label
+									htmlFor="terms"
+									className="font-Jaldi text-lg">
+									I agree to the Terms and Conditions
+								</label>
+							</div>
 
-              <div className="w-full h-14 flex flex-row my-6">
-                <div className="w-2/3 h-full"></div>
-                <div className="w-1/3 h-full flex justify-center items-center">
-                  <FullButton onClick={handleCreateAccount}>
-                    Create Account
-                  </FullButton>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+							<div className="w-full h-14 flex flex-row my-6">
+								<div className="w-2/3 h-full"></div>
+								<div className="w-1/3 h-full flex justify-center items-center">
+									<FullButton onClick={handleCreateAccount}>
+										Create Account
+									</FullButton>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
 
-      {/* terms and conditions not accepted */}
-      {showTermsNotAccepted && (
-        <ModalTermsUnchecked
-          setShowTermsNotAccepted={setShowTermsNotAccepted}
-        />
-      )}
-      {/* terms and conditions not accepted */}
+			{/* terms and conditions not accepted */}
+			{showTermsNotAccepted && (
+				<ModalTermsUnchecked
+					setShowTermsNotAccepted={setShowTermsNotAccepted}
+				/>
+			)}
+			{/* terms and conditions not accepted */}
 
-      {showRegistrationSuccessful && (
-        <ModalRegistrationSuccessful
-          setShowRegistrationSuccessful={setShowRegistrationSuccessful}
-          //  to be deleted
-          registrationDetails={`Email: ${email}
+			{showRegistrationSuccessful && (
+				<ModalRegistrationSuccessful
+					setShowRegistrationSuccessful={
+						setShowRegistrationSuccessful
+					}
+					//  to be deleted
+					registrationDetails={`Email: ${email}
 						ID Number: ${idno}
 						First Name: ${firstName}
 						Last Name: ${lastName}
@@ -415,11 +429,11 @@ const Registration = () => {
 						Year: ${year}
 
 						Terms Accepted: ${termsAccepted}`}
-          handleLoginClick={handleLoginClick}
-        />
-      )}
-    </div>
-  );
+					handleLoginClick={handleLoginClick}
+				/>
+			)}
+		</div>
+	);
 };
 
 export default Registration;

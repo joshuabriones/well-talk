@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import "./../../css/createblog.css";
+
 
 function NavList({ userType }) {
 	const router = useRouter();
