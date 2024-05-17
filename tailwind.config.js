@@ -8,8 +8,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-      "primary-green": "#6B9080",
-      "primary-green-dark": "#4b655a",
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
@@ -21,6 +19,8 @@ module.exports = {
       },
       colors: {
         // light mode
+        "primary-green": "#6B9080",
+        "primary-green-dark": "#4b655a",
         tremor: {
           brand: {
             faint: colors.blue[50],

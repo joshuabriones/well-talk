@@ -19,8 +19,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import InsightsIcon from "@mui/icons-material/Insights";
+import GroupIcon from "@mui/icons-material/Group";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 const drawerWidth = 240;
 
@@ -80,9 +82,27 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function SideNav() {
+export default function SideNav({ setPage }) {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
+  const pages = [
+    {
+      name: "Dashboard",
+      icon: <DashboardIcon />,
+    },
+    {
+      name: "Statistics",
+      icon: <InsightsIcon />,
+    },
+    {
+      name: "Users",
+      icon: <GroupIcon />,
+    },
+    {
+      name: "Appointments",
+      icon: <CalendarTodayIcon />,
+    },
+  ];
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -95,8 +115,20 @@ export default function SideNav() {
   return (
     <>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ bgcolor: "#6B9080" }}>
-        <Toolbar>
+      <AppBar
+        position="fixed"
+        open={open}
+        sx={{
+          bgcolor: "#6B9080",
+        }}
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingRight: "28px",
+        }}
+      >
+        <Toolbar style={{ display: "flex", alignItems: "center" }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -109,10 +141,14 @@ export default function SideNav() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Dashboard
-          </Typography>
         </Toolbar>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Avatar sx={{ bgcolor: deepOrange[500] }}>JD</Avatar>
+          <div className="ml-2">
+            <h3 className="font-bold">John Doe</h3>
+            <p className="text-xs">Admin</p>
+          </div>
+        </div>
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader
@@ -122,13 +158,9 @@ export default function SideNav() {
             padding: "4px 20px",
           }}
         >
-          <div className="flex">
-            <Avatar sx={{ bgcolor: deepOrange[500] }}>JD</Avatar>
-            <div className="ml-2">
-              <h3 className="font-bold">John Doe</h3>
-              <p className="text-xs">Admin</p>
-            </div>
-          </div>
+          <h1 className="font-Merriweather font-bold text-primary-green text-2xl">
+            WellTalk
+          </h1>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
@@ -139,30 +171,32 @@ export default function SideNav() {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Dashboard", "Statistics", "Users", "Appointments"].map(
-            (text, index) => (
-              <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                <ListItemButton
+          {pages.map((item, index) => (
+            <ListItem key={item.name} disablePadding sx={{ display: "block" }}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+                onClick={() => setPage(item.name)}
+              >
+                <ListItemIcon
                   sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            )
-          )}
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.name}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
         </List>
         <Divider />
         <List>
@@ -182,7 +216,7 @@ export default function SideNav() {
                     justifyContent: "center",
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {index % 2 === 0 ? <DashboardIcon /> : <CalendarTodayIcon />}
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
