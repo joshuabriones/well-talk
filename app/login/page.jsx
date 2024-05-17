@@ -3,6 +3,7 @@ import { Navbar } from "@/components/ui/landing/LandingNav";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Loading from "@/components/Skeleton";
 
 //imgs
 import loginBg from "@/public/images/bgs/loginBg.png";
@@ -32,7 +33,7 @@ const Login = () => {
 		router.push(`/${session.user.role}`);
 	}
 
-	if (status === "loading" || session) return <div>Loading...</div>;
+	if (status === "loading" || session) return <Loading />;
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
@@ -58,8 +59,6 @@ const Login = () => {
 		setTimeout(() => {
 			setShowInvalidCredentials(false);
 		}, 5000);
-
-		alert("Email: " + email + " Password: " + password);
 	};
 
 	const handleCreateAccount = async (e) => {

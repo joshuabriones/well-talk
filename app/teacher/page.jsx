@@ -7,6 +7,7 @@ import LandingSlider from "@/components/ui/landing/Slider";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Loading from "@/components/Skeleton";
 
 const StudentPage = () => {
 	const { data: session, status } = useSession();
@@ -23,7 +24,7 @@ const StudentPage = () => {
 	}, [status]);
 
 	if (status === "loading" || !session) {
-		return <div>Loading...</div>;
+		return <Loading />;
 	}
 
 	// Redirect authenticated users who are not counselors

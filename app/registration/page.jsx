@@ -410,25 +410,7 @@ const Registration = () => {
 						setShowRegistrationSuccessful
 					}
 					//  to be deleted
-					registrationDetails={`Email: ${email}
-						ID Number: ${idno}
-						First Name: ${firstName}
-						Last Name: ${lastName}
-						Gender: ${gender}
-
-						Password: ${password}
-						Password Check: ${passwordCheck}
-						Role: ${role}
-
-						Birthdate: ${birthdate}
-						Contact Number: ${contactNumber}
-						Address: ${address}
-
-						College: ${college}
-						Program: ${program}
-						Year: ${year}
-
-						Terms Accepted: ${termsAccepted}`}
+				
 					handleLoginClick={handleLoginClick}
 				/>
 			)}

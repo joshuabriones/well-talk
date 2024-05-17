@@ -4,25 +4,26 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Navbar } from "@/components/ui/Navbar";
+import Loading from "@/components/Skeleton";
 const CounselorPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  useEffect(() => {
-    if (status === "unauthenticated") router.push("/login");
-  }, [status]);
+  // useEffect(() => {
+  //   if (status === "unauthenticated") router.push("/login");
+  // }, [status]);
 
-  if (status === "loading" || !session) {
-    return <div>Loading...</div>;
-  }
+  // if (status === "loading" || !session) {
+  //   return <Loading />;
+  // }
 
-  // Redirect authenticated users who are not counselors
-  if (session.user.role !== "counselor") {
-    router.push("/login"); // Redirect to homepage or appropriate page
-    return null; // Prevent rendering anything if redirecting
-  }
+  // // Redirect authenticated users who are not counselors
+  // if (session.user.role !== "counselor") {
+  //   router.push("/login"); // Redirect to homepage or appropriate page
+  //   return null; // Prevent rendering anything if redirecting
+  // }
 
-  console.log(session);
+  // console.log(session);
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center">
       <Navbar userType="counselor" />

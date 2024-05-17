@@ -4,6 +4,7 @@ import FullButton from "../../buttons/FullButton";
 import TextInput from "../../inputs/TextInput";
 import Birthdate from "../../student/Birthdate";
 import TextDisplay from "../../student/TextDisplay";
+import HollowButton from "../../buttons/HollowButton";
 
 const UpdateProfileModal = ({ onClose }) => {
 	const { data: session } = useSession();
@@ -54,6 +55,9 @@ const UpdateProfileModal = ({ onClose }) => {
 		console.log(passwords);
 	};
 
+	const handleCancel = () => {
+        onClose(); // Call the onClose function when Cancel button is clicked
+    };
 	return (
 		<>
 			<input type="checkbox" id="my_modal_7" className="modal-toggle" checked={true} />
@@ -268,7 +272,7 @@ const PasswordInput = ({ label, password, handlePasswordChange, showInvalidPassw
 	);
 };
 
-const Save = ({ onClick }) => {
+const Save = ({ onClick, handleCancel }) => {
 	return (
 		<section className="mt-9 w-4/12 flex justify-center items-center">
 			<FullButton onClick={onClick}>Save</FullButton>

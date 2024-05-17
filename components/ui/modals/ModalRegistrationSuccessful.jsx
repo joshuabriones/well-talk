@@ -25,8 +25,7 @@ const ModalRegistrationSuccessful = ({
 						Registration Successful
 					</h3>
 					<p className="text-sm py-4">
-						Registration has been successful.
-						{registrationDetails} {/* to be deleted */}
+						Registration has been successful. You may now proceed to login page! {/* to be deleted */}
 					</p>
 					<FullButton onClick={handleLoginClick}>
 						Go to Login

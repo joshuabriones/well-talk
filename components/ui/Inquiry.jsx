@@ -79,7 +79,8 @@ const Inquiry = ({ userId }) => {
                       Our Location
                     </h4>
                     <p className="text-base text-body-color dark:text-dark-6">
-                      99 S.t Jomblo Park Pekanbaru 28292. Indonesia
+                    Natalio B. Bacalso Ave, Cebu City,
+											6000 Cebu, Philippines
                     </p>
                   </div>
                 </div>
@@ -119,7 +120,7 @@ const Inquiry = ({ userId }) => {
                       Phone Number
                     </h4>
                     <p className="text-base text-body-color dark:text-dark-6">
-                      (+62)81 414 257 9980
+                    +63 32 411 2000 (trunkline)
                     </p>
                   </div>
                 </div>
@@ -147,7 +148,7 @@ const Inquiry = ({ userId }) => {
                       Email Address
                     </h4>
                     <p className="text-base text-body-color dark:text-dark-6">
-                      info@yourdomain.com
+                    info@cit.edu
                     </p>
                   </div>
                 </div>
