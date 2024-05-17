@@ -2,11 +2,11 @@
 "use client";
 import { imgDB } from "@/firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { useState } from 'react';
-import { v4 } from 'uuid';
+import { useState } from "react";
+import { v4 } from "uuid";
 
 export default function StoreImageFirebase() {
-  const [img, setImg] = useState('');
+  const [img, setImg] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileSelection = (e) => {
@@ -21,10 +21,10 @@ export default function StoreImageFirebase() {
       setImg(url);
 
       // Send a POST request with the image URL
-      const response = await fetch('/api/users/counselor/createpost', {
-        method: 'POST',
+      const response = await fetch("/api/users/counselor/createpost", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           // ...other fields,
@@ -37,15 +37,16 @@ export default function StoreImageFirebase() {
       }
 
       const data = await response.json();
-      console.log(data);
     }
   };
 
   return (
     <div>
-      <input type="file" onChange={(e) => handleFileSelection(e)} /><br /><br />
+      <input type="file" onChange={(e) => handleFileSelection(e)} />
+      <br />
+      <br />
       <button onClick={handleClick}>Upload</button>
-      {img && <img src={img} height='200px' width='200px' />}
+      {img && <img src={img} height="200px" width="200px" />}
     </div>
   );
 }
