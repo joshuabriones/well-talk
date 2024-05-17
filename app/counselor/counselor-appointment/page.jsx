@@ -81,14 +81,10 @@ export default function Appointment() {
 
 	const handleDelete = () => {
 		// Find
-		const selected = appointments.find(
-			(appointment) => appointment.id === selectedID
-		);
+		const selected = appointments.find((appointment) => appointment.id === selectedID);
 
 		// Delete
-		const newAppointments = appointments.filter(
-			(appointment) => appointment.id !== selectedID
-		);
+		const newAppointments = appointments.filter((appointment) => appointment.id !== selectedID);
 		setAppointments(newAppointments);
 
 		// Reset
@@ -106,10 +102,7 @@ export default function Appointment() {
 	// Calculate the index range of appointment to display for the current page
 	const indexOfLastInquiry = currentPage * AppointmentPerPage;
 	const indexOfFirstInquiry = indexOfLastInquiry - AppointmentPerPage;
-	const currentAppointments = appointments?.slice(
-		indexOfFirstInquiry,
-		indexOfLastInquiry
-	);
+	const currentAppointments = appointments?.slice(indexOfFirstInquiry, indexOfLastInquiry);
 
 	return (
 		<div className="min-h-screen w-full">
@@ -123,20 +116,17 @@ export default function Appointment() {
 					className="absolute inset-0 bg-cover bg-center opacity-40"
 					style={{
 						backgroundImage: `url(${hdrAppointment.src})`,
-					}}></div>
+					}}
+				></div>
 
 				{/* Content */}
 				<div className="relative z-10 flex items-center justify-center h-full">
 					<div className="flex flex-col text-left px-44 py-10 gap-y-4">
-						<h1 className="font-Merriweather text-8xl">
-							Appointments
-						</h1>
+						<h1 className="font-Merriweather text-8xl">Appointments</h1>
 						<p className="w-1/2 font-Jaldi text-xl">
-							Manage sessions effortlessly and provide tailored
-							guidance and support to students through efficient
-							booking and coordination. Streamline your scheduling
-							process and ensure students receive personalized
-							attention.
+							Manage sessions effortlessly and provide tailored guidance and support
+							to students through efficient booking and coordination. Streamline your
+							scheduling process and ensure students receive personalized attention.
 						</p>
 					</div>
 				</div>
@@ -163,25 +153,18 @@ export default function Appointment() {
 							{currentAppointments?.map((appointments) => (
 								<tr
 									key={appointments.id}
-									onClick={() =>
-										handleRowClick(appointments.id)
-									}
-									className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out">
-									<td className="text-center">
-										{appointments.id}
-									</td>
+									onClick={() => handleRowClick(appointments.id)}
+									className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
+								>
+									<td className="text-center">{appointments.id}</td>
 									<td>
 										<div className="flex flex-row gap-x-3">
-											<div className="text-sm">
-												{appointments.dateTime}
-											</div>
+											<div className="text-sm">{appointments.dateTime}</div>
 										</div>
 									</td>
 									<td>
 										<div className="flex flex-row gap-x-3">
-											<div>
-												{appointments.setter.idNumber}
-											</div>
+											<div>{appointments.setter.idNumber}</div>
 										</div>
 									</td>
 									<td>
@@ -189,10 +172,7 @@ export default function Appointment() {
 											<div className="avatar">
 												<div className="mask mask-squircle w-12 h-12">
 													<img
-														src={
-															appointments.setter
-																.avatar
-														}
+														src={appointments.setter.avatar}
 														alt="Avatar Tailwind CSS Component"
 													/>
 												</div>
@@ -210,30 +190,24 @@ export default function Appointment() {
 									<td>
 										<p>
 											{appointments.subject.length > 50
-												? `${appointments.subject.substring(
-														0,
-														40
-												  )}...`
+												? `${appointments.subject.substring(0, 40)}...`
 												: appointments.subject}
 										</p>
 									</td>
 									<td className="text-center">
 										<div
 											className={`w-24 h-5 badge badge-xs ${
-												appointments &&
-												appointments.status ===
-													"Pending"
+												appointments && appointments.status === "Pending"
 													? "badge-warning"
 													: appointments &&
-													  appointments.status ===
-															"Responded"
+													  appointments.status === "Responded"
 													? "badge-success"
 													: appointments &&
-													  appointments.status ===
-															"Appointed"
+													  appointments.status === "Appointed"
 													? "badge-info"
 													: ""
-											}`}>
+											}`}
+										>
 											{appointments.status}
 										</div>
 									</td>
@@ -246,10 +220,9 @@ export default function Appointment() {
 												onClick={(e) => {
 													// Stop event propagation to prevent row hover effect
 													e.stopPropagation();
-													showDeleteModal(
-														appointments.id
-													);
-												}}>
+													showDeleteModal(appointments.id);
+												}}
+											>
 												Delete
 											</button>
 											<button className="btn btn-xs text-green-700">
@@ -267,34 +240,31 @@ export default function Appointment() {
 						<button
 							onClick={() => setCurrentPage(currentPage - 1)}
 							disabled={currentPage === 1}
-							className="join-item btn w-28">
+							className="join-item btn w-28"
+						>
 							Previous
 						</button>
 
 						{appointments &&
-							[
-								...Array(
-									Math.ceil(
-										appointments.length / AppointmentPerPage
-									)
-								),
-							].map((_, index) => (
-								<button
-									key={index}
-									className={`join-item btn ${
-										currentPage === index + 1
-											? "btn-active"
-											: ""
-									}`}
-									onClick={() => setCurrentPage(index + 1)}>
-									{index + 1}
-								</button>
-							))}
+							[...Array(Math.ceil(appointments.length / AppointmentPerPage))].map(
+								(_, index) => (
+									<button
+										key={index}
+										className={`join-item btn ${
+											currentPage === index + 1 ? "btn-active" : ""
+										}`}
+										onClick={() => setCurrentPage(index + 1)}
+									>
+										{index + 1}
+									</button>
+								)
+							)}
 
 						<button
 							onClick={() => setCurrentPage(currentPage + 1)}
 							disabled={AppointmentPerPage > appointments.length}
-							className="join-item btn w-28">
+							className="join-item btn w-28"
+						>
 							Next
 						</button>
 					</div>
@@ -305,7 +275,8 @@ export default function Appointment() {
 			{deleteModal && (
 				<ModalDelete
 					setDeleteModal={setDeleteModal}
-					handleDelete={handleDelete}></ModalDelete>
+					handleDelete={handleDelete}
+				></ModalDelete>
 			)}
 
 			{appointmentModal && (

@@ -1,83 +1,105 @@
 "use client";
-import React, { useState } from "react";
+
 import { useSession } from "next-auth/react";
+import { useState } from "react";
+
 import { Navbar } from "@/components/ui/Navbar";
-import InputName from "@/components/ui/inputs/InputName";
-import TextInput from "@/components/ui/inputs/TextInput";
-import UpdateProfile from "@/components/ui/modals/counselor/updateProfile/UpdateProfile"; // Corrected import
+import FullButton from "@/components/ui/buttons/FullButton";
+
+import UpdateProfileModal from "@/components/ui/modals/student/UpdateProfileModal";
+import Birthdate from "@/components/ui/student/Birthdate";
+import TextDisplay from "@/components/ui/student/TextDisplay";
 
 export default function StudentProfile() {
-  const [showModal, setShowModal] = useState(false);
-  const { data: session } = useSession();
+	const [showModal, setShowModal] = useState(false);
+	const { data: session } = useSession();
+	console.log(session);
 
-  const handleUpdateProfile = () => {
-    setShowModal(true);
-  };
+	const handleUpdateProfile = () => {
+		setShowModal(true);
+	};
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
+	const handleCloseModal = () => {
+		setShowModal(false);
+	};
 
-  return (
-    <div>
-      <main>
-        <Navbar userType="student" />
-        <div className="mx-60 mt-24">
-          {/* top part */}
-          <div className="flex mt-4 pt-24">
-            <div className="avatar flex">
-              <div className="w-40 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-2">
-                <img src={session?.user.image} />
-              </div>
-            </div>
-            <div className="ml-16 my-4">
-              <h1 className="font-Merriweather text-4xl font-thin tracking-tight">
-                Hello, {session?.user.name}
-              </h1>
-              <p className="font-Merriweather tracking-tight font-thin my-2">
-                {session?.user.email}
-              </p>
-              <button
-                className="btn w-44 text-sm rounded-full bg-[#222222] font-Merriweather text-white"
-                onClick={handleUpdateProfile}
-              >
-                Update Profile
-              </button>
-              {/* Render the modal conditionally */}
-              {showModal && <UpdateProfile onClose={handleCloseModal} />}
-            </div>
-          </div>
-          {/* ubos */}
-          <div>
-            <div className="flex flex-col gap-y-2.5 my-16 py-4">
-              <div className="w-full flex flex-row gap-x-6">
-                <InputName
-                  firstName={session?.user.name.split(" ")[0]}
-                  lastName={session?.user.name.split(" ")[1]}
-                  gender={session?.user.gender}
-                  readOnly={true}
-                />
-              </div>
-              <div className="w-full flex flex-row gap-x-6">
-                <div className="w-full">
-                  <TextInput
-                    label="ID Number"
-                    type="text"
-                    value={session?.user.idNumber}
-                  />
-                </div>
-                <div className="w-full">
-                  <TextInput
-                    label="Password"
-                    type="password"
-                    value={session?.user.password}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
+	return (
+		<div>
+			<section>
+				<Navbar userType="student" />
+			</section>
+
+			<section className="mt-20 px-72 py-20">
+				<section className="w-full h-fit flex flex-row items-center gap-x-10">
+					{/* Main Identification */}
+					<div className="w-2/12 h-full flex items-center avatar">
+						<div className="w-48 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-2">
+							<img src={session?.user.image} />
+						</div>
+					</div>
+					<div className=" w-10/12 h-full flex flex-col justify-center">
+						<h1 className="font-Merriweather text-4xl font-thin tracking-tight">
+							Hello, {session?.user.name}
+						</h1>
+						<p className="font-Merriweather tracking-tight font-thin my-2">
+							{session?.user.email}
+						</p>
+						<div className="w-2/12 mt-1">
+							<FullButton onClick={handleUpdateProfile}>Update Profile</FullButton>
+						</div>
+					</div>
+				</section>
+
+				{/* Profile Details */}
+				<section className="flex flex-col gap-y-10 py-16">
+					{/* Name */}
+					<div>
+						<div className="w-full flex flex-row gap-x-6">
+							<div className="w-5/12">
+								<TextDisplay label="First Name" value={session?.user.name} />
+							</div>
+							<div className="w-5/12">
+								<TextDisplay label="Last Name" value={session?.user.lastname} />
+							</div>
+							<div className="w-2/12">
+								<TextDisplay label="Gender" value={session?.user.gender} />
+							</div>
+						</div>
+					</div>
+
+					{/* College Information */}
+					<div>
+						<div className="w-full flex flex-row gap-x-6">
+							<div className="w-5/12">
+								<TextDisplay label="ID Number" value={session?.user.idNumber} />
+							</div>
+							<div className="w-5/12">
+								<TextDisplay label="Program" value={session?.user.program} />
+							</div>
+							<div className="w-2/12">
+								<TextDisplay label="Year Level" value={session?.user.year} />
+							</div>
+						</div>
+					</div>
+
+					{/* Additional Details */}
+					<div>
+						<div className="w-full flex flex-row gap-x-6">
+							<div className="w-3/12">
+								<Birthdate value="2023-05-16" />
+							</div>
+							<div className="w-3/12">
+								<TextDisplay label="Contact Number" value={session?.user.program} />
+							</div>
+							<div className="w-6/12">
+								<TextDisplay label="Address" value={session?.user.year} />
+							</div>
+						</div>
+					</div>
+				</section>
+			</section>
+
+			{showModal && <UpdateProfileModal onClose={handleCloseModal} />}
+		</div>
+	);
 }

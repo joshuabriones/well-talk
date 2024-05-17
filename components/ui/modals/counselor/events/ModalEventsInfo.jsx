@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import iconDelete from "@/public/images/icons/iconDelete.png";
+import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
-import ModalConfirmResponse from "./ModalConfirmResponse";
+import iconDelete from "@/public/images/icons/iconDelete.png";
+import { useEffect, useState } from "react";
+import ModalConfirmResponse from "../inquiries/ModalConfirmResponse";
 
 const ModaleventInfo = ({ setEventModal, selectedID, events }) => {
 	const [isChecked, setIsChecked] = useState(true);
@@ -19,56 +20,21 @@ const ModaleventInfo = ({ setEventModal, selectedID, events }) => {
 
 	// Fetch event details based on selectedID
 	useEffect(() => {
-		const handleFindEvent = async () => {
-			if (selectedID) {
-				try {
-					const response = await fetch(
-						`/api/event/view-event?eventId=${selectedID}`
-					);
-					if (!response.ok) {
-						throw new Error(
-							`Failed to fetch event (status ${response.status})`
-						);
-					}
-					const data = await response.json();
-					if (data.event && data.event.counselorReply) {
-						setResponse(data.event.counselorReply);
-					}
-					setEvent(data.event);
-				} catch (error) {
-					console.error("Error fetching event:", error.message);
-				}
-			}
+		const handleFindEvent = () => {
+			const eventFound = events.find((event) => event.id === selectedID);
+			setEvent(eventFound);
 		};
 
 		handleFindEvent();
 	}, [selectedID, events]);
 
-	const handleResponse = async () => {
-		const currentResponse = response;
+	// handle response
+	const handleResponse = () => {
+		console.log(response);
 
-		try {
-			const response = await fetch(`/api/event/reply-event`, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					eventId: selectedID,
-					counselorReply: currentResponse,
-					replyDate: new Date().toISOString(),
-					counselorId: 1,
-				}),
-			});
-			if (!response.ok) {
-				throw new Error("Failed to respond to event");
-			}
-			const data = await response.json();
-			console.log(data);
-			// Update event status to "Responded" here if needed
-		} catch (error) {
-			console.error("Error responding to event:", error.message);
-		}
+		// update
+
+		// set appointment.status to "Responded", "Pending", "Appointed"
 	};
 
 	return (
@@ -96,22 +62,18 @@ const ModaleventInfo = ({ setEventModal, selectedID, events }) => {
 							</tr>
 							<tr>
 								<th>Event Name:</th>
-								<td>{event ? event.subject : ""}</td>
+								<td>{event ? event.name : ""}</td>
 							</tr>
 							<tr>
-								<th>Event Setter:</th>
-								<td>
-									{event
-										? `${event.firstName} ${event.user.lastName}`
-										: ""}
-								</td>
+								<th>Setter:</th>
+								<td>{event ? `${event.firstName} ${event.user.lastName}` : ""}</td>
 							</tr>
 							<tr>
-								<th>Event Type:</th>
+								<th>Type:</th>
 								<td>{event ? event.type : ""}</td>
 							</tr>
 							<tr>
-								<th>Event Location:</th>
+								<th>Location:</th>
 								<td>{event ? event.location : ""}</td>
 							</tr>
 							<tr>
@@ -128,46 +90,33 @@ const ModaleventInfo = ({ setEventModal, selectedID, events }) => {
 							</tr>
 							<tr>
 								<th>Status:</th>
-								<td className="text-center">
+								<td>
 									<div
-										className={`w-24 h-5 badge badge-xs ${
-											event.status === "Upcoming"
+										className={`h-fit badge badge-md ${
+											event?.status === "Upcoming"
 												? "badge-warning"
-												: event.status === "Cancelled"
+												: event?.status === "Cancelled"
 												? "badge-error"
-												: event.status === "Completed"
+												: event?.status === "Completed"
 												? "badge-success"
 												: ""
 										}`}
+										style={{ width: "30%" }}
 									>
-										{event.status}
+										{event?.status}
 									</div>
 								</td>
 							</tr>
 						</tbody>
 					</table>
 
-					<div>
-						<div className="font-Merriweather font-bold">
-							Response:
-						</div>
-						<textarea
-							placeholder="Type your response here..."
-							value={response}
-							onChange={(e) => setResponse(e.target.value)}
-							className={`textarea textarea-bordered textarea-md w-full max-w-full font-Jaldi mt-2 text-lg overflow-auto resize-none ${
-								respondable === "Responded"
-									? "pointer-events-none opacity-50"
-									: ""
-							}`}
-							readOnly={respondable === "Responded"}
-						></textarea>
-					</div>
-
-					<div className="gap-x-4 mt-3 px-44">
+					<div className="flex flex-row gap-x-4 mt-6 px-14">
 						<HollowButton onClick={() => setConfirmResponse(true)}>
-							Respond
+							Reschedule
 						</HollowButton>
+						<FullButton onClick={() => setConfirmResponse(true)}>
+							Update Status
+						</FullButton>
 					</div>
 				</div>
 				<label
