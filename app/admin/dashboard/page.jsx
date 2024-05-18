@@ -13,17 +13,17 @@ import Appointments from "@/components/admin_components/pages/Appointments";
 const AdminDashboard = () => {
   const [page, setPage] = useState("Dashboard");
   return (
-    <div className="w-full min-h-screen flex bg-black">
+    <div className="w-full min-h-screen flex bg-slate-100">
       <SideNav setPage={setPage} />
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, backgroundColor: "white" }}
+        sx={{ flexGrow: 1, p: 3, backgroundColor: "#F1F5F9" }}
       >
         <DrawerHeader />
         {page === "Dashboard" && <Dashboard />}
         {page === "Appointments" && <Appointments />}
         {page === "Users" && <Users />}
-        {page === "Statistics" && <Statistics />}
+        {page === "Referrals" && <Statistics />}
       </Box>
     </div>
   );

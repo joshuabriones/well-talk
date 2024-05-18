@@ -85,14 +85,10 @@ const Drawer = styled(MuiDrawer, {
 export default function SideNav({ setPage }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const pages = [
+  const navLinks = [
     {
       name: "Dashboard",
       icon: <DashboardIcon />,
-    },
-    {
-      name: "Statistics",
-      icon: <InsightsIcon />,
     },
     {
       name: "Users",
@@ -101,6 +97,10 @@ export default function SideNav({ setPage }) {
     {
       name: "Appointments",
       icon: <CalendarTodayIcon />,
+    },
+    {
+      name: "Referrals",
+      icon: <InsightsIcon />,
     },
   ];
 
@@ -119,13 +119,13 @@ export default function SideNav({ setPage }) {
         position="fixed"
         open={open}
         sx={{
-          bgcolor: "#6B9080",
+          bgcolor: "black",
         }}
         style={{
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
-          paddingRight: "28px",
+          paddingRight: "34px",
         }}
       >
         <Toolbar style={{ display: "flex", alignItems: "center" }}>
@@ -142,11 +142,11 @@ export default function SideNav({ setPage }) {
             <MenuIcon />
           </IconButton>
         </Toolbar>
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div className="flex items-center font-Merriweather">
           <Avatar sx={{ bgcolor: deepOrange[500] }}>JD</Avatar>
           <div className="ml-2">
             <h3 className="font-bold">John Doe</h3>
-            <p className="text-xs">Admin</p>
+            <p className="text-xs text-slate-100">Admin</p>
           </div>
         </div>
       </AppBar>
@@ -171,7 +171,7 @@ export default function SideNav({ setPage }) {
         </DrawerHeader>
         <Divider />
         <List>
-          {pages.map((item, index) => (
+          {navLinks.map((item, index) => (
             <ListItem key={item.name} disablePadding sx={{ display: "block" }}>
               <ListItemButton
                 sx={{
