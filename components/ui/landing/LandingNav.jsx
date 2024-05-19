@@ -1,7 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-
 function NavList({ userType }) {
 	const router = useRouter();
 	let navigationItems = [];
@@ -61,9 +60,7 @@ export function Navbar({ userType }) {
 		top: 0,
 		left: 0,
 		width: "100%",
-		backgroundColor: isScrolled
-			? "rgba(255, 255, 255, 0.9)"
-			: "transparent",
+		backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.9)" : "transparent",
 		zIndex: 50,
 		transition: "background-color 0.3s ease",
 	};
@@ -75,9 +72,7 @@ export function Navbar({ userType }) {
 			className="mx-auto max-w-screen-auto p-6 lg:pl-6 bg-blue-gray-900 w-full"
 		>
 			<div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
-				<div className="ml-24 text-2xl text-[#6B9080] font-bold">
-					WellTalk
-				</div>
+				<div className="ml-24 text-2xl text-[#6B9080] font-bold">WellTalk</div>
 				<div className="hidden lg:block flex items-center gap-8 lg:ml-auto">
 					<NavList userType={userType} />
 				</div>

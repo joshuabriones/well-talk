@@ -1,0 +1,43 @@
+.chevron-left {
+	display: flex;
+	/* flex: 0 0 10%; */
+	justify-content: left;
+	padding: 3px;
+	color: #111111;
+	font-size: 12px;
+}
+
+.chevron-left:hover {
+	cursor: pointer;
+	scale: 1.3;
+	color: black;
+	/* border-radius: 50%;
+	background-color: #e94f37;  */
+}
+
+.month-details {
+	display: flex;
+	justify-content: center;
+	/* width: 80%;  */
+	color: #323230;
+	font-size: 24px;
+	font-weight: bold;
+	font-family: "Times New Roman", Times, serif;
+}
+
+.chevron-right {
+	display: flex;
+	/* flex: 0 0 10%; */
+	justify-content: right;
+	padding: 3px;
+	color: #111111;
+	font-size: 12px;
+}
+
+.chevron-right:hover {
+	cursor: pointer;
+	scale: 1.3;
+	color: black;
+	/* border-radius: 50%;
+	background-color: #e94f37;  */
+}
