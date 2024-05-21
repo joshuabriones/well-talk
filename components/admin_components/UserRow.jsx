@@ -3,7 +3,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 const UserRow = ({ user, onDelete }) => {
   const handleDelete = () => {
-    onDelete(user.id);
+    const isConfirmed = window.confirm(
+      `Are you sure you want to delete ${user.name}?`
+    );
+    if (isConfirmed) {
+      onDelete(user.id);
+    }
   };
 
   const roleColor = () => {
