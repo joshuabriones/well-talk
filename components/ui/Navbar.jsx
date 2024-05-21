@@ -28,9 +28,6 @@ function ProfileMenu() {
       action: handleProfile,
     },
     {
-      label: "Edit Profile",
-    },
-    {
       label: "Sign Out",
       action: handleSignOut,
     },
@@ -91,15 +88,16 @@ function NavList({ userType }) {
     case "student":
       navigationItems = [
         { label: "Home", route: "/student" },
-        { label: "Appointment", route: "/student/student-appointment" },
-        { label: "Journal", route: "/student/student-journal" },
-        { label: "Inquiry", route: "/student/student-inquiry" },
+        { label: "Appointment", route: "/student/appointment" },
+        { label: "Journal", route: "/student/journal" },
+        { label: "Inquiry", route: "/student/inquiry" },
       ];
       break;
     case "teacher":
       navigationItems = [
-        { label: "Home", route: "/resident-home" },
-        { label: "Referral", route: "/resident-account" },
+        { label: "Home", route: "/teacher" },
+        { label: "Referral", route: "/referral" },
+        { label: "Inquiry", route: "/inquiry" },
       ];
       break;
     case "counselor":

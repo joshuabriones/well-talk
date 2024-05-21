@@ -45,7 +45,9 @@ export default function StudentProfile() {
 							{session?.user.email}
 						</p>
 						<div className="w-2/12 mt-1">
-							<FullButton onClick={handleUpdateProfile}>Update Profile</FullButton>
+							<FullButton onClick={handleUpdateProfile}>
+								Update Profile
+							</FullButton>
 						</div>
 					</div>
 				</section>
@@ -56,13 +58,22 @@ export default function StudentProfile() {
 					<div>
 						<div className="w-full flex flex-row gap-x-6">
 							<div className="w-5/12">
-								<TextDisplay label="First Name" value={session?.user.name} />
+								<TextDisplay
+									label="First Name"
+									value={session?.user.name}
+								/>
 							</div>
 							<div className="w-5/12">
-								<TextDisplay label="Last Name" value={session?.user.lastname} />
+								<TextDisplay
+									label="Last Name"
+									value={session?.user.lastname}
+								/>
 							</div>
 							<div className="w-2/12">
-								<TextDisplay label="Gender" value={session?.user.gender} />
+								<TextDisplay
+									label="Gender"
+									value={session?.user.gender}
+								/>
 							</div>
 						</div>
 					</div>
@@ -71,13 +82,22 @@ export default function StudentProfile() {
 					<div>
 						<div className="w-full flex flex-row gap-x-6">
 							<div className="w-5/12">
-								<TextDisplay label="ID Number" value={session?.user.idNumber} />
+								<TextDisplay
+									label="ID Number"
+									value={session?.user.idNumber}
+								/>
 							</div>
 							<div className="w-5/12">
-								<TextDisplay label="Program" value={session?.user.program} />
+								<TextDisplay
+									label="Program"
+									value={session?.user.program}
+								/>
 							</div>
 							<div className="w-2/12">
-								<TextDisplay label="Year Level" value={session?.user.year} />
+								<TextDisplay
+									label="Year Level"
+									value={session?.user.year}
+								/>
 							</div>
 						</div>
 					</div>
@@ -89,10 +109,16 @@ export default function StudentProfile() {
 								<Birthdate value="2023-05-16" />
 							</div>
 							<div className="w-3/12">
-								<TextDisplay label="Contact Number" value={session?.user.program} />
+								<TextDisplay
+									label="Contact Number"
+									value={session?.user.program}
+								/>
 							</div>
 							<div className="w-6/12">
-								<TextDisplay label="Address" value={session?.user.year} />
+								<TextDisplay
+									label="Address"
+									value={session?.user.year}
+								/>
 							</div>
 						</div>
 					</div>
