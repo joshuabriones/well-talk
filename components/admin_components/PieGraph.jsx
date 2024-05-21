@@ -30,7 +30,7 @@ const datahero = [
 const dataFormatter = (number) => number.toString();
 
 export const PieGraph = () => (
-  <div className="w-full flex flex-col items-center justify-between rounded-2xl bg-white mt-7 p-8">
+  <div className="w-full flex flex-col items-center justify-between shadow-xl rounded-2xl bg-white mt-7 p-8 lg:col-span-1 sm:col-span-3">
     <h3 className="text-lg font-bold text-tremor-content-strong">
       Stundent Programs
     </h3>

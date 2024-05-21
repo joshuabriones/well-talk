@@ -5,6 +5,8 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+
+    "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -12,6 +14,10 @@ module.exports = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-red-card": "linear-gradient(245deg, #FF6F61, #FFB6B6)",
+        "gradient-green-card": "linear-gradient(245deg, #66C97F, #A3E6BB)",
+        "gradient-blue-card": "linear-gradient(245deg, #6EA9FF, #B3D4FF)",
+        "gradient-purple-card": "linear-gradient(245deg, #A785FF, #D6B3FF)",
       },
       fontFamily: {
         Merriweather: ["Merriweather", "serif"],

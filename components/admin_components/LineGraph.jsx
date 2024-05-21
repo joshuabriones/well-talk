@@ -82,7 +82,7 @@ const dataFormatter = (number) => number.toString();
 
 export function LineGraph() {
   return (
-    <div className="mt-7 rounded-2xl bg-white p-8">
+    <div className="mt-7 rounded-2xl bg-white p-8 drop-shadow-lg w-full">
       <h3 className="text-lg font-bold text-tremor-content-strong">
         Appointments Over Time
       </h3>

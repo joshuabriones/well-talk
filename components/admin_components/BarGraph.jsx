@@ -19,7 +19,7 @@ const dataFormatter = (number) =>
   Intl.NumberFormat("us").format(number).toString();
 
 export const BarGraph = () => (
-  <div className="w-full rounded-2xl bg-white mt-7 p-8 col-span-2">
+  <div className="w-full rounded-2xl shadow-xl bg-white mt-7 p-8 lg:col-span-2 sm:col-span-3">
     <h3 className="text-lg font-bold text-tremor-content-strong">
       Total Users
     </h3>
