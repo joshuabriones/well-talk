@@ -13,11 +13,11 @@ import Appointments from "@/components/admin_components/pages/Appointments";
 const AdminDashboard = () => {
   const [page, setPage] = useState("Dashboard");
   return (
-    <div className="w-full min-h-screen flex bg-slate-100">
+    <div className="w-full min-h-screen flex bg-white">
       <SideNav setPage={setPage} />
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, backgroundColor: "#F1F5F9" }}
+        sx={{ flexGrow: 1, p: 3, backgroundColor: "white" }}
       >
         <DrawerHeader />
         {page === "Dashboard" && <Dashboard />}
