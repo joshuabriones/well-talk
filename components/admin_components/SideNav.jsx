@@ -23,6 +23,8 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import InsightsIcon from "@mui/icons-material/Insights";
 import GroupIcon from "@mui/icons-material/Group";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { Box } from "@mui/material";
 
 const drawerWidth = 240;
 
@@ -170,16 +172,56 @@ export default function SideNav({ setPage }) {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List>
-          {navLinks.map((item, index) => (
-            <ListItem key={item.name} disablePadding sx={{ display: "block" }}>
+        <Box
+          sx={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <List>
+            {navLinks.map((item, index) => (
+              <ListItem
+                key={item.name}
+                disablePadding
+                sx={{ display: "block" }}
+              >
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                  onClick={() => setPage(item.name)}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.name}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+          <List>
+            <Divider />
+            <ListItem disablePadding sx={{ display: "block" }}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? "initial" : "center",
                   px: 2.5,
                 }}
-                onClick={() => setPage(item.name)}
+                onClick={() => alert("Logout")}
               >
                 <ListItemIcon
                   sx={{
@@ -188,41 +230,13 @@ export default function SideNav({ setPage }) {
                     justifyContent: "center",
                   }}
                 >
-                  {item.icon}
+                  <LogoutIcon />
                 </ListItemIcon>
-                <ListItemText
-                  primary={item.name}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
+                <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  {index % 2 === 0 ? <DashboardIcon /> : <CalendarTodayIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+          </List>
+        </Box>
       </Drawer>
     </>
   );
