@@ -13,6 +13,7 @@ const ModalAppointmentInfo = ({
 }) => {
   const [isChecked, setIsChecked] = useState(true);
   const [appointment, setAppointment] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
 
   // for dialog
   const toggleChecked = () => {
@@ -117,7 +118,13 @@ const ModalAppointmentInfo = ({
             <HollowButton onClick={() => setConfirmResponse(true)}>
               Reschedule
             </HollowButton>
-            <FullButton onClick={() => setConfirmResponse(true)}>
+            {/*
+              TEMPORARILY REMOVED 
+             <FullButton onClick={() => setConfirmResponse(true)}>
+              Update Status
+            </FullButton> */}
+
+            <FullButton onClick={() => setOpenModal(true)}>
               Update Status
             </FullButton>
           </div>
@@ -129,6 +136,41 @@ const ModalAppointmentInfo = ({
         >
           Close
         </label>
+        {openModal && (
+          <div className="w-2/5 h-2/3 absolute bg-white rounded-2xl flex flex-col p-16 justify-between dark:bg-slate-950">
+            <span className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-5xl">
+              ⭐️ ⭐️ ⭐️ ⭐️ ⭐️
+            </span>
+
+            <div>
+              <h1 className="font-bold text-slate-700 text-2xl mb-1">
+                Give feedback
+              </h1>
+              <p className="text-slate-500">
+                Share your invaluable feedback and provide any additional notes
+                you deem necessary. Your insights are crucial in our continuous
+                effort to enhance our services and better support those in need.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              <textarea
+                className="textarea textarea-lg textarea-accent"
+                placeholder="Share your feedback here..."
+              ></textarea>
+              <textarea
+                className="textarea textarea-lg textarea-accent"
+                placeholder="Additional notes..."
+              ></textarea>
+            </div>
+            <button
+              className="w-1/3 p-2 bg-green-500 text-black dark:text-white rounded-lg self-end"
+              onClick={() => setOpenModal(false)}
+            >
+              Submit
+            </button>
+          </div>
+        )}
       </div>
     </>
   );

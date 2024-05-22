@@ -26,9 +26,133 @@ export default function Appointment() {
   useEffect(() => {
     try {
       const fetchAppointments = async () => {
-        const response = await fetch("/api/appointment/view-appointments");
-        const data = await response.json();
-        setAppointments(data.appointments);
+        // const response = await fetch("/api/appointment/view-appointments");
+        // const data = await response.json();
+        // setAppointments(data.appointments);
+
+        // TESTING
+        setAppointments([
+          {
+            appointmentId: 1,
+            dateTime: "2024-06-01 10:30 AM",
+            student: {
+              firstName: "John",
+              lastName: "Doe",
+              idNumber: "19-8000-322",
+              institutionalEmail: "johndoe@gmail.com",
+              image: "https://ui-avatars.com/api/?name=John+Doe",
+            },
+            purpose: "Bullied from school",
+          },
+          {
+            appointmentId: 2,
+            dateTime: "2024-06-02 11:00 AM",
+            student: {
+              firstName: "Jane",
+              lastName: "Smith",
+              idNumber: "19-8000-323",
+              institutionalEmail: "janesmith@gmail.com",
+              image: "https://ui-avatars.com/api/?name=Jane+Smith",
+            },
+            purpose: "Career Counseling",
+          },
+          {
+            appointmentId: 3,
+            dateTime: "2024-06-03 01:00 PM",
+            student: {
+              firstName: "Alice",
+              lastName: "Johnson",
+              idNumber: "19-8000-324",
+              institutionalEmail: "alicejohnson@gmail.com",
+              image: "https://ui-avatars.com/api/?name=Alice+Johnson",
+            },
+            purpose: "Academic Advising",
+          },
+          {
+            appointmentId: 4,
+            dateTime: "2024-06-04 02:30 PM",
+            student: {
+              firstName: "Bob",
+              lastName: "Brown",
+              idNumber: "19-8000-325",
+              institutionalEmail: "bobbrown@gmail.com",
+              image: "https://ui-avatars.com/api/?name=Bob+Brown",
+            },
+            purpose: "Financial Aid Assistance",
+          },
+          {
+            appointmentId: 5,
+            dateTime: "2024-06-05 09:00 AM",
+            student: {
+              firstName: "Carol",
+              lastName: "White",
+              idNumber: "19-8000-326",
+              institutionalEmail: "carolwhite@gmail.com",
+              image: "https://ui-avatars.com/api/?name=Carol+White",
+            },
+            purpose: "Health Services",
+          },
+          {
+            appointmentId: 6,
+            dateTime: "2024-06-06 11:30 AM",
+            student: {
+              firstName: "David",
+              lastName: "Green",
+              idNumber: "19-8000-327",
+              institutionalEmail: "davidgreen@gmail.com",
+              image: "https://ui-avatars.com/api/?name=David+Green",
+            },
+            purpose: "Tutoring",
+          },
+          {
+            appointmentId: 7,
+            dateTime: "2024-06-07 03:00 PM",
+            student: {
+              firstName: "Eva",
+              lastName: "Black",
+              idNumber: "19-8000-328",
+              institutionalEmail: "evablack@gmail.com",
+              image: "https://ui-avatars.com/api/?name=Eva+Black",
+            },
+            purpose: "Health Services",
+          },
+          {
+            appointmentId: 8,
+            dateTime: "2024-06-08 10:00 AM",
+            student: {
+              firstName: "Frank",
+              lastName: "Blue",
+              idNumber: "19-8000-329",
+              institutionalEmail: "frankblue@gmail.com",
+              image: "https://ui-avatars.com/api/?name=Frank+Blue",
+            },
+            purpose: "Career Counseling",
+          },
+          {
+            appointmentId: 9,
+            dateTime: "2024-06-09 01:30 PM",
+            student: {
+              firstName: "Grace",
+              lastName: "Yellow",
+              idNumber: "19-8000-330",
+              institutionalEmail: "graceyellow@gmail.com",
+              image: "https://ui-avatars.com/api/?name=Grace+Yellow",
+            },
+            purpose: "Academic Advising",
+          },
+          {
+            appointmentId: 10,
+            dateTime: "2024-06-10 04:00 PM",
+            student: {
+              firstName: "Henry",
+              lastName: "Purple",
+              idNumber: "19-8000-331",
+              institutionalEmail: "henrypurple@gmail.com",
+              image: "https://ui-avatars.com/api/?name=Henry+Purple",
+            },
+            purpose: "Financial Aid Assistance",
+          },
+        ]);
       };
 
       fetchAppointments();
@@ -144,8 +268,9 @@ export default function Appointment() {
                   <td>
                     <div className="flex flex-row gap-x-3">
                       <div className="text-sm">
-                        {formatDate(appointments.date)} {appointments.timeStart}
-                        -{appointments.timeEnd}
+                        {/* {formatDate(appointments.date)} {appointments.timeStart}
+                        -{appointments.timeEnd} */}
+                        {appointments.dateTime}
                       </div>
                     </div>
                   </td>
@@ -246,7 +371,7 @@ export default function Appointment() {
 
             <button
               onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={AppointmentPerPage > appointments.length}
+              disabled={AppointmentPerPage > appointments?.length}
               className="join-item btn w-28"
             >
               Next
