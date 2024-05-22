@@ -48,7 +48,6 @@ model user {
   dateOfCreation     DateTime    @default(now())
   isDeleted          Boolean     @default(false)
   role               user_role
-  calendar           calendar[]
   counselor          counselor?
   inquiry            inquiry[]
   journal            journal[]
@@ -56,33 +55,26 @@ model user {
   referral           referral[]
   student            student?
   teacher            teacher?
+  appointmentsAsCounselor appointment[] @relation(name: "AppointmentCounselor")
+  appointmentsAsStudent   appointment[] @relation(name: "AppointmentStudent")
 }
 
 model appointment {
   appointmentId   Int      @id @default(autoincrement())
-  purpose         String
+  studentId       Int?
+  counselorId     Int?
   date            DateTime
-  timeStart       DateTime
-  timeEnd         DateTime
+  timeStart       String
+  timeEnd         String
   additionalNotes String?
   status          Boolean
+  appointmentType String
   notes           String?
-  calendarId      Int
+  purpose         String?
   isDeleted       Boolean  @default(false)
-  calendar        calendar @relation(fields: [calendarId], references: [calendarId], map: "Appointment_calendarId_fkey")
+  counselor       user? @relation(name: "AppointmentCounselor", fields: [counselorId], references: [id], map: "Appointment_counselorId_fkey")
+  student         user? @relation(name: "AppointmentStudent", fields: [studentId], references: [id], map: "Appointment_studentId_fkey")
 
-  @@index([calendarId], map: "Appointment_calendarId_fkey")
-}
-
-model calendar {
-  calendarId  Int           @id @default(autoincrement())
-  userId      Int
-  isDeleted   Boolean       @default(false)
-  appointment appointment[]
-  user        user          @relation(fields: [userId], references: [id], map: "Calendar_userId_fkey")
-  event       event[]
-
-  @@index([userId], map: "Calendar_userId_fkey")
 }
 
 model event {
@@ -96,9 +88,7 @@ model event {
   timeEnd      DateTime
   calendarId   Int
   isDeleted    Boolean  @default(false)
-  calendar     calendar @relation(fields: [calendarId], references: [calendarId], map: "Event_calendarId_fkey")
 
-  @@index([calendarId], map: "Event_calendarId_fkey")
 }
 
 model inquiry {
