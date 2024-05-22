@@ -6,7 +6,7 @@ import SideNav from "@/components/admin_components/SideNav";
 import Box from "@mui/material/Box";
 import { DrawerHeader } from "@/components/admin_components/SideNav";
 import Dashboard from "@/components/admin_components/pages/Dashboard";
-import Statistics from "@/components/admin_components/pages/Statistics";
+import Referrals from "@/components/admin_components/pages/Referrals";
 import Users from "@/components/admin_components/pages/Users";
 import Appointments from "@/components/admin_components/pages/Appointments";
 
@@ -23,7 +23,7 @@ const AdminDashboard = () => {
         {page === "Dashboard" && <Dashboard />}
         {page === "Appointments" && <Appointments />}
         {page === "Users" && <Users />}
-        {page === "Referrals" && <Statistics />}
+        {page === "Referrals" && <Referrals />}
       </Box>
     </div>
   );

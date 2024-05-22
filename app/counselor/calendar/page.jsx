@@ -1,49 +1,14 @@
 "use client";
 
-// libraries
-import dayjs from "dayjs";
-import { useContext, useEffect, useState } from "react";
-
-//context
-import GlobalContext from "@/context/GlobalContext";
-
-// components
 import { Navbar } from "@/components/ui/Navbar";
-import Calendar from "@/components/ui/calendar/Calendar";
-import CalendarNav from "@/components/ui/calendar/CalendarNav";
-import { getDate } from "@/components/ui/calendar/Date";
-import DayViewCalendar from "@/components/ui/calendar/DayViewCalendar";
-import EventModal from "@/components/ui/calendar/EventModal";
+import CalendarScheduling from "@/components/ui/calendar/CalendarScheduling";
 import Events from "@/components/ui/calendar/Events";
-import { getMonth } from "@/components/ui/calendar/Month";
 import ViewEvents from "@/components/ui/calendar/ViewEvents";
+import GlobalContext from "@/context/GlobalContext";
+import { useContext } from "react";
 
 export default function CalendarView() {
-	// use useEffect to fetch events
-	// const getCalendarEvents = async () => {
-	// 	try {
-	// 		console.log("before authentication");
-	// 		const response = await axios.get(
-	// 			"http://localhost:5108/api/CalendarEvents/GetCalendarEvents",
-	// 			{ withCredentials: true }
-	// 		);
-
-	// 		response.data.map((event) => {
-	// 			dispatchCallEvent({ type: "get", payload: event });
-	// 			console.log("after success authentication");
-	// 		});
-	// 	} catch (err) {
-	// 		if (err.response.status === 400) {
-	// 			console.log("failed before navifate authentication");
-	// 			navigate("/signin");
-	// 			console.log("failed after navifate authentication");
-	// 		}
-	// 	}
-	// };
-
-	// useEffect(() => {
-	// 	getCalendarEvents();
-	// }, []);
+	const { showEventModal, viewEvents } = useContext(GlobalContext);
 
 	const events = [
 		{
@@ -124,49 +89,16 @@ export default function CalendarView() {
 		},
 	];
 
-	const [currentMonth, setCurrentMonth] = useState(getMonth());
-	const [currentDate, setCurrentDate] = useState(getDate());
-
-	const {
-		monthIndex,
-		showEventModal,
-		viewEvents,
-		showDayViewCalendar,
-		showMonthViewCalendar,
-		dateIndex,
-		dispatchCallEvent,
-	} = useContext(GlobalContext);
-
-	useEffect(() => {
-		showMonthViewCalendar && setCurrentMonth(getMonth(monthIndex, dayjs().year()));
-		showDayViewCalendar && setCurrentDate(getDate(monthIndex, dateIndex));
-
-		let month = dayjs(new Date(dayjs().year(), monthIndex, dateIndex)).month();
-		let year = dayjs(new Date(dayjs().year(), monthIndex, dateIndex)).year();
-
-		showDayViewCalendar && setCurrentMonth(getMonth(month, year));
-	}, [monthIndex, dateIndex]);
-
 	return (
 		<div className="h-screen flex flex-row">
 			<Navbar userType="counselor" />
 
-			<section className="bg-gray-400 h-[90vh] w-full flex flex-row mt-20 p-6">
-				<section className="bg-gray-100 w-1/2 h-full flex flex-col">
-					<div className="h-fit">
-						<CalendarNav date={currentDate} />
-					</div>
-					<div className="flex-grow overflow-auto">
-						{showMonthViewCalendar && <Calendar month={currentMonth} />}
-						{showDayViewCalendar && <DayViewCalendar date={currentDate} />}
-					</div>
-				</section>
-
+			<section className="bg-gray-200 h-[90vh] w-full flex flex-row mt-20 p-6">
+				<CalendarScheduling />
 				<Events events={events} />
 			</section>
 
 			{viewEvents && <ViewEvents />}
-			{showEventModal && <EventModal />}
 		</div>
 	);
 }

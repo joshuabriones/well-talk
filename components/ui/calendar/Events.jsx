@@ -1,6 +1,6 @@
 const Events = ({ events }) => {
 	return (
-		<section className="bg-white w-1/2 h-full p-10 flex flex-col">
+		<section className="bg-white w-1/2 h-full p-10 flex flex-col border-gray-400 border-t border-b border-r">
 			<div className="">
 				<h1 className="mt-5 text-6xl font-Merriweather font-thin">Upcoming Events</h1>
 				<div class="border-gray-200 border-t-2 mt-10" />
