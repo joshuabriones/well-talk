@@ -48,7 +48,7 @@ export default function EventModal() {
 						icon={faPen}
 						className="edit-icon"
 						onClick={() => {
-							setShowEventModal(true);
+							// setShowEventModal(true);
 						}}
 					></FontAwesomeIcon>
 					<div>

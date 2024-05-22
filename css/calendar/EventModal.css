@@ -10,7 +10,6 @@
 	height: 100%;
 	background-color: rgba(0, 0, 0, 0.4);
 }
-
 .event-modal {
 	border-radius: 8px;
 	background-color: #f1f1e5;
@@ -18,7 +17,6 @@
 	box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 	width: 40%;
 }
-
 .view-modal {
 	border-radius: 8px;
 	background-color: #f1f1e5;
@@ -26,7 +24,6 @@
 	box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 	width: 30%;
 }
-
 .event-modal-header {
 	background-color: #393e41;
 	padding: 8px 16px;
@@ -35,11 +32,9 @@
 	justify-content: flex-end;
 	align-items: center;
 }
-
 .drag-handle {
 	color: white;
 }
-
 .title-container {
 	display: flex;
 	flex-wrap: nowrap;
@@ -47,11 +42,9 @@
 	align-items: center;
 	margin-bottom: 10px;
 }
-
 .title-design {
 	width: 60px;
 }
-
 .label-design {
 	width: 12px;
 	height: 12px;
@@ -59,7 +52,6 @@
 	display: block;
 	margin: auto;
 }
-
 .title-name {
 	border-radius: 4px;
 	padding-left: 10px;
@@ -76,7 +68,6 @@
 	border: none;
 	font-weight: bold;
 }
-
 .view-event-time {
 	border-radius: 4px;
 	padding-left: 10px;
@@ -93,17 +84,14 @@
 	border: none;
 	font-weight: bold;
 }
-
 .edit-icon {
 	margin-right: 15px;
 	color: #fff;
 }
-
 .edit-icon:hover {
 	cursor: pointer;
 	color: #1a73e8;
 }
-
 .event-modal-close {
 	background: none;
 	border: none;
@@ -115,13 +103,11 @@
 	font-size: 20px;
 	padding: 0px 4px;
 }
-
 .event-modal-close:hover {
 	background-color: red;
 
 	color: white;
 }
-
 .event-modal-delete {
 	text-align: right;
 	background: none;
@@ -135,16 +121,13 @@
 	margin-right: 20px;
 	padding: 4px 4px;
 }
-
 .event-modal-delete:hover {
 	color: red;
 }
-
 .event-modal-content {
 	padding: 12px;
 	padding-right: 20px;
 }
-
 .event-modal-content-grid-container {
 	display: grid;
 	grid-template-columns: auto;
@@ -152,7 +135,6 @@
 	row-gap: 28px;
 	padding-left: 68px;
 }
-
 input[type="text"].event-modal-input-field {
 	border-bottom: 2px solid;
 	border-bottom-color: #3f70b0;
@@ -166,12 +148,10 @@ input[type="text"].event-modal-input-field {
 	border-radius: 4px;
 	padding-left: 8px;
 }
-
 .event-modal-input-field {
 	border-bottom: 2px solid;
 	border-bottom-color: #c5ceda;
 }
-
 input[type="text"].event-modal-input-field:focus {
 	outline: 2px solid transparent;
 	outline-offset: 2px;
@@ -180,26 +160,22 @@ input[type="text"].event-modal-input-field:focus {
 		var(--tw-ring-color);
 	border-bottom: 2px solid #3b82f6;
 }
-
 .event-modal-selected-date {
 	color: #3c4043;
 	padding: 6px;
 	padding-bottom: 10px;
 }
-
 .event-modal-selected-date:hover {
 	cursor: pointer;
 	width: 80%;
 	background-color: #f3f4f6;
 	border-radius: 4px;
 }
-
 .start-date:hover {
 	text-decoration: underline 1px;
 	text-decoration-color: #8f8f8f;
 	text-underline-position: under;
 }
-
 .start-time {
 	position: relative;
 	padding: 5px;
@@ -218,23 +194,19 @@ input[type="text"].event-modal-input-field:focus {
 	border-radius: 8px;
 	overflow-y: scroll;
 }
-
 .start-time-content {
 	padding: 10px 0px;
 }
-
 .start-time-content:hover {
 	cursor: pointer;
 	background-color: #f3f4f6;
 	border-radius: 4px;
 }
-
 .end-time {
 	position: relative;
 	padding: 5px;
 	margin-left: 5px;
 }
-
 .end-time-container {
 	position: absolute;
 	width: 150px;
@@ -247,11 +219,9 @@ input[type="text"].event-modal-input-field:focus {
 	border-radius: 8px;
 	overflow-y: scroll;
 }
-
 .end-time-content {
 	padding: 10px 0px;
 }
-
 .end-time-content:hover {
 	/* // width: 100%; */
 	cursor: pointer;
@@ -259,31 +229,29 @@ input[type="text"].event-modal-input-field:focus {
 	border-radius: 4px;
 }
 
-//start
+/* //start */
 .start-date {
 	position: relative;
 }
-
 .start-date-container {
+	/* background-color: black; */
 	position: absolute;
-	bottom: -245px;
-	left: -30px;
+	bottom: -260px;
+	left: -20px;
 	z-index: 8;
 	margin-top: 9px;
 	padding-left: 19px;
 	padding-right: 15px;
 	padding-top: 0px;
 }
-
 .end-date {
 	position: relative;
 }
-
 .end-date-container {
 	position: absolute;
 	z-index: 9;
-	bottom: -245px;
-	left: -50px;
+	bottom: -260px;
+	left: -20px;
 	margin-top: 9px;
 	padding-left: 19px;
 	padding-right: 15px;
@@ -291,21 +259,25 @@ input[type="text"].event-modal-input-field:focus {
 }
 
 .side-bar-calendar {
+	background-color: #a4c3b2;
 	width: 100%;
+	height: 40px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	padding: 5px;
 }
-
 .side-bar-calendar-month {
 	margin-left: 10px;
 	color: #3a3c3d;
 	font-size: 14px;
+	font-weight: bold;
 	font-family: "Open Sans", sans-serif;
 }
 
+/* arrows */
 .side-bar-calendar-navigation {
-	width: 25%;
+	width: 18%;
 	display: flex;
 	justify-content: space-between;
 }
@@ -315,43 +287,39 @@ input[type="text"].event-modal-input-field:focus {
 	font-weight: bold;
 	color: hsl(214, 3%, 45%);
 }
-
 .side-bar-arrow-left:hover {
 	cursor: pointer;
 }
-
 .side-bar-arrow-right {
 	font-size: 12px;
 	color: #5f6368;
 	margin-right: 13px;
 }
-
 .side-bar-arrow-right:hover {
 	cursor: pointer;
 }
 
+/* CONTENT */
 .sidebar-calendar {
+	background-color: #f9ffff;
 	display: grid;
 	grid-template-rows: auto auto auto auto auto auto;
 	grid-template-columns: auto auto auto auto auto auto auto;
 }
-
 .sidebar-calendar-day {
 	padding-top: 15px;
-	padding-bottom: 10px;
+	padding-bottom: 5px;
 	font-size: 10px;
 	font-family: "Open Sans", sans-serif;
 	text-align: center;
 }
-
 .sidebar-calendar-date {
 	line-height: 24px;
 	/* // margin: auto; */
 	border-radius: 50%;
 	color: #3c4043;
-	font-size: 12px;
+	font-size: 10px;
 }
-
 .side-bar-calendar-date {
 	width: 24px;
 	height: 24px;
@@ -380,21 +348,29 @@ input[type="text"].event-modal-input-field:focus {
 	color: white;
 	width: 20px;
 	box-sizing: border-box;
-	padding: 5px 8px;
-	background-color: #1a73e8;
+	/* circle radius */
+	padding: 5px 5px;
+	background-color: #6b9080;
 	font-weight: bold;
 	text-align: center;
 	border-radius: 50%;
 	font-size: 12px;
 }
 
+.prev-month {
+	line-height: 24px;
+	border-radius: 50%;
+	color: #a8acaf;
+	font-size: 10px;
+}
+
 .selected-day {
-	background-color: #d7e3f4;
-	color: blue;
+	background-color: #a4c3b2;
+	color: #3c4043;
 	width: 20px;
 	box-sizing: border-box;
-	padding: 5px 8px;
-	font-weight: bold;
+	padding: 5px 6px;
+	/* font-weight: bold; */
 	text-align: center;
 	border-radius: 50%;
 	font-size: 12px;
@@ -410,7 +386,6 @@ input[type="text"].event-modal-input-field:focus {
 	z-index: 7;
 	background-color: white;
 }
-
 .end-date:hover {
 	text-decoration: underline 1px;
 	text-decoration-color: #8f8f8f;
@@ -426,7 +401,6 @@ input[type="text"].event-modal-input-field:focus {
 	justify-content: space-between;
 	box-sizing: border-box;
 }
-
 .event-scheduling-detail:hover {
 	cursor: pointer;
 }
@@ -434,18 +408,15 @@ input[type="text"].event-modal-input-field:focus {
 .schedule-icon {
 	padding: 0px 20px;
 }
-
 .schedule-icon:hover {
 	cursor: none;
 }
-
 .event-time {
 	width: 88.5%;
 	display: flex;
 	flex-wrap: nowrap;
 	justify-content: space-between;
 }
-
 .add-time {
 	cursor: pointer;
 	background-color: white;
@@ -456,7 +427,6 @@ input[type="text"].event-modal-input-field:focus {
 	color: #4b5563;
 	border-radius: 4px;
 }
-
 .all-day-flex {
 	display: flex;
 	flex-wrap: nowrap;
@@ -465,18 +435,15 @@ input[type="text"].event-modal-input-field:focus {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-
 .all-day-div {
 	width: 68px;
 }
-
 .add-day-checkbox {
 	height: 20px;
 	width: 25px;
 	border-radius: 4px;
 	cursor: pointer;
 }
-
 .all-a-time {
 	width: 87%;
 	display: flex;
@@ -485,7 +452,6 @@ input[type="text"].event-modal-input-field:focus {
 	color: #1a73e8;
 	font-weight: 500;
 }
-
 .add-description-flex {
 	display: flex;
 	flex-wrap: nowrap;
@@ -493,12 +459,10 @@ input[type="text"].event-modal-input-field:focus {
 	align-items: center;
 	margin-bottom: 40px;
 }
-
 i {
 	width: 68px;
 	text-align: center;
 }
-
 .add-guest-flex {
 	display: flex;
 	flex-wrap: nowrap;
@@ -506,11 +470,9 @@ i {
 	align-items: center;
 	margin-bottom: 10px;
 }
-
 .user-group-icon {
 	width: 68px;
 }
-
 .add-guests-input-field {
 	border-radius: 4px;
 	padding-left: 10px;
@@ -526,7 +488,6 @@ i {
 	padding-bottom: 8px;
 	border: none;
 }
-
 input[type="text"].add-guests-input-field:focus {
 	outline: 3px solid transparent;
 	outline-offset: 2px;
@@ -536,7 +497,6 @@ input[type="text"].add-guests-input-field:focus {
 	border-bottom: 2px solid #3b82f6;
 	border-radius: 4px;
 }
-
 .add-description {
 	border-radius: 4px;
 	padding-left: 10px;
@@ -552,19 +512,16 @@ input[type="text"].add-guests-input-field:focus {
 	border: none;
 	border-radius: 8px;
 }
-
 .description:hover {
 	cursor: pointer;
 	text-decoration: underline 1px;
 	text-underline-position: under;
 }
-
 .attachments:hover {
 	cursor: pointer;
 	text-decoration: underline 1px;
 	text-underline-position: under;
 }
-
 .add-description-input-field {
 	padding-left: 10px;
 	width: 100%;
@@ -578,15 +535,12 @@ input[type="text"].add-guests-input-field:focus {
 	border: none;
 	border-radius: 4px;
 }
-
 .add-description-icon {
 	width: 60px;
 }
-
 .add-bookmark-icon {
 	width: 60px;
 }
-
 .add-label-flex {
 	display: flex;
 	flex-wrap: nowrap;
@@ -594,26 +548,22 @@ input[type="text"].add-guests-input-field:focus {
 	margin-bottom: 20px;
 	/* // justify-content: space-between; */
 }
-
 .label-flex-style {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
 }
-
 .label-style {
 	width: 24px;
 	height: 24px;
 	border-radius: 9999px;
 }
-
 .check {
 	color: white;
 	margin-left: 4px;
 	margin-top: 4px;
 }
-
 .save-event {
 	display: flex;
 	justify-content: flex-end;
@@ -631,7 +581,6 @@ input[type="text"].add-guests-input-field:focus {
 	padding: 8px 15px;
 	border-radius: 4px;
 }
-
 .save:hover {
 	cursor: pointer;
 	background-color: darkblue;
@@ -643,18 +592,15 @@ input[type="text"].add-guests-input-field:focus {
 	align-items: center;
 	justify-content: flex-end;
 }
-
 .modal-text {
 	margin-top: 24px;
 }
-
 .modal-button-flex {
 	display: flex;
 	justify-content: flex-end;
 	margin-top: 16px;
 	margin-bottom: 8px;
 }
-
 .modal-button {
 	background: none;
 	border: none;
@@ -669,38 +615,33 @@ input[type="text"].add-guests-input-field:focus {
 	border-radius: 4px;
 	text-align: right;
 }
-
 /* @media only screen and (max-width: 1250px) {
 	.event-modal {
 		width: 50%;
 	}
 }
-
 @media only screen and (max-width: 1000px) {
 	.event-modal {
 		width: 60%;
 	}
 }
-
 @media only screen and (max-width: 800px) {
 	.event-modal {
 		width: 75%;
 	}
 }
-
 @media only screen and (max-width: 650px) {
 	.event-modal {
 		width: 80%;
 	}
 }
-
 @media only screen and (max-width: 600px) {
 	.event-modal {
 		width: 90%;
 	}
-}
+} */
 
-// .event-details {
+/* // .event-details {
 //     box-sizing: border-box;
 //     display: flex;
 //     flex-wrap: nowrap;
@@ -717,7 +658,6 @@ input[type="text"].add-guests-input-field:focus {
 //     background-color: #e8f0fe;
 //     color: #1967d2;
 // }
-
 // .working-location {
 //     background-color: #1967d2;
 //     padding: 2px 4px;
@@ -726,7 +666,6 @@ input[type="text"].add-guests-input-field:focus {
 //     border-radius: 10px;
 //     font-weight: bold;
 // }
-
 // .find-time-flex {
 //     display: flex;
 //     flex-wrap: nowrap;
@@ -734,11 +673,9 @@ input[type="text"].add-guests-input-field:focus {
 //     margin-top: 10px;
 //     margin-bottom: 10px;
 // }
-
 // .find-time{
 //     width: 68px;
 // }
-
 // .find-a-time{
 //     width: 87%;
 //     display: flex;
@@ -747,7 +684,6 @@ input[type="text"].add-guests-input-field:focus {
 //     color: #1A73E8;
 //     font-weight: 500;
 // }
-
 // .find-a-time:hover {
 //     cursor: pointer;
 // }
@@ -759,12 +695,10 @@ input[type="text"].add-guests-input-field:focus {
 //     display: flex;
 //     align-items: center;
 // }
-
 // .google-video-meeting {
 //     width: 24px;
 //     padding: 0px 19px;
 // }
-
 // .add-google-video-meet{
 //     padding: 6px;
 //     margin-left: 5px;
@@ -773,11 +707,9 @@ input[type="text"].add-guests-input-field:focus {
 //     color: white;
 //     border-radius: 4px;
 // }
-
 // .add-google-video-meet:hover {
 //     cursor: pointer;
 // }
-
 // .add-location-flex{
 //     display: flex;
 //     flex-wrap: nowrap;
@@ -787,11 +719,9 @@ input[type="text"].add-guests-input-field:focus {
 //     align-items: center;
 //     margin-bottom: 2px;
 // }
-
 // .add-location {
 //     width: 68px;
 // }
-
 // .add-location-input-field {
 //     padding-left: 10px;
 //     width: 100%;
@@ -805,11 +735,9 @@ input[type="text"].add-guests-input-field:focus {
 //     border: none;
 //     border-radius: 4px;
 // }
-
 // .add-location-input-field:hover{
 //     cursor: pointer;
 // }
-
 // input[type=text].add-location-input-field:focus{
 //     margin-bottom:4px ;
 //     margin-top:6px ;

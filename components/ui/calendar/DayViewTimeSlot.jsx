@@ -36,7 +36,7 @@ export default function DayViewTimeSlot({ timeSlot, index, date }) {
 			<div
 				className="day-view-event"
 				onClick={(event) => {
-					setShowEventModal(true);
+					// setShowEventModal(true);
 					setAddTime(false);
 					setDate(false);
 					setDaySelected(date);

@@ -8,9 +8,9 @@ import { useContext, useEffect, useRef, useState } from "react";
 // import "simplebar";
 // import "simplebar/dist/simplebar.css";
 
+import EventCalendar from "@/components/ui/calendar/EventCalendar";
+import Modal from "@/components/ui/calendar/Modal";
 import "@/css/calendar/EventModal.css";
-import EventCalendar from "./EventCalendar";
-import Modal from "./Modal";
 
 const labelsClasses = ["blue", "gray", "green", "indigo", "red", "purple"];
 
@@ -71,16 +71,23 @@ export default function EventModal() {
 		height,
 		timeSlots, // it is for getting timeSlots between 12am and 11:45pm4
 		trackPosition,
+		startDateCalendar,
+		setStartDateCalendar,
+		endDateCalendar,
+		setEndDateCalendar,
 	} = useContext(GlobalContext);
+
+	console.log("daySelected: ", daySelected);
+
 	const [monthViewStartTimeSlots, setMonthViewStartTimeSlots] = useState([]);
 	const [monthViewSlotsEndTime, setMonthViewSlotsEndTime] = useState([]);
 	const [timeSlotsEndTime, setTimeSlotsEndTime] = useState([]);
 	const [trackHeight, setTrackHeight] = useState(null);
 	const [allDay, setAllDay] = useState(false);
 	const [checked, setChecked] = useState(true);
-	const [startDateCalendar, setStartDateCalendar] = useState(false);
-	const [endDateCalendar, setEndDateCalendar] = useState(false);
+
 	const [guests, setGuests] = useState("");
+
 	const [addLocation, setAddLocation] = useState("");
 	const [addDescription, setAddDescription] = useState(
 		selectedEvent ? selectedEvent.addDescription : ""
@@ -171,6 +178,7 @@ export default function EventModal() {
 	useEffect(() => {
 		setTrackLabel(selectedLabel);
 	}, [selectedLabel]);
+
 	useEffect(() => {
 		let index = timeSlots.findIndex(
 			(element) => element.format("h:mma") === dayViewEventStartTime
@@ -181,6 +189,7 @@ export default function EventModal() {
 		let a = slicedArray[4].format("h:mma");
 		setDayViewEventEndTime(a);
 	}, [timeSlots, dayViewEventStartTime]);
+
 	useEffect(() => {
 		let index = timeSlots.findIndex((element) => element.format("h:mma") === eventStartTime);
 		let slicedArray = timeSlots.slice(index);
@@ -195,6 +204,7 @@ export default function EventModal() {
 	return (
 		<div className="event-modal-container">
 			<div className="event-modal" ref={domNode}>
+				{/* Discard Changes */}
 				<Modal ref={modalRef}>
 					<div className="modal-flex">
 						<div className="modal-text">Discard unsaved changes?</div>
@@ -221,9 +231,11 @@ export default function EventModal() {
 						</div>
 					</div>
 				</Modal>
+
+				{/* Modal Header with Cancel (X) Button */}
 				<header className="event-modal-header">
-					{/* <FontAwesomeIcon icon ={faGripLines} className="drag-handle"></FontAwesomeIcon> */}
 					<div>
+						{/* Delete if Event is Selected */}
 						{selectedEvent && (
 							<button
 								className="event-modal-delete"
@@ -250,6 +262,8 @@ export default function EventModal() {
 								<FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
 							</button>
 						)}
+
+						{/* Close */}
 						<button
 							className="event-modal-close"
 							onClick={() => {
@@ -264,13 +278,16 @@ export default function EventModal() {
 						</button>
 					</div>
 				</header>
+
+				{/* Content */}
 				<div className="event-modal-content">
+					{/* Title */}
 					<div className="event-modal-content-grid-container">
 						<div className="eve"></div>
 						<input
 							type="text"
 							name="title"
-							placeholder="Add title and time"
+							placeholder="Add title"
 							value={title}
 							required
 							className="event-modal-input-field"
@@ -279,6 +296,8 @@ export default function EventModal() {
 							}}
 						/>
 					</div>
+
+					{/* Event Scheduling */}
 					<div className="event-scheduling-detail">
 						<FontAwesomeIcon icon={faClock} className="schedule-icon"></FontAwesomeIcon>
 						<div className="event-time">
@@ -286,7 +305,7 @@ export default function EventModal() {
 								<span
 									className="start-date"
 									onClick={() => {
-										setStartDateCalendar(true);
+										setStartDateCalendar(!startDateCalendar);
 										setEndDateCalendar(false);
 										setAllDay(true);
 										setStartTimeComponent(false);
@@ -294,6 +313,7 @@ export default function EventModal() {
 									}}
 								>
 									{date && daySelected.format("dddd, MMMM DD")}
+
 									{startDateCalendar && (
 										<EventCalendar
 											startDate={startDateCalendar}
@@ -301,11 +321,13 @@ export default function EventModal() {
 										/>
 									)}
 								</span>
-								<span>{date && " - "}</span>
+
+								{/* <span>{date && " - "}</span>
+
 								<span
 									className="end-date"
 									onClick={() => {
-										setEndDateCalendar(true);
+										setEndDateCalendar(!endDateCalendar);
 										setStartDateCalendar(false);
 										setAllDay(true);
 										setStartTimeComponent(false);
@@ -319,7 +341,8 @@ export default function EventModal() {
 											endDate={endDateCalendar}
 										/>
 									)}
-								</span>
+								</span> */}
+
 								{!date && (
 									<span
 										className="start-date"
@@ -332,6 +355,7 @@ export default function EventModal() {
 										{!date && daySelected.format("dddd, MMMM DD")}
 									</span>
 								)}
+
 								{showMonthViewCalendar && !date && (
 									<span
 										className="start-time"
@@ -371,6 +395,7 @@ export default function EventModal() {
 										)}
 									</span>
 								)}
+
 								{showDayViewCalendar && (
 									<span
 										className="start-time"

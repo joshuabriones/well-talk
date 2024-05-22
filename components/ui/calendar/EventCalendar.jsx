@@ -10,16 +10,29 @@ import React, { useContext, useEffect, useState } from "react";
 export default function EventCalendar(props) {
 	const [currentMonthIndex, setCurrentMonthIndex] = useState(dayjs().month());
 	const [currentMonth, setCurrentMonth] = useState(getMonth());
-	const { daySelected, setDaySelected } = useContext(GlobalContext);
+	const {
+		daySelected,
+		setDaySelected,
+		startDateCalendar,
+		setStartDateCalendar,
+		endDateCalendar,
+		setEndDateCalendar,
+	} = useContext(GlobalContext);
+
+	console.log("startDateCalendar", startDateCalendar);
+
 	useEffect(() => {
 		setCurrentMonth(getMonth(currentMonthIndex, dayjs().year()));
 	}, [currentMonthIndex]);
+
 	function handlePrevMonth() {
 		setCurrentMonthIndex(currentMonthIndex - 1);
 	}
+
 	function handleNextMonth() {
 		setCurrentMonthIndex(currentMonthIndex + 1);
 	}
+
 	function currentDayStyle(day) {
 		const format = "DD-MM-YY";
 		const today = dayjs().format(format);
@@ -36,6 +49,7 @@ export default function EventCalendar(props) {
 			return "sidebar-calendar-date";
 		}
 	}
+
 	function calendarStyle() {
 		if (props.startDate === true) {
 			return "start-date-container";
@@ -45,6 +59,9 @@ export default function EventCalendar(props) {
 			return "";
 		}
 	}
+
+	function handleCloseMiniCalendar() {}
+
 	return (
 		<div className={`${calendarStyle()}`}>
 			<header className="side-bar-calendar">
@@ -66,14 +83,18 @@ export default function EventCalendar(props) {
 					></FontAwesomeIcon>
 				</div>
 			</header>
+
 			<div className="sidebar-calendar">
 				{/* currentMonth[0] - it is the first row of the calendar */}
 
+				{/* Days */}
 				{currentMonth[0].map((day, index) => (
 					<span key={index} className="sidebar-calendar-day">
 						{day.format("dd").charAt(0)}
 					</span>
 				))}
+
+				{/* Numbers */}
 				{currentMonth.map((row, rowIndex) => (
 					<React.Fragment key={rowIndex}>
 						{row.map((day, index) => (
@@ -82,7 +103,8 @@ export default function EventCalendar(props) {
 								className="side-bar-calendar-date"
 								onClick={() => {
 									setDaySelected(day);
-									// setCurrentMonthIndex(currentMonthIndex);
+									setStartDateCalendar(false);
+									setEndDateCalendar(false);
 								}}
 							>
 								<span className={`${currentDayStyle(day)}`}>

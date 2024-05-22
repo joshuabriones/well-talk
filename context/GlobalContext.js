@@ -78,6 +78,10 @@ const GlobalContext = React.createContext({
 	setCurrentTime: () => {},
 	viewEvents: false,
 	setViewEvents: () => {},
+	startDateCalendar: false,
+	setStartDateCalendar: () => {},
+	endDateCalendar: false,
+	setEndDateCalendar: () => {},
 });
 
 export default GlobalContext;

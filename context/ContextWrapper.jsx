@@ -98,6 +98,11 @@ export default function ContextWrapper(props) {
 	const [showDropdownModal, setShowDropdownModal] = useState(false); // show dropdown modal
 	const [showMonthViewCalendar, setShowMonthViewCalendar] = useState(true); // show month view calendar component
 	const [showDayViewCalendar, setShowDayViewCalendar] = useState(false); // show day view calendar
+
+	// showing of mini calendar
+	const [startDateCalendar, setStartDateCalendar] = useState(false);
+	const [endDateCalendar, setEndDateCalendar] = useState(false);
+
 	const [monthIndex, setMonthIndex] = useState(dayjs().month()); // month index control the monthly calendar  change
 	const [dateIndex, setDateIndex] = useState(dayjs().date()); // date index control the day view calendar change
 	const [sideBarCalendarMonth, setSideBarCalendarMonth] = useState(null); // side bar calendar month
@@ -283,6 +288,13 @@ export default function ContextWrapper(props) {
 				setShowMonthViewCalendar,
 				showDayViewCalendar,
 				setShowDayViewCalendar,
+
+				///
+				startDateCalendar,
+				setStartDateCalendar,
+				endDateCalendar,
+				setEndDateCalendar,
+
 				showDropdownModal,
 				setShowDropdownModal,
 				trackLabel,

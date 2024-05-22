@@ -111,7 +111,7 @@ export default function DayViewCalendar({ date }) {
 								}}
 								onClick={() => {
 									setSelectedEvent(evt);
-									setShowEventModal(true);
+									// setShowEventModal(true);
 								}}
 							>
 								<span className="event-title">
