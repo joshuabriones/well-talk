@@ -102,7 +102,7 @@ function NavList({ userType }) {
       break;
     case "counselor":
       navigationItems = [
-        { label: "Home", route: "/counselor/counselor-dashboard" },
+        { label: "Home", route: "/counselor" },
         { label: "Blogs", route: "/counselor/counselor-blog" },
         {
           label: "Appointment",

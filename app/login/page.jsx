@@ -1,16 +1,15 @@
 "use client";
+import Loading from "@/components/Skeleton";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Loading from "@/components/Skeleton";
 
 //imgs
-import loginBg from "@/public/images/bgs/loginBg.png";
 
 // utils
-import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
+import FullButton from "@/components/ui/buttons/FullButton";
 import TextInput from "@/components/ui/inputs/TextInput";
 
 // modals
@@ -67,83 +66,121 @@ const Login = () => {
 	};
 
 	return (
-		<div
-			className="min-h-screen w-full"
-			style={{
-				backgroundImage: `url(${loginBg.src})`,
-				width: "100%",
-				height: "100%",
-				backgroundSize: "cover",
-				backgroundAttachment: "fixed",
-				backgroundPosition: "center",
-			}}>
-			{/* navigation bar */}
-			<Navbar userType="landing" />
+		<section className="ezy__signup10 py-24 md:py-28 dark:bg-[#0b1727] text-zinc-900 dark:text-white flex justify-center items-center min-h-screen">
+			<div
+				className="pattern-overlay pattern-left absolute top-0 left-0 -z-10"
+				style={{ transform: "scaleY(-1)", top: "-50px" }}>
+				<img
+					src="/images/landing/lleft.png"
+					alt="pattern"
+				/>
+			</div>
+			<div
+				className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+				style={{ transform: "scaleY(-1)", top: "-15px" }}>
+				<img
+					src="/images/landing/lright.png"
+					alt="pattern"
+					className="w-full h-full object-contain"
+				/>
+			</div>
 
-			{/* login form*/}
-			<div className="flex justify-start items-center py-5 px-48 ">
-				<div className="w-7/12 h-[650px] flex flex-col justify-center">
-					{/* login form*/}
-					<div className="flex justify-start items-center py-5 px-48 ">
-						<form
-							className="w-full h-[700px] flex flex-col justify-center"
-							onSubmit={handleLogin}>
-							<p className="text-black text-5xl font-Merriweather py-20 pb-3.5">
-								Sign in
-							</p>
+			<div className="container px-12 mx-auto">
+				{/* navigation bar */}
+				<Navbar userType="landing" />
+				<div className="grid grid-cols-6 gap-6 h-full">
+					<div className="col-span-6 md:col-span-2 lg:col-span-3">
+						<div
+							className="bg-cover bg-center ml-40 bg-no-repeat h-[80vh] rounded-xl hidden md:block w-[70%] md:w-[150%] lg:w-[130%]"
+							style={{
+								backgroundImage:
+									"url(https://cdn.easyfrontend.com/pictures/sign-in-up/sign2.jpg)",
+							}}></div>
+					</div>
+					<div className="col-span-6 md:col-span-4 lg:col-span-3 py-32">
+						<div className="max-w-lg w-full h-full mx-auto px-0 md:px-8 lg:px-8">
+							<div className="bg-white border border-gray-200 dark:bg-slate-800 shadow-xl rounded-2xl p-12 md:p-12 lg:py-10">
+								<h2 className=" font-Merriweather dark:text-white text-2xl font-bold mb-3">
+									Welcome to{" "}
+									<span
+										style={{ color: "#6B9080" }}
+										className="px-1 rounded">
+										WellTalk!
+									</span>
+								</h2>
+								{/* login form */}
+								<form
+									className="w-full flex flex-col py-4"
+									onSubmit={handleLogin}>
+									{/* error message */}
+									{showInvalidCredentials && (
+										<div className="text-red-500 font-bold text-base pt-2 pb-1.5">
+											Invalid email or password. Try
+											Again.
+										</div>
+									)}
 
-							{/* error message */}
-							{showInvalidCredentials && (
-								<div className="text-red-500 font-bold text-base pt-2 pb-1.5">
-									Invalid email or password. Try Again.
-								</div>
-							)}
+									{/* form inputs */}
+									<div className="flex flex-col gap-y-3 pb-8">
+										<TextInput
+											label="Email Address"
+											value={email}
+											onChange={(e) =>
+												setEmail(e.target.value)
+											}
+											type="email"
+											className="w-full"
+										/>
+										<TextInput
+											label="Password"
+											value={password}
+											onChange={(e) =>
+												setPassword(e.target.value)
+											}
+											type="password"
+											className="w-full"
+										/>
+									</div>
 
-							{/* form inputs */}
-							<div className="flex flex-col gap-y-3 pb-14">
-								<TextInput
-									label="Email Address"
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
-									type="email"
-								/>
-								<TextInput
-									label="Password"
-									value={password}
-									onChange={(e) =>
-										setPassword(e.target.value)
-									}
-									type="password"
-								/>
+									{/* buttons */}
+									<div className="w-full flex flex-row gap-x-4 pb-1">
+										<FullButton
+											className="w-1/2"
+											onClick={handleLogin}>
+											Sign In
+										</FullButton>
+
+									</div>
+
+									{/* forgot password */}
+									<div className="flex justify-center items-center">
+										<div
+											className="text-[#6B9080] text-md font-Jaldi  hover:text-green-800 cursor-pointer"
+											onClick={(e) =>
+												setShowForgotPasswordModal(true)
+											}>
+											Forgot your Password?
+										</div>
+									</div>
+									<div className="relative">
+										<hr className="my-8 border-t border-gray-300" />
+										<span className="px-2 text-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-800">
+											Or
+										</span>
+									</div>
+									<div className="w-full flex flex-row gap-x-4 pb-2">
+									<HollowButton
+											className="w-1/2"
+											onClick={handleCreateAccount}>
+											Create Account
+										</HollowButton>
+									</div>
+								</form>
 							</div>
-
-							{/*to be made into component */}
-							<div className="w-full flex flex-row gap-x-8 pb-12">
-								<HollowButton
-									className="w-1/2"
-									onClick={handleLogin}>
-									Sign In
-								</HollowButton>
-								<FullButton
-									className="w-1/2"
-									onClick={handleCreateAccount}>
-									Create Account
-								</FullButton>
-							</div>
-
-							{/* forgot password */}
-							<div
-								className="text-[#6B9080] text-lg font-Jaldi pt-4 hover:text-green-800 cursor-pointer"
-								onClick={(e) =>
-									setShowForgotPasswordModal(true)
-								}>
-								Forgot Password?
-							</div>
-						</form>
+						</div>
 					</div>
 				</div>
 			</div>
-
 			{/* forgot password modal */}
 			{showForgotPasswordModal && (
 				<ModalForgotPassword
@@ -152,7 +189,7 @@ const Login = () => {
 					setForgotPasswordEmail={setForgotPasswordEmail}
 				/>
 			)}
-		</div>
+		</section>
 	);
 };
 

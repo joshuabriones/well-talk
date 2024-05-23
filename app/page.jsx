@@ -45,7 +45,7 @@ export default function Landing() {
 				<Features />
 				<Content />
 				<div className="mb-6">
-					<div className="flex flex-col-reverse md:flex-row container mx-auto items-center">
+					<div className="flex flex-col-reverse p-6 md:flex-row container mx-auto items-center">
 						<div className="w-full md:w-1/2">
 							<div className="p-5">
 								<LandingSlider />
