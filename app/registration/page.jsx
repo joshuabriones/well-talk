@@ -2,882 +2,708 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { z } from "zod";
 import FullButton from "@/components/ui/buttons/FullButton";
 import TextInput from "@/components/ui/inputs/TextInput";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import ModalRegistrationSuccessful from "@/components/ui/modals/ModalRegistrationSuccessful";
 import ModalTermsUnchecked from "@/components/ui/modals/ModalTermsUnchecked";
-
-const registrationSchema = z
-	.object({
-		email: z.string().email("Invalid email address"),
-		idno: z.string().nonempty("ID Number is required"),
-		firstName: z.string().nonempty("First Name is required"),
-		lastName: z.string().nonempty("Last Name is required"),
-		gender: z.string().nullable().optional(),
-		birthdate: z.string().nonempty("Birthdate is required"),
-		contactNumber: z.string().nonempty("Contact Number is required"),
-		specificAddress: z.string().nonempty("Specific Address is required"),
-		barangay: z.string().nonempty("Barangay is required"),
-		cityMunicipality: z.string().nonempty("City/Municipality is required"),
-		province: z.string().nonempty("Province is required"),
-		zipcode: z.string().nonempty("Zip Code is required"),
-		role: z
-    .string()
-    .nullable()
-    .refine((value) => {
-        return value !== null && value !== undefined && value.trim() !== "";
-    }, {
-        message: "Please select a role",
-    })
-    .refine((value) => ["student", "teacher", "counselor"].includes(value), {
-        message: "Select a valid role",
-    })
-    .optional(),
-		college: z.string().nonempty("College is required"),
-		program: z.string().nonempty("Program is required"),
-		year: z.string().nonempty("Year is required"),
-		password: z
-			.string()
-			.min(8, "Password must be at least 8 characters")
-			.regex(
-				/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-				"Password must include uppercase, lowercase, number, and special character"
-			),
-		passwordCheck: z.string().nonempty("Please confirm your password"),
-		termsAccepted: z.boolean().refine((value) => value === true, {
-			message: "You must accept the terms and conditions",
-		}),
-	})
-	.refine((data) => data.password === data.passwordCheck, {
-		message: "Passwords do not match",
-		path: ["passwordCheck"],
-	});
+import { registrationSchema } from "@/lib/validators";
+import {
+  genderOptions,
+  collegeOptions,
+  programOptions,
+} from "@/lib/inputOptions";
 
 const Registration = () => {
-	const router = useRouter();
+  const router = useRouter();
 
-	const genderOptions = [
-		{ value: "", label: "Select" },
-		{ value: "male", label: "Male" },
-		{ value: "female", label: "Female" },
-		{ value: "other", label: "Other" },
-	];
+  // properties
+  const [email, setEmail] = useState("");
+  const [idno, setIdNo] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [gender, setGender] = useState("");
 
-	const collegeOptions = [
-		{ value: "", label: "" },
-		{ value: "CEA", label: "College of Engineering and Architecture" },
-		{
-			value: "CMBA",
-			label: "College of Management, Business, & Accountancy",
-		},
-		{ value: "CASE", label: "College of Arts and Sciences Education" },
-		{
-			value: "CNAHS",
-			label: "College of Nursing and Allied Health Sciences",
-		},
-		{ value: "CCS", label: "College of Computer Studies" },
-		{ value: "CCJ", label: "College of Criminal Justice" },
-	];
+  const [birthdate, setBirthdate] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
+  const [specificAddress, setSpecificAddress] = useState("");
+  const [barangay, setBarangay] = useState("");
+  const [cityMunicipality, setCityMunicipality] = useState("");
+  const [province, setProvince] = useState("");
+  const [zipcode, setZipcode] = useState("");
 
-	const programOptions = {
-		CCS: [
-			{ value: "", label: "" },
-			{ value: "computerScience", label: "Computer Science" },
-			{ value: "informationTechnology", label: "Information Technology" },
-		],
-		CEA: [
-			{ value: "", label: "" },
-			{ value: "architecture", label: "Architecture" },
-			{ value: "civilEngineering", label: "Civil Engineering" },
-			{ value: "electricalEngineering", label: "Electrical Engineering" },
-			{
-				value: "electronicsEngineering",
-				label: "Electronics Engineering",
-			},
-			{ value: "industrialEngineering", label: "Industrial Engineering" },
-			{ value: "mechanicalEngineering", label: "Mechanical Engineering" },
-		],
-		CCJ: [
-			{ value: "", label: "" },
-			{ value: "criminology", label: "Criminology" },
-		],
-	};
+  const [role, setRole] = useState("");
+  const [roleStudent, setRoleStudent] = useState(false);
+  const [roleTeacher, setRoleTeacher] = useState(false);
+  const [roleCounselor, setRoleCounselor] = useState(false);
 
-	// properties
-	const [email, setEmail] = useState("");
-	const [idno, setIdNo] = useState("");
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [gender, setGender] = useState("");
+  const [college, setCollege] = useState("");
+  const [program, setProgram] = useState("");
+  const [year, setYear] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
+  const [isValidPassword, setIsValidPassword] = useState(true);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [showTermsNotAccepted, setShowTermsNotAccepted] = useState(false);
+  const [showRegistrationSuccessful, setShowRegistrationSuccessful] =
+    useState(false);
+  const [isEmptyError, setIsEmptyError] = useState(false);
+  const [isMismatchError, setIsMismatchError] = useState(false);
 
-	const [birthdate, setBirthdate] = useState("");
-	const [contactNumber, setContactNumber] = useState("");
-	const [specificAddress, setSpecificAddress] = useState("");
-	const [barangay, setBarangay] = useState("");
-	const [cityMunicipality, setCityMunicipality] = useState("");
-	const [province, setProvince] = useState("");
-	const [zipcode, setZipcode] = useState("");
+  const handleTermsChange = (e) => {
+    setTermsAccepted(e.target.checked);
+  };
+  // create account
+  const handleCreateAccount = async (e) => {
+    e.preventDefault();
 
-	const [role, setRole] = useState("");
-	const [roleStudent, setRoleStudent] = useState(false);
-	const [roleTeacher, setRoleTeacher] = useState(false);
-	const [roleCounselor, setRoleCounselor] = useState(false);
+    const formData = {
+      email,
+      idno,
+      firstName,
+      lastName,
+      gender,
+      birthdate,
+      contactNumber,
+      specificAddress,
+      barangay,
+      cityMunicipality,
+      province,
+      zipcode,
+      role, // Use the role state variable here
+      college,
+      program,
+      year,
+      password,
+      passwordCheck,
+      termsAccepted,
+    };
 
-	const [college, setCollege] = useState("");
-	const [program, setProgram] = useState("");
-	const [year, setYear] = useState("");
-	const [password, setPassword] = useState("");
-	const [passwordCheck, setPasswordCheck] = useState("");
-	const [isValidPassword, setIsValidPassword] = useState(true);
-	const [termsAccepted, setTermsAccepted] = useState(false);
-	const [errors, setErrors] = useState({});
-	const [showTermsNotAccepted, setShowTermsNotAccepted] = useState(false);
-	const [showRegistrationSuccessful, setShowRegistrationSuccessful] = useState(false);
-	const [isEmptyError, setIsEmptyError] = useState(false);
-	const [isMismatchError, setIsMismatchError] = useState(false);
+    const result = registrationSchema.safeParse(formData);
 
-	const handleTermsChange = (e) => {setTermsAccepted(e.target.checked);};
-	// create account
-	const handleCreateAccount = async (e) => {
-		e.preventDefault();
+    const clearErrors = () => {
+      setTimeout(() => {
+        setErrors({});
+      }, 3000);
+    };
 
-		const formData = {
-			email,
-			idno,
-			firstName,
-			lastName,
-			gender,
-			birthdate,
-			contactNumber,
-			specificAddress,
-			barangay,
-			cityMunicipality,
-			province,
-			zipcode,
-			role, // Use the role state variable here
-			college,
-			program,
-			year,
-			password,
-			passwordCheck,
-			termsAccepted,
-		};
+    if (!result.success) {
+      setErrors(result.error.format());
+      clearErrors();
+      return;
+    }
 
-		const result = registrationSchema.safeParse(formData);
+    if (termsAccepted === false) {
+      setShowTermsNotAccepted(true);
+      return;
+    }
 
-		const clearErrors = () => {
-			setTimeout(() => {
-			  setErrors({});
-			}, 3000);
-		  };
-	
+    let selectedRole;
 
-		if (!result.success) {
-			setErrors(result.error.format());
-			clearErrors();
-			return;
-		}
+    if (roleStudent) {
+      selectedRole = "student";
+    } else if (roleTeacher) {
+      selectedRole = "teacher";
+    } else if (roleCounselor) {
+      selectedRole = "counselor";
+    }
 
-		if (termsAccepted === false) {
-			setShowTermsNotAccepted(true);
-			return;
-		}
+    try {
+      const response = await fetch("/api/users/createuser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          institutionalEmail: email,
+          idNumber: idno,
+          firstName: firstName,
+          lastName: lastName,
+          gender: gender,
+          password: password,
+          image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
+          birthDate: birthdate,
+          contactNumber: contactNumber,
+          address: {
+            specificAddress: specificAddress,
+            barangay: barangay,
+            cityMunicipality: cityMunicipality,
+            province: province,
+            zipcode: zipcode,
+          },
+          college: college,
+          program: program,
+          year: year,
+          role: selectedRole,
+        }),
+      });
 
-		let selectedRole;
+      if (!response.ok) {
+        console.log("Error status: ", response.status);
+      }
+      setTimeout(() => {
+        router.push("/login");
+      }, 5000);
+    } catch (error) {
+      console.log("Error in creating user", error);
+    }
 
-		if (roleStudent) {
-			selectedRole = "student";
-		} else if (roleTeacher) {
-			selectedRole = "teacher";
-		} else if (roleCounselor) {
-			selectedRole = "counselor";
-		}
+    // successful registration
+    setShowRegistrationSuccessful(true);
+  };
 
-		try {
-			const response = await fetch("/api/users/createuser", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					institutionalEmail: email,
-					idNumber: idno,
-					firstName: firstName,
-					lastName: lastName,
-					gender: gender,
-					password: password,
-					image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
-					birthDate: birthdate,
-					contactNumber: contactNumber,
-					address: {
-						specificAddress: specificAddress,
-						barangay: barangay,
-						cityMunicipality: cityMunicipality,
-						province: province,
-						zipcode: zipcode,
-					},
-					college: college,
-					program: program,
-					year: year,
-					role: selectedRole,
-				}),
-			});
+  // password validation function
+  const validatePassword = (password) => {
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  };
 
-			if (!response.ok) {
-				console.log("Error status: ", response.status);
-			}
-			setTimeout(() => {
-				router.push("/login");
-			}, 5000);
-		} catch (error) {
-			console.log("Error in creating user", error);
-		}
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
 
-		// successful registration
-		setShowRegistrationSuccessful(true);
-	};
+    if (!validatePassword(newPassword)) {
+      // password is not valid
+      setIsValidPassword(false);
+    } else {
+      // password is valid
+      setIsValidPassword(true);
+    }
+  };
 
-	// password validation function
-	const validatePassword = (password) => {
-		const regex =
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-		return regex.test(password);
-	};
+  const handlePasswordCheck = (e) => {
+    const newPasswordCheck = e.target.value;
+    setPasswordCheck(newPasswordCheck);
 
-	const handlePasswordChange = (e) => {
-		const newPassword = e.target.value;
-		setPassword(newPassword);
+    if (newPasswordCheck.trim() === "") {
+      setIsEmptyError(true);
+      setIsMismatchError(false);
+    } else if (validatePassword(password)) {
+      setIsEmptyError(false);
+      if (newPasswordCheck !== password) {
+        setIsMismatchError(true);
+      } else {
+        setIsMismatchError(false);
+      }
+    } else {
+      setIsEmptyError(false);
+      setIsMismatchError(false);
+    }
+  };
 
-		if (!validatePassword(newPassword)) {
-			// password is not valid
-			setIsValidPassword(false);
-		} else {
-			// password is valid
-			setIsValidPassword(true);
-		}
-	};
+  const handleRoleChange = (e) => {
+    const newRole = e.target.value;
+    setRole(newRole);
 
-	const handlePasswordCheck = (e) => {
-		const newPasswordCheck = e.target.value;
-		setPasswordCheck(newPasswordCheck);
+    if (newRole === "student") {
+      setRoleStudent(true);
+      setRoleTeacher(false);
+      setRoleCounselor(false);
+    } else if (newRole === "teacher") {
+      setRoleStudent(false);
+      setRoleTeacher(true);
+      setRoleCounselor(false);
+    } else if (newRole === "counselor") {
+      setRoleStudent(false);
+      setRoleTeacher(false);
+      setRoleCounselor(true);
+    } else {
+      setRoleStudent(false);
+      setRoleTeacher(false);
+      setRoleCounselor(false);
+    }
+  };
 
-		if (newPasswordCheck.trim() === "") {
-			setIsEmptyError(true); 
-			setIsMismatchError(false); 
-		} else if (validatePassword(password)) {
-			setIsEmptyError(false); 
-			if (newPasswordCheck !== password) {
-				setIsMismatchError(true); 
-			} else {
-				setIsMismatchError(false);
-			}
-		} else {
-			setIsEmptyError(false);
-			setIsMismatchError(false); 
-		}
-	};
+  const handleLoginClick = () => {
+    router.push("/login");
+  };
 
-	const handleRoleChange = (e) => {
-		const newRole = e.target.value;
-		setRole(newRole);
+  return (
+    <section className="ezy__signup7 py-2 md:py-2 dark:bg-[#0b1727] text-zinc-900 dark:text-white">
+      <Navbar userType="landing" />
+      <div
+        className="pattern-overlay pattern-left absolute -z-10"
+        style={{ transform: "scaleY(-1)", top: "-50px" }}
+      >
+        <img src="/images/landing/lleft.png" alt="pattern" />
+      </div>
+      <div
+        className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+        style={{ transform: "scaleY(-1)", top: "-15px" }}
+      >
+        <img
+          src="/images/landing/lright.png"
+          alt="pattern"
+          className="w-full h-full object-contain"
+        />
+      </div>
+      <div className="container px-4 mx-auto">
+        <div className="grid grid-cols-2 gap-6 py-16 pl-24 lg:gap-x-16 justify-content-between h-full">
+          <div className="col-span-3 lg:col-span-1">
+            <div
+              className="bg-cover bg-center bg-no-repeat h-[90vh] w-full rounded-2xl hidden lg:block"
+              style={{
+                backgroundImage:
+                  "url(https://cdn.easyfrontend.com/pictures/sign-in-up/sign-in-up-2.png)",
+              }}
+            ></div>
+          </div>
+          <div className="flex items-center max-w-lg justify-center lg:justify-start h-full">
+            <div className="w-full">
+              <form
+                className="h-full flex flex-col justify-center bg-white"
+                onSubmit={handleCreateAccount}
+              >
+                <p className="text-black text-5xl font-Merriweather ">
+                  Registration
+                </p>
+                <div className="flex flex-col gap-y-3 py-4">
+                  <div className="w-full flex flex-row gap-x-6">
+                    <div className="flex flex-col w-full">
+                      <TextInput
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Institutional Email"
+                        label="Institutional Email"
+                        type="email"
+                        id="email"
+                      />
+                      {errors.idno && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.email._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <TextInput
+                        value={idno}
+                        onChange={(e) => setIdNo(e.target.value)}
+                        placeholder="ID Number"
+                        label="ID Number"
+                        type="text"
+                        id="idno"
+                      />
+                      {errors.idno && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.idno._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                  </div>
 
-		if (newRole === "student") {
-			setRoleStudent(true);
-			setRoleTeacher(false);
-			setRoleCounselor(false);
-		} else if (newRole === "teacher") {
-			setRoleStudent(false);
-			setRoleTeacher(true);
-			setRoleCounselor(false);
-		} else if (newRole === "counselor") {
-			setRoleStudent(false);
-			setRoleTeacher(false);
-			setRoleCounselor(true);
-		} else {
-			setRoleStudent(false);
-			setRoleTeacher(false);
-			setRoleCounselor(false);
-		}
-	};
+                  <div className="w-full flex flex-row gap-x-6">
+                    <div className="flex flex-col w-full">
+                      <TextInput
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="First Name"
+                        label="First Name"
+                        type="text"
+                        id="firstName"
+                      />
+                      {errors.firstName && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.firstName._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <TextInput
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Last Name"
+                        label="Last Name"
+                        type="text"
+                        id="lastName"
+                      />
+                      {errors.lastName && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.lastName._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <label
+                        htmlFor="gender"
+                        className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                      >
+                        <select
+                          value={gender}
+                          onChange={(e) => setGender(e.target.value)}
+                          placeholder="Gender"
+                          className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                          required
+                        >
+                          {genderOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                          Gender
+                        </span>
+                      </label>
+                      {errors.gender && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.gender._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="w-full flex flex-row gap-x-6">
+                    <div className="flex flex-col w-full">
+                      <TextInput
+                        value={password}
+                        onChange={handlePasswordChange}
+                        placeholder="Password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                      />
+                      {errors.password && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.password._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <TextInput
+                        value={passwordCheck}
+                        onChange={handlePasswordCheck}
+                        placeholder="Confirm Password"
+                        label="Confirm Password"
+                        type="password"
+                        id="passwordCheck"
+                      />
+                      {isEmptyError && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          Please confirm password
+                        </p>
+                      )}
+                      {isMismatchError && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          Passwords do not match
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col w-full">
+                    <label
+                      htmlFor="gender"
+                      className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                    >
+                      <select
+                        value={role}
+                        onChange={handleRoleChange}
+                        className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                        required
+                      >
+                        <option value="">Select</option>
+                        <option value="student">Student</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="counselor">Counselor</option>
+                      </select>
+                      <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                        Role
+                      </span>
+                    </label>
+                    {errors.role && (
+                      <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                        {errors.role._errors[0]}
+                      </p>
+                    )}
+                  </div>
+                  {/* Conditionally Rendered Fields */}
+                  {role === "student" && (
+                    <>
+                      <div className="flex flex-col w-full">
+                        <label
+                          htmlFor="gender"
+                          className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                        >
+                          <input
+                            type="date"
+                            value={birthdate}
+                            onChange={(e) => setBirthdate(e.target.value)}
+                            className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                            required
+                          />
+                          <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                            Birthdate
+                          </span>
+                        </label>
+                        {errors.birthdate && (
+                          <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                            {errors.birthdate._errors[0]}
+                          </p>
+                        )}
+                      </div>
+                      <div className="w-full flex flex-row gap-x-6">
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={contactNumber}
+                            onChange={(e) => setContactNumber(e.target.value)}
+                            placeholder="Contact Number"
+                            label="Contact Number"
+                            type="tel"
+                            id="contactNumber"
+                          />
+                          {errors.contactNumber && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.contactNumber._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={specificAddress}
+                            onChange={(e) => setSpecificAddress(e.target.value)}
+                            placeholder="Specific Address"
+                            label="Specific Address"
+                            type="text"
+                            id="specificAddress"
+                          />
+                          {errors.specificAddress && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.specificAddress._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="w-full flex flex-row gap-x-6">
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={barangay}
+                            onChange={(e) => setBarangay(e.target.value)}
+                            placeholder="Barangay"
+                            label="Barangay"
+                            type="text"
+                            id="barangay"
+                          />
+                          {errors.barangay && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.barangay._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={cityMunicipality}
+                            onChange={(e) =>
+                              setCityMunicipality(e.target.value)
+                            }
+                            placeholder="City/Municipality"
+                            label="City/Municipality"
+                            type="text"
+                            id="cityMunicipality"
+                          />
+                          {errors.cityMunicipality && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.cityMunicipality._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="w-full flex flex-row gap-x-6">
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={province}
+                            onChange={(e) => setProvince(e.target.value)}
+                            placeholder="Province"
+                            label="Province"
+                            type="text"
+                            id="province"
+                          />
+                          {errors.province && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.province._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={zipcode}
+                            onChange={(e) => setZipcode(e.target.value)}
+                            placeholder="Zipcode"
+                            label="Zipcode"
+                            type="text"
+                            id="zipcode"
+                          />
+                          {errors.zipcode && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.zipcode._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="w-full flex flex-row gap-x-6">
+                        <div className="flex flex-col w-full">
+                          <label
+                            htmlFor="gender"
+                            className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                          >
+                            <select
+                              value={college}
+                              onChange={(e) => setCollege(e.target.value)}
+                              className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                              required
+                            >
+                              {collegeOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                            <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                              Department
+                            </span>
+                          </label>
+                          {errors.college && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.college._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-col w-full">
+                          <label
+                            htmlFor="gender"
+                            className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                          >
+                            <select
+                              value={program}
+                              onChange={(e) => setProgram(e.target.value)}
+                              className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                              required
+                            >
+                              {programOptions[college]?.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                            <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                              Course
+                            </span>
+                          </label>
+                          {errors.program && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.program._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={year}
+                            onChange={(e) => setYear(e.target.value)}
+                            placeholder="Year"
+                            label="Year"
+                            type="text"
+                            id="year"
+                          />
+                          {errors.year && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.year._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
 
-	const handleLoginClick = () => {
-		router.push("/login");
-	};
+                  {role === "teacher" && (
+                    <div className="flex flex-col w-full">
+                      <label
+                        htmlFor="gender"
+                        className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                      >
+                        <select
+                          value={college}
+                          onChange={(e) => setCollege(e.target.value)}
+                          className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                          required
+                        >
+                          {collegeOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                          Department
+                        </span>
+                      </label>
+                      {errors.college && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.college._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  <div className="w-full flex items-center gap-x-2 py-4">
+                    <input
+                      type="checkbox"
+                      checked={termsAccepted}
+                      onChange={handleTermsChange}
+                      className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
+                    />
+                    <label className="text-sm font-bold text-gray-700">
+                      I accept the{" "}
+                      <a
+                        href="/terms"
+                        className="hover:underline"
+                        style={{ color: "#6B9080" }}
+                      >
+                        terms and conditions
+                      </a>
+                    </label>
+                  </div>
 
-	return (
-		<section className="ezy__signup7 py-2 md:py-2 dark:bg-[#0b1727] text-zinc-900 dark:text-white">
-			<Navbar userType="landing" />
-			<div
-				className="pattern-overlay pattern-left absolute -z-10"
-				style={{ transform: "scaleY(-1)", top: "-50px" }}>
-				<img
-					src="/images/landing/lleft.png"
-					alt="pattern"
-				/>
-			</div>
-			<div
-				className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
-				style={{ transform: "scaleY(-1)", top: "-15px" }}>
-				<img
-					src="/images/landing/lright.png"
-					alt="pattern"
-					className="w-full h-full object-contain"
-				/>
-			</div>
-			<div className="container px-4 mx-auto">
-				<div className="grid grid-cols-2 gap-6 py-16 pl-24 lg:gap-x-16 justify-content-between h-full">
-					<div className="col-span-3 lg:col-span-1">
-						<div
-							className="bg-cover bg-center bg-no-repeat h-[90vh] w-full rounded-2xl hidden lg:block"
-							style={{
-								backgroundImage:
-									"url(https://cdn.easyfrontend.com/pictures/sign-in-up/sign-in-up-2.png)",
-							}}></div>
-					</div>
-					<div className="flex items-center max-w-lg justify-center lg:justify-start h-full">
-						<div className="w-full">
-							<form
-								className="h-full flex flex-col justify-center bg-white"
-								onSubmit={handleCreateAccount}>
-								<p className="text-black text-5xl font-Merriweather ">
-									Registration
-								</p>
-								<div className="flex flex-col gap-y-3 py-4">
-									<div className="w-full flex flex-row gap-x-6">
-										<div className="flex flex-col w-full">
-											<TextInput
-												value={email}
-												onChange={(e) =>
-													setEmail(e.target.value)
-												}
-												placeholder="Institutional Email"
-												label="Institutional Email"
-												type="email"
-												id="email"
-											/>
-											{errors.idno && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.email._errors[0]}
-												</p>
-											)}
-										</div>
-										<div className="flex flex-col w-full">
-											<TextInput
-												value={idno}
-												onChange={(e) =>
-													setIdNo(e.target.value)
-												}
-												placeholder="ID Number"
-												label="ID Number"
-												type="text"
-												id="idno"
-											/>
-											{errors.idno && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.idno._errors[0]}
-												</p>
-											)}
-										</div>
-									</div>
+                  <div className="flex flex-row gap-4 w-full">
+                    <div className="w-full mt-7">
+                      <p>
+                        Already have an account?{" "}
+                        <span
+                          className="cursor-pointer font-bold"
+                          style={{ color: "#6B9080" }}
+                          onClick={handleLoginClick}
+                        >
+                          Log In
+                        </span>
+                      </p>
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <FullButton onClick={handleCreateAccount}>
+                        Create Account
+                      </FullButton>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
 
-									<div className="w-full flex flex-row gap-x-6">
-										<div className="flex flex-col w-full">
-											<TextInput
-												value={firstName}
-												onChange={(e) =>
-													setFirstName(e.target.value)
-												}
-												placeholder="First Name"
-												label="First Name"
-												type="text"
-												id="firstName"
-											/>
-											{errors.firstName && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{
-														errors.firstName
-															._errors[0]
-													}
-												</p>
-											)}
-										</div>
-										<div className="flex flex-col w-full">
-											<TextInput
-												value={lastName}
-												onChange={(e) =>
-													setLastName(e.target.value)
-												}
-												placeholder="Last Name"
-												label="Last Name"
-												type="text"
-												id="lastName"
-											/>
-											{errors.lastName && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.lastName._errors[0]}
-												</p>
-											)}
-										</div>
-										<div className="flex flex-col w-full">
-											<label
-												htmlFor="gender"
-												className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full">
-												<select
-													value={gender}
-													onChange={(e) =>
-														setGender(
-															e.target.value
-														)
-													}
-													placeholder="Gender"
-													className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
-													required>
-													{genderOptions.map(
-														(option) => (
-															<option
-																key={
-																	option.value
-																}
-																value={
-																	option.value
-																}>
-																{option.label}
-															</option>
-														)
-													)}
-												</select>
-												<span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-													Gender
-												</span>
-											</label>
-											{errors.gender && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.gender._errors[0]}
-												</p>
-											)}
-										</div>
-									</div>
-									<div className="w-full flex flex-row gap-x-6">
-										<div className="flex flex-col w-full">
-											<TextInput
-												value={password}
-												onChange={handlePasswordChange}
-												placeholder="Password"
-												label="Password"
-												type="password"
-												id="password"
-											/>
-											{errors.password && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.password._errors[0]}
-												</p>
-											)}
-										</div>
-										<div className="flex flex-col w-full">
-											<TextInput
-												value={passwordCheck}
-												onChange={handlePasswordCheck}
-												placeholder="Confirm Password"
-												label="Confirm Password"
-												type="password"
-												id="passwordCheck"
-											/>
-											{isEmptyError && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													Please confirm password
-												</p>
-											)}
-											{isMismatchError && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													Passwords do not match
-												</p>
-											)}
-										</div>
-									</div>
-									<div className="flex flex-col w-full">
-										<label
-											htmlFor="gender"
-											className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full">
-											<select
-												value={role}
-												onChange={handleRoleChange}
-												className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
-												required>
-												<option value="">Select</option>
-												<option value="student">
-													Student
-												</option>
-												<option value="teacher">
-													Teacher
-												</option>
-												<option value="counselor">
-													Counselor
-												</option>
-											</select>
-											<span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-												Role
-											</span>
-										</label>
-										{errors.role && (
-											<p className="text-red-500 text-sm font-Jaldi font-semibold">
-												{errors.role._errors[0]}
-											</p>
-										)}
-									</div>
-									{/* Conditionally Rendered Fields */}
-									{role === "student" && (
-										<>
-											<div className="flex flex-col w-full">
-												<label
-													htmlFor="gender"
-													className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full">
-													<input
-														type="date"
-														value={birthdate}
-														onChange={(e) =>
-															setBirthdate(
-																e.target.value
-															)
-														}
-														className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
-														required
-													/>
-													<span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-														Birthdate
-													</span>
-												</label>
-												{errors.birthdate && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.birthdate._errors[0]}
-												</p>
-											)}
-											</div>
-											<div className="w-full flex flex-row gap-x-6">
-											<div className="flex flex-col w-full">
-												<TextInput
-													value={contactNumber}
-													onChange={(e) =>
-														setContactNumber(
-															e.target.value
-														)
-													}
-													placeholder="Contact Number"
-													label="Contact Number"
-													type="tel"
-													id="contactNumber"
-												/>
-												{errors.contactNumber && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.contactNumber._errors[0]}
-												</p>
-											)}
-											</div>
-											<div className="flex flex-col w-full">
-												<TextInput
-													value={specificAddress}
-													onChange={(e) =>
-														setSpecificAddress(
-															e.target.value
-														)
-													}
-													placeholder="Specific Address"
-													label="Specific Address"
-													type="text"
-													id="specificAddress"
-												/>
-												{errors.specificAddress && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.specificAddress._errors[0]}
-												</p>
-											)}
-												</div>
-											</div>
-											<div className="w-full flex flex-row gap-x-6">
-											<div className="flex flex-col w-full">
-												<TextInput
-													value={barangay}
-													onChange={(e) =>
-														setBarangay(
-															e.target.value
-														)
-													}
-													placeholder="Barangay"
-													label="Barangay"
-													type="text"
-													id="barangay"
-												/>
-												{errors.barangay && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.barangay._errors[0]}
-												</p>
-											)}
-												</div>
-												<div className="flex flex-col w-full">
-												<TextInput
-													value={cityMunicipality}
-													onChange={(e) =>
-														setCityMunicipality(
-															e.target.value
-														)
-													}
-													placeholder="City/Municipality"
-													label="City/Municipality"
-													type="text"
-													id="cityMunicipality"
-												/>
-												{errors.cityMunicipality && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.cityMunicipality._errors[0]}
-												</p>
-											)}
-												</div>
-											</div>
-											<div className="w-full flex flex-row gap-x-6">
-											<div className="flex flex-col w-full">
-												<TextInput
-													value={province}
-													onChange={(e) =>
-														setProvince(
-															e.target.value
-														)
-													}
-													placeholder="Province"
-													label="Province"
-													type="text"
-													id="province"
-												/>
-												{errors.province && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.province._errors[0]}
-												</p>
-											)}
-												</div>
-												<div className="flex flex-col w-full">
-												<TextInput
-													value={zipcode}
-													onChange={(e) =>
-														setZipcode(
-															e.target.value
-														)
-													}
-													placeholder="Zipcode"
-													label="Zipcode"
-													type="text"
-													id="zipcode"
-												/>
-												{errors.zipcode && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.zipcode._errors[0]}
-												</p>
-											)}
-												</div>
-											</div>
-											<div className="w-full flex flex-row gap-x-6">
-												<div className="flex flex-col w-full">
-													<label
-														htmlFor="gender"
-														className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full">
-														<select
-															value={college}
-															onChange={(e) =>
-																setCollege(
-																	e.target
-																		.value
-																)
-															}
-															className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
-															required>
-															{collegeOptions.map(
-																(option) => (
-																	<option
-																		key={
-																			option.value
-																		}
-																		value={
-																			option.value
-																		}>
-																		{
-																			option.label
-																		}
-																	</option>
-																)
-															)}
-														</select>
-														<span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-															Department
-														</span>
-													</label>
-													{errors.college && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.college._errors[0]}
-												</p>
-											)}
-												</div>
-												<div className="flex flex-col w-full">
-													<label
-														htmlFor="gender"
-														className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full">
-														<select
-															value={program}
-															onChange={(e) =>
-																setProgram(
-																	e.target
-																		.value
-																)
-															}
-															className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
-															required>
-															{programOptions[
-																college
-															]?.map((option) => (
-																<option
-																	key={
-																		option.value
-																	}
-																	value={
-																		option.value
-																	}>
-																	{
-																		option.label
-																	}
-																</option>
-															))}
-														</select>
-														<span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-															Course
-														</span>
-													</label>
-													{errors.program && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.program._errors[0]}
-												</p>
-											)}
-												</div>
-												<div className="flex flex-col w-full">
-												<TextInput
-													value={year}
-													onChange={(e) =>
-														setYear(e.target.value)
-													}
-													placeholder="Year"
-													label="Year"
-													type="text"
-													id="year"
-												/>
-												{errors.year && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.year._errors[0]}
-												</p>
-											)}
-												</div>
-											</div>
-										</>
-									)}
+        {showTermsNotAccepted && (
+          <ModalTermsUnchecked
+            setShowTermsNotAccepted={setShowTermsNotAccepted}
+          />
+        )}
+        {/* terms and conditions not accepted */}
 
-									{role === "teacher" && (
-										<div className="flex flex-col w-full">
-											<label
-												htmlFor="gender"
-												className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full">
-												<select
-													value={college}
-													onChange={(e) =>
-														setCollege(
-															e.target.value
-														)
-													}
-													className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
-													required>
-													{collegeOptions.map(
-														(option) => (
-															<option
-																key={
-																	option.value
-																}
-																value={
-																	option.value
-																}>
-																{option.label}
-															</option>
-														)
-													)}
-												</select>
-												<span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-													Department
-												</span>
-											</label>
-											{errors.college && (
-												<p className="text-red-500 text-sm font-Jaldi font-semibold">
-													{errors.college._errors[0]}
-												</p>
-											)}
-										</div>
-									)}
-									<div className="w-full flex items-center gap-x-2 py-4">
-										<input
-											type="checkbox"
-											checked={termsAccepted}
-											onChange={handleTermsChange}
-											className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
-										/>
-										<label className="text-sm font-bold text-gray-700">
-											I accept the{" "}
-											<a
-												href="/terms"
-												className="hover:underline"
-												style={{ color: "#6B9080" }}>
-												terms and conditions
-											</a>
-										</label>
-									</div>
+        {showRegistrationSuccessful && (
+          <ModalRegistrationSuccessful
+            setShowRegistrationSuccessful={setShowRegistrationSuccessful}
+            //  to be deleted
 
-									<div className="flex flex-row gap-4 w-full">
-										<div className="w-full mt-7">
-											<p>
-												Already have an account?{" "}
-												<span
-													className="cursor-pointer font-bold"
-													style={{ color: "#6B9080" }}
-													onClick={handleLoginClick}>
-													Log In
-												</span>
-											</p>
-										</div>
-										<div className="flex flex-col w-full">
-											<FullButton
-												onClick={handleCreateAccount}>
-												Create Account
-											</FullButton>
-										</div>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-
-			{showTermsNotAccepted && (
-				<ModalTermsUnchecked
-					setShowTermsNotAccepted={setShowTermsNotAccepted}
-				/>
-			)}
-			{/* terms and conditions not accepted */}
-
-			{showRegistrationSuccessful && (
-				<ModalRegistrationSuccessful
-					setShowRegistrationSuccessful={
-						setShowRegistrationSuccessful
-					}
-					//  to be deleted
-
-					handleLoginClick={handleLoginClick}
-				/>
-			)}
-			</div>
-		</section>
-	);
+            handleLoginClick={handleLoginClick}
+          />
+        )}
+      </div>
+    </section>
+  );
 };
 
 export default Registration;
@@ -1281,18 +1107,18 @@ export default Registration;
 // 			</div>
 
 // 			{/* terms and conditions not accepted */}
-			// {showTermsNotAccepted && (
-			// 	<ModalTermsUnchecked
-			// 		setShowTermsNotAccepted={setShowTermsNotAccepted}
-			// 	/>
-			// )}
-			// {/* terms and conditions not accepted */}
+// {showTermsNotAccepted && (
+// 	<ModalTermsUnchecked
+// 		setShowTermsNotAccepted={setShowTermsNotAccepted}
+// 	/>
+// )}
+// {/* terms and conditions not accepted */}
 
-			// {showRegistrationSuccessful && (
-			// 	<ModalRegistrationSuccessful
-			// 		setShowRegistrationSuccessful={
-			// 			setShowRegistrationSuccessful
-			// 		}
+// {showRegistrationSuccessful && (
+// 	<ModalRegistrationSuccessful
+// 		setShowRegistrationSuccessful={
+// 			setShowRegistrationSuccessful
+// 		}
 // 					//  to be deleted
 
 // 					handleLoginClick={handleLoginClick}
