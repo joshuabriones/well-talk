@@ -9,7 +9,7 @@ import "@/styles/counselor.css";
 // modals
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import ModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
-import { Navbar } from "@/components/ui/LandingNav";
+import { Navbar } from "@/components/ui/Navbar";
 
 export default function Appointment() {
 	const StudentsPerPage = 10;

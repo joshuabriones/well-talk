@@ -8,7 +8,7 @@ import TextInput from "../../inputs/TextInput";
 import ModalEmailSent from "./ModalEmailSent";
 
 // imgs
-import IconClose from "@/public/images/icons/IconClose.png";
+import IconClose from "@/public/images/icons/iconClose.png";
 
 const ModalForgotPassword = ({
 	setShowForgotPasswordModal,

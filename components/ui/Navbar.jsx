@@ -103,13 +103,14 @@ function NavList({ userType }) {
     case "counselor":
       navigationItems = [
         { label: "Home", route: "/counselor" },
-        { label: "Blogs", route: "/counselor/counselor-blog" },
+        { label: "Calendar", route: "/counselor/calendar" },
+        // { label: "Blogs", route: "/counselor/counselor-blog" },AA
         {
-          label: "Appointment",
+          label: "Appointments",
           route: "/counselor/counselor-appointment",
         },
-        { label: "Referral", route: "/counselor/counselor-referral" },
-        { label: "Events", route: "/counselor/counselor-events" },
+        // { label: "Referral", route: "/counselor/counselor-referral" },
+        // { label: "Events", route: "/counselor/counselor-events" },
         { label: "Inquiry", route: "/counselor/counselor-inquiry" },
       ];
       break;

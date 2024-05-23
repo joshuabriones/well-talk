@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { Navbar } from "@/components/ui/Navbar";
 import InputName from "@/components/ui/inputs/InputName";
 import TextInput from "@/components/ui/inputs/TextInput";
-import UpdateProfile from "@/components/ui/modals/counselor/updateProfile/UpdateProfile"; // Corrected import
+import UpdateProfile from "@/components/ui/modals/counselor/updateProfile/updateProfile";
 
 export default function Profile() {
   const [showModal, setShowModal] = useState(false);

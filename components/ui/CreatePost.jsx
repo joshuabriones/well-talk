@@ -76,7 +76,7 @@ const CreatePostSection = () => {
 	};
 
 	return (
-		<div className="max-w-5xl mx-auto p-4 bg-gray-100 rounded-lg shadow-lg max-h-[90vh] overflow-y-auto">
+		<div className="max-w-5xl mx-auto max-h-[90vh] overflow-y-auto">
 			<div className="flex items-center">
 				<img
 					src={session?.user.image}
