@@ -5,7 +5,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import moment from "moment/moment";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 
 let useClickOutside = (handler) => {
 	let eventNode = useRef();
@@ -51,11 +51,6 @@ function Day({ day, rowIndex }) {
 		setDayEvents(events);
 	}, [filteredEvents, day]);
 
-	// let eventNode = useClickOutside(() => {
-	// 	setShowEvents(false);
-	// 	setShowEventModal(false);
-	// });
-
 	function getCurrentDayClass() {
 		const format = "DD-MM-YY";
 		const today = dayjs().format(format);
@@ -74,11 +69,11 @@ function Day({ day, rowIndex }) {
 		<>
 			{showSetChoices && <Set onOpen={setShowSetChoices} />}
 
-			<div
+			<button
 				className="column"
 				onClick={(e) => {
 					setDaySelected(day);
-					// setShowEventModal(false);
+					console.log("Selected day:", day.format("DD-MM-YYYY"));
 					setShowSetChoices(true);
 					setDefaultTitle(true);
 					e.stopPropagation();
@@ -134,7 +129,7 @@ function Day({ day, rowIndex }) {
 									{evt.startTime ? moment(evt.startTime).format("h:mma") : ""}
 								</span>
 								<span className="day-view-events-title">
-									{evt.title ? evt.title : "(Notitle)"}
+									{evt.title ? evt.title : "(No title)"}
 								</span>
 							</div>
 						)
@@ -190,7 +185,7 @@ function Day({ day, rowIndex }) {
 						))}
 					</div>
 				)}
-			</div>
+			</button>
 		</>
 	);
 }
