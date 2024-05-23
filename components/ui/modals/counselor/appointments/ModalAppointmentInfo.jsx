@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import iconDelete from "@/public/images/icons/iconDelete.png";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import FullButton from "@/components/ui/buttons/FullButton";
+import { useSession } from "next-auth/react";
 
 import "@/styles/counselor.css";
 
@@ -10,16 +11,20 @@ const ModalAppointmentInfo = ({
   setAppointmentModal,
   selectedID,
   appointments,
+  setAppointments,
+  isPendingTable,
 }) => {
   const [isChecked, setIsChecked] = useState(true);
   const [appointment, setAppointment] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const { data: session } = useSession();
 
   // for dialog
   const toggleChecked = () => {
     setIsChecked(!isChecked);
   };
 
+  console.log(appointments);
   // find appointments
   useEffect(() => {
     const handleFindAppointment = () => {
@@ -45,6 +50,20 @@ const ModalAppointmentInfo = ({
     // logic to update appointment response, mollaeyo
 
     // set appointment.status to "Responded", "Pending", "Appointed"
+  };
+
+  const handleAcceptAppointment = () => {
+    setAppointments([
+      ...appointments,
+      {
+        ...appointment,
+        status: "Approved",
+        counselor: { name: session.user.name },
+      },
+    ]);
+
+    alert("Appointment accepted!");
+    setAppointmentModal(false);
   };
 
   return (
@@ -115,18 +134,25 @@ const ModalAppointmentInfo = ({
           </table>
 
           <div className="flex flex-row gap-x-4 mt-6 px-14">
-            <HollowButton onClick={() => setConfirmResponse(true)}>
-              Reschedule
-            </HollowButton>
-            {/*
+            {isPendingTable ? (
+              <>
+                <HollowButton onClick={() => setConfirmResponse(true)}>
+                  Reschedule
+                </HollowButton>
+                {/*
               TEMPORARILY REMOVED 
              <FullButton onClick={() => setConfirmResponse(true)}>
               Update Status
             </FullButton> */}
-
-            <FullButton onClick={() => setOpenModal(true)}>
-              Update Status
-            </FullButton>
+                <FullButton onClick={handleAcceptAppointment}>
+                  Accept
+                </FullButton>
+              </>
+            ) : (
+              <FullButton onClick={() => setOpenModal(true)}>
+                Update Status
+              </FullButton>
+            )}
           </div>
         </div>
         <label
@@ -136,6 +162,8 @@ const ModalAppointmentInfo = ({
         >
           Close
         </label>
+
+        {/* ------------------------------------------------------------ */}
         {openModal && (
           <div className="w-2/5 h-2/3 absolute bg-white rounded-2xl flex flex-col p-16 justify-between dark:bg-slate-950">
             <span className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-5xl">

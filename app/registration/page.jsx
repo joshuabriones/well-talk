@@ -80,7 +80,7 @@ const Registration = () => {
       termsAccepted,
     };
 
-    const result = registrationSchema.safeParse(formData);
+    // const result = registrationSchema.safeParse(formData);
 
     const clearErrors = () => {
       setTimeout(() => {
@@ -88,11 +88,11 @@ const Registration = () => {
       }, 3000);
     };
 
-    if (!result.success) {
-      setErrors(result.error.format());
-      clearErrors();
-      return;
-    }
+    // if (!result.success) {
+    //   setErrors(result.error.format());
+    //   clearErrors();
+    //   return;
+    // }
 
     if (termsAccepted === false) {
       setShowTermsNotAccepted(true);
