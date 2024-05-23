@@ -1,424 +1,1134 @@
 "use client";
 
-import registrationBg from "@/public/images/bgs/registrationBg.png";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
-// utils
 import FullButton from "@/components/ui/buttons/FullButton";
-import InputCollege from "@/components/ui/inputs/InputCollege";
-import InputCollegeInformation from "@/components/ui/inputs/InputCollegeInformation";
-import InputInstitutionalInfo from "@/components/ui/inputs/InputInstitutionalInfo";
-import InputName from "@/components/ui/inputs/InputName";
-import InputPassword from "@/components/ui/inputs/InputPassword";
-import PersonalInfo from "@/components/ui/inputs/InputPersonalInfo";
-import InputRole from "@/components/ui/inputs/InputRole";
+import TextInput from "@/components/ui/inputs/TextInput";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import ModalRegistrationSuccessful from "@/components/ui/modals/ModalRegistrationSuccessful";
 import ModalTermsUnchecked from "@/components/ui/modals/ModalTermsUnchecked";
+import { registrationSchema } from "@/lib/validators";
+import {
+  genderOptions,
+  collegeOptions,
+  programOptions,
+} from "@/lib/inputOptions";
 
 const Registration = () => {
-	const router = useRouter();
+  const router = useRouter();
 
-	// properties
-	const [email, setEmail] = useState("");
-	const [idno, setIdNo] = useState("");
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [gender, setGender] = useState("");
+  // properties
+  const [email, setEmail] = useState("");
+  const [idno, setIdNo] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [gender, setGender] = useState("");
 
-	const [birthdate, setBirthdate] = useState("");
-	const [contactNumber, setContactNumber] = useState("");
-	const [address, setAddress] = useState("");
+  const [birthdate, setBirthdate] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
+  const [specificAddress, setSpecificAddress] = useState("");
+  const [barangay, setBarangay] = useState("");
+  const [cityMunicipality, setCityMunicipality] = useState("");
+  const [province, setProvince] = useState("");
+  const [zipcode, setZipcode] = useState("");
 
-	const [role, setRole] = useState("");
-	const [roleStudent, setRoleStudent] = useState(false);
-	const [roleTeacher, setRoleTeacher] = useState(false);
-	const [roleCounselor, setRoleCounselor] = useState(false);
+  const [role, setRole] = useState("");
+  const [roleStudent, setRoleStudent] = useState(false);
+  const [roleTeacher, setRoleTeacher] = useState(false);
+  const [roleCounselor, setRoleCounselor] = useState(false);
 
-	const [college, setCollege] = useState("");
-	const [program, setProgram] = useState("");
-	const [year, setYear] = useState("");
-	const [password, setPassword] = useState("");
-	const [passwordCheck, setPasswordCheck] = useState("");
-	const [termsAccepted, setTermsAccepted] = useState(false);
+  const [college, setCollege] = useState("");
+  const [program, setProgram] = useState("");
+  const [year, setYear] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
+  const [isValidPassword, setIsValidPassword] = useState(true);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [showTermsNotAccepted, setShowTermsNotAccepted] = useState(false);
+  const [showRegistrationSuccessful, setShowRegistrationSuccessful] =
+    useState(false);
+  const [isEmptyError, setIsEmptyError] = useState(false);
+  const [isMismatchError, setIsMismatchError] = useState(false);
 
-	const handleTermsChange = (e) => {
-		setTermsAccepted(e.target.checked);
-	};
+  const handleTermsChange = (e) => {
+    setTermsAccepted(e.target.checked);
+  };
+  // create account
+  const handleCreateAccount = async (e) => {
+    e.preventDefault();
 
-	// pop ups
-	const [showInvalidPassword, setShowInvalidPassword] = useState(false);
-	const [showPasswordDoNotMatch, setShowPasswordDoNotMatch] = useState(false);
+    const formData = {
+      email,
+      idno,
+      firstName,
+      lastName,
+      gender,
+      birthdate,
+      contactNumber,
+      specificAddress,
+      barangay,
+      cityMunicipality,
+      province,
+      zipcode,
+      role, // Use the role state variable here
+      college,
+      program,
+      year,
+      password,
+      passwordCheck,
+      termsAccepted,
+    };
 
-	// modal
-	const [showTermsNotAccepted, setShowTermsNotAccepted] = useState(false);
-	const [showRegistrationSuccessful, setShowRegistrationSuccessful] =
-		useState(false);
+    const result = registrationSchema.safeParse(formData);
 
-	// create account
-	const handleCreateAccount = async (e) => {
-		e.preventDefault();
+    const clearErrors = () => {
+      setTimeout(() => {
+        setErrors({});
+      }, 3000);
+    };
 
-		if (roleStudent) {
-			if (
-				email.trim() === "" ||
-				idno.trim() === "" ||
-				firstName.trim() === "" ||
-				lastName.trim() === "" ||
-				gender.trim() === "" ||
-				birthdate.trim() === "" ||
-				contactNumber.trim() === "" ||
-				address.trim() === "" ||
-				college.trim() === "" ||
-				program.trim() === "" ||
-				year.trim() === "" ||
-				password.trim() === "" ||
-				passwordCheck.trim() === "" ||
-				!termsAccepted
-			) {
-				// Show error message or handle appropriately
-				alert("Please fill out all required fields.");
-				return;
-			}
-		}
-		if (roleTeacher) {
-			if (
-				email.trim() === "" ||
-				idno.trim() === "" ||
-				firstName.trim() === "" ||
-				lastName.trim() === "" ||
-				gender.trim() === "" ||
-				college.trim() === "" ||
-				password.trim() === "" ||
-				passwordCheck.trim() === "" ||
-				!termsAccepted
-			) {
-				// Show error message or handle appropriately
-				alert("Please fill out all required fields.");
-				return;
-			}
-		}
-		if (roleCounselor) {
-			if (
-				email.trim() === "" ||
-				idno.trim() === "" ||
-				firstName.trim() === "" ||
-				lastName.trim() === "" ||
-				gender.trim() === "" ||
-				password.trim() === "" ||
-				passwordCheck.trim() === "" ||
-				!termsAccepted
-			) {
-				// Show error message or handle appropriately
-				alert("Please fill out all required fields.");
-				return;
-			}
-		}
+    if (!result.success) {
+      setErrors(result.error.format());
+      clearErrors();
+      return;
+    }
 
-		if (termsAccepted === false) {
-			setShowTermsNotAccepted(true);
-			return;
-		}
+    if (termsAccepted === false) {
+      setShowTermsNotAccepted(true);
+      return;
+    }
 
-		let role;
+    let selectedRole;
 
-		if (roleStudent) {
-			role = "student";
-		} else if (roleTeacher) {
-			role = "teacher";
-		} else if (roleCounselor) {
-			role = "counselor";
-		}
+    if (roleStudent) {
+      selectedRole = "student";
+    } else if (roleTeacher) {
+      selectedRole = "teacher";
+    } else if (roleCounselor) {
+      selectedRole = "counselor";
+    }
 
-		//
-		try {
-			const response = await fetch("/api/users/createuser", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					institutionalEmail: email,
-					idNumber: idno,
-					firstName: firstName,
-					lastName: lastName,
-					gender: gender,
-					password: password,
-					gender: gender,
-					image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
-					birthDate: birthdate,
-					contactNumber: contactNumber,
-					address: address,
-					college: college,
-					program: program,
-					year: year,
-					role: role,
-				}),
-			});
+    try {
+      const response = await fetch("/api/users/createuser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          institutionalEmail: email,
+          idNumber: idno,
+          firstName: firstName,
+          lastName: lastName,
+          gender: gender,
+          password: password,
+          image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
+          birthDate: birthdate,
+          contactNumber: contactNumber,
+          address: {
+            specificAddress: specificAddress,
+            barangay: barangay,
+            cityMunicipality: cityMunicipality,
+            province: province,
+            zipcode: zipcode,
+          },
+          college: college,
+          program: program,
+          year: year,
+          role: selectedRole,
+        }),
+      });
 
-			if (!response.ok) {
-				console.log("Error status: ", response.status);
-			}
-			setTimeout(() => {
-				router.push("/login");
-			}, 5000);
-		} catch (error) {
-			console.log("Error in creating user", error);
-		}
+      if (!response.ok) {
+        console.log("Error status: ", response.status);
+      }
+      setTimeout(() => {
+        router.push("/login");
+      }, 5000);
+    } catch (error) {
+      console.log("Error in creating user", error);
+    }
 
-		// successful registration
-		setShowRegistrationSuccessful(true);
-	};
+    // successful registration
+    setShowRegistrationSuccessful(true);
+  };
 
-	// password validation function
-	const validatePassword = (password) => {
-		const regex =
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-		return regex.test(password);
-	};
+  // password validation function
+  const validatePassword = (password) => {
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  };
 
-	const handlePasswordChange = (e) => {
-		const newPassword = e.target.value;
-		setPassword(newPassword);
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
 
-		if (!validatePassword(newPassword)) {
-			// password is not valid
-			setShowInvalidPassword(true);
-		} else {
-			// password is valid
-			setShowInvalidPassword(false);
-		}
-	};
+    if (!validatePassword(newPassword)) {
+      // password is not valid
+      setIsValidPassword(false);
+    } else {
+      // password is valid
+      setIsValidPassword(true);
+    }
+  };
 
-	const handlePasswordCheck = (e) => {
-		const newPasswordCheck = e.target.value;
-		setPasswordCheck(newPasswordCheck);
+  const handlePasswordCheck = (e) => {
+    const newPasswordCheck = e.target.value;
+    setPasswordCheck(newPasswordCheck);
 
-		if (newPasswordCheck.trim() === "") {
-			// password is empty
-			setShowPasswordDoNotMatch(false);
-		} else if (validatePassword(password)) {
-			// password is valid
-			if (newPasswordCheck !== password) {
-				// passwords do not match
-				setShowPasswordDoNotMatch(true);
-			} else {
-				// passwords match
-				setShowPasswordDoNotMatch(false);
-			}
-		} else {
-			// default
-			setShowPasswordDoNotMatch(false);
-		}
-	};
+    if (newPasswordCheck.trim() === "") {
+      setIsEmptyError(true);
+      setIsMismatchError(false);
+    } else if (validatePassword(password)) {
+      setIsEmptyError(false);
+      if (newPasswordCheck !== password) {
+        setIsMismatchError(true);
+      } else {
+        setIsMismatchError(false);
+      }
+    } else {
+      setIsEmptyError(false);
+      setIsMismatchError(false);
+    }
+  };
 
-	const handleRoleChange = (e) => {
-		const newRole = e.target.value;
-		setRole(newRole);
+  const handleRoleChange = (e) => {
+    const newRole = e.target.value;
+    setRole(newRole);
 
-		console.log(newRole);
-		if (newRole === "student") {
-			setRoleStudent(true);
-			setRoleTeacher(false);
-			setRoleCounselor(false);
-		} else if (newRole === "teacher") {
-			setRoleStudent(false);
-			setRoleTeacher(true);
-			setRoleCounselor(false);
-		} else if (newRole === "counselor") {
-			setRoleStudent(false);
-			setRoleTeacher(false);
-			setRoleCounselor(true);
-		} else {
-			setRoleStudent(false);
-			setRoleTeacher(false);
-			setRoleCounselor(false);
-		}
-	};
+    if (newRole === "student") {
+      setRoleStudent(true);
+      setRoleTeacher(false);
+      setRoleCounselor(false);
+    } else if (newRole === "teacher") {
+      setRoleStudent(false);
+      setRoleTeacher(true);
+      setRoleCounselor(false);
+    } else if (newRole === "counselor") {
+      setRoleStudent(false);
+      setRoleTeacher(false);
+      setRoleCounselor(true);
+    } else {
+      setRoleStudent(false);
+      setRoleTeacher(false);
+      setRoleCounselor(false);
+    }
+  };
 
-	const handleLoginClick = () => {
-		router.push("/login");
-	};
+  const handleLoginClick = () => {
+    router.push("/login");
+  };
 
-	return (
-		<div
-			className="min-h-screen w-full"
-			style={{
-				backgroundImage: `url(${registrationBg.src})`,
-				backgroundSize: "cover",
-				backgroundPosition: "center right",
-				backgroundAttachment: "fixed",
-				minHeight: "100vh",
-			}}>
-			{/* navigation bar */}
-			<Navbar userType="landing" />
+  return (
+    <section className="ezy__signup7 py-2 md:py-2 dark:bg-[#0b1727] text-zinc-900 dark:text-white">
+      <Navbar userType="landing" />
+      <div
+        className="pattern-overlay pattern-left absolute -z-10"
+        style={{ transform: "scaleY(-1)", top: "-50px" }}
+      >
+        <img src="/images/landing/lleft.png" alt="pattern" />
+      </div>
+      <div
+        className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+        style={{ transform: "scaleY(-1)", top: "-15px" }}
+      >
+        <img
+          src="/images/landing/lright.png"
+          alt="pattern"
+          className="w-full h-full object-contain"
+        />
+      </div>
+      <div className="container px-4 mx-auto">
+        <div className="grid grid-cols-2 gap-6 py-16 pl-24 lg:gap-x-16 justify-content-between h-full">
+          <div className="col-span-3 lg:col-span-1">
+            <div
+              className="bg-cover bg-center bg-no-repeat h-[90vh] w-full rounded-2xl hidden lg:block"
+              style={{
+                backgroundImage:
+                  "url(https://cdn.easyfrontend.com/pictures/sign-in-up/sign-in-up-2.png)",
+              }}
+            ></div>
+          </div>
+          <div className="flex items-center max-w-lg justify-center lg:justify-start h-full">
+            <div className="w-full">
+              <form
+                className="h-full flex flex-col justify-center bg-white"
+                onSubmit={handleCreateAccount}
+              >
+                <p className="text-black text-5xl font-Merriweather ">
+                  Registration
+                </p>
+                <div className="flex flex-col gap-y-3 py-4">
+                  <div className="w-full flex flex-row gap-x-6">
+                    <div className="flex flex-col w-full">
+                      <TextInput
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Institutional Email"
+                        label="Institutional Email"
+                        type="email"
+                        id="email"
+                      />
+                      {errors.idno && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.email._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <TextInput
+                        value={idno}
+                        onChange={(e) => setIdNo(e.target.value)}
+                        placeholder="ID Number"
+                        label="ID Number"
+                        type="text"
+                        id="idno"
+                      />
+                      {errors.idno && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.idno._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                  </div>
 
-			{/* main content */}
-			<div>
-				{/* registration form*/}
-				<div className="flex justify-start items-center py-32 px-36 flex-row">
-					<div className="w-4/12"></div> {/* empty div for spacing */}
-					<div className="w-8/12 h-fit pr-2.5 ">
-						<form
-							className="h-full flex flex-col justify-center"
-							onSubmit={() => {}}>
-							<p className="text-black text-5xl font-Merriweather pt-5">
-								Registration
-							</p>
-							{/* form inputs */}
-							<div className="flex flex-col gap-y-2.5 py-4">
-								<div className="w-full flex flex-row gap-x-6">
-									<InputInstitutionalInfo
-										email={email}
-										setEmail={setEmail}
-										idno={idno}
-										setIdNo={setIdNo}
-									/>
-								</div>
-								<div className="w-full flex flex-row gap-x-6">
-									<InputName
-										firstName={firstName}
-										setFirstName={setFirstName}
-										lastName={lastName}
-										setLastName={setLastName}
-										gender={gender}
-										setGender={setGender}
-									/>
-								</div>
-								<div className="w-full flex flex-row gap-x-6">
-									<InputPassword
-										password={password}
-										passwordCheck={passwordCheck}
-										showInvalidPassword={
-											showInvalidPassword
-										}
-										showPasswordDoNotMatch={
-											showPasswordDoNotMatch
-										}
-										handlePasswordChange={
-											handlePasswordChange
-										}
-										handlePasswordCheck={
-											handlePasswordCheck
-										}
-									/>
-								</div>
+                  <div className="w-full flex flex-row gap-x-6">
+                    <div className="flex flex-col w-full">
+                      <TextInput
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="First Name"
+                        label="First Name"
+                        type="text"
+                        id="firstName"
+                      />
+                      {errors.firstName && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.firstName._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <TextInput
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Last Name"
+                        label="Last Name"
+                        type="text"
+                        id="lastName"
+                      />
+                      {errors.lastName && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.lastName._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <label
+                        htmlFor="gender"
+                        className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                      >
+                        <select
+                          value={gender}
+                          onChange={(e) => setGender(e.target.value)}
+                          placeholder="Gender"
+                          className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                          required
+                        >
+                          {genderOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                          Gender
+                        </span>
+                      </label>
+                      {errors.gender && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.gender._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="w-full flex flex-row gap-x-6">
+                    <div className="flex flex-col w-full">
+                      <TextInput
+                        value={password}
+                        onChange={handlePasswordChange}
+                        placeholder="Password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                      />
+                      {errors.password && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.password._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <TextInput
+                        value={passwordCheck}
+                        onChange={handlePasswordCheck}
+                        placeholder="Confirm Password"
+                        label="Confirm Password"
+                        type="password"
+                        id="passwordCheck"
+                      />
+                      {isEmptyError && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          Please confirm password
+                        </p>
+                      )}
+                      {isMismatchError && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          Passwords do not match
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col w-full">
+                    <label
+                      htmlFor="gender"
+                      className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                    >
+                      <select
+                        value={role}
+                        onChange={handleRoleChange}
+                        className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                        required
+                      >
+                        <option value="">Select</option>
+                        <option value="student">Student</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="counselor">Counselor</option>
+                      </select>
+                      <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                        Role
+                      </span>
+                    </label>
+                    {errors.role && (
+                      <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                        {errors.role._errors[0]}
+                      </p>
+                    )}
+                  </div>
+                  {/* Conditionally Rendered Fields */}
+                  {role === "student" && (
+                    <>
+                      <div className="flex flex-col w-full">
+                        <label
+                          htmlFor="gender"
+                          className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                        >
+                          <input
+                            type="date"
+                            value={birthdate}
+                            onChange={(e) => setBirthdate(e.target.value)}
+                            className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                            required
+                          />
+                          <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                            Birthdate
+                          </span>
+                        </label>
+                        {errors.birthdate && (
+                          <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                            {errors.birthdate._errors[0]}
+                          </p>
+                        )}
+                      </div>
+                      <div className="w-full flex flex-row gap-x-6">
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={contactNumber}
+                            onChange={(e) => setContactNumber(e.target.value)}
+                            placeholder="Contact Number"
+                            label="Contact Number"
+                            type="tel"
+                            id="contactNumber"
+                          />
+                          {errors.contactNumber && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.contactNumber._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={specificAddress}
+                            onChange={(e) => setSpecificAddress(e.target.value)}
+                            placeholder="Specific Address"
+                            label="Specific Address"
+                            type="text"
+                            id="specificAddress"
+                          />
+                          {errors.specificAddress && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.specificAddress._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="w-full flex flex-row gap-x-6">
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={barangay}
+                            onChange={(e) => setBarangay(e.target.value)}
+                            placeholder="Barangay"
+                            label="Barangay"
+                            type="text"
+                            id="barangay"
+                          />
+                          {errors.barangay && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.barangay._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={cityMunicipality}
+                            onChange={(e) =>
+                              setCityMunicipality(e.target.value)
+                            }
+                            placeholder="City/Municipality"
+                            label="City/Municipality"
+                            type="text"
+                            id="cityMunicipality"
+                          />
+                          {errors.cityMunicipality && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.cityMunicipality._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="w-full flex flex-row gap-x-6">
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={province}
+                            onChange={(e) => setProvince(e.target.value)}
+                            placeholder="Province"
+                            label="Province"
+                            type="text"
+                            id="province"
+                          />
+                          {errors.province && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.province._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={zipcode}
+                            onChange={(e) => setZipcode(e.target.value)}
+                            placeholder="Zipcode"
+                            label="Zipcode"
+                            type="text"
+                            id="zipcode"
+                          />
+                          {errors.zipcode && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.zipcode._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="w-full flex flex-row gap-x-6">
+                        <div className="flex flex-col w-full">
+                          <label
+                            htmlFor="gender"
+                            className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                          >
+                            <select
+                              value={college}
+                              onChange={(e) => setCollege(e.target.value)}
+                              className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                              required
+                            >
+                              {collegeOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                            <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                              Department
+                            </span>
+                          </label>
+                          {errors.college && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.college._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-col w-full">
+                          <label
+                            htmlFor="gender"
+                            className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                          >
+                            <select
+                              value={program}
+                              onChange={(e) => setProgram(e.target.value)}
+                              className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                              required
+                            >
+                              {programOptions[college]?.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                            <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                              Course
+                            </span>
+                          </label>
+                          {errors.program && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.program._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex flex-col w-full">
+                          <TextInput
+                            value={year}
+                            onChange={(e) => setYear(e.target.value)}
+                            placeholder="Year"
+                            label="Year"
+                            type="text"
+                            id="year"
+                          />
+                          {errors.year && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.year._errors[0]}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
 
-								{/* choose role */}
-								<div className="flex flex-col">
-									<div className="w-1/3 flex flex-row gap-x-6 pt-2">
-										<div className="w-full">
-											<InputRole
-												role={role}
-												setRole={setRole}
-												handleRoleChange={
-													handleRoleChange
-												}
-											/>
-										</div>
-									</div>
-								</div>
+                  {role === "teacher" && (
+                    <div className="flex flex-col w-full">
+                      <label
+                        htmlFor="gender"
+                        className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                      >
+                        <select
+                          value={college}
+                          onChange={(e) => setCollege(e.target.value)}
+                          className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                          required
+                        >
+                          {collegeOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                          Department
+                        </span>
+                      </label>
+                      {errors.college && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.college._errors[0]}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  <div className="w-full flex items-center gap-x-2 py-4">
+                    <input
+                      type="checkbox"
+                      checked={termsAccepted}
+                      onChange={handleTermsChange}
+                      className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
+                    />
+                    <label className="text-sm font-bold text-gray-700">
+                      I accept the{" "}
+                      <a
+                        href="/terms"
+                        className="hover:underline"
+                        style={{ color: "#6B9080" }}
+                      >
+                        terms and conditions
+                      </a>
+                    </label>
+                  </div>
 
-								{/* role === student */}
-								{roleStudent && (
-									<>
-										<div className="w-full flex flex-row gap-x-6">
-											<PersonalInfo
-												birthdate={birthdate}
-												setBirthdate={setBirthdate}
-												contactNumber={contactNumber}
-												setContactNumber={
-													setContactNumber
-												}
-												address={address}
-												setAddress={setAddress}
-											/>
-										</div>
-										<div className="flex flex-col">
-											<div className="w-full flex flex-row gap-x-6">
-												<InputCollegeInformation
-													college={college}
-													setCollege={setCollege}
-													program={program}
-													setProgram={setProgram}
-													year={year}
-													setYear={setYear}
-												/>
-											</div>
-										</div>
-									</>
-								)}
+                  <div className="flex flex-row gap-4 w-full">
+                    <div className="w-full mt-7">
+                      <p>
+                        Already have an account?{" "}
+                        <span
+                          className="cursor-pointer font-bold"
+                          style={{ color: "#6B9080" }}
+                          onClick={handleLoginClick}
+                        >
+                          Log In
+                        </span>
+                      </p>
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <FullButton onClick={handleCreateAccount}>
+                        Create Account
+                      </FullButton>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
 
-								{/* role === teacher */}
-								{roleTeacher && (
-									<>
-										<div className="flex flex-col">
-											<div className="w-3/5 flex flex-row gap-x-6">
-												<InputCollege
-													college={college}
-													setCollege={setCollege}
-												/>
-											</div>
-										</div>
-									</>
-								)}
+        {showTermsNotAccepted && (
+          <ModalTermsUnchecked
+            setShowTermsNotAccepted={setShowTermsNotAccepted}
+          />
+        )}
+        {/* terms and conditions not accepted */}
 
-								{/* role === counselor */}
-								{roleTeacher && <></>}
-							</div>
+        {showRegistrationSuccessful && (
+          <ModalRegistrationSuccessful
+            setShowRegistrationSuccessful={setShowRegistrationSuccessful}
+            //  to be deleted
 
-							<div className="w-full flex flex-row gap-x-3 py-6 pb-1.5 items-center">
-								<input
-									type="checkbox"
-									checked={termsAccepted}
-									onChange={handleTermsChange}
-									className="h-5 w-5"
-									required
-								/>
-								<label
-									htmlFor="terms"
-									className="font-Jaldi text-lg">
-									I agree to the Terms and Conditions
-								</label>
-							</div>
-
-							<div className="w-full h-14 flex flex-row my-6">
-								<div className="w-2/3 h-full"></div>
-								<div className="w-1/3 h-full flex justify-center items-center">
-									<FullButton onClick={handleCreateAccount}>
-										Create Account
-									</FullButton>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-
-			{/* terms and conditions not accepted */}
-			{showTermsNotAccepted && (
-				<ModalTermsUnchecked
-					setShowTermsNotAccepted={setShowTermsNotAccepted}
-				/>
-			)}
-			{/* terms and conditions not accepted */}
-
-			{showRegistrationSuccessful && (
-				<ModalRegistrationSuccessful
-					setShowRegistrationSuccessful={
-						setShowRegistrationSuccessful
-					}
-					//  to be deleted
-				
-					handleLoginClick={handleLoginClick}
-				/>
-			)}
-		</div>
-	);
+            handleLoginClick={handleLoginClick}
+          />
+        )}
+      </div>
+    </section>
+  );
 };
 
 export default Registration;
+
+// "use client";
+
+// import registrationBg from "@/public/images/bgs/registrationBg.png";
+// import { useRouter } from "next/navigation";
+// import { useState } from "react";
+
+// // utils
+// import FullButton from "@/components/ui/buttons/FullButton";
+// import InputCollege from "@/components/ui/inputs/InputCollege";
+// import InputCollegeInformation from "@/components/ui/inputs/InputCollegeInformation";
+// import InputInstitutionalInfo from "@/components/ui/inputs/InputInstitutionalInfo";
+// import InputName from "@/components/ui/inputs/InputName";
+// import InputPassword from "@/components/ui/inputs/InputPassword";
+// import PersonalInfo from "@/components/ui/inputs/InputPersonalInfo";
+// import InputRole from "@/components/ui/inputs/InputRole";
+// import { Navbar } from "@/components/ui/landing/LandingNav";
+// import ModalRegistrationSuccessful from "@/components/ui/modals/ModalRegistrationSuccessful";
+// import ModalTermsUnchecked from "@/components/ui/modals/ModalTermsUnchecked";
+
+// const Registration = () => {
+// 	const router = useRouter();
+
+// 	// properties
+// 	const [email, setEmail] = useState("");
+// 	const [idno, setIdNo] = useState("");
+// 	const [firstName, setFirstName] = useState("");
+// 	const [lastName, setLastName] = useState("");
+// 	const [gender, setGender] = useState("");
+
+// 	const [birthdate, setBirthdate] = useState("");
+// 	const [contactNumber, setContactNumber] = useState("");
+// 	const [address, setAddress] = useState("");
+
+// 	const [role, setRole] = useState("");
+// 	const [roleStudent, setRoleStudent] = useState(false);
+// 	const [roleTeacher, setRoleTeacher] = useState(false);
+// 	const [roleCounselor, setRoleCounselor] = useState(false);
+
+// 	const [college, setCollege] = useState("");
+// 	const [program, setProgram] = useState("");
+// 	const [year, setYear] = useState("");
+// 	const [password, setPassword] = useState("");
+// 	const [passwordCheck, setPasswordCheck] = useState("");
+// 	const [termsAccepted, setTermsAccepted] = useState(false);
+
+// 	const handleTermsChange = (e) => {
+// 		setTermsAccepted(e.target.checked);
+// 	};
+
+// 	// pop ups
+// 	const [showInvalidPassword, setShowInvalidPassword] = useState(false);
+// 	const [showPasswordDoNotMatch, setShowPasswordDoNotMatch] = useState(false);
+
+// 	// modal
+// 	const [showTermsNotAccepted, setShowTermsNotAccepted] = useState(false);
+// 	const [showRegistrationSuccessful, setShowRegistrationSuccessful] =
+// 		useState(false);
+
+// 	// create account
+// 	const handleCreateAccount = async (e) => {
+// 		e.preventDefault();
+
+// 		if (roleStudent) {
+// 			if (
+// 				email.trim() === "" ||
+// 				idno.trim() === "" ||
+// 				firstName.trim() === "" ||
+// 				lastName.trim() === "" ||
+// 				gender.trim() === "" ||
+// 				birthdate.trim() === "" ||
+// 				contactNumber.trim() === "" ||
+// 				address.trim() === "" ||
+// 				college.trim() === "" ||
+// 				program.trim() === "" ||
+// 				year.trim() === "" ||
+// 				password.trim() === "" ||
+// 				passwordCheck.trim() === "" ||
+// 				!termsAccepted
+// 			) {
+// 				// Show error message or handle appropriately
+// 				alert("Please fill out all required fields.");
+// 				return;
+// 			}
+// 		}
+// 		if (roleTeacher) {
+// 			if (
+// 				email.trim() === "" ||
+// 				idno.trim() === "" ||
+// 				firstName.trim() === "" ||
+// 				lastName.trim() === "" ||
+// 				gender.trim() === "" ||
+// 				college.trim() === "" ||
+// 				password.trim() === "" ||
+// 				passwordCheck.trim() === "" ||
+// 				!termsAccepted
+// 			) {
+// 				// Show error message or handle appropriately
+// 				alert("Please fill out all required fields.");
+// 				return;
+// 			}
+// 		}
+// 		if (roleCounselor) {
+// 			if (
+// 				email.trim() === "" ||
+// 				idno.trim() === "" ||
+// 				firstName.trim() === "" ||
+// 				lastName.trim() === "" ||
+// 				gender.trim() === "" ||
+// 				password.trim() === "" ||
+// 				passwordCheck.trim() === "" ||
+// 				!termsAccepted
+// 			) {
+// 				// Show error message or handle appropriately
+// 				alert("Please fill out all required fields.");
+// 				return;
+// 			}
+// 		}
+
+// 		if (termsAccepted === false) {
+// 			setShowTermsNotAccepted(true);
+// 			return;
+// 		}
+
+// 		let role;
+
+// 		if (roleStudent) {
+// 			role = "student";
+// 		} else if (roleTeacher) {
+// 			role = "teacher";
+// 		} else if (roleCounselor) {
+// 			role = "counselor";
+// 		}
+
+// 		//
+// 		try {
+// 			const response = await fetch("/api/users/createuser", {
+// 				method: "POST",
+// 				headers: {
+// 					"Content-Type": "application/json",
+// 				},
+// 				body: JSON.stringify({
+// 					institutionalEmail: email,
+// 					idNumber: idno,
+// 					firstName: firstName,
+// 					lastName: lastName,
+// 					gender: gender,
+// 					password: password,
+// 					gender: gender,
+// 					image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
+// 					birthDate: birthdate,
+// 					contactNumber: contactNumber,
+// 					address: address,
+// 					college: college,
+// 					program: program,
+// 					year: year,
+// 					role: role,
+// 				}),
+// 			});
+
+// 			if (!response.ok) {
+// 				console.log("Error status: ", response.status);
+// 			}
+// 			setTimeout(() => {
+// 				router.push("/login");
+// 			}, 5000);
+// 		} catch (error) {
+// 			console.log("Error in creating user", error);
+// 		}
+
+// 		// successful registration
+// 		setShowRegistrationSuccessful(true);
+// 	};
+
+// 	// password validation function
+// 	const validatePassword = (password) => {
+// 		const regex =
+// 			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+// 		return regex.test(password);
+// 	};
+
+// 	const handlePasswordChange = (e) => {
+// 		const newPassword = e.target.value;
+// 		setPassword(newPassword);
+
+// 		if (!validatePassword(newPassword)) {
+// 			// password is not valid
+// 			setShowInvalidPassword(true);
+// 		} else {
+// 			// password is valid
+// 			setShowInvalidPassword(false);
+// 		}
+// 	};
+
+// 	const handlePasswordCheck = (e) => {
+// 		const newPasswordCheck = e.target.value;
+// 		setPasswordCheck(newPasswordCheck);
+
+// 		if (newPasswordCheck.trim() === "") {
+// 			// password is empty
+// 			setShowPasswordDoNotMatch(false);
+// 		} else if (validatePassword(password)) {
+// 			// password is valid
+// 			if (newPasswordCheck !== password) {
+// 				// passwords do not match
+// 				setShowPasswordDoNotMatch(true);
+// 			} else {
+// 				// passwords match
+// 				setShowPasswordDoNotMatch(false);
+// 			}
+// 		} else {
+// 			// default
+// 			setShowPasswordDoNotMatch(false);
+// 		}
+// 	};
+
+// 	const handleRoleChange = (e) => {
+// 		const newRole = e.target.value;
+// 		setRole(newRole);
+
+// 		console.log(newRole);
+// 		if (newRole === "student") {
+// 			setRoleStudent(true);
+// 			setRoleTeacher(false);
+// 			setRoleCounselor(false);
+// 		} else if (newRole === "teacher") {
+// 			setRoleStudent(false);
+// 			setRoleTeacher(true);
+// 			setRoleCounselor(false);
+// 		} else if (newRole === "counselor") {
+// 			setRoleStudent(false);
+// 			setRoleTeacher(false);
+// 			setRoleCounselor(true);
+// 		} else {
+// 			setRoleStudent(false);
+// 			setRoleTeacher(false);
+// 			setRoleCounselor(false);
+// 		}
+// 	};
+
+// 	const handleLoginClick = () => {
+// 		router.push("/login");
+// 	};
+
+// 	return (
+// 		<div
+// 			className="min-h-screen w-full"
+// 			style={{
+// 				backgroundImage: `url(${registrationBg.src})`,
+// 				backgroundSize: "cover",
+// 				backgroundPosition: "center right",
+// 				backgroundAttachment: "fixed",
+// 				minHeight: "100vh",
+// 			}}>
+// 			{/* navigation bar */}
+// 			<Navbar userType="landing" />
+
+// 			{/* main content */}
+// 			<div>
+// 				{/* registration form*/}
+// 				<div className="flex justify-start items-center py-32 px-36 flex-row">
+// 					<div className="w-4/12"></div> {/* empty div for spacing */}
+// 					<div className="w-8/12 h-fit pr-2.5 ">
+// 						<form
+// 							className="h-full flex flex-col justify-center"
+// 							onSubmit={() => {}}>
+// 							<p className="text-black text-5xl font-Merriweather pt-5">
+// 								Registration
+// 							</p>
+// 							{/* form inputs */}
+// 							<div className="flex flex-col gap-y-2.5 py-4">
+// 								<div className="w-full flex flex-row gap-x-6">
+// 									<InputInstitutionalInfo
+// 										email={email}
+// 										setEmail={setEmail}
+// 										idno={idno}
+// 										setIdNo={setIdNo}
+// 									/>
+// 								</div>
+// 								<div className="w-full flex flex-row gap-x-6">
+// 									<InputName
+// 										firstName={firstName}
+// 										setFirstName={setFirstName}
+// 										lastName={lastName}
+// 										setLastName={setLastName}
+// 										gender={gender}
+// 										setGender={setGender}
+// 									/>
+// 								</div>
+// 								<div className="w-full flex flex-row gap-x-6">
+// 									<InputPassword
+// 										password={password}
+// 										passwordCheck={passwordCheck}
+// 										showInvalidPassword={
+// 											showInvalidPassword
+// 										}
+// 										showPasswordDoNotMatch={
+// 											showPasswordDoNotMatch
+// 										}
+// 										handlePasswordChange={
+// 											handlePasswordChange
+// 										}
+// 										handlePasswordCheck={
+// 											handlePasswordCheck
+// 										}
+// 									/>
+// 								</div>
+
+// 								{/* choose role */}
+// 								<div className="flex flex-col">
+// 									<div className="w-1/3 flex flex-row gap-x-6 pt-2">
+// 										<div className="w-full">
+// 											<InputRole
+// 												role={role}
+// 												setRole={setRole}
+// 												handleRoleChange={
+// 													handleRoleChange
+// 												}
+// 											/>
+// 										</div>
+// 									</div>
+// 								</div>
+
+// 								{/* role === student */}
+// 								{roleStudent && (
+// 									<>
+// 										<div className="w-full flex flex-row gap-x-6">
+// 											<PersonalInfo
+// 												birthdate={birthdate}
+// 												setBirthdate={setBirthdate}
+// 												contactNumber={contactNumber}
+// 												setContactNumber={
+// 													setContactNumber
+// 												}
+// 												address={address}
+// 												setAddress={setAddress}
+// 											/>
+// 										</div>
+// 										<div className="flex flex-col">
+// 											<div className="w-full flex flex-row gap-x-6">
+// 												<InputCollegeInformation
+// 													college={college}
+// 													setCollege={setCollege}
+// 													program={program}
+// 													setProgram={setProgram}
+// 													year={year}
+// 													setYear={setYear}
+// 												/>
+// 											</div>
+// 										</div>
+// 									</>
+// 								)}
+
+// 								{/* role === teacher */}
+// 								{roleTeacher && (
+// 									<>
+// 										<div className="flex flex-col">
+// 											<div className="w-3/5 flex flex-row gap-x-6">
+// 												<InputCollege
+// 													college={college}
+// 													setCollege={setCollege}
+// 												/>
+// 											</div>
+// 										</div>
+// 									</>
+// 								)}
+
+// 								{/* role === counselor */}
+// 								{roleTeacher && <></>}
+// 							</div>
+
+// 							<div className="w-full flex flex-row gap-x-3 py-6 pb-1.5 items-center">
+// 								<input
+// 									type="checkbox"
+// 									checked={termsAccepted}
+// 									onChange={handleTermsChange}
+// 									className="h-5 w-5"
+// 									required
+// 								/>
+// 								<label
+// 									htmlFor="terms"
+// 									className="font-Jaldi text-lg">
+// 									I agree to the Terms and Conditions
+// 								</label>
+// 							</div>
+
+// 							<div className="w-full h-14 flex flex-row my-6">
+// 								<div className="w-2/3 h-full"></div>
+// 								<div className="w-1/3 h-full flex justify-center items-center">
+// 									<FullButton onClick={handleCreateAccount}>
+// 										Create Account
+// 									</FullButton>
+// 								</div>
+// 							</div>
+// 						</form>
+// 					</div>
+// 				</div>
+// 			</div>
+
+// 			{/* terms and conditions not accepted */}
+// {showTermsNotAccepted && (
+// 	<ModalTermsUnchecked
+// 		setShowTermsNotAccepted={setShowTermsNotAccepted}
+// 	/>
+// )}
+// {/* terms and conditions not accepted */}
+
+// {showRegistrationSuccessful && (
+// 	<ModalRegistrationSuccessful
+// 		setShowRegistrationSuccessful={
+// 			setShowRegistrationSuccessful
+// 		}
+// 					//  to be deleted
+
+// 					handleLoginClick={handleLoginClick}
+// 				/>
+// 			)}
+// 		</div>
+// 	);
+// };
+
+// export default Registration;
 
 // const Registration = () => {
 //   const [formData, setFormData] = useState({
