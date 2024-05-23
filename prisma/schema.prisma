@@ -59,6 +59,8 @@ model user {
   appointmentsAsStudent   appointment[] @relation(name: "AppointmentStudent")
 }
 
+
+
 model appointment {
   appointmentId   Int      @id @default(autoincrement())
   studentId       Int?
