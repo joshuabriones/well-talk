@@ -8,61 +8,80 @@ import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 
 const CalendarScheduling = () => {
-  const { monthIndex, showDayViewCalendar, showMonthViewCalendar, dateIndex } =
-    useContext(GlobalContext);
+	const {
+		monthIndex,
+		showEventModal,
+		viewEvents,
+		showDayViewCalendar,
+		showMonthViewCalendar,
+		dateIndex,
+		dispatchCallEvent,
+	} = useContext(GlobalContext);
 
-  // use useEffect to fetch events
-  // const getCalendarEvents = async () => {
-  // 	try {
-  // 		console.log("before authentication");
-  // 		const response = await axios.get(
-  // 			"http://localhost:5108/api/CalendarEvents/GetCalendarEvents",
-  // 			{ withCredentials: true }
-  // 		);
+	// use useEffect to fetch events
+	const getCalendarEvents = async () => {
+		// try {
+		// 	console.log("before authentication");
+		// 	const response = await axios.get(
+		// 		"http://localhost:5108/api/CalendarEvents/GetCalendarEvents",
+		// 		{ withCredentials: true }
+		// 	);
+		// 	response.data.map((event) => {
+		// 		dispatchCallEvent({ type: "get", payload: event });
+		// 		console.log("after success authentication");
+		// 	});
+		// } catch (err) {
+		// 	if (err.response.status === 400) {
+		// 		console.log("failed before navifate authentication");
+		// 		navigate("/signin");
+		// 		console.log("failed after navifate authentication");
+		// 	}
+		// }
+	};
 
-  // 		response.data.map((event) => {
-  // 			dispatchCallEvent({ type: "get", payload: event });
-  // 			console.log("after success authentication");
-  // 		});
-  // 	} catch (err) {
-  // 		if (err.response.status === 400) {
-  // 			console.log("failed before navifate authentication");
-  // 			navigate("/signin");
-  // 			console.log("failed after navifate authentication");
-  // 		}
-  // 	}
-  // };
+	useEffect(() => {
+		const sampleAppointment = {
+			eventId: "sample-event-id",
+			title: "Sample Event",
+			addDescription: "This is a sample event description.",
+			startTime: dayjs("2024-05-24T10:00:00").format(),
+			endTime: dayjs("2024-05-24T12:00:00").format(),
+			label: "green",
+			status: "Scheduled",
+		};
 
-  // useEffect(() => {
-  // 	getCalendarEvents();
-  // }, []);
+		// Dispatch the sample event to the global context
+		dispatchCallEvent({ type: "push", payload: sampleAppointment });
 
-  const [currentMonth, setCurrentMonth] = useState(getMonth());
-  const [currentDate, setCurrentDate] = useState(getDate());
+		// Optionally, fetch real events from the backend
+		getCalendarEvents();
+	}, []);
 
-  useEffect(() => {
-    showMonthViewCalendar &&
-      setCurrentMonth(getMonth(monthIndex, dayjs().year()));
-    showDayViewCalendar && setCurrentDate(getDate(monthIndex, dateIndex));
+	const [currentMonth, setCurrentMonth] = useState(getMonth());
+	const [currentDate, setCurrentDate] = useState(getDate());
 
-    let month = dayjs(new Date(dayjs().year(), monthIndex, dateIndex)).month();
-    let year = dayjs(new Date(dayjs().year(), monthIndex, dateIndex)).year();
+	useEffect(() => {
+		showMonthViewCalendar && setCurrentMonth(getMonth(monthIndex, dayjs().year()));
+		showDayViewCalendar && setCurrentDate(getDate(monthIndex, dateIndex));
 
-    showDayViewCalendar && setCurrentMonth(getMonth(month, year));
-  }, [monthIndex, dateIndex]);
+		let month = dayjs(new Date(dayjs().year(), monthIndex, dateIndex)).month();
+		let year = dayjs(new Date(dayjs().year(), monthIndex, dateIndex)).year();
 
-  return (
-    <section className="bg-gray-100 w-1/2 h-full flex flex-col border-gray-400 border-t border-b border-l">
-      <div className="h-fit">
-        <CalendarNav date={currentDate} />
-      </div>
+		showDayViewCalendar && setCurrentMonth(getMonth(month, year));
+	}, [monthIndex, dateIndex]);
 
-      <div className="flex-grow overflow-auto">
-        {showMonthViewCalendar && <Calendar month={currentMonth} />}
-        {showDayViewCalendar && <DayViewCalendar date={currentDate} />}
-      </div>
-    </section>
-  );
+	return (
+		<section className="bg-gray-100 w-1/2 h-full flex flex-col border-gray-400 border-t border-b border-l">
+			<div className="h-fit">
+				<CalendarNav date={currentDate} />
+			</div>
+
+			<div className="flex-grow overflow-auto">
+				{showMonthViewCalendar && <Calendar month={currentMonth} />}
+				{showDayViewCalendar && <DayViewCalendar date={currentDate} />}
+			</div>
+		</section>
+	);
 };
 
 export default CalendarScheduling;
