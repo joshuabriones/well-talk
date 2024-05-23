@@ -10,9 +10,7 @@ import { useEffect, useState } from "react";
 import { GiSettingsKnobs } from "react-icons/gi";
 
 export default function Home() {
-	const [selectedButton, setSelectedButton] = useState("featured");
 	const [posts, setPosts] = useState([]);
-	const [showFilterPostModal, setShowFilterModal] = useState(false);
 	const [sortPostBy, setSortPostBy] = useState("Latest");
 	const [loading, setLoading] = useState(true);
 	const { data: session, status } = useSession();
@@ -55,20 +53,18 @@ export default function Home() {
 
 	console.log(session);
 
-	const getSortedPosts = () => {
-		if (sortPostBy === "Latest") {
-			return [...posts].sort(
-				(a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-			);
-		} else if (sortPostBy === "Oldest") {
-			return [...posts].sort(
-				(a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-			);
-		}
-		return posts;
-	};
 
-	const sortedPosts = getSortedPosts();
+	// const getSortedPosts = () => {
+	// 	if (sortPostBy === "Latest") {
+	// 		return [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+	// 	} else if (sortPostBy === "Oldest") {
+	// 		return [...posts].sort((a, b) => new Date(a.date) - new Date(b.date));
+	// 	} else {
+	// 		return posts;
+	// 	}
+	// };
+
+	// const sortedPosts = getSortedPosts();
 
 	return (
 		<div>
@@ -92,19 +88,19 @@ export default function Home() {
 					/>
 				</div>
 				{/*Posts*/}
-				<div className="flex flex-col md:flex-row py-24 items-center justify-center">
-					<div className="max-w-screen-xl mx-auto px-4 sm:px-12 lg:px-12 flex-grow-2 w-full md:w-11/12">
-						<div className="max-w-8xl mx-auto p-5 flex w-full">
-							<div className="flex flex-col flex-grow-1 items-start">
+				<div className="flex flex-col md:flex-row py-24 px-4 md:px-12 items-center justify-center">
+					<div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 flex-grow-2 w-full md:w-11/12">
+						<div className="max-w-8xl mx-auto px-5 flex w-full">
+							<div className="flex flex-col  flex-grow-1 items-start my-6">
 								<h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
 									{sortPostBy} Posts
 								</h1>
-								<p className="font-Jaldi text-lg md:text-xl sm:text-base">
+								<p className="font-Jaldi text-xl sm:text-base">
 									Check out the latest posts from the
 									university's Guidance Counselor!
 								</p>
 							</div>
-							<div className="ml-auto relative">
+							{/* <div className="ml-auto relative">
 								<GiSettingsKnobs
 									className="fill-black stroke-0 hover:stroke-2 text-2xl cursor-pointer text-center"
 									onClick={() =>
@@ -133,9 +129,9 @@ export default function Home() {
 										</ul>
 									</div>
 								)}
-							</div>
+							</div> */}
 						</div>
-						<div className="w-full mx-auto p-3 flex-grow max-h-[100vh] overflow-y-auto">
+						<div className="w-full p-2 mx-auto flex-grow max-h-[90vh] overflow-y-auto">
 							{loading ? (
 								<LoadingState />
 							) : sortedPosts.length === 0 ? (
@@ -152,11 +148,10 @@ export default function Home() {
 							)}
 						</div>
 					</div>
-					<div className="w-full border-t border-gray-300 my-6 md:hidden"></div>
 					{/*Blogs*/}
-					<div className="flex-grow-1 mx-auto px-8 sm:px-10 lg:px-12 flex-grow-2">
-						<div className="flex flex-col px-6 flex-grow-1 items-start my-6">
-							<h1 className="text-3xl font-Merriweather font-bold">
+					<div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 flex-grow-2 w-full">
+						<div className="flex flex-col px-4 flex-grow-1 items-start my-6">
+							<h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
 								Editor's Picks
 							</h1>
 							<p className="font-Jaldi text-xl sm:text-base">
@@ -164,7 +159,7 @@ export default function Home() {
 								Guidance Counselor!
 							</p>
 						</div>
-						<div className="w-full mx-auto flex-grow max-h-[100vh] overflow-y-auto">
+						<div className="w-full mx-auto flex-grow max-h-[90vh] overflow-y-auto">
 							<Card />
 						</div>
 					</div>
