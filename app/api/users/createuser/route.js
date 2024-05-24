@@ -67,7 +67,7 @@ export async function POST(request) {
             year: yearInt,
             birthDate: birthDateObj,
             contactNumber,
-            address,
+            address: `${address.specificAddress}, ${address.barangay}, ${address.cityMunicipality}, ${address.province}, ${address.zipcode}`,
           },
         });
         break;

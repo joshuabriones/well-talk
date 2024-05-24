@@ -127,6 +127,7 @@ const Registration = () => {
       setShowTermsNotAccepted(true);
       return;
     }
+    console.log(specificAddress, barangay, cityMunicipality, province, zipcode);
 
     try {
       const response = await fetch("/api/users/createuser", {
