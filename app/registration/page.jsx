@@ -62,6 +62,12 @@ const Registration = () => {
   const handleCreateAccount = async (e) => {
     e.preventDefault();
 
+    const clearErrors = () => {
+      setTimeout(() => {
+        setErrors({});
+      }, 3000);
+    };
+
     const result = registrationSchema.safeParse({
       email,
       idno,
@@ -74,12 +80,11 @@ const Registration = () => {
       termsAccepted,
     });
 
-    const clearErrors = () => {
-      setTimeout(() => {
-        setErrors({});
-      }, 3000);
-    };
-
+    // if (!result.success) {
+    //   setErrors(result.error.format());
+    //   clearErrors();
+    //   return;
+    // }
     let extraInfoValidation;
 
     if (role === "student") {
@@ -101,89 +106,14 @@ const Registration = () => {
       extraInfoValidation = teacherSchema.safeParse(teacherData);
     }
 
-    if (extraInfoValidation && !extraInfoValidation.success) {
+    if (!extraInfoValidation?.success && !result?.success) {
       setErrors({
-        ...extraInfoValidation.error.format(),
-        ...result.error.format(),
+        ...extraInfoValidation?.error.format(),
+        ...result?.error.format(),
       });
       clearErrors();
       return;
     }
-    // const studentValidation = studentSchema.safeParse({
-    //   birthdate,
-    //   contactNumber,
-    //   specificAddress,
-    //   barangay,
-    //   cityMunicipality,
-    //   province,
-    //   zipcode,
-    //   college,
-    //   program,
-    //   year,
-    // });
-    // if (!studentValidation.success) {
-    //   setErrors(result.error.format());
-    //   clearErrors();
-    //   return;
-    // }
-
-    // const teacherValidation = teacherSchema.safeParse({ college });
-    // if (!teacherValidation.success) {
-    //   return teacherValidation.error;
-    // }
-
-    // switch (role) {
-    //   case "student":
-    //     extraInfoValidation = studentSchema.safeParse({
-    //       birthdate,
-    //       contactNumber,
-    //       specificAddress,
-    //       barangay,
-    //       cityMunicipality,
-    //       province,
-    //       zipcode,
-    //       college,
-    //       program,
-    //       year,
-    //     });
-    //     break;
-    //   case "teacher":
-    //     extraInfoValidation = teacherSchema.safeParse({
-    //       college,
-    //     });
-    //     break;
-    // }
-
-    // if (!extraInfoValidation.success) {
-    //   alert("Please fill out all required fields.");
-    //   setErrors(extraInfoValidation.error.format());
-    //   clearErrors();
-    //   return;
-    // }
-
-    // const formData = {
-    //   email,
-    //   idno,
-    //   firstName,
-    //   lastName,
-    //   gender,
-    //   birthdate,
-    //   contactNumber,
-    //   specificAddress,
-    //   barangay,
-    //   cityMunicipality,
-    //   province,
-    //   zipcode,
-    //   role, // Use the role state variable here
-    //   college,
-    //   program,
-    //   year,
-    //   password,
-    //   passwordCheck,
-    //   termsAccepted,
-    // };
-
-    // const result = registrationSchema.safeParse(formData);
 
     if (termsAccepted === false) {
       setShowTermsNotAccepted(true);
@@ -353,7 +283,7 @@ const Registration = () => {
                       />
                       {errors.idno && (
                         <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                          {errors.email._errors[0]}
+                          {errors?.email._errors[0]}
                         </p>
                       )}
                     </div>
@@ -728,6 +658,7 @@ const Registration = () => {
                       type="checkbox"
                       checked={termsAccepted}
                       onChange={handleTermsChange}
+                      disabled={!role}
                       className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
                     />
                     <label className="text-sm font-bold text-gray-700">
