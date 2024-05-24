@@ -7,7 +7,11 @@ import TextInput from "@/components/ui/inputs/TextInput";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import ModalRegistrationSuccessful from "@/components/ui/modals/ModalRegistrationSuccessful";
 import ModalTermsUnchecked from "@/components/ui/modals/ModalTermsUnchecked";
-import { registrationSchema } from "@/lib/validators";
+import {
+  registrationSchema,
+  studentSchema,
+  teacherSchema,
+} from "@/lib/validators";
 import {
   genderOptions,
   collegeOptions,
@@ -58,29 +62,17 @@ const Registration = () => {
   const handleCreateAccount = async (e) => {
     e.preventDefault();
 
-    const formData = {
+    const result = registrationSchema.safeParse({
       email,
       idno,
       firstName,
       lastName,
       gender,
-      birthdate,
-      contactNumber,
-      specificAddress,
-      barangay,
-      cityMunicipality,
-      province,
-      zipcode,
-      role, // Use the role state variable here
-      college,
-      program,
-      year,
+      role,
       password,
       passwordCheck,
       termsAccepted,
-    };
-
-    // const result = registrationSchema.safeParse(formData);
+    });
 
     const clearErrors = () => {
       setTimeout(() => {
@@ -88,25 +80,114 @@ const Registration = () => {
       }, 3000);
     };
 
-    // if (!result.success) {
+    let extraInfoValidation;
+
+    if (role === "student") {
+      const studentData = {
+        birthdate,
+        contactNumber,
+        specificAddress,
+        barangay,
+        cityMunicipality,
+        province,
+        zipcode,
+        college,
+        program,
+        year,
+      };
+      extraInfoValidation = studentSchema.safeParse(studentData);
+    } else if (role === "teacher") {
+      const teacherData = { college };
+      extraInfoValidation = teacherSchema.safeParse(teacherData);
+    }
+
+    if (extraInfoValidation && !extraInfoValidation.success) {
+      setErrors({
+        ...extraInfoValidation.error.format(),
+        ...result.error.format(),
+      });
+      clearErrors();
+      return;
+    }
+    // const studentValidation = studentSchema.safeParse({
+    //   birthdate,
+    //   contactNumber,
+    //   specificAddress,
+    //   barangay,
+    //   cityMunicipality,
+    //   province,
+    //   zipcode,
+    //   college,
+    //   program,
+    //   year,
+    // });
+    // if (!studentValidation.success) {
     //   setErrors(result.error.format());
     //   clearErrors();
     //   return;
     // }
 
+    // const teacherValidation = teacherSchema.safeParse({ college });
+    // if (!teacherValidation.success) {
+    //   return teacherValidation.error;
+    // }
+
+    // switch (role) {
+    //   case "student":
+    //     extraInfoValidation = studentSchema.safeParse({
+    //       birthdate,
+    //       contactNumber,
+    //       specificAddress,
+    //       barangay,
+    //       cityMunicipality,
+    //       province,
+    //       zipcode,
+    //       college,
+    //       program,
+    //       year,
+    //     });
+    //     break;
+    //   case "teacher":
+    //     extraInfoValidation = teacherSchema.safeParse({
+    //       college,
+    //     });
+    //     break;
+    // }
+
+    // if (!extraInfoValidation.success) {
+    //   alert("Please fill out all required fields.");
+    //   setErrors(extraInfoValidation.error.format());
+    //   clearErrors();
+    //   return;
+    // }
+
+    // const formData = {
+    //   email,
+    //   idno,
+    //   firstName,
+    //   lastName,
+    //   gender,
+    //   birthdate,
+    //   contactNumber,
+    //   specificAddress,
+    //   barangay,
+    //   cityMunicipality,
+    //   province,
+    //   zipcode,
+    //   role, // Use the role state variable here
+    //   college,
+    //   program,
+    //   year,
+    //   password,
+    //   passwordCheck,
+    //   termsAccepted,
+    // };
+
+    // const result = registrationSchema.safeParse(formData);
+
     if (termsAccepted === false) {
       setShowTermsNotAccepted(true);
       return;
-    }
-
-    let selectedRole;
-
-    if (roleStudent) {
-      selectedRole = "student";
-    } else if (roleTeacher) {
-      selectedRole = "teacher";
-    } else if (roleCounselor) {
-      selectedRole = "counselor";
     }
 
     try {
@@ -135,7 +216,7 @@ const Registration = () => {
           college: college,
           program: program,
           year: year,
-          role: selectedRole,
+          role: role,
         }),
       });
 
