@@ -33,25 +33,25 @@ export default function Home() {
 		}
 	};
 
-	// useEffect(() => {
-	// 	if (status === "unauthenticated") {
-	// 		router.push("/login");
-	// 	}
-	// }, [status]);
+	useEffect(() => {
+		if (status === "unauthenticated") {
+			router.push("/login");
+		}
+	}, [status]);
 
 	useEffect(() => {
 		fetchPosts();
 	}, []);
 
-	// if (status === "loading" || !session) {
-	// 	return <Loading />;
-	// }
+	if (status === "loading" || !session) {
+		return <LoadingState />;
+	}
 
 	// Redirect authenticated users who are not students
-	// if (session.user.role !== "student") {
-	// 	router.push("/login");
-	// 	return null; // Prevent rendering anything if redirecting
-	// }
+	if (session.user.role !== "student") {
+		router.push("/login");
+		return null; // Prevent rendering anything if redirecting
+	}
 
 	console.log(session);
 
