@@ -28,32 +28,34 @@ export default function Appointment() {
 
   useEffect(() => {
     try {
-      const fetchAppointments = async () => {
-        // const response = await fetch("/api/appointment/view-appointments");
-        // const data = await response.json();
-        // setAppointments(data.appointments);
-
-        // TESTING (must filter to PENDING status only)
-        if (isPendingTable) {
-          setAppointments(
-            appointmentsDummyData().filter(
-              (appointment) => appointment.status === "Pending"
-            )
-          );
-        } else {
-          setAppointments(
-            appointmentsDummyData().filter(
-              (appointment) => appointment.status === "Approved"
-            )
-          );
-        }
-      };
-
       fetchAppointments();
     } catch (error) {
       console.log(error);
     }
   }, [isPendingTable]);
+
+  const fetchAppointments = async () => {
+    const response = await fetch("/api/appointment/view-appointments");
+    const data = await response.json();
+    // setAppointments(data.appointments);
+    console.log(data.appointments);
+    const retrievedAppointments = data.appointments;
+
+    // TESTING (must filter to PENDING status only)
+    if (isPendingTable) {
+      setAppointments(
+        retrievedAppointments.filter(
+          (appointment) => appointment.status === false
+        )
+      );
+    } else {
+      setAppointments(
+        retrievedAppointments.filter(
+          (appointment) => appointment.status === true
+        )
+      );
+    }
+  };
 
   const formatDate = (date) => {
     const dateObject = new Date(date);
@@ -188,9 +190,8 @@ export default function Appointment() {
                     <td>
                       <div className="flex flex-row gap-x-3">
                         <div className="text-sm">
-                          {/* {formatDate(appointments.date)} {appointments.timeStart}
-                        -{appointments.timeEnd} */}
-                          {appointments.dateTime}
+                          {formatDate(appointments.date)}{" "}
+                          {appointments.timeStart}-{appointments.timeEnd}
                         </div>
                       </div>
                     </td>
@@ -229,7 +230,7 @@ export default function Appointment() {
                     </td>
                     <td className="text-center">
                       <div className={`w-24 h-5 badge badge-xs badge-warning`}>
-                        {appointments.status}
+                        {appointments.status ? "Done" : "Pending"}
                       </div>
                     </td>
 
@@ -319,9 +320,8 @@ export default function Appointment() {
                     <td>
                       <div className="flex flex-row gap-x-3">
                         <div className="text-sm">
-                          {/* {formatDate(appointments.date)} {appointments.timeStart}
-                        -{appointments.timeEnd} */}
-                          {appointments.dateTime}
+                          {formatDate(appointments.date)}{" "}
+                          {appointments.timeStart}-{appointments.timeEnd}
                         </div>
                       </div>
                     </td>
@@ -360,7 +360,7 @@ export default function Appointment() {
                     </td>
                     <td className="text-center">
                       <div className={`w-24 h-5 badge badge-xs badge-success`}>
-                        {appointments.status}
+                        {appointments.status ? "Done" : "Pending"}
                       </div>
                     </td>
 
@@ -447,217 +447,4 @@ export default function Appointment() {
       )}
     </div>
   );
-}
-
-function appointmentsDummyData() {
-  return [
-    {
-      appointmentId: 1,
-      dateTime: "2024-06-01 10:30 AM",
-      student: {
-        firstName: "John",
-        lastName: "Doe",
-        idNumber: "19-8000-322",
-        institutionalEmail: "johndoe@gmail.com",
-        image: "https://ui-avatars.com/api/?name=John+Doe",
-      },
-      purpose: "Bullied from school",
-      status: "Pending",
-      counselor: {
-        name: "",
-      },
-    },
-    {
-      appointmentId: 2,
-      dateTime: "2024-06-02 11:00 AM",
-      student: {
-        firstName: "Jane",
-        lastName: "Smith",
-        idNumber: "19-8000-323",
-        institutionalEmail: "janesmith@gmail.com",
-        image: "https://ui-avatars.com/api/?name=Jane+Smith",
-      },
-      purpose: "Career Counseling",
-      status: "Pending",
-      counselor: {
-        name: "",
-      },
-    },
-    {
-      appointmentId: 3,
-      dateTime: "2024-06-03 01:00 PM",
-      student: {
-        firstName: "Alice",
-        lastName: "Johnson",
-        idNumber: "19-8000-324",
-        institutionalEmail: "alicejohnson@gmail.com",
-        image: "https://ui-avatars.com/api/?name=Alice+Johnson",
-      },
-      purpose: "Academic Advising",
-      status: "Pending",
-      counselor: {
-        name: "",
-      },
-    },
-    {
-      appointmentId: 4,
-      dateTime: "2024-06-04 02:30 PM",
-      student: {
-        firstName: "Bob",
-        lastName: "Brown",
-        idNumber: "19-8000-325",
-        institutionalEmail: "bobbrown@gmail.com",
-        image: "https://ui-avatars.com/api/?name=Bob+Brown",
-      },
-      purpose: "Financial Aid Assistance",
-      status: "Pending",
-      counselor: {
-        name: "",
-      },
-    },
-    {
-      appointmentId: 5,
-      dateTime: "2024-06-05 09:00 AM",
-      student: {
-        firstName: "Carol",
-        lastName: "White",
-        idNumber: "19-8000-326",
-        institutionalEmail: "carolwhite@gmail.com",
-        image: "https://ui-avatars.com/api/?name=Carol+White",
-      },
-      purpose: "Health Services",
-      status: "Pending",
-      counselor: {
-        name: "",
-      },
-    },
-    {
-      appointmentId: 6,
-      dateTime: "2024-06-06 11:30 AM",
-      student: {
-        firstName: "David",
-        lastName: "Green",
-        idNumber: "19-8000-327",
-        institutionalEmail: "davidgreen@gmail.com",
-        image: "https://ui-avatars.com/api/?name=David+Green",
-      },
-      purpose: "Tutoring",
-      status: "Pending",
-      counselor: {
-        name: "",
-      },
-    },
-    {
-      appointmentId: 7,
-      dateTime: "2024-06-07 03:00 PM",
-      student: {
-        firstName: "Eva",
-        lastName: "Black",
-        idNumber: "19-8000-328",
-        institutionalEmail: "evablack@gmail.com",
-        image: "https://ui-avatars.com/api/?name=Eva+Black",
-      },
-      purpose: "Health Services",
-      status: "Pending",
-      counselor: {
-        name: "Poop",
-      },
-    },
-    {
-      appointmentId: 8,
-      dateTime: "2024-06-08 10:00 AM",
-      student: {
-        firstName: "Frank",
-        lastName: "Blue",
-        idNumber: "19-8000-329",
-        institutionalEmail: "frankblue@gmail.com",
-        image: "https://ui-avatars.com/api/?name=Frank+Blue",
-      },
-      purpose: "Career Counseling",
-      status: "Pending",
-      counselor: {
-        name: "",
-      },
-    },
-    {
-      appointmentId: 9,
-      dateTime: "2024-06-09 01:30 PM",
-      student: {
-        firstName: "Grace",
-        lastName: "Yellow",
-        idNumber: "19-8000-330",
-        institutionalEmail: "graceyellow@gmail.com",
-        image: "https://ui-avatars.com/api/?name=Grace+Yellow",
-      },
-      purpose: "Academic Advising",
-      status: "Pending",
-      counselor: {
-        name: "",
-      },
-    },
-    {
-      appointmentId: 10,
-      dateTime: "2024-06-10 04:00 PM",
-      student: {
-        firstName: "Henry",
-        lastName: "Purple",
-        idNumber: "19-8000-331",
-        institutionalEmail: "henrypurple@gmail.com",
-        image: "https://ui-avatars.com/api/?name=Henry+Purple",
-      },
-      purpose: "Financial Aid Assistance",
-      status: "Pending",
-      counselor: {
-        name: "",
-      },
-    },
-    {
-      appointmentId: 11,
-      dateTime: "2024-06-10 04:00 PM",
-      student: {
-        firstName: "Miya",
-        lastName: "Kara",
-        idNumber: "19-8000-331",
-        institutionalEmail: "henrypurple@gmail.com",
-        image: "https://ui-avatars.com/api/?name=Henry+Purple",
-      },
-      purpose: "Financial Aid Assistance",
-      status: "Approved",
-      counselor: {
-        name: "",
-      },
-    },
-    {
-      appointmentId: 12,
-      dateTime: "2024-06-10 05:00 PM",
-      student: {
-        firstName: "Borji",
-        lastName: "Caban",
-        idNumber: "19-9999-331",
-        institutionalEmail: "henrypurple@gmail.com",
-        image: "https://ui-avatars.com/api/?name=Henry+Purple",
-      },
-      purpose: "Financial Aid Assistance",
-      status: "Approved",
-      counselor: {
-        name: "",
-      },
-    },
-    {
-      appointmentId: 13,
-      dateTime: "2024-06-10 06:00 PM",
-      student: {
-        firstName: "Hesu",
-        lastName: "Kim",
-        idNumber: "19-8000-331",
-        institutionalEmail: "henrypurple@gmail.com",
-        image: "https://ui-avatars.com/api/?name=Henry+Purple",
-      },
-      purpose: "Financial Aid Assistance",
-      status: "Approved",
-      counselor: {
-        name: "",
-      },
-    },
-  ];
 }
