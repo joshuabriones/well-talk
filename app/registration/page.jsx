@@ -68,7 +68,8 @@ const Registration = () => {
       }, 3000);
     };
 
-    const result = registrationSchema.safeParse({
+    let result;
+    result = registrationSchema.safeParse({
       email,
       idno,
       firstName,
@@ -80,11 +81,6 @@ const Registration = () => {
       termsAccepted,
     });
 
-    // if (!result.success) {
-    //   setErrors(result.error.format());
-    //   clearErrors();
-    //   return;
-    // }
     let extraInfoValidation;
 
     if (role === "student") {
@@ -104,6 +100,18 @@ const Registration = () => {
     } else if (role === "teacher") {
       const teacherData = { college };
       extraInfoValidation = teacherSchema.safeParse(teacherData);
+    } else if (role === "counselor") {
+      result = registrationSchema.safeParse({
+        email,
+        idno,
+        firstName,
+        lastName,
+        gender,
+        role,
+        password,
+        passwordCheck,
+        termsAccepted,
+      });
     }
 
     if (!extraInfoValidation?.success && !result?.success) {
@@ -283,7 +291,7 @@ const Registration = () => {
                       />
                       {errors.idno && (
                         <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                          {errors?.email._errors[0]}
+                          {errors?.email?._errors[0]}
                         </p>
                       )}
                     </div>
