@@ -15,7 +15,6 @@ import "@/styles/counselor.css";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import ModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
-import { set } from "zod";
 
 export default function Appointment() {
   const AppointmentPerPage = 10;

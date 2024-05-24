@@ -22,11 +22,7 @@ model student {
   year           Int
   birthDate      DateTime
   contactNumber  String?
-  specificAddress String?
-  barangay       String?
-  cityMunicipality  String?
-  province       String?
-  zipcode        String?
+  address        String?
   isDeleted      Boolean          @default(false)
   user           user             @relation(fields: [userId], references: [id], map: "Student_userId_fkey")
   studenthistory studenthistory[]
@@ -73,7 +69,7 @@ model appointment {
   timeStart       String
   timeEnd         String
   additionalNotes String?
-  status          String
+  status          Boolean
   appointmentType String
   notes           String?
   purpose         String?

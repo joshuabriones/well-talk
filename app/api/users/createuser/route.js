@@ -17,11 +17,7 @@ export async function POST(request) {
     year,
     birthDate,
     contactNumber,
-    specificAddress,
-    barangay,
-    cityMunicipality,
-    province,
-    zipcode,
+    address,
   } = await request.json();
 
   const birthDateObj = new Date(birthDate);
@@ -71,11 +67,7 @@ export async function POST(request) {
             year: yearInt,
             birthDate: birthDateObj,
             contactNumber,
-            specificAddress,
-            barangay,
-            cityMunicipality,
-            province,
-            zipcode,
+            address: `${address.specificAddress}, ${address.barangay}, ${address.cityMunicipality}, ${address.province}, ${address.zipcode}`,
           },
         });
         break;
