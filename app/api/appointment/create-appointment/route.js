@@ -16,7 +16,7 @@ export async function POST(request) {
         timeEnd,
         appointmentType,
         purpose,
-        status: false,
+        status: "Pending",
       },
     });
 
