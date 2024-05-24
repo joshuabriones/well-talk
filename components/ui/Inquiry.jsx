@@ -1,6 +1,7 @@
 import { useState } from "react";
 import QuestionInput from "./inputs/InputQuestion";
 import SubjectInput from "./inputs/InputSubject";
+import TextInput from "./inputs/TextInput";
 
 const Inquiry = ({ userId }) => {
   const [subject, setSubject] = useState("");
@@ -11,6 +12,9 @@ const Inquiry = ({ userId }) => {
   const handleInquirySubmission = async () => {
     if (!subject.trim() || !question.trim()) {
       setFormEmptyError(true);
+      setTimeout(() => {
+        setFormEmptyError(false);
+      }, 3000); // Error message will disappear after 3 seconds
       return;
     }
 
@@ -158,18 +162,22 @@ const Inquiry = ({ userId }) => {
               <div className="relative rounded-lg bg-white p-8 shadow-lg dark:bg-dark-2 sm:p-12">
                 <form>
                   {formEmptyError && (
-                    <p className="text-red-600 font-bold">
+                    <p className="mb-6 text-red-600 font-bold">
                       Please fill out all fields.
                     </p>
                   )}
-                  <SubjectInput
-                    placeholder="Subject"
-                    subject={subject}
-                    setSubject={setSubject}
-                  />
+                  <TextInput
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                        placeholder="ID Number"
+                        label="Subject"
+                        type="text"
+                        id="idno"
+                      />
                   <QuestionInput
                     question={question}
                     setQuestion={setQuestion}
+                    className="mt-2"
                   />
                   <button
                     className="rounded-md text-white uppercase p-3 w-full"

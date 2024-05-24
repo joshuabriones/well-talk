@@ -103,7 +103,7 @@ function NavList({ userType }) {
     case "counselor":
       navigationItems = [
         { label: "Home", route: "/counselor" },
-        { label: "Calendar", route: "/counselor/calendar" },
+        // { label: "Calendar", route: "/counselor/calendar" },
         // { label: "Blogs", route: "/counselor/counselor-blog" },AA
         {
           label: "Appointments",

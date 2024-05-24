@@ -154,13 +154,13 @@ const Login = () => {
 
 									{/* forgot password */}
 									<div className="flex justify-center items-center">
-										<div
+										{/* <div
 											className="text-[#6B9080] text-md font-Jaldi  hover:text-green-800 cursor-pointer"
 											onClick={(e) =>
 												setShowForgotPasswordModal(true)
 											}>
 											Forgot your Password?
-										</div>
+										</div> */}
 									</div>
 									<div className="relative">
 										<hr className="my-8 border-t border-gray-300" />

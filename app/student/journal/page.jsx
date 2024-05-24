@@ -82,7 +82,7 @@ const StudentJournal = () => {
       });
       const data = await response.json();
 
-      if (data){
+      if (data) {
         toast.success("Added entry successfully");
         document.getElementById("new-entry").close();
       }
@@ -156,6 +156,10 @@ const StudentJournal = () => {
       console.error("Error updating journal entry:", error);
       toast.error("Internal Server Error");
     }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
   };
 
   useEffect(() => {
@@ -234,6 +238,8 @@ const StudentJournal = () => {
           </div>
           <div className="flex gap-6 items-center justify-end">
             {isEditing && (
+              <>
+
               <button
                 className="z-10 tooltip tooltip-accent"
                 data-tip="Save Changes"
@@ -245,7 +251,12 @@ const StudentJournal = () => {
                   height={30}
                 />
               </button>
+              <button className="btn btn-outline"  onClick={handleCancelEdit}>Cancel</button>
+              </>
             )}
+            {!isEditing && (
+              <>
+              
             <button
               className="z-10 tooltip tooltip-accent"
               data-tip="Edit"
@@ -253,17 +264,21 @@ const StudentJournal = () => {
             >
               <Image src={"/images/icons/edit.png"} width={30} height={30} />
             </button>
-            <button
-              className="z-10 tooltip tooltip-accent"
-              data-tip="New Entry"
-              onClick={() => document.getElementById("new-entry").showModal()}
-            >
-              <Image
-                src={"/images/icons/addjournal.png"}
-                width={30}
-                height={30}
-              />
-            </button>
+            
+              <button
+                className="z-10 tooltip tooltip-accent"
+                data-tip="New Entry"
+                onClick={() => document.getElementById("new-entry").showModal()}
+              >
+                <Image
+                  src={"/images/icons/addjournal.png"}
+                  width={30}
+                  height={30}
+                />
+              </button>
+              </>
+            )}
+
             <dialog id="new-entry" className="modal">
               <div className="modal-box w-1/3 bg-white max-w-4xl flex flex-col">
                 <h3 className="p-5 border-b-2 font-light text-black text-2xl text-center">

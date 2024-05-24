@@ -2,7 +2,7 @@ import TextAreaInput from "./TextAreaInput";
 
 const QuestionInput = ({ question, setQuestion }) => {
 	return (
-		<div className="w-full mb-6">
+		<div className="w-full my-6">
 			<TextAreaInput
 				value={question}
 				onChange={(e) => setQuestion(e.target.value)}

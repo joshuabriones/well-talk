@@ -31,7 +31,7 @@ const JournalList = ({
             width={22}
             className="absolute left-0 top-12"
           />
-          {isEditing && (
+          {!isEditing && (
             <button
               className="absolute right-4 bottom-4"
               onClick={() => handleDeleteEntry(entry.journalId)}
