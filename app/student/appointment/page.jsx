@@ -12,6 +12,7 @@ import "@/styles/counselor.css";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import ModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
+import { set } from "zod";
 
 export default function Appointment() {
   const AppointmentPerPage = 10;
@@ -34,6 +35,7 @@ export default function Appointment() {
     new Date().toISOString().split("T")[0]
   );
   const [selectedTime, setSelectedTime] = useState(""); // State to store the selected time
+  const [endTime, setEndTime] = useState(""); // State to store the end time
   const [appointmentType, setAppointmentType] = useState(""); // State to store the selected appointment type
   const [purpose, setPurpose] = useState(""); // State to store the purpose of the appointment
   const [appointmentOnThatDate, setAppointmentOnThatDate] = useState([]);
@@ -60,16 +62,16 @@ export default function Appointment() {
   };
 
   useEffect(() => {
-    const fetchAppointments = async () => {
-      const response = await fetch(
-        `/api/appointment/get-appointment-by-date?date=${appointmentDate}`
-      );
-      const data = await response.json();
-      setAppointmentOnThatDate(data.studentAppointments);
-    };
-
-    fetchAppointments();
+    fetchAppointmentsOnThatDate();
   }, [appointmentDate]);
+
+  const fetchAppointmentsOnThatDate = async () => {
+    const response = await fetch(
+      `/api/appointment/get-appointment-by-date?date=${appointmentDate}`
+    );
+    const data = await response.json();
+    setAppointmentOnThatDate(data.studentAppointments);
+  };
 
   const formatDate = (date) => {
     const dateObject = new Date(date);
@@ -89,18 +91,30 @@ export default function Appointment() {
     setDeleteModal(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     // Find
     const selected = appointments.find(
       (appointment) => appointment.appointmentId === selectedID
     );
 
-    // Delete
-    const newAppointments = appointments.filter(
-      (appointment) => appointment.appointmentId !== selectedID
-    );
-    setAppointments(newAppointments);
+    try {
+      const response = await fetch(
+        `/api/appointment/cancel-appointment` + selected
+      );
 
+      const data = await response.json();
+      console.log(data);
+
+      if (data.status === 200) {
+        setAppointments(
+          appointments.filter(
+            (appointment) => appointment.appointmentId !== selectedID
+          )
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
     // Reset
     setDeleteModal(false);
     setSelectedID(null);
@@ -150,9 +164,47 @@ export default function Appointment() {
     );
   };
 
+  const addTime = (startTime, duration) => {
+    // Split the start time and duration into hours and minutes
+    let [startHours, startMinutes] = startTime.split(":").map(Number);
+    let [durationHours, durationMinutes] = duration.split(":").map(Number);
+
+    // Convert start time to 24-hour format if it's PM
+    if (startHours < 12 && startTime.includes("PM")) {
+      startHours += 12;
+    }
+
+    // Add the duration to the start time
+    let endHours = startHours + durationHours;
+    let endMinutes = startMinutes + durationMinutes;
+
+    // Adjust minutes and hours if minutes exceed 60
+    if (endMinutes >= 60) {
+      endHours += Math.floor(endMinutes / 60);
+      endMinutes %= 60;
+    }
+
+    // Convert back to 12-hour format if needed
+    let endPeriod = "AM";
+    if (endHours >= 12) {
+      endPeriod = "PM";
+      if (endHours > 12) {
+        endHours -= 12;
+      }
+    }
+
+    // Format the end time back to a string
+    endHours = endHours.toString().padStart(2, "0");
+    endMinutes = endMinutes.toString().padStart(2, "0");
+
+    return `${endHours}:${endMinutes} ${endPeriod}`;
+  };
+
   const handleTimeSlotClick = (time) => {
     if (!isTimeSlotTaken(time)) {
       setSelectedTime(time); // Update the selected time
+      const duration = "1:00"; // Duration to add
+      setEndTime(addTime(selectedTime, duration));
     }
   };
 
@@ -167,14 +219,14 @@ export default function Appointment() {
           studentId: session.user.id,
           date: appointmentDate,
           timeStart: selectedTime,
-          timeEnd: selectedTime,
+          timeEnd: endTime,
           appointmentType: appointmentType,
           purpose: purpose,
         }),
       });
 
-      const data = await response.json();
       fetchAppointments();
+      fetchAppointmentsOnThatDate();
       setIsAddAppointment(false);
       setIsViewAppointment(true);
     } catch (error) {
@@ -287,14 +339,17 @@ export default function Appointment() {
                         <td className="text-center">
                           <div
                             className={`w-24 h-5 badge badge-xs ${
-                              appointments && appointments.status === false
+                              appointments && appointments.status === "Pending"
                                 ? "badge-warning"
-                                : appointments && appointments.status === true
+                                : appointments && appointments.status === "Done"
                                 ? "badge-success"
+                                : appointments &&
+                                  appointments.status === "Approved"
+                                ? "badge-info"
                                 : ""
                             }`}
                           >
-                            {appointments.status ? "Approved" : "Pending"}
+                            {appointments.status}
                           </div>
                         </td>
 
