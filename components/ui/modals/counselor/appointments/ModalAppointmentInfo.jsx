@@ -58,7 +58,7 @@ const ModalAppointmentInfo = ({
       {
         ...appointment,
         status: "Approved",
-        counselor: { name: session.user.name },
+        counselor: { name: session.user.id },
       },
     ]);
 
