@@ -9,7 +9,7 @@ import StudentAddAppointment from "@/components/ui/modals/counselor/appointments
 import "@/styles/counselor.css";
 
 // modals
-import { Navbar } from "@/components/ui/landing/LandingNav";
+import { Navbar } from "@/components/ui/Navbar";
 import ModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 
@@ -233,10 +233,10 @@ export default function Appointment() {
     }
   };
 
-  return (
-    <div className="min-h-screen w-full">
-      {/* navigation bar */}
-      <Navbar userType="counselor" />
+	return (
+		<div className="min-h-screen w-full">
+			{/* navigation bar */}
+			<Navbar userType="student" />
 
       {/* header */}
       <div className="w-full h-[55vh] relative">

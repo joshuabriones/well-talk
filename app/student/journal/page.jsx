@@ -82,7 +82,10 @@ const StudentJournal = () => {
       });
       const data = await response.json();
 
-      if (data) toast.success("Added new entry!");
+      if (data){
+        toast.success("Added entry successfully");
+        document.getElementById("new-entry").close();
+      }
 
       setTitle("");
       setEntry("");

@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import "@/styles/counselor.css";
 
 // modals
-import { Navbar } from "@/components/ui/landing/LandingNav";
+import { Navbar } from "@/components/ui/Navbar";
 import ModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 
