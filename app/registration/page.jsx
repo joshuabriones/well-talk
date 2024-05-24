@@ -114,6 +114,8 @@ const Registration = () => {
       });
     }
 
+    console.log("test");
+
     if (!extraInfoValidation?.success && !result?.success) {
       setErrors({
         ...extraInfoValidation?.error.format(),

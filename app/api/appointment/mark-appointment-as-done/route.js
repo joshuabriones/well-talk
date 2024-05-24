@@ -14,7 +14,7 @@ export async function PUT(request) {
         counselorId: parseInt(counselorId),
         notes,
         additionalNotes,
-        status: true,
+        status: "Done",
       },
     });
 

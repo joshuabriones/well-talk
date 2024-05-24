@@ -17,6 +17,8 @@ const ModalAppointmentInfo = ({
   const [isChecked, setIsChecked] = useState(true);
   const [appointment, setAppointment] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const [notes, setNotes] = useState("");
+  const [additionalNotes, setAdditionalNotes] = useState("");
   const { data: session } = useSession();
 
   // for dialog
@@ -52,18 +54,49 @@ const ModalAppointmentInfo = ({
     // set appointment.status to "Responded", "Pending", "Appointed"
   };
 
-  const handleAcceptAppointment = () => {
-    setAppointments([
-      ...appointments,
-      {
-        ...appointment,
-        status: "Approved",
-        counselor: { name: session.user.id },
-      },
-    ]);
-
+  const handleAcceptAppointment = async () => {
+    try {
+      const response = await fetch(
+        "/api/appointment/mark-appointment-as-approved",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            appointmentId: selectedID,
+            counselorId: session.user.id,
+          }),
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
     alert("Appointment accepted!");
     setAppointmentModal(false);
+  };
+
+  const handleDone = async () => {
+    try {
+      const response = await fetch(
+        "/api/appointment/mark-appointment-as-done",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            appointmentId: selectedID,
+            counselorId: session.user.id,
+            notes,
+            additionalNotes,
+          }),
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
+    setOpenModal(false);
   };
 
   return (
@@ -111,23 +144,23 @@ const ModalAppointmentInfo = ({
               </tr>
               <tr>
                 <th>Time:</th>
-                <td>
-                  {appointment
-                    ? `${appointment.timeStart}-${appointment.timeEnd}`
-                    : ""}
-                </td>
+                <td>{appointment ? `${appointment.timeStart}` : ""}</td>
               </tr>
               <tr>
                 <th>Status:</th>
                 <td
-                  className={`h-fit badge badge-md ${
-                    appointment?.status === false
+                  className={`w-24 h-5 badge badge-xs ${
+                    appointment && appointment.status === "Pending"
                       ? "badge-warning"
-                      : "badge-success"
+                      : appointment && appointment.status === "Done"
+                      ? "badge-success"
+                      : appointment && appointment.status === "Approved"
+                      ? "badge-info"
+                      : ""
                   }`}
                   style={{ width: "30%" }}
                 >
-                  {appointment ? (appointment.status ? "Done" : "Pending") : ""}
+                  {appointment ? `${appointment.status}` : ""}
                 </td>
               </tr>
             </tbody>
@@ -185,15 +218,19 @@ const ModalAppointmentInfo = ({
               <textarea
                 className="textarea textarea-lg textarea-accent"
                 placeholder="Share your feedback here..."
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
               ></textarea>
               <textarea
                 className="textarea textarea-lg textarea-accent"
                 placeholder="Additional notes..."
+                value={additionalNotes}
+                onChange={(e) => setAdditionalNotes(e.target.value)}
               ></textarea>
             </div>
             <button
               className="w-1/3 p-2 bg-green-500 text-black dark:text-white rounded-lg self-end"
-              onClick={() => setOpenModal(false)}
+              onClick={handleDone}
             >
               Submit
             </button>

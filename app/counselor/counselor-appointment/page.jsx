@@ -45,13 +45,14 @@ export default function Appointment() {
     if (isPendingTable) {
       setAppointments(
         retrievedAppointments.filter(
-          (appointment) => appointment.status === false
+          (appointment) => appointment.status === "Pending"
         )
       );
     } else {
       setAppointments(
         retrievedAppointments.filter(
-          (appointment) => appointment.status === true
+          (appointment) =>
+            appointment.status === "Approved" || appointment.status === "Done"
         )
       );
     }
@@ -191,7 +192,7 @@ export default function Appointment() {
                       <div className="flex flex-row gap-x-3">
                         <div className="text-sm">
                           {formatDate(appointments.date)}{" "}
-                          {appointments.timeStart}-{appointments.timeEnd}
+                          {appointments.timeStart}
                         </div>
                       </div>
                     </td>
@@ -229,8 +230,18 @@ export default function Appointment() {
                       </p>
                     </td>
                     <td className="text-center">
-                      <div className={`w-24 h-5 badge badge-xs badge-warning`}>
-                        {appointments.status ? "Done" : "Pending"}
+                      <div
+                        className={`w-24 h-5 badge badge-xs ${
+                          appointments && appointments.status === "Pending"
+                            ? "badge-warning"
+                            : appointments && appointments.status === "Done"
+                            ? "badge-success"
+                            : appointments && appointments.status === "Approved"
+                            ? "badge-info"
+                            : ""
+                        }`}
+                      >
+                        {appointments.status}
                       </div>
                     </td>
 
@@ -321,7 +332,7 @@ export default function Appointment() {
                       <div className="flex flex-row gap-x-3">
                         <div className="text-sm">
                           {formatDate(appointments.date)}{" "}
-                          {appointments.timeStart}-{appointments.timeEnd}
+                          {appointments.timeStart}
                         </div>
                       </div>
                     </td>
@@ -360,7 +371,7 @@ export default function Appointment() {
                     </td>
                     <td className="text-center">
                       <div className={`w-24 h-5 badge badge-xs badge-success`}>
-                        {appointments.status ? "Done" : "Pending"}
+                        {appointments.status}
                       </div>
                     </td>
 
