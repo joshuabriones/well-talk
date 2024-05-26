@@ -46,9 +46,6 @@ export default function Appointment() {
 
   const [showAddAppointmentModal, setShowAddAppointmentModal] = useState(false);
 
-  const [selectedDate, setSelectedDate] = useState(null);
-
-  console.log(selectedDate);
   useEffect(() => {
     if (session?.user.id) {
       try {
@@ -555,6 +552,7 @@ function getTodoList(date) {
         { time: "10:00 pm", title: "Going home to walk the dog" },
         { time: "11:00 pm", title: "Going home to walk the dog" },
         { time: "12:00 pm", title: "Going home to walk the dog" },
+        { time: "12:00 pm", title: "Going home to walk the dog" },
       ];
     case 15:
       return [
@@ -571,7 +569,6 @@ function getTodoList(date) {
 
 function renderCell(date) {
   const isPastDate = date < new Date().setHours(0, 0, 0, 0);
-  const cellStyle = isPastDate ? true : false;
   const list = getTodoList(date);
   const displayList = list.filter((item, index) => index < 2);
 
