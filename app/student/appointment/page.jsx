@@ -56,8 +56,6 @@ export default function Appointment() {
     }
   }, [session]);
 
-  // console.log(appointmentDate);
-
   const fetchAppointments = async () => {
     const response = await fetch(
       `/api/appointment/view-appointment-by-studentid?studentId=` +
@@ -78,6 +76,8 @@ export default function Appointment() {
     const data = await response.json();
     setAppointmentOnThatDate(data.studentAppointments);
   };
+
+  console.log(appointmentDate);
 
   const formatDate = (date) => {
     const dateObject = new Date(date);
@@ -568,9 +568,9 @@ function getTodoList(date) {
 }
 
 function renderCell(date) {
-  const isPastDate = date < new Date().setHours(0, 0, 0, 0);
   const list = getTodoList(date);
-  const displayList = list.filter((item, index) => index < 2);
+
+  const displayList = list.filter((item, index) => index < 1);
 
   if (list.length) {
     const moreCount = list.length - displayList.length;
