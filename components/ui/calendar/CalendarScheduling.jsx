@@ -8,80 +8,81 @@ import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 
 const CalendarScheduling = () => {
-	const {
-		monthIndex,
-		showEventModal,
-		viewEvents,
-		showDayViewCalendar,
-		showMonthViewCalendar,
-		dateIndex,
-		dispatchCallEvent,
-	} = useContext(GlobalContext);
+  const {
+    monthIndex,
+    showEventModal,
+    viewEvents,
+    showDayViewCalendar,
+    showMonthViewCalendar,
+    dateIndex,
+    dispatchCallEvent,
+  } = useContext(GlobalContext);
 
-	// use useEffect to fetch events
-	const getCalendarEvents = async () => {
-		// try {
-		// 	console.log("before authentication");
-		// 	const response = await axios.get(
-		// 		"http://localhost:5108/api/CalendarEvents/GetCalendarEvents",
-		// 		{ withCredentials: true }
-		// 	);
-		// 	response.data.map((event) => {
-		// 		dispatchCallEvent({ type: "get", payload: event });
-		// 		console.log("after success authentication");
-		// 	});
-		// } catch (err) {
-		// 	if (err.response.status === 400) {
-		// 		console.log("failed before navifate authentication");
-		// 		navigate("/signin");
-		// 		console.log("failed after navifate authentication");
-		// 	}
-		// }
-	};
+  // use useEffect to fetch events
+  const getCalendarEvents = async () => {
+    // try {
+    // 	console.log("before authentication");
+    // 	const response = await axios.get(
+    // 		"http://localhost:5108/api/CalendarEvents/GetCalendarEvents",
+    // 		{ withCredentials: true }
+    // 	);
+    // 	response.data.map((event) => {
+    // 		dispatchCallEvent({ type: "get", payload: event });
+    // 		console.log("after success authentication");
+    // 	});
+    // } catch (err) {
+    // 	if (err.response.status === 400) {
+    // 		console.log("failed before navifate authentication");
+    // 		navigate("/signin");
+    // 		console.log("failed after navifate authentication");
+    // 	}
+    // }
+  };
 
-	useEffect(() => {
-		const sampleAppointment = {
-			eventId: "sample-event-id",
-			title: "Sample Event",
-			addDescription: "This is a sample event description.",
-			startTime: dayjs("2024-05-24T10:00:00").format(),
-			endTime: dayjs("2024-05-24T12:00:00").format(),
-			label: "green",
-			status: "Scheduled",
-		};
+  useEffect(() => {
+    const sampleAppointment = {
+      eventId: "sample-event-id",
+      title: "Sample Event",
+      addDescription: "This is a sample event description.",
+      startTime: dayjs("2024-05-24T10:00:00").format(),
+      endTime: dayjs("2024-05-24T12:00:00").format(),
+      label: "green",
+      status: "Scheduled",
+    };
 
-		// Dispatch the sample event to the global context
-		dispatchCallEvent({ type: "push", payload: sampleAppointment });
+    // Dispatch the sample event to the global context
+    dispatchCallEvent({ type: "push", payload: sampleAppointment });
 
-		// Optionally, fetch real events from the backend
-		getCalendarEvents();
-	}, []);
+    // Optionally, fetch real events from the backend
+    getCalendarEvents();
+  }, []);
 
-	const [currentMonth, setCurrentMonth] = useState(getMonth());
-	const [currentDate, setCurrentDate] = useState(getDate());
+  const [currentMonth, setCurrentMonth] = useState(getMonth());
+  const [currentDate, setCurrentDate] = useState(getDate());
 
-	useEffect(() => {
-		showMonthViewCalendar && setCurrentMonth(getMonth(monthIndex, dayjs().year()));
-		showDayViewCalendar && setCurrentDate(getDate(monthIndex, dateIndex));
+  useEffect(() => {
+    showMonthViewCalendar &&
+      setCurrentMonth(getMonth(monthIndex, dayjs().year()));
+    showDayViewCalendar && setCurrentDate(getDate(monthIndex, dateIndex));
 
-		let month = dayjs(new Date(dayjs().year(), monthIndex, dateIndex)).month();
-		let year = dayjs(new Date(dayjs().year(), monthIndex, dateIndex)).year();
+    let month = dayjs(new Date(dayjs().year(), monthIndex, dateIndex)).month();
+    let year = dayjs(new Date(dayjs().year(), monthIndex, dateIndex)).year();
 
-		showDayViewCalendar && setCurrentMonth(getMonth(month, year));
-	}, [monthIndex, dateIndex]);
+    showDayViewCalendar && setCurrentMonth(getMonth(month, year));
+  }, [monthIndex, dateIndex]);
 
-	return (
-		<section className="bg-gray-100 w-1/2 h-full flex flex-col border-gray-400 border-t border-b border-l">
-			<div className="h-fit">
-				<CalendarNav date={currentDate} />
-			</div>
+  return (
+    <section className="bg-gray-100 w-1/2 h-full flex flex-col border-gray-400 border-t border-b border-l">
+      <div className="h-fit">
+        <CalendarNav date={currentDate} />
+      </div>
 
-			<div className="flex-grow overflow-auto">
-				{showMonthViewCalendar && <Calendar month={currentMonth} />}
-				{showDayViewCalendar && <DayViewCalendar date={currentDate} />}
-			</div>
-		</section>
-	);
+      <div className="flex-grow overflow-auto">
+        {showMonthViewCalendar && <Calendar month={currentMonth} />}
+        {showDayViewCalendar && <DayViewCalendar date={currentDate} />}
+      </div>
+    </section>
+  );
 };
 
 export default CalendarScheduling;

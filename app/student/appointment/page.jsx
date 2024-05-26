@@ -14,6 +14,10 @@ import { Navbar } from "@/components/ui/Navbar";
 import StudentModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 
+import { Calendar, Whisper, Popover, Badge } from "rsuite";
+import "rsuite/dist/rsuite.min.css";
+import toast from "react-hot-toast";
+
 export default function Appointment() {
   const AppointmentPerPage = 10;
 
@@ -24,7 +28,7 @@ export default function Appointment() {
   const [deleteModal, setDeleteModal] = useState(false);
   const [appointmentModal, setAppointmentModal] = useState(null);
 
-  const [isAddAppointment, setIsAddAppointment] = useState(false);
+  const [isAddAppointment, setIsAddAppointment] = useState(true);
   const [isViewAppointment, setIsViewAppointment] = useState(false);
 
   const [appointments, setAppointments] = useState([]);
@@ -42,6 +46,9 @@ export default function Appointment() {
 
   const [showAddAppointmentModal, setShowAddAppointmentModal] = useState(false);
 
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  console.log(selectedDate);
   useEffect(() => {
     if (session?.user.id) {
       try {
@@ -51,6 +58,8 @@ export default function Appointment() {
       }
     }
   }, [session]);
+
+  // console.log(appointmentDate);
 
   const fetchAppointments = async () => {
     const response = await fetch(
@@ -233,6 +242,12 @@ export default function Appointment() {
     }
   };
 
+  const formatDateCalendar = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
   return (
     <div className="min-h-screen w-full">
       {/* navigation bar */}
@@ -266,14 +281,18 @@ export default function Appointment() {
         <div>
           <div className="w-full mt-5 flex items-center gap-5 justify-center">
             <button
-              className={`${isAddAppointment && "text-green-600 "}`}
+              className={`${
+                isAddAppointment && "text-primary-green "
+              } font-medium`}
               onClick={handleAddAppointmentClick}
             >
-              Add Appointment
+              Set Appointment
             </button>{" "}
             /{" "}
             <button
-              className={`${isViewAppointment && "text-green-600 "}`}
+              className={`${
+                isViewAppointment && "text-primary-green "
+              } font-medium`}
               onClick={handleViewAppointmentClick}
             >
               View Appointments
@@ -411,22 +430,31 @@ export default function Appointment() {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col w-full p-5 items-center justify-center">
-              <div className="w-80">
-                <input
-                  type="date"
-                  value={appointmentDate}
-                  onChange={(e) => setAppointmentDate(e.target.value)}
-                  className="peer border-1 bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
-                  min={new Date().toISOString().split("T")[0]}
+            <div className="flex w-full py-10 px-8 gap-10 justify-center">
+              <div className="flex-1">
+                <p className="px-6">
+                  🛑 To set an appointment, you must first select a valid date
+                  in the calendar, then choose your desired time slot.
+                </p>
+                <Calendar
+                  bordered
+                  renderCell={renderCell}
+                  onSelect={(date) => {
+                    if (date >= new Date().setHours(0, 0, 0, 0)) {
+                      setAppointmentDate(formatDateCalendar(date));
+                      toast.success("Date selected");
+                    } else {
+                      toast.error("Please select a valid date");
+                    }
+                  }}
                 />
               </div>
               {appointmentOnThatDate && (
-                <div>
-                  <h2 className="mt-4 font-bold text-lg">
-                    Available Time Slots:
+                <div className="flex-1">
+                  <h2 className="font-semibold text-lg mb-4">
+                    Available Time Slots
                   </h2>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-wrap gap-2">
                     {timeSlots.map((time, index) => (
                       <button
                         key={index}
@@ -434,21 +462,20 @@ export default function Appointment() {
                         onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
                         className={`time-slot-button ${
                           isTimeSlotTaken(time)
-                            ? "bg-gray-300 cursor-not-allowed"
-                            : "bg-green-500 hover:bg-green-600"
-                        } text-white font-semibold py-2 px-4 rounded-md`}
+                            ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
+                            : "bg-primary-green text-white hover:bg-primary-green-dark duration-300"
+                        }  py-2 px-4 rounded-md`}
                       >
-                        {time}
+                        {timeFormatter(time)}
                       </button>
                     ))}
                   </div>
-                  <div className="mt-4 p-4 border-t border-gray-200">
-                    <h3 className="text-lg font-semibold">
-                      Selected Appointment:
-                    </h3>
-                    <p>Date: {appointmentDate}</p>
-                    <p>Time: {selectedTime}</p>
-                    <div className="w-full flex flex-row gap-x-6 py-4">
+                  <hr />
+                  <div className="mt-4">
+                    <p>
+                      🤗 Please state the type of appointment and your purpose.
+                    </p>
+                    <div className="w-full flex lg:flex-row gap-5 mt-2 sm:flex-col">
                       <TextInput
                         value={appointmentType}
                         onChange={(e) => setAppointmentType(e.target.value)}
@@ -464,9 +491,20 @@ export default function Appointment() {
                         id={purpose}
                       />
                     </div>
-                    <FullButton onClick={handleAppointmentSubmit}>
-                      Submit
-                    </FullButton>
+
+                    <div className="flex justify-between items-center border-2 border-black mt-10 rounded-xl px-4 p-2 font-Merriweather">
+                      <div className="font-bold">DATE: {appointmentDate}</div>
+                      <div className="font-bold">
+                        TIME: {timeFormatter(selectedTime)}
+                      </div>
+                      <button
+                        className="py-2 px-3 bg-black text-white rounded-md"
+                        disabled={selectedTime ? false : true}
+                        onClick={handleAppointmentSubmit}
+                      >
+                        Submit
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -504,4 +542,93 @@ export default function Appointment() {
       )}
     </div>
   );
+}
+
+function getTodoList(date) {
+  const day = date.getDate();
+
+  switch (day) {
+    case 10:
+      return [
+        { time: "10:30 am", title: "Meeting" },
+        { time: "12:00 pm", title: "Lunch" },
+        { time: "10:00 pm", title: "Going home to walk the dog" },
+        { time: "11:00 pm", title: "Going home to walk the dog" },
+        { time: "12:00 pm", title: "Going home to walk the dog" },
+      ];
+    case 15:
+      return [
+        { time: "09:30 pm", title: "Products Introduction Meeting" },
+        { time: "12:30 pm", title: "Client entertaining" },
+        { time: "02:00 pm", title: "Product design discussion" },
+        { time: "05:00 pm", title: "Product test and acceptance" },
+        { time: "06:30 pm", title: "Reporting" },
+      ];
+    default:
+      return [];
+  }
+}
+
+function renderCell(date) {
+  const isPastDate = date < new Date().setHours(0, 0, 0, 0);
+  const cellStyle = isPastDate ? true : false;
+  const list = getTodoList(date);
+  const displayList = list.filter((item, index) => index < 2);
+
+  if (list.length) {
+    const moreCount = list.length - displayList.length;
+    const moreItem = (
+      <li>
+        <Whisper
+          placement="top"
+          trigger="click"
+          speaker={
+            <Popover>
+              {list.map((item, index) => (
+                <p key={index}>
+                  <b>{item.time}</b> - {item.title}
+                </p>
+              ))}
+            </Popover>
+          }
+        >
+          <a>{moreCount} more</a>
+        </Whisper>
+      </li>
+    );
+
+    return (
+      <ul className="calendar-todo-list">
+        {displayList.map((item, index) => (
+          <button key={index}>
+            <Badge /> <b>{item.time}</b> - {item.title}
+          </button>
+        ))}
+        {moreCount ? moreItem : null}
+      </ul>
+    );
+  }
+
+  return null;
+}
+
+function timeFormatter(time) {
+  let formmatedTime = "";
+  switch (time) {
+    case "08:00":
+    case "09:00":
+    case "10:00":
+    case "11:00":
+      formmatedTime = `${time} AM`;
+      break;
+    case "12:00":
+    case "1:00":
+    case "2:00":
+    case "3:00":
+    case "4:00":
+      formmatedTime = `${time} PM`;
+      break;
+  }
+
+  return formmatedTime;
 }
