@@ -1,7 +1,15 @@
 import { Avatar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import AppointmentModal from "../ui/calendar/AppointmentModal";
 
-const AppointmentsRow = ({ appointment, onDelete }) => {
+const AppointmentsRow = ({
+  appointment,
+  onDelete,
+  openModal,
+  setOpenModal,
+  handleApproveAppointment,
+}) => {
   const handleDelete = () => {
     const isConfirmed = window.confirm(
       `Are you sure you want to delete this appointment?`
@@ -12,13 +20,15 @@ const AppointmentsRow = ({ appointment, onDelete }) => {
   };
 
   const roleColor = () => {
-    switch (appointment.appointmentStatus) {
-      case "Completed":
+    switch (appointment.status) {
+      case "Done":
         return "text-green-600 bg-green-100";
       case "Cancelled":
         return "text-red-600 bg-red-100";
-      case "Scheduled":
+      case "Pending":
         return "text-orange-600 bg-orange-100";
+      case "Approved":
+        return "text-blue-600 bg-blue-100";
       default:
         return "text-slate-500";
     }
@@ -27,24 +37,43 @@ const AppointmentsRow = ({ appointment, onDelete }) => {
   return (
     <tr className="border-b">
       <td className="flex gap-3 items-center pl-8 py-4">
-        {appointment.appointmentDate}
+        {formatDate(appointment.date)}
       </td>
-      <td>{appointment.appointmentPurpose}</td>
+      <td>{appointment.purpose}</td>
       <td>
         <span className={`${roleColor()} font-bold p-2 rounded-lg`}>
-          {appointment.appointmentStatus}
+          {appointment.status}
         </span>
       </td>
-      <td>{appointment.student.name}</td>
-      <td>{appointment.counselor.name}</td>
+      <td>{appointment.student.firstName}</td>
       <td>
-        <span className="hover:bg-red-200 p-2 rounded-md">
-          <DeleteIcon sx={{ color: "red" }} />
-          <button onClick={handleDelete}>Delete</button>
+        <span className="hover:bg-red-200 p-2 rounded-md cursor-pointer">
+          <button onClick={handleDelete}>
+            <DeleteIcon sx={{ color: "red" }} />
+          </button>
+        </span>
+        <span className="hover:bg-blue-200 p-2 rounded-md cursor-pointer">
+          <button onClick={() => setOpenModal(true)}>
+            <BorderColorIcon sx={{ color: "blue" }} />
+          </button>
         </span>
       </td>
+      {openModal && (
+        <AppointmentModal
+          setOpenModal={setOpenModal}
+          openModal={openModal}
+          appointmentID={appointment.appointmentId}
+          handleApproveAppointment={handleApproveAppointment}
+        />
+      )}
     </tr>
   );
 };
 
 export default AppointmentsRow;
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+}

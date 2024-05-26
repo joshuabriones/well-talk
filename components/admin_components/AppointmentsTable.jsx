@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import AppointmentsRow from "./AppointmentsRow";
 
-const AppointmentsTable = ({ appointments, onDelete }) => {
+const AppointmentsTable = ({
+  appointments,
+  onDelete,
+  handleApproveAppointment,
+  openModal,
+  setOpenModal,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
-  console.log(selectedStatus);
   const handleDelete = (appointmentId) => {
     onDelete(appointmentId);
   };
@@ -21,9 +26,7 @@ const AppointmentsTable = ({ appointments, onDelete }) => {
 
   const filteredAppointments = appointments.filter(
     (appointment) =>
-      appointment.appointmentPurpose
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) &&
+      appointment.purpose.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedStatus === "all" ||
         appointment.appointmentStatus === selectedStatus)
   );
@@ -75,7 +78,7 @@ const AppointmentsTable = ({ appointments, onDelete }) => {
         >
           <option value="all">All</option>
           <option value="Completed">Completed</option>
-          <option value="Scheduled">Scheduled</option>
+          <option value="Approve">Approve</option>
           <option value="Cancelled">Cancelled</option>
         </select>
       </div>
@@ -87,7 +90,6 @@ const AppointmentsTable = ({ appointments, onDelete }) => {
             <th className="py-4">Purpose</th>
             <th className="py-4">Status</th>
             <th className="py-4">Student</th>
-            <th className="py-4">Counselor</th>
             <th className="py-4 rounded-tr-xl">Action</th>
           </tr>
         </thead>
@@ -97,6 +99,9 @@ const AppointmentsTable = ({ appointments, onDelete }) => {
               key={appointment.appointmentId}
               appointment={appointment}
               onDelete={handleDelete}
+              setOpenModal={setOpenModal}
+              openModal={openModal}
+              handleApproveAppointment={handleApproveAppointment}
             />
           ))}
         </tbody>

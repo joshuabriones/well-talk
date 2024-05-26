@@ -26,8 +26,8 @@ const UserRow = ({ user, onDelete }) => {
 
   return (
     <tr className="border-b">
-      <td className="flex gap-3 items-center pl-8 py-4">
-        <Avatar sx={{ bgcolor: getRandomColor }}>
+      <td className="flex gap-3 items-center pl-8 py-4 ">
+        <Avatar sx={{ bgcolor: getRandomColor(user.role) }}>
           {user.firstName[0]}
           {user.lastName[1].toUpperCase()}
         </Avatar>
@@ -52,10 +52,21 @@ const UserRow = ({ user, onDelete }) => {
 
 export default UserRow;
 
-function getRandomColor() {
-  // Generate a random number between 0 and 16777215 (0xFFFFFF)
-  const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+function getRandomColor(role) {
+  let color = "";
 
-  // Pad with leading zeros if necessary to ensure a 6-digit hex value
-  return `#${randomColor.padStart(6, "0")}`;
+  switch (role) {
+    case "teacher":
+      color = "#16A34A";
+      break;
+    case "student":
+      color = "#2563EB";
+      break;
+    case "counselor":
+      color = "#CA8A04";
+      break;
+    default:
+      color = "slate";
+  }
+  return color;
 }
