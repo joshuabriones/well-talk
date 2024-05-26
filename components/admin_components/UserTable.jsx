@@ -20,7 +20,7 @@ const UserTable = ({ users, onDelete }) => {
 
   const filteredUsers = users.filter(
     (user) =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedRole === "all" || user.role === selectedRole)
   );
 

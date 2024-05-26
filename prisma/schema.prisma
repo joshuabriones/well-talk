@@ -15,21 +15,21 @@ model counselor {
 }
 
 model student {
-  studentId      Int              @id @default(autoincrement())
-  userId         Int              @unique(map: "Student_userId_key")
-  college        String
-  program        String
-  year           Int
-  birthDate      DateTime
-  contactNumber  String?
-  specificAddress String?
-  barangay       String?
-  cityMunicipality  String?
-  province       String?
-  zipcode        String?
-  isDeleted      Boolean          @default(false)
-  user           user             @relation(fields: [userId], references: [id], map: "Student_userId_fkey")
-  studenthistory studenthistory[]
+  studentId        Int              @id @default(autoincrement())
+  userId           Int              @unique(map: "Student_userId_key")
+  college          String
+  program          String
+  year             Int
+  birthDate        DateTime
+  contactNumber    String?
+  isDeleted        Boolean          @default(false)
+  barangay         String?
+  cityMunicipality String?
+  province         String?
+  specificAddress  String?
+  zipcode          String?
+  user             user             @relation(fields: [userId], references: [id], map: "Student_userId_fkey")
+  studenthistory   studenthistory[]
 }
 
 model teacher {
@@ -41,46 +41,46 @@ model teacher {
 }
 
 model user {
-  id                 Int         @id @default(autoincrement())
-  institutionalEmail String      @unique(map: "institutionalEmail") @db.VarChar(255)
-  idNumber           String      @unique(map: "User_idNumber_key")
-  firstName          String
-  lastName           String
-  gender             user_gender
-  password           String
-  image              String?
-  dateOfCreation     DateTime    @default(now())
-  isDeleted          Boolean     @default(false)
-  role               user_role
-  counselor          counselor?
-  inquiry            inquiry[]
-  journal            journal[]
-  post               post[]
-  referral           referral[]
-  student            student?
-  teacher            teacher?
-  appointmentsAsCounselor appointment[] @relation(name: "AppointmentCounselor")
-  appointmentsAsStudent   appointment[] @relation(name: "AppointmentStudent")
+  id                      Int           @id @default(autoincrement())
+  institutionalEmail      String        @unique(map: "institutionalEmail") @db.VarChar(255)
+  idNumber                String        @unique(map: "User_idNumber_key")
+  firstName               String
+  lastName                String
+  gender                  user_gender
+  password                String
+  image                   String?
+  dateOfCreation          DateTime      @default(now())
+  isDeleted               Boolean       @default(false)
+  role                    user_role
+  appointmentsAsCounselor appointment[] @relation("AppointmentCounselor")
+  appointmentsAsStudent   appointment[] @relation("AppointmentStudent")
+  counselor               counselor?
+  inquiry                 inquiry[]
+  journal                 journal[]
+  post                    post[]
+  referral                referral[]
+  student                 student?
+  teacher                 teacher?
 }
-
-
 
 model appointment {
   appointmentId   Int      @id @default(autoincrement())
-  studentId       Int?
-  counselorId     Int?
+  purpose         String?
   date            DateTime
   timeStart       String
   timeEnd         String
   additionalNotes String?
   status          String
-  appointmentType String
   notes           String?
-  purpose         String?
   isDeleted       Boolean  @default(false)
-  counselor       user? @relation(name: "AppointmentCounselor", fields: [counselorId], references: [id], map: "Appointment_counselorId_fkey")
-  student         user? @relation(name: "AppointmentStudent", fields: [studentId], references: [id], map: "Appointment_studentId_fkey")
+  appointmentType String
+  counselorId     Int?
+  studentId       Int?
+  counselor       user?    @relation("AppointmentCounselor", fields: [counselorId], references: [id], map: "Appointment_counselorId_fkey")
+  student         user?    @relation("AppointmentStudent", fields: [studentId], references: [id], map: "Appointment_studentId_fkey")
 
+  @@index([counselorId], map: "Appointment_counselorId_fkey")
+  @@index([studentId], map: "Appointment_studentId_fkey")
 }
 
 model event {
@@ -94,14 +94,13 @@ model event {
   timeEnd      DateTime
   calendarId   Int
   isDeleted    Boolean  @default(false)
-
 }
 
 model inquiry {
   inquiryId      Int       @id @default(autoincrement())
   sender         Int
   subject        String
-  status         String   @default("open")
+  status         String    @default("open")
   date           DateTime
   isDeleted      Boolean   @default(false)
   counselorId    Int?
@@ -142,15 +141,15 @@ model studenthistory {
 }
 
 model post {
-  postId           Int       @id @default(autoincrement()) 
-  userId           Int
-  postContent     String
-  publishDate      DateTime? @db.DateTime(0)
-  image            String?   @db.VarChar(1024)
-  datePosted       DateTime? @default(now()) @db.DateTime(0)
-  dateModified     DateTime? @db.DateTime(0)
-  isDeleted        Boolean?  @default(false)
-  user             user      @relation(fields: [userId], references: [id], onDelete: Cascade, map: "post_ibfk_1")
+  postId       Int       @id @default(autoincrement())
+  userId       Int
+  publishDate  DateTime? @db.DateTime(0)
+  image        String?   @db.VarChar(1024)
+  datePosted   DateTime? @default(now()) @db.DateTime(0)
+  isDeleted    Boolean?  @default(false)
+  dateModified DateTime? @db.DateTime(0)
+  postContent  String
+  user         user      @relation(fields: [userId], references: [id], onDelete: Cascade, map: "post_ibfk_1")
 
   @@index([userId], map: "Post_userId_idx")
 }
@@ -177,4 +176,5 @@ enum user_role {
   counselor
   teacher
   student
+  admin
 }

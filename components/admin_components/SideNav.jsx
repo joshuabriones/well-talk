@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+
 import { styled, useTheme } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
 import { deepOrange } from "@mui/material/colors";
@@ -9,7 +11,6 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -85,6 +86,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function SideNav({ setPage }) {
+  const { data: session } = useSession();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const navLinks = [
@@ -145,9 +147,11 @@ export default function SideNav({ setPage }) {
           </IconButton>
         </Toolbar>
         <div className="flex items-center font-Merriweather">
-          <Avatar sx={{ bgcolor: deepOrange[500] }}>JD</Avatar>
+          <Avatar sx={{ bgcolor: deepOrange[500] }}>
+            {session?.user?.name[0]}
+          </Avatar>
           <div className="ml-2">
-            <h3 className="font-bold">John Doe</h3>
+            <h3 className="font-bold">{session?.user?.name}</h3>
             <p className="text-xs text-slate-100">Admin</p>
           </div>
         </div>
@@ -221,7 +225,7 @@ export default function SideNav({ setPage }) {
                   justifyContent: open ? "initial" : "center",
                   px: 2.5,
                 }}
-                onClick={() => alert("Logout")}
+                onClick={() => signOut()}
               >
                 <ListItemIcon
                   sx={{
