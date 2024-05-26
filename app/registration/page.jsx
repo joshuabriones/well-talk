@@ -1,22 +1,24 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import FullButton from "@/components/ui/buttons/FullButton";
 import TextInput from "@/components/ui/inputs/TextInput";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import ModalRegistrationSuccessful from "@/components/ui/modals/ModalRegistrationSuccessful";
 import ModalTermsUnchecked from "@/components/ui/modals/ModalTermsUnchecked";
 import {
+  collegeOptions,
+  genderOptions,
+  programOptions,
+} from "@/lib/inputOptions";
+import {
   registrationSchema,
   studentSchema,
   teacherSchema,
 } from "@/lib/validators";
-import {
-  genderOptions,
-  collegeOptions,
-  programOptions,
-} from "@/lib/inputOptions";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Registration = () => {
   const router = useRouter();
@@ -442,14 +444,18 @@ const Registration = () => {
                     <>
                       <div className="flex flex-col w-full">
                         <label
-                          htmlFor="gender"
+                          htmlFor="birthdate"
                           className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
                         >
-                          <input
-                            type="date"
-                            value={birthdate}
-                            onChange={(e) => setBirthdate(e.target.value)}
+                          <DatePicker
+                            selected={birthdate}
+                            onChange={(date) => setBirthdate(date)}
                             className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                            showMonthDropdown
+                            showYearDropdown
+                            dropdownMode="select"
+                            locale="en-GB"
+                            maxDate={new Date()}
                             required
                           />
                           <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
@@ -462,6 +468,7 @@ const Registration = () => {
                           </p>
                         )}
                       </div>
+
                       <div className="w-full flex flex-row gap-x-6">
                         <div className="flex flex-col w-full">
                           <TextInput

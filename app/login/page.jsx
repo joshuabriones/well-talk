@@ -8,8 +8,8 @@ import { useState } from "react";
 //imgs
 
 // utils
-import HollowButton from "@/components/ui/buttons/HollowButton";
 import FullButton from "@/components/ui/buttons/FullButton";
+import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextInput from "@/components/ui/inputs/TextInput";
 
 // modals
@@ -169,7 +169,7 @@ const Login = () => {
 										</span>
 									</div>
 									<div className="w-full flex flex-row gap-x-4 pb-2">
-									<HollowButton
+										<HollowButton
 											className="w-1/2"
 											onClick={handleCreateAccount}>
 											Create Account
