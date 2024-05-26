@@ -10,7 +10,7 @@ export async function PUT(request) {
 
   resend.emails.send({
     from: "WellTalk <onboarding@resend.dev>",
-    to: inquiry.user.institutionalEmail,
+    to: "alferkesa@gmail.com",
     subject: inquiry.subject,
     text: counselorReply,
   });

@@ -169,9 +169,9 @@ const ModalAppointmentInfo = ({
           <div className="flex flex-row gap-x-4 mt-6 px-14">
             {isPendingTable ? (
               <>
-                <HollowButton onClick={() => setConfirmResponse(true)}>
+                {/* <HollowButton onClick={() => setConfirmResponse(true)}>
                   Reschedule
-                </HollowButton>
+                </HollowButton> */}
                 {/*
               TEMPORARILY REMOVED 
              <FullButton onClick={() => setConfirmResponse(true)}>

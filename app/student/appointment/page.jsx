@@ -4,13 +4,14 @@ import hdrAppointment from "@/public/images/headers/hdrAppointment.png";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import StudentAddAppointment from "@/components/ui/modals/counselor/appointments/StudentAddAppointment";
-
+import TextInput from "@/components/ui/inputs/TextInput";
+import FullButton from "@/components/ui/buttons/FullButton";
 // css
 import "@/styles/counselor.css";
 
 // modals
 import { Navbar } from "@/components/ui/Navbar";
-import ModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
+import StudentModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 
 export default function Appointment() {
@@ -96,24 +97,23 @@ export default function Appointment() {
       (appointment) => appointment.appointmentId === selectedID
     );
 
+    console.log("Sfx", selectedID);
+    console.log("d", selected);
+
     try {
-      const response = await fetch(
-        `/api/appointment/cancel-appointment` + selected
+      const deleted = await fetch(
+        `/api/appointment/cancel-appointment?appointmentId=${selectedID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
-
-      const data = await response.json();
-      console.log(data);
-
-      if (data.status === 200) {
-        setAppointments(
-          appointments.filter(
-            (appointment) => appointment.appointmentId !== selectedID
-          )
-        );
-      }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
+
     // Reset
     setDeleteModal(false);
     setSelectedID(null);
@@ -233,10 +233,10 @@ export default function Appointment() {
     }
   };
 
-	return (
-		<div className="min-h-screen w-full">
-			{/* navigation bar */}
-			<Navbar userType="student" />
+  return (
+    <div className="min-h-screen w-full">
+      {/* navigation bar */}
+      <Navbar userType="student" />
 
       {/* header */}
       <div className="w-full h-[55vh] relative">
@@ -264,7 +264,7 @@ export default function Appointment() {
 
       {session ? (
         <div>
-          <div>
+          <div className="w-full mt-5 flex items-center gap-5 justify-center">
             <button
               className={`${isAddAppointment && "text-green-600 "}`}
               onClick={handleAddAppointmentClick}
@@ -318,9 +318,7 @@ export default function Appointment() {
                         </td>
                         <td>
                           <div className="flex flex-row gap-x-3">
-                            <div>
-                              {appointments.timeStart}-{appointments.timeEnd}
-                            </div>
+                            <div>{appointments.timeStart}</div>
                           </div>
                         </td>
                         <td>
@@ -360,14 +358,14 @@ export default function Appointment() {
                               onClick={(e) => {
                                 // Stop event propagation to prevent row hover effect
                                 e.stopPropagation();
-                                showDeleteModal(appointments.id);
+                                showDeleteModal(appointments.appointmentId);
                               }}
                             >
                               Delete
                             </button>
-                            <button className="btn btn-xs text-green-700">
+                            {/* <button className="btn btn-xs text-green-700">
                               Edit
-                            </button>
+                            </button> */}
                           </div>
                         </td>
                       </tr>
@@ -413,14 +411,13 @@ export default function Appointment() {
               </div>
             </div>
           ) : (
-            <div>
-              <div>View Appoinment</div>
+            <div className="flex flex-col w-full p-5 items-center justify-center">
               <div className="w-80">
                 <input
                   type="date"
                   value={appointmentDate}
                   onChange={(e) => setAppointmentDate(e.target.value)}
-                  className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                  className="peer border-1 bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
                   min={new Date().toISOString().split("T")[0]}
                 />
               </div>
@@ -451,19 +448,25 @@ export default function Appointment() {
                     </h3>
                     <p>Date: {appointmentDate}</p>
                     <p>Time: {selectedTime}</p>
-                    <input
-                      value={appointmentType}
-                      onChange={(e) => setAppointmentType(e.target.value)}
-                      placeholder="Appointment Type"
-                      label="Appointment Type"
-                    />
-                    <input
-                      value={purpose}
-                      onChange={(e) => setPurpose(e.target.value)}
-                      placeholder="Purpose"
-                      label="Purpose"
-                    />
-                    <button onClick={handleAppointmentSubmit}>Submit</button>
+                    <div className="w-full flex flex-row gap-x-6 py-4">
+                      <TextInput
+                        value={appointmentType}
+                        onChange={(e) => setAppointmentType(e.target.value)}
+                        placeholder="Appointment Type"
+                        label="Appointment Type"
+                      />
+                      <TextInput
+                        value={purpose}
+                        onChange={(e) => setPurpose(e.target.value)}
+                        placeholder="Purpose"
+                        label="Purpose"
+                        className="w-full mb-4 rounded-md "
+                        id={purpose}
+                      />
+                    </div>
+                    <FullButton onClick={handleAppointmentSubmit}>
+                      Submit
+                    </FullButton>
                   </div>
                 </div>
               )}
@@ -483,7 +486,7 @@ export default function Appointment() {
       )}
 
       {appointmentModal && (
-        <ModalAppointmentInfo
+        <StudentModalAppointmentInfo
           setAppointmentModal={setAppointmentModal}
           selectedID={selectedID}
           appointments={appointments}
@@ -491,7 +494,7 @@ export default function Appointment() {
           // TO BE ADDED
           // handleRescedule={handleReschedule}
           // handleUpdateStatus={handleUpdateStatus}
-        ></ModalAppointmentInfo>
+        ></StudentModalAppointmentInfo>
       )}
 
       {showAddAppointmentModal && (
