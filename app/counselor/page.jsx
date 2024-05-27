@@ -25,11 +25,11 @@ export default function Home() {
 
   /* Handling unauthenticated users */
   if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
-    router.push("/login");
+    return <Load route="login" />;
   }
 
   if (userSession && userSession.role !== "counselor") {
-    return <Load role={userSession.role} />;
+    return <Load route={userSession.role} />;
   }
 
   const fetchPosts = async () => {

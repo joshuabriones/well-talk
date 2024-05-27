@@ -1,18 +1,18 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const LoadingState = ({ role }) => {
+const LoadingState = ({ route }) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (role) {
+    if (route) {
       const timer = setTimeout(() => {
-        router.push(`/${role}`);
+        router.push(`/${route}`);
       }, 2000);
 
       return () => clearTimeout(timer);
     }
-  }, [role]);
+  }, [route]);
 
   return (
     <div className="flex justify-center items-center h-screen">

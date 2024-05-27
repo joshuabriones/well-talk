@@ -20,8 +20,8 @@ const StudentJournal = () => {
   const [highlightEntry, setHighlightEntry] = useState({});
   const [isEditing, setIsEditing] = useState(false);
 
-  if (Cookies.get("token") === undefined) {
-    router.push("/login");
+  if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
+    return <Load route="login" />;
   }
 
   if (userSession.role !== "student") {
