@@ -20,6 +20,8 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { API_ENDPOINT } from "@/lib/api";
+import Load from "@/components/Load";
+import { getUserSession } from "@/lib/helperFunctions";
 
 const Registration = () => {
   const router = useRouter();
@@ -57,6 +59,10 @@ const Registration = () => {
     useState(false);
   const [isEmptyError, setIsEmptyError] = useState(false);
   const [isMismatchError, setIsMismatchError] = useState(false);
+
+  // handling route protection
+  const userSession = getUserSession();
+  if (userSession && userSession.role) return <Load route={userSession.role} />;
 
   const handleTermsChange = (e) => {
     setTermsAccepted(e.target.checked);

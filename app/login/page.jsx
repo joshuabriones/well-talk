@@ -1,13 +1,14 @@
 "use client";
 import Loading from "@/components/Skeleton";
 import { Navbar } from "@/components/ui/landing/LandingNav";
+import Load from "@/components/Load";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { parseJwt } from "@/lib/helperFunctions";
 import { API_ENDPOINT } from "@/lib/api";
-import { toast } from "react-toastify";
+import { getUserSession } from "@/lib/helperFunctions";
 
 // utils
 import FullButton from "@/components/ui/buttons/FullButton";
@@ -18,7 +19,7 @@ import TextInput from "@/components/ui/inputs/TextInput";
 import ModalForgotPassword from "@/components/ui/modals/ForgotPassword/ModalForgotPassword";
 
 const Login = () => {
-  const { data: session, status } = useSession();
+  const userSession = getUserSession();
   const router = useRouter();
 
   const [showInvalidCredentials, setShowInvalidCredentials] = useState(false);
@@ -31,12 +32,8 @@ const Login = () => {
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
   /* HANDLING UNAUTHENTICATED USERS */
+  if (userSession && userSession.role) return <Load route={userSession.role} />;
 
-  // if (session) {
-  //   router.push(`/${session.user.role}`);
-  // }
-
-  // if (status === "loading" || session) return <Loading />;
   useEffect(() => {
     if (isLoading) {
       const token = Cookies.get("token");
