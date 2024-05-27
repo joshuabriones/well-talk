@@ -5,19 +5,28 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Cookies from "js-cookie";
+import { getUserSession } from "@/lib/helperFunctions";
 
 import JournalList from "@/components/JournalList";
 
 const StudentJournal = () => {
-  const { data: session, status } = useSession();
+  const userSession = getUserSession();
   const [title, setTitle] = useState("");
   const [entry, setEntry] = useState("");
   const [editTitle, setEditTitle] = useState("");
   const [editEntry, setEditEntry] = useState("");
   const [journalEntries, setJournalEntries] = useState([{}]);
   const [highlightEntry, setHighlightEntry] = useState({});
-
   const [isEditing, setIsEditing] = useState(false);
+
+  if (Cookies.get("token") === undefined) {
+    router.push("/login");
+  }
+
+  if (userSession.role !== "student") {
+    return <Load role={userSession.role} />;
+  }
 
   const fetchEntries = async () => {
     try {
@@ -239,43 +248,49 @@ const StudentJournal = () => {
           <div className="flex gap-6 items-center justify-end">
             {isEditing && (
               <>
-
-              <button
-                className="z-10 tooltip tooltip-accent"
-                data-tip="Save Changes"
-                onClick={handleEditEntry}
-              >
-                <Image
-                  src={"/images/icons/saveEdit.png"}
-                  width={30}
-                  height={30}
-                />
-              </button>
-              <button className="btn btn-outline"  onClick={handleCancelEdit}>Cancel</button>
+                <button
+                  className="z-10 tooltip tooltip-accent"
+                  data-tip="Save Changes"
+                  onClick={handleEditEntry}
+                >
+                  <Image
+                    src={"/images/icons/saveEdit.png"}
+                    width={30}
+                    height={30}
+                  />
+                </button>
+                <button className="btn btn-outline" onClick={handleCancelEdit}>
+                  Cancel
+                </button>
               </>
             )}
             {!isEditing && (
               <>
-              
-            <button
-              className="z-10 tooltip tooltip-accent"
-              data-tip="Edit"
-              onClick={() => setIsEditing((prevState) => !prevState)}
-            >
-              <Image src={"/images/icons/edit.png"} width={30} height={30} />
-            </button>
-            
-              <button
-                className="z-10 tooltip tooltip-accent"
-                data-tip="New Entry"
-                onClick={() => document.getElementById("new-entry").showModal()}
-              >
-                <Image
-                  src={"/images/icons/addjournal.png"}
-                  width={30}
-                  height={30}
-                />
-              </button>
+                <button
+                  className="z-10 tooltip tooltip-accent"
+                  data-tip="Edit"
+                  onClick={() => setIsEditing((prevState) => !prevState)}
+                >
+                  <Image
+                    src={"/images/icons/edit.png"}
+                    width={30}
+                    height={30}
+                  />
+                </button>
+
+                <button
+                  className="z-10 tooltip tooltip-accent"
+                  data-tip="New Entry"
+                  onClick={() =>
+                    document.getElementById("new-entry").showModal()
+                  }
+                >
+                  <Image
+                    src={"/images/icons/addjournal.png"}
+                    width={30}
+                    height={30}
+                  />
+                </button>
               </>
             )}
 

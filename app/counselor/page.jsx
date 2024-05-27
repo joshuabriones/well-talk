@@ -3,10 +3,11 @@ import LoadingState from "@/components/Load";
 import Card from "@/components/ui/Card";
 import CreatePostSection from "@/components/ui/CreatePost";
 import Footer from "@/components/ui/Footer";
+import Load from "@/components/Load";
 import { Navbar } from "@/components/ui/Navbar";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { getUserSession } from "@/lib/helperFunctions";
 
@@ -23,12 +24,12 @@ export default function Home() {
   const { data: session, status } = useSession();
 
   /* Handling unauthenticated users */
-  if (Cookies.get("token") === undefined) {
+  if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
     router.push("/login");
   }
 
-  if (userSession.role !== "counselor") {
-    router.push(`/${userSession.role}`);
+  if (userSession && userSession.role !== "counselor") {
+    return <Load role={userSession.role} />;
   }
 
   const fetchPosts = async () => {

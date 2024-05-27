@@ -2,6 +2,7 @@
 import LoadingState from "@/components/Load";
 import Card from "@/components/ui/Card";
 import Footer from "@/components/ui/Footer";
+import Load from "@/components/Load";
 import { Navbar } from "@/components/ui/Navbar";
 import PostCard from "@/components/ui/PostsCard";
 import { useSession } from "next-auth/react";
@@ -39,12 +40,12 @@ export default function Home() {
   };
 
   /* Handling unauthenticated users */
-  if (Cookies.get("token") === undefined) {
+  if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
     router.push("/login");
   }
 
-  if (userSession.role !== "student") {
-    router.push(`/${userSession.role}`);
+  if (userSession && userSession.role !== "student") {
+    return <Load role={userSession.role} />;
   }
 
   useEffect(() => {

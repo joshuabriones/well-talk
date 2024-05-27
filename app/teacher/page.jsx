@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { GiSettingsKnobs } from "react-icons/gi";
 import Cookies from "js-cookie";
 import { getUserSession } from "@/lib/helperFunctions";
+import Load from "@/components/Load";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -37,12 +38,12 @@ export default function Home() {
   };
 
   /* Handling unauthenticated users */
-  if (Cookies.get("token") === undefined) {
+  if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
     router.push("/login");
   }
 
-  if (userSession.role !== "teacher") {
-    router.push(`/${userSession.role}`);
+  if (userSession && userSession.role !== "teacher") {
+    return <Load role={userSession.role} />;
   }
 
   useEffect(() => {
