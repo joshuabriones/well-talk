@@ -6,7 +6,9 @@ import Footer from "@/components/ui/Footer";
 import { Navbar } from "@/components/ui/Navbar";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { getUserSession } from "@/lib/helperFunctions";
 
 export default function Home() {
   const [selectedButton, setSelectedButton] = useState("featured");
@@ -14,8 +16,20 @@ export default function Home() {
   const [showFilterPostModal, setShowFilterModal] = useState(false);
   const [sortPostBy, setSortPostBy] = useState("Latest");
   const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession();
+  const userSession = getUserSession();
   const router = useRouter();
+
+  // to be removed
+  const { data: session, status } = useSession();
+
+  /* Handling unauthenticated users */
+  if (Cookies.get("token") === undefined) {
+    router.push("/login");
+  }
+
+  if (userSession.role !== "counselor") {
+    router.push(`/${userSession.role}`);
+  }
 
   const fetchPosts = async () => {
     try {
@@ -32,11 +46,7 @@ export default function Home() {
     }
   };
 
-  // useEffect(() => {
-  // 	if (status === "unauthenticated") {
-  // 		router.push("/login");
-  // 	}
-  // }, [status]);
+  console.log(userSession);
 
   useEffect(() => {
     fetchPosts();
@@ -52,7 +62,7 @@ export default function Home() {
   // 	return null; // Prevent rendering anything if redirecting
   // }
 
-  console.log(session);
+  console.log(userSession);
 
   const getSortedPosts = () => {
     if (sortPostBy === "Latest") {
@@ -131,7 +141,11 @@ export default function Home() {
 							</div> */}
             </div>
             <div className="w-full p-2 mx-auto flex-grow max-h-[90vh] overflow-y-auto">
-              {loading ? <LoadingState /> : <CreatePostSection />}
+              {loading ? (
+                <LoadingState />
+              ) : (
+                <CreatePostSection userSession={userSession} />
+              )}
             </div>
           </div>
           {/*Blogs*/}

@@ -3,9 +3,11 @@ import Loading from "@/components/Skeleton";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-
-//imgs
+import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+import { parseJwt } from "@/lib/helperFunctions";
+import { API_ENDPOINT } from "@/lib/api";
+import { toast } from "react-toastify";
 
 // utils
 import FullButton from "@/components/ui/buttons/FullButton";
@@ -22,42 +24,96 @@ const Login = () => {
   const [showInvalidCredentials, setShowInvalidCredentials] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // forgot password
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
-  if (session) {
-    router.push(`/${session.user.role}`);
-  }
+  /* HANDLING UNAUTHENTICATED USERS */
 
-  if (status === "loading" || session) return <Loading />;
+  // if (session) {
+  //   router.push(`/${session.user.role}`);
+  // }
+
+  // if (status === "loading" || session) return <Loading />;
+  useEffect(() => {
+    if (isLoading) {
+      const token = Cookies.get("token");
+      const user = parseJwt(token);
+
+      const { id, sub, image, role } = user;
+      const userData = { id: id, email: sub, image: image, role: role };
+      Cookies.set("user", JSON.stringify(userData));
+
+      if (user) {
+        router.push(`/${user.role}`);
+      }
+    }
+  }, [isLoading]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
+      const result = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.LOGIN}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            institutionalEmail: email,
+            password,
+          }),
+        }
+      );
 
       if (result.ok) {
-        console.log("Login successful:", result);
+        const data = await result.json();
+
+        Cookies.set("token", data.token);
+        setIsLoading(true);
       } else {
-        console.error("Login error: inside", error.message);
+        alert("Invalid email or password. Try again.");
       }
     } catch (error) {
       console.error("Login error:", error.message);
     }
 
     setShowInvalidCredentials(true);
-    // Hide the message after 5 seconds
     setTimeout(() => {
       setShowInvalidCredentials(false);
+      setIsLoading(false);
     }, 5000);
   };
+
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     const result = await signIn("credentials", {
+  //       redirect: false,
+  //       email,
+  //       password,
+  //     });
+
+  //     if (result.ok) {
+  //       console.log("Login successful:", result);
+  //     } else {
+  //       console.error("Login error: inside", error.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Login error:", error.message);
+  //   }
+
+  //   setShowInvalidCredentials(true);
+  //   // Hide the message after 5 seconds
+  //   setTimeout(() => {
+  //     setShowInvalidCredentials(false);
+  //   }, 5000);
+  // };
 
   const handleCreateAccount = async (e) => {
     e.preventDefault();

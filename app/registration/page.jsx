@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { API_ENDPOINT } from "@/lib/api";
 
 const Registration = () => {
   const router = useRouter();
@@ -60,6 +61,7 @@ const Registration = () => {
   const handleTermsChange = (e) => {
     setTermsAccepted(e.target.checked);
   };
+
   // create account
   const handleCreateAccount = async (e) => {
     e.preventDefault();
@@ -85,6 +87,7 @@ const Registration = () => {
 
     let extraInfoValidation;
 
+    /* zod validation */
     if (role === "student") {
       const studentData = {
         birthdate,
@@ -116,8 +119,6 @@ const Registration = () => {
       });
     }
 
-    console.log("test");
-
     if (!extraInfoValidation?.success && !result?.success) {
       setErrors({
         ...extraInfoValidation?.error.format(),
@@ -131,48 +132,107 @@ const Registration = () => {
       setShowTermsNotAccepted(true);
       return;
     }
-    console.log(specificAddress, barangay, cityMunicipality, province, zipcode);
 
-    try {
-      const response = await fetch("/api/users/createuser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          institutionalEmail: email,
-          idNumber: idno,
-          firstName: firstName,
-          lastName: lastName,
-          gender: gender,
-          password: password,
-          image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
-          birthDate: birthdate,
-          contactNumber: contactNumber,
-          specificAddress: specificAddress,
-          barangay: barangay,
-          cityMunicipality: cityMunicipality,
-          province: province,
-          zipcode: zipcode,
+    /* user registration - {role} */
+    let response;
+    switch (role) {
+      case "student":
+        try {
+          response = await fetch(
+            `${process.env.BASE_URL}${API_ENDPOINT.REGISTER_STUDENT}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                institutionalEmail: email,
+                idNumber: idno,
+                firstName: firstName,
+                lastName: lastName,
+                gender: gender,
+                password: password,
+                image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
+                role: role,
+                college: college,
+                program: program,
+                year: year,
+                birthDate: birthdate,
+                contactNumber: contactNumber,
+                specificAddress: specificAddress,
+                barangay: barangay,
+                cityMunicipality: cityMunicipality,
+                province: province,
+                zipcode: zipcode,
+              }),
+            }
+          );
+        } catch (error) {
+          console.log("Error in creating student user", error);
+        }
+        break;
+      case "teacher":
+        try {
+          response = await fetch(
+            `${process.env.BASE_URL}${API_ENDPOINT.REGISTER_TEACHER}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                institutionalEmail: email,
+                idNumber: idno,
+                firstName: firstName,
+                lastName: lastName,
+                gender: gender,
+                password: password,
+                image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
+                role: role,
+                college: college,
+              }),
+            }
+          );
+        } catch (error) {
+          console.log("Error in creating student user", error);
+        }
+        break;
+      case "counselor":
+        try {
+          response = await fetch(
+            `${process.env.BASE_URL}${API_ENDPOINT.REGISTER_COUNSELOR}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                institutionalEmail: email,
+                idNumber: idno,
+                firstName: firstName,
+                lastName: lastName,
+                gender: gender,
+                password: password,
+                image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
+                role: role,
+              }),
+            }
+          );
+        } catch (error) {
+          console.log("Error in creating student user", error);
+        }
+        break;
+    }
 
-          college: college,
-          program: program,
-          year: year,
-          role: role,
-        }),
-      });
+    console.log(response);
 
-      if (!response.ok) {
-        console.log("Error status: ", response.status);
-      }
+    if (!response.ok) console.log("Error status: ", response.status);
+    else {
       setTimeout(() => {
         router.push("/login");
       }, 5000);
-    } catch (error) {
-      console.log("Error in creating user", error);
     }
 
-    // successful registration
     setShowRegistrationSuccessful(true);
   };
 

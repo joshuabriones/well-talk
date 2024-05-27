@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "./../../css/createblog.css";
 import { useSession } from "next-auth/react";
+import { logout } from "@/lib/helperFunctions";
 
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,7 +13,7 @@ function ProfileMenu() {
   const closeMenu = () => setIsMenuOpen(false);
 
   const handleSignOut = () => {
-    signOut({ callbackUrl: "/login", redirect: true });
+    logout();
   };
 
   const handleProfile = () => {
