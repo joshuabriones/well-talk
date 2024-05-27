@@ -165,7 +165,7 @@ export default function StudentProfile() {
                   <div className="w-full md:w-full">
                     <TextInput
                       label="First Name"
-                      value={isEditMode ? updatedProfile?.user.firstName : studentProfile?.user.firstName}
+                      value={studentProfile?.user.firstName}
                       onChange={handleChange("user.firstName")}
                       placeholder="First Name"
                       readOnly={!isEditMode}
@@ -175,7 +175,7 @@ export default function StudentProfile() {
                   <div className="w-full md:w-full">
                     <TextInput
                       label="Last Name"
-                      value={isEditMode ? updatedProfile?.user.lastName : studentProfile?.user.lastName}
+                      value={studentProfile?.user.lastName}
                       onChange={handleChange("user.lastName")}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
@@ -184,10 +184,10 @@ export default function StudentProfile() {
                   <div className="w-full md:w-1/2">
                     <TextInput
                       label="Gender"
-                      value={isEditMode ? updatedProfile?.user.gender : studentProfile?.user.gender}
+                      value={studentProfile?.user.gender}
                       onChange={handleChange("user.gender")}
-                      readOnly={!isEditMode}
-                      disabled={!isEditMode}
+                      readOnly
+                      disabled
                     />
                   </div>
                 </div>
@@ -198,16 +198,16 @@ export default function StudentProfile() {
                   <div className="w-full md:w-1/2">
                     <TextInput
                       label="ID Number"
-                      value={isEditMode ? updatedProfile?.user.idNumber : studentProfile?.user.idNumber}
+                      value={studentProfile?.user.idNumber}
                       onChange={handleChange("user.idNumber")}
-                      readOnly={!isEditMode}
-                      disabled={!isEditMode}
+                      readOnly
+                      disabled
                     />
                   </div>
                   <div className="w-full md:w-1/2">
                     <TextInput
                       label="Program"
-                      value={isEditMode ? updatedProfile?.program : studentProfile?.program}
+                      value={studentProfile?.program}
                       onChange={handleChange("program")}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
@@ -216,7 +216,7 @@ export default function StudentProfile() {
                   <div className="w-full md:w-1/2">
                     <TextInput
                       label="Year Level"
-                      value={isEditMode ? updatedProfile?.year : studentProfile?.year}
+                      value={studentProfile?.year}
                       onChange={handleChange("year")}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
@@ -230,16 +230,16 @@ export default function StudentProfile() {
                   <div className="w-full md:w-1/2">
                     <TextInput
                       label="Birth Date"
-                      value={isEditMode ? formatTime(updatedProfile?.birthdate) : formatTime(studentProfile?.birthdate)}
+                      value={formatTime(studentProfile?.birthdate)}
                       onChange={handleChange("birthdate")}
-                      readOnly={!isEditMode}
-                      disabled={!isEditMode}
+                      readOnly
+                      disabled
                     />
                   </div>
                   <div className="w-full md:w-1/2">
                     <TextInput
                       label="Contact Number"
-                      value={isEditMode ? updatedProfile?.contactNumber : studentProfile?.contactNumber}
+                      value={studentProfile?.contactNumber}
                       onChange={handleChange("contactNumber")}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
@@ -248,7 +248,7 @@ export default function StudentProfile() {
                   <div className="w-full">
                     <TextInput
                       label="Address"
-                      value={isEditMode ? updatedProfile?.address : studentProfile?.address}
+                      value={studentProfile?.address}
                       onChange={handleChange("address")}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
