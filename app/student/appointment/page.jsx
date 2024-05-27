@@ -1,11 +1,10 @@
 "use client";
 
-import hdrAppointment from "@/public/images/headers/hdrAppointment.png";
-import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import StudentAddAppointment from "@/components/ui/modals/counselor/appointments/StudentAddAppointment";
 import TextInput from "@/components/ui/inputs/TextInput";
-import FullButton from "@/components/ui/buttons/FullButton";
+import StudentAddAppointment from "@/components/ui/modals/counselor/appointments/StudentAddAppointment";
+import hdrAppointment from "@/public/images/headers/hdrAppointment.png";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 // css
 import "@/styles/counselor.css";
 
@@ -14,9 +13,9 @@ import { Navbar } from "@/components/ui/Navbar";
 import StudentModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 
-import { Calendar, Whisper, Popover, Badge } from "rsuite";
-import "rsuite/dist/rsuite.min.css";
 import toast from "react-hot-toast";
+import { Badge, Calendar, Popover, Whisper } from "rsuite";
+import "rsuite/dist/rsuite.min.css";
 
 export default function Appointment() {
   const AppointmentPerPage = 10;
@@ -59,7 +58,7 @@ export default function Appointment() {
   const fetchAppointments = async () => {
     const response = await fetch(
       `/api/appointment/view-appointment-by-studentid?studentId=` +
-        session.user.id
+      session.user.id
     );
     const data = await response.json();
     setAppointments(data.studentAppointments);
@@ -278,18 +277,16 @@ export default function Appointment() {
         <div>
           <div className="w-full mt-5 flex items-center gap-5 justify-center">
             <button
-              className={`${
-                isAddAppointment && "text-primary-green "
-              } font-medium`}
+              className={`${isAddAppointment && "text-primary-green "
+                } font-medium`}
               onClick={handleAddAppointmentClick}
             >
               Set Appointment
             </button>{" "}
             /{" "}
             <button
-              className={`${
-                isViewAppointment && "text-primary-green "
-              } font-medium`}
+              className={`${isViewAppointment && "text-primary-green "
+                } font-medium`}
               onClick={handleViewAppointmentClick}
             >
               View Appointments
@@ -351,16 +348,15 @@ export default function Appointment() {
                         </td>
                         <td className="text-center">
                           <div
-                            className={`w-24 h-5 badge badge-xs ${
-                              appointments && appointments.status === "Pending"
+                            className={`w-24 h-5 badge badge-xs ${appointments && appointments.status === "Pending"
                                 ? "badge-warning"
                                 : appointments && appointments.status === "Done"
-                                ? "badge-success"
-                                : appointments &&
-                                  appointments.status === "Approved"
-                                ? "badge-info"
-                                : ""
-                            }`}
+                                  ? "badge-success"
+                                  : appointments &&
+                                    appointments.status === "Approved"
+                                    ? "badge-info"
+                                    : ""
+                              }`}
                           >
                             {appointments.status}
                           </div>
@@ -407,9 +403,8 @@ export default function Appointment() {
                     ].map((_, index) => (
                       <button
                         key={index}
-                        className={`join-item btn ${
-                          currentPage === index + 1 ? "btn-active" : ""
-                        }`}
+                        className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
+                          }`}
                         onClick={() => setCurrentPage(index + 1)}
                       >
                         {index + 1}
@@ -440,10 +435,9 @@ export default function Appointment() {
                     if (date >= new Date().setHours(0, 0, 0, 0)) {
                       setAppointmentDate(formatDateCalendar(date));
                       toast.success("Date selected");
-                    } else {
-                      toast.error("Please select a valid date");
                     }
                   }}
+                  disabledDate={(date) => date < new Date().setHours(0, 0, 0, 0)}
                 />
               </div>
               {appointmentOnThatDate && (
@@ -457,11 +451,10 @@ export default function Appointment() {
                         key={index}
                         disabled={isTimeSlotTaken(time)}
                         onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-                        className={`time-slot-button ${
-                          isTimeSlotTaken(time)
+                        className={`time-slot-button ${isTimeSlotTaken(time)
                             ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
                             : "bg-primary-green text-white hover:bg-primary-green-dark duration-300"
-                        }  py-2 px-4 rounded-md`}
+                          }  py-2 px-4 rounded-md`}
                       >
                         {timeFormatter(time)}
                       </button>
@@ -526,9 +519,9 @@ export default function Appointment() {
           selectedID={selectedID}
           appointments={appointments}
 
-          // TO BE ADDED
-          // handleRescedule={handleReschedule}
-          // handleUpdateStatus={handleUpdateStatus}
+        // TO BE ADDED
+        // handleRescedule={handleReschedule}
+        // handleUpdateStatus={handleUpdateStatus}
         ></StudentModalAppointmentInfo>
       )}
 
