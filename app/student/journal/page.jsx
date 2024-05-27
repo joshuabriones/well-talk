@@ -1,15 +1,15 @@
 "use client";
 import { Navbar } from "@/components/ui/Navbar";
 import Load from "@/components/Load";
-import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { API_ENDPOINT } from "@/lib/api";
 import Image from "next/image";
 import Cookies from "js-cookie";
 import { getUserSession } from "@/lib/helperFunctions";
 
 import JournalList from "@/components/JournalList";
+import { parse } from "path";
 
 const StudentJournal = () => {
   const userSession = getUserSession();
@@ -79,17 +79,20 @@ const StudentJournal = () => {
         return;
       }
 
-      const response = await fetch("/api/users/student/addentry", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: parseInt(session?.user?.id),
-          title: title,
-          entry: entry,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_CREATE_JOURNAL}${userSession.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+          body: JSON.stringify({
+            title: title,
+            entry: entry,
+          }),
+        }
+      );
       const data = await response.json();
 
       if (data) {
