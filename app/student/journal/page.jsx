@@ -1,5 +1,6 @@
 "use client";
 import { Navbar } from "@/components/ui/Navbar";
+import Load from "@/components/Load";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -171,28 +172,13 @@ const StudentJournal = () => {
     setIsEditing(false);
   };
 
-  useEffect(() => {
-    fetchEntries();
+  // useEffect(() => {
+  //   fetchEntries();
 
-    if (!highlightEntry) setHighlightEntry(journalEntries[0]);
-  }, [session?.user]);
+  //   if (!highlightEntry) setHighlightEntry(journalEntries[0]);
+  // }, [session?.user]);
 
   console.log(journalEntries[0]);
-
-  // const router = useRouter();
-
-  // if (status === "unauthenticated") router.push("/login");
-
-  // if (status === "loading" || !session) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (session?.user?.role !== "student") {
-  //   router.push("/login");
-  //   return null;
-  // }
-
-  // PLEASE ILISI LANG NI SA FETCHED DATA FROM DATABASE
 
   return (
     <div className="w-full flex flex-col justify-center items-center bg-white font-Merriweather">
