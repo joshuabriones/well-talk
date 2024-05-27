@@ -37,12 +37,12 @@ function ProfileMenu() {
     <div className="relative">
       <button
         onClick={() => setIsMenuOpen((prev) => !prev)}
-        className="flex items-center gap-1 rounded-full py-3 pr-2 mr-20 pl-0.5 lg:ml-auto text-blue-gray-700"
+        className="flex items-center gap-2 rounded-full py-3 pr-2 mr-20 pl-0.5 lg:ml-auto"
       >
         <img
           src={session?.user.image}
           alt="Profile"
-          className="h-10 w-10 rounded-full border border-gray-900"
+          className="h-10 w-10 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-2"
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -62,12 +62,12 @@ function ProfileMenu() {
         </svg>
       </button>
       {isMenuOpen && (
-        <div className="absolute right-0 w-48 bg-white border border-gray-300 rounded-lg shadow-lg font-Jaldi ">
+        <div className="absolute right-12 w-36 bg-white border border-gray-300 rounded-lg shadow-lg font-Jaldi ">
           {profileMenuItems.map(({ label, action }, index) => (
             <button
               key={index}
               onClick={action || closeMenu}
-              className={`block px-4 py-2 text-sm text-blue-gray-700 hover:bg-blue-gray-100 ${
+              className={`block px-4 py-2 text-sm  ${
                 index === profileMenuItems.length - 1 ? "rounded-b-lg" : ""
               }`}
             >
@@ -124,8 +124,8 @@ function NavList({ userType }) {
         <a
           key={index}
           onClick={() => router.push(item.route)}
-          className={`text-base font-medium text-blue-gray-500 hover:text-blue-gray-700 cursor-pointer${
-            router.pathname === item.route ? "text-blue-900" : ""
+          className={`text-base font-bold text-slate-800 hover:text-slate-800 cursor-pointer${
+            router.pathname === item.route ? "text-slate-800" : ""
           } nav-list-button`}
         >
           {item.label}

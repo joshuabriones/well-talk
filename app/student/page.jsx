@@ -102,36 +102,6 @@ export default function Home() {
 									university's Guidance Counselor!
 								</p>
 							</div>
-							{/* <div className="ml-auto relative">
-								<GiSettingsKnobs
-									className="fill-black stroke-0 hover:stroke-2 text-2xl cursor-pointer text-center"
-									onClick={() =>
-										setShowFilterModal((prev) => !prev)
-									}
-								/>
-								{showFilterPostModal && (
-									<div className="absolute w-30 h-22 px-1 shadow-xl bg-slate-100 border border-slate-300 text-slate-600 font-semibold right-0 top-7 z-20 rounded-xl">
-										<ul className="p-2 cursor-pointer text-start">
-											<li
-												className="p-1 hover:bg-slate-200 rounded"
-												onClick={() => {
-													setSortPostBy("Latest");
-													setShowFilterModal(false);
-												}}>
-												Latest
-											</li>
-											<li
-												className="p-1 hover:bg-slate-200 rounded"
-												onClick={() => {
-													setSortPostBy("Oldest");
-													setShowFilterModal(false);
-												}}>
-												Oldest
-											</li>
-										</ul>
-									</div>
-								)}
-							</div> */}
 						</div>
 						<div className="w-full p-2 mx-auto flex-grow max-h-[90vh] overflow-y-auto">
 							{loading ? (

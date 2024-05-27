@@ -1,18 +1,26 @@
-const TextAreaInput = ({ label, value, onChange, type, placeholder }) => {
-	return (
-		<div>
-			<div className=" text-xl font-Jaldi ">{label}</div>
-			<textarea
-				className="h-40 w-full text-lg font-Jaldi px-4 py-2 border border-gray-200 drop-shadow-md focus:outline-none focus:border-green-500  bg-white rounded-lg"
-				rows={8}
-				type={type}
-				value={value}
-				onChange={onChange}
-				required
-				placeholder={placeholder}
-			/>
-		</div>
-	);
-};
+import React from 'react';
+
+function TextAreaInput({ value, onChange, placeholder = "Enter your message", label = "Message", id }) {
+  return (
+    <div className="flex flex-col w-full">
+      <label
+        htmlFor={id}
+        className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black"
+      >
+        <textarea
+          id={id}
+          value={value}
+          onChange={onChange}
+          className="peer border-none bg-white placeholder-transparent focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full h-32 resize-none"
+          placeholder={placeholder}
+          required
+        />
+        <span className="pointer-events-none absolute start-2.5 bg-white top-14 p-1 -translate-y-1/2 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+          {label}
+        </span>
+      </label>
+    </div>
+  );
+}
 
 export default TextAreaInput;

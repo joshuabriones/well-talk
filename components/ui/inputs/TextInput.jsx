@@ -1,6 +1,7 @@
 import React from 'react';
 
-function TextInput({ value, onChange, placeholder = "Enter your institutional email", label = "Institutional Email Address", type, id}) {
+function TextInput({ value, onChange, placeholder = "Enter your institutional email", label = "Institutional Email Address", type, id,   readOnly,
+disabled,}) {
 
   return (
     <div className="flex flex-col w-full">
@@ -15,6 +16,8 @@ function TextInput({ value, onChange, placeholder = "Enter your institutional em
           onChange={onChange}
           className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
           placeholder={placeholder}
+          readOnly={readOnly}
+          disabled={disabled}
           required
 
         />
