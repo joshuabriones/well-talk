@@ -1,9 +1,10 @@
 "use client";
 
-import hdrInquiry from "@/public/images/headers/hdrInquiry.png";
-import { useEffect, useState } from "react";
 import { Navbar } from "@/components/ui/Navbar";
-
+import { API_ENDPOINT } from "@/lib/api";
+import hdrInquiry from "@/public/images/headers/hdrInquiry.png";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 // css
 import "@/styles/counselor.css";
 
@@ -27,11 +28,20 @@ export default function Home() {
   useEffect(() => {
     const fetchInquiries = async () => {
       try {
-        const response = await fetch("/api/inquiry/view-inquiries");
+        const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_INQUIRIES}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        });
+
         if (!response.ok) {
           throw new Error("Failed to fetch inquiries");
         }
+
         const data = await response.json();
+        console.log(data);
         setInquiries(data.inquiries);
       } catch (error) {
         console.error("Error fetching inquiries:", error);
@@ -198,11 +208,10 @@ export default function Home() {
                   </td>
                   <td className="text-center">
                     <div
-                      className={`w-24 h-5 badge badge-xs ${
-                        inquiry.status === "open"
-                          ? "badge-warning"
-                          : "badge-success"
-                      }`}
+                      className={`w-24 h-5 badge badge-xs ${inquiry.status === "open"
+                        ? "badge-warning"
+                        : "badge-success"
+                        }`}
                     >
                       {inquiry.status}
                     </div>
@@ -249,9 +258,8 @@ export default function Home() {
               ].map((_, index) => (
                 <button
                   key={index}
-                  className={`join-item btn ${
-                    currentPage === index + 1 ? "btn-active" : ""
-                  }`}
+                  className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
+                    }`}
                   onClick={() => setCurrentPage(index + 1)}
                 >
                   {index + 1}
