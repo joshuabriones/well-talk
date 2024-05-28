@@ -128,6 +128,7 @@ export default function Appointment() {
       (appointment) => appointment.appointmentId === selectedID
     );
 
+    // CORS ISSUE - TO BE FIXED
     try {
       const deleted = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.DELETE_APPOINTMENT}${selectedID}`,
