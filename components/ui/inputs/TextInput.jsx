@@ -1,8 +1,15 @@
-import React from 'react';
+import React from "react";
 
-function TextInput({ value, onChange, placeholder = "Enter your institutional email", label = "Institutional Email Address", type, id,   readOnly,
-disabled,}) {
-
+function TextInput({
+  value,
+  onChange,
+  placeholder = "Enter your institutional email",
+  label = "Institutional Email Address",
+  type,
+  id,
+  readOnly,
+  disabled,
+}) {
   return (
     <div className="flex flex-col w-full">
       <label
@@ -14,14 +21,13 @@ disabled,}) {
           id={id}
           value={value}
           onChange={onChange}
-          className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+          className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
           placeholder={placeholder}
           readOnly={readOnly}
           disabled={disabled}
           required
-
         />
-        <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+        <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs dark:bg-black">
           {label}
         </span>
       </label>

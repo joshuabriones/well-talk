@@ -310,7 +310,7 @@ const Registration = () => {
   };
 
   return (
-    <section className="ezy__signup7 py-2 md:py-2 dark:bg-[#0b1727] text-zinc-900 dark:text-white">
+    <section className="ezy__signup7 py-2 md:py-2 text-zinc-900 dark:text-white">
       <Navbar userType="landing" />
       <div
         className="pattern-overlay pattern-left absolute -z-10"
@@ -342,10 +342,10 @@ const Registration = () => {
           <div className="flex items-center max-w-lg justify-center lg:justify-start h-full">
             <div className="w-full">
               <form
-                className="h-full flex flex-col justify-center bg-white"
+                className="h-full flex flex-col justify-center bg-white dark:bg-transparent"
                 onSubmit={handleCreateAccount}
               >
-                <p className="text-black text-5xl font-Merriweather ">
+                <p className="text-black text-5xl font-Merriweather dark:text-white">
                   Registration
                 </p>
                 <div className="flex flex-col gap-y-3 py-4">
@@ -422,7 +422,7 @@ const Registration = () => {
                           value={gender}
                           onChange={(e) => setGender(e.target.value)}
                           placeholder="Gender"
-                          className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                          className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
                           required
                         >
                           {genderOptions.map((option) => (
@@ -487,7 +487,7 @@ const Registration = () => {
                       <select
                         value={role}
                         onChange={handleRoleChange}
-                        className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                        className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
                         required
                       >
                         <option value="">Select</option>
@@ -516,7 +516,7 @@ const Registration = () => {
                           <DatePicker
                             selected={birthdate}
                             onChange={(date) => setBirthdate(date)}
-                            className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                            className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
                             showMonthDropdown
                             showYearDropdown
                             dropdownMode="select"
@@ -642,7 +642,7 @@ const Registration = () => {
                             <select
                               value={college}
                               onChange={(e) => setCollege(e.target.value)}
-                              className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                              className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
                               required
                             >
                               {collegeOptions.map((option) => (
@@ -669,7 +669,7 @@ const Registration = () => {
                             <select
                               value={program}
                               onChange={(e) => setProgram(e.target.value)}
-                              className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
+                              className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
                               required
                             >
                               {programOptions[college]?.map((option) => (
