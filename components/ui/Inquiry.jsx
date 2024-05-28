@@ -3,21 +3,22 @@ import Cookies from "js-cookie";
 import { useState } from "react";
 import QuestionInput from "./inputs/InputQuestion";
 import TextInput from "./inputs/TextInput";
+import ModalConfirmResponse from "./modals/counselor/inquiries/ModalConfirmResponse";
+import ModalConfirmed from "./modals/counselor/inquiries/ModalConfirmed";
 
 const Inquiry = ({ userId }) => {
   const [subject, setSubject] = useState("");
   const [messageInquiry, setMessageInquiry] = useState(""); // Changed here
   const [formEmptyError, setFormEmptyError] = useState(false);
-  const [showModal, setShowModal] = useState(false); // State for showing/hiding the modal
+  const [showModal, setShowModal] = useState(false);
+  const [showConfirmed, setShowConfirmed] = useState(false);
 
   const handleInquirySubmission = async () => {
-    // Check if the subject or message_inquiry is empty
     if (subject === "" || messageInquiry === "") { // Changed here
       setFormEmptyError(true);
       return;
     }
 
-    // Get the token and user data from the cookies
     const user = JSON.parse(Cookies.get("user"));
     const userId = user.id;
 
@@ -26,11 +27,12 @@ const Inquiry = ({ userId }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("token")}`,
         },
         body: JSON.stringify({
           userId,
           subject,
-          messageInquiry, // Changed here
+          messageInquiry,
         }),
       });
 
@@ -38,9 +40,9 @@ const Inquiry = ({ userId }) => {
         throw new Error("Failed to post inquiry");
       }
 
-      // Clear the inquiry input after successful submission
       setSubject("");
-      setMessageInquiry(""); // Changed here
+      setMessageInquiry("");
+      setShowModal(true);
     } catch (error) {
       console.error(error);
     }
@@ -48,6 +50,21 @@ const Inquiry = ({ userId }) => {
 
 
   const handleModalClose = () => {
+    setShowModal(false);
+  };
+
+  const handleResponse = () => {
+    setShowModal(false);
+    setShowConfirmed(true);
+    setTimeout(() => {
+      setShowConfirmed(false);
+      handleReset();
+    }, 2000);
+  };
+
+  const handleReset = () => {
+    setSubject("");
+    setMessageInquiry("");
     setShowModal(false);
   };
 
@@ -190,6 +207,13 @@ const Inquiry = ({ userId }) => {
                   >
                     Submit Inquiry
                   </button>
+                  {showModal && (
+                    <ModalConfirmResponse
+                      setConfirmResponse={setShowModal}
+                      handleResponse={handleResponse}
+                    />
+                  )}
+                  {showConfirmed && <ModalConfirmed />}
                 </form>
                 <div>
                   <span className="absolute -right-9 -top-10 z-[-1]">
