@@ -183,8 +183,8 @@ const StudentJournal = () => {
   return (
     <div className="w-full flex flex-col justify-center items-center bg-white font-Merriweather">
       <Navbar userType="student" />
-      <div className="flex w-[90%] h-screen mt-[104px]">
-        <div className="w-1/2 overflow-y-auto ">
+      <div className="flex w-full h-screen mt-[104px] px-20 pb-5 lg:flex-row sm:flex-col">
+        <div className="flex-1 overflow-y-auto ">
           <JournalList
             entries={journalEntries}
             isEditing={isEditing}
@@ -192,7 +192,7 @@ const StudentJournal = () => {
             handleDeleteEntry={handleDeleteEntry}
           />
         </div>
-        <div className="w-1/2 h-[86%] p-16 rounded-2xl shadow-2xl relative">
+        <div className="flex-1 w-full h-[86%] p-16 rounded-2xl shadow-2xl relative md:w-3/4 sm:w-full">
           <div className="w-full h-full overflow-y-auto p-5">
             {isEditing ? (
               <input

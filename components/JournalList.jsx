@@ -9,7 +9,7 @@ const JournalList = ({
   handleDeleteEntry,
 }) => {
   return (
-    <div className="w-[500px] ">
+    <div className="md:w-3/4 sm:w-full ">
       {entries.map((entry, i) => (
         <div
           key={i}
