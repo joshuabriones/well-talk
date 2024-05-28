@@ -10,6 +10,7 @@ import { getUserSession } from "@/lib/helperFunctions";
 import JournalModal from "./_modal/JournalModal";
 
 import JournalList from "@/components/JournalList";
+import { hi } from "date-fns/locale";
 import { set } from "date-fns";
 
 const StudentJournal = () => {
@@ -34,7 +35,7 @@ const StudentJournal = () => {
   const fetchEntries = async () => {
     try {
       const response = await fetch(
-        `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_GET_ALL_JOURNALS}`,
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_JOURNAL_BY_STUDENT_ID}${userSession.id}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -43,21 +44,13 @@ const StudentJournal = () => {
       );
 
       const data = await response.json();
-      const myEntries = data.filter(
-        (item) => item.student.id === parseInt(userSession.id)
-      );
-      setJournalEntries(myEntries);
+      setJournalEntries(data);
 
-      // if (highlightEntry) {
-      //   const updatedHighlightEntry = myEntries.find(
-      //     (entry) => entry.journalId === highlightEntry.journalId
-      //   );
-      //   if (updatedHighlightEntry) {
-      //     setHighlightEntry(updatedHighlightEntry);
-      //   } else {
-      //     setHighlightEntry(null);
-      //   }
-      // }
+      if (data.length > 0) {
+        setHighlightEntry(data[0]);
+      } else {
+        setHighlightEntry(null);
+      }
     } catch (error) {
       toast.error("Error fetching entries");
       throw new Error("Error fetching entries");
@@ -118,11 +111,12 @@ const StudentJournal = () => {
   const handleDeleteEntry = async (journalId) => {
     try {
       const response = await fetch(
-        `/api/users/student/deleteentry/${journalId}`,
+        `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_DELETE_JOURNAL}${journalId}`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
         }
       );
@@ -132,6 +126,7 @@ const StudentJournal = () => {
           `Journal entry with ID ${journalId} deleted successfully.`
         );
         fetchEntries();
+        setIsEditing(false);
       } else {
         toast.error(`Failed to delete journal entry with ID ${journalId}.`);
       }
@@ -143,11 +138,12 @@ const StudentJournal = () => {
   const handleEditEntry = async () => {
     try {
       const response = await fetch(
-        `/api/users/student/updateentry/${highlightEntry.journalId}`,
+        `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_UPDATE_JOURNAL}${highlightEntry?.journalId}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
           body: JSON.stringify({
             title: editTitle,
@@ -177,18 +173,14 @@ const StudentJournal = () => {
     }
   };
 
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-  };
-
   useEffect(() => {
     fetchEntries();
   }, []);
 
-  // useEffect(() => {
-  //   setEditTitle(highlightEntry?.title);
-  //   setEditEntry(highlightEntry?.entry);
-  // }, [isEditing]);
+  useEffect(() => {
+    setEditTitle(highlightEntry?.title);
+    setEditEntry(highlightEntry?.entry);
+  }, [isEditing]);
 
   return (
     <div className="w-full flex flex-col justify-center items-center bg-white font-Merriweather">
@@ -202,7 +194,7 @@ const StudentJournal = () => {
             handleDeleteEntry={handleDeleteEntry}
           />
         </div>
-        <div className="w-1/2 h-[86%] p-16 rounded-2xl shadow-xl relative">
+        <div className="w-1/2 h-[86%] p-16 rounded-2xl shadow-2xl relative">
           <div className="w-full h-full overflow-y-auto p-5">
             {isEditing ? (
               <input
@@ -244,10 +236,22 @@ const StudentJournal = () => {
             />
           </div>
           <div className="flex gap-6 items-center justify-end">
-            {isEditing && (
+            {isEditing ? (
               <>
                 <button
-                  className="z-10 tooltip tooltip-accent"
+                  className="z-10 tooltip tooltip-success"
+                  data-tip={`${isEditing ? "Cancel" : "Edit"}`}
+                  onClick={() => setIsEditing((prevState) => !prevState)}
+                >
+                  <Image
+                    src={"/images/icons/edit.png"}
+                    width={30}
+                    height={30}
+                    alt="Edit Icon"
+                  />
+                </button>
+                <button
+                  className="z-10 tooltip tooltip-success"
                   data-tip="Save Changes"
                   onClick={handleEditEntry}
                 >
@@ -258,12 +262,8 @@ const StudentJournal = () => {
                     alt="Save Changes Icon"
                   />
                 </button>
-                <button className="btn btn-outline" onClick={handleCancelEdit}>
-                  Cancel
-                </button>
               </>
-            )}
-            {!isEditing && (
+            ) : (
               <>
                 <button
                   className="z-10 tooltip tooltip-success"
@@ -281,10 +281,7 @@ const StudentJournal = () => {
                 <button
                   className="z-10 tooltip tooltip-success"
                   data-tip="New Entry"
-                  onClick={
-                    () => setShowModal(true)
-                    // document.getElementById("new-entry").showModal()
-                  }
+                  onClick={() => setShowModal(true)}
                 >
                   <Image
                     src={"/images/icons/addjournal.png"}

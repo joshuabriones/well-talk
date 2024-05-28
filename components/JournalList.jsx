@@ -13,7 +13,9 @@ const JournalList = ({
       {entries.map((entry, i) => (
         <div
           key={entry.journalId}
-          className={`w-full p-8 rounded-2xl shadow-md border-r-[#6B9080] border-r-8 mb-10 relative text-black cursor-pointer`}
+          className={`w-full p-8 rounded-2xl shadow-2xl border-r-[#6B9080] border-r-8 mb-10 relative text-black ${
+            !isEditing && "cursor-pointer"
+          }`}
           onClick={() => handleClickedEntry(entry.journalId)}
         >
           <h2 className="text-2xl mb-1 text-black">{entry.title}</h2>
@@ -30,13 +32,19 @@ const JournalList = ({
             height={38}
             width={22}
             className="absolute left-0 top-12"
+            alt="Journal Spring"
           />
-          {!isEditing && (
+          {isEditing && (
             <button
               className="absolute right-4 bottom-4"
               onClick={() => handleDeleteEntry(entry.journalId)}
             >
-              <Image src={"/images/icons/delete.png"} width={28} height={28} />
+              <Image
+                src={"/images/icons/delete.png"}
+                width={28}
+                height={28}
+                alt="Delete icon"
+              />
             </button>
           )}
         </div>
