@@ -10,8 +10,6 @@ import { getUserSession } from "@/lib/helperFunctions";
 import JournalModal from "./_modal/JournalModal";
 
 import JournalList from "@/components/JournalList";
-import { hi } from "date-fns/locale";
-import { set } from "date-fns";
 
 const StudentJournal = () => {
   const userSession = getUserSession();
@@ -178,8 +176,8 @@ const StudentJournal = () => {
   }, []);
 
   useEffect(() => {
-    setEditTitle(highlightEntry?.title);
-    setEditEntry(highlightEntry?.entry);
+    setEditTitle(highlightEntry?.title || "");
+    setEditEntry(highlightEntry?.entry || "");
   }, [isEditing]);
 
   return (

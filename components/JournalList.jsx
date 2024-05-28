@@ -12,7 +12,7 @@ const JournalList = ({
     <div className="w-[500px] ">
       {entries.map((entry, i) => (
         <div
-          key={entry.journalId}
+          key={i}
           className={`w-full p-8 rounded-2xl shadow-2xl border-r-[#6B9080] border-r-8 mb-10 relative text-black ${
             !isEditing && "cursor-pointer"
           }`}
