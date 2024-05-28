@@ -7,8 +7,10 @@ import { API_ENDPOINT } from "@/lib/api";
 import Image from "next/image";
 import Cookies from "js-cookie";
 import { getUserSession } from "@/lib/helperFunctions";
+import JournalModal from "./_modal/JournalModal";
 
 import JournalList from "@/components/JournalList";
+import { set } from "date-fns";
 
 const StudentJournal = () => {
   const userSession = getUserSession();
@@ -19,6 +21,7 @@ const StudentJournal = () => {
   const [journalEntries, setJournalEntries] = useState([{}]);
   const [highlightEntry, setHighlightEntry] = useState({});
   const [isEditing, setIsEditing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
     return <Load route="login" />;
@@ -40,31 +43,26 @@ const StudentJournal = () => {
       );
 
       const data = await response.json();
-      console.log(data);
       const myEntries = data.filter(
         (item) => item.student.id === parseInt(userSession.id)
       );
       setJournalEntries(myEntries);
 
-      if (highlightEntry) {
-        const updatedHighlightEntry = myEntries.find(
-          (entry) => entry.journalId === highlightEntry.journalId
-        );
-        if (updatedHighlightEntry) {
-          setHighlightEntry(updatedHighlightEntry);
-        } else {
-          setHighlightEntry(null);
-        }
-      }
+      // if (highlightEntry) {
+      //   const updatedHighlightEntry = myEntries.find(
+      //     (entry) => entry.journalId === highlightEntry.journalId
+      //   );
+      //   if (updatedHighlightEntry) {
+      //     setHighlightEntry(updatedHighlightEntry);
+      //   } else {
+      //     setHighlightEntry(null);
+      //   }
+      // }
     } catch (error) {
-      console.log("Error fetching entries");
+      toast.error("Error fetching entries");
+      throw new Error("Error fetching entries");
     }
   };
-
-  useEffect(() => {
-    setEditTitle(highlightEntry?.title);
-    setEditEntry(highlightEntry?.entry);
-  }, [isEditing]);
 
   const handleClickedEntry = (journalId) => {
     if (!isEditing) {
@@ -105,7 +103,7 @@ const StudentJournal = () => {
 
       if (data) {
         toast.success("Added entry successfully");
-        document.getElementById("new-entry").close();
+        setShowModal(false);
       }
 
       setTitle("");
@@ -185,9 +183,12 @@ const StudentJournal = () => {
 
   useEffect(() => {
     fetchEntries();
-
-    if (!highlightEntry) setHighlightEntry(journalEntries[0]);
   }, []);
+
+  // useEffect(() => {
+  //   setEditTitle(highlightEntry?.title);
+  //   setEditEntry(highlightEntry?.entry);
+  // }, [isEditing]);
 
   return (
     <div className="w-full flex flex-col justify-center items-center bg-white font-Merriweather">
@@ -232,12 +233,14 @@ const StudentJournal = () => {
               height={38}
               width={22}
               className="absolute -left-2 top-12"
+              alt="Journal Spring"
             />
             <Image
               src={"/images/journal-spring.png"}
               height={38}
               width={22}
               className="absolute -left-2 bottom-12"
+              alt="Journal Spring"
             />
           </div>
           <div className="flex gap-6 items-center justify-end">
@@ -252,6 +255,7 @@ const StudentJournal = () => {
                     src={"/images/icons/saveEdit.png"}
                     width={30}
                     height={30}
+                    alt="Save Changes Icon"
                   />
                 </button>
                 <button className="btn btn-outline" onClick={handleCancelEdit}>
@@ -262,7 +266,7 @@ const StudentJournal = () => {
             {!isEditing && (
               <>
                 <button
-                  className="z-10 tooltip tooltip-accent"
+                  className="z-10 tooltip tooltip-success"
                   data-tip="Edit"
                   onClick={() => setIsEditing((prevState) => !prevState)}
                 >
@@ -270,57 +274,39 @@ const StudentJournal = () => {
                     src={"/images/icons/edit.png"}
                     width={30}
                     height={30}
+                    alt="Edit Icon"
                   />
                 </button>
 
                 <button
-                  className="z-10 tooltip tooltip-accent"
+                  className="z-10 tooltip tooltip-success"
                   data-tip="New Entry"
-                  onClick={() =>
-                    document.getElementById("new-entry").showModal()
+                  onClick={
+                    () => setShowModal(true)
+                    // document.getElementById("new-entry").showModal()
                   }
                 >
                   <Image
                     src={"/images/icons/addjournal.png"}
                     width={30}
                     height={30}
+                    alt="Add Journal Icon"
                   />
                 </button>
               </>
             )}
-
-            <dialog id="new-entry" className="modal">
-              <div className="modal-box w-1/3 bg-white max-w-4xl flex flex-col">
-                <h3 className="p-5 border-b-2 font-light text-black text-2xl text-center">
-                  Create new entry
-                </h3>
-                <input
-                  type="text"
-                  placeholder="Journal title..."
-                  className="input input-bordered input-md w-full max-w-4xl bg-white mt-10"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-                <textarea
-                  placeholder="Share your thoughts..."
-                  className="textarea textarea-bordered textarea-md w-full max-w-4xl bg-white mt-5"
-                  value={entry}
-                  onChange={(e) => setEntry(e.target.value)}
-                ></textarea>
-
-                <div className="modal-action mt-10">
-                  <form method="dialog" className="flex gap-2">
-                    {/* if there is a button, it will close the modal */}
-                    <button className="btn btn-outline">Cancel</button>
-                    <button className="btn" onClick={handleSaveEntry}>
-                      Save
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </dialog>
           </div>
         </div>
+        {showModal && (
+          <JournalModal
+            title={title}
+            entry={entry}
+            setTitle={setTitle}
+            setEntry={setEntry}
+            setShowModal={setShowModal}
+            handleSaveEntry={handleSaveEntry}
+          />
+        )}
       </div>
     </div>
   );
