@@ -1,14 +1,11 @@
 "use client";
-import Loading from "@/components/Skeleton";
-import { Navbar } from "@/components/ui/landing/LandingNav";
 import Load from "@/components/Load";
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import Cookies from "js-cookie";
-import { parseJwt } from "@/lib/helperFunctions";
+import { Navbar } from "@/components/ui/landing/LandingNav";
 import { API_ENDPOINT } from "@/lib/api";
-import { getUserSession } from "@/lib/helperFunctions";
+import { getUserSession, parseJwt } from "@/lib/helperFunctions";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 // utils
 import FullButton from "@/components/ui/buttons/FullButton";
@@ -74,16 +71,15 @@ const Login = () => {
         setIsLoading(true);
       } else {
         alert("Invalid email or password. Try again.");
+        setShowInvalidCredentials(true);
+        setTimeout(() => {
+          setShowInvalidCredentials(false);
+          setIsLoading(false);
+        }, 5000);
       }
     } catch (error) {
       console.error("Login error:", error.message);
     }
-
-    setShowInvalidCredentials(true);
-    setTimeout(() => {
-      setShowInvalidCredentials(false);
-      setIsLoading(false);
-    }, 5000);
   };
 
   // const handleLogin = async (e) => {

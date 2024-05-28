@@ -1,48 +1,51 @@
+import { API_ENDPOINT } from "@/lib/api";
+import Cookies from "js-cookie";
 import { useState } from "react";
 import QuestionInput from "./inputs/InputQuestion";
-import SubjectInput from "./inputs/InputSubject";
 import TextInput from "./inputs/TextInput";
 
 const Inquiry = ({ userId }) => {
   const [subject, setSubject] = useState("");
-  const [question, setQuestion] = useState("");
+  const [messageInquiry, setMessageInquiry] = useState(""); // Changed here
   const [formEmptyError, setFormEmptyError] = useState(false);
   const [showModal, setShowModal] = useState(false); // State for showing/hiding the modal
 
   const handleInquirySubmission = async () => {
-    if (!subject.trim() || !question.trim()) {
+    // Check if the subject or message_inquiry is empty
+    if (subject === "" || messageInquiry === "") { // Changed here
       setFormEmptyError(true);
-      setTimeout(() => {
-        setFormEmptyError(false);
-      }, 3000); // Error message will disappear after 3 seconds
       return;
     }
 
+    // Get the token and user data from the cookies
+    const user = JSON.parse(Cookies.get("user"));
+    const userId = user.id;
+
     try {
-      const response = await fetch("/api/inquiry/create-inquiry", {
+      const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.CREATE_INQUIRY}?userId=${userId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          sender: userId,
+          userId,
           subject,
-          message: question,
-          date: new Date().toISOString(),
-          time: new Date().toLocaleTimeString(),
+          messageInquiry, // Changed here
         }),
       });
-      const data = await response.json();
-      console.log(data);
 
+      if (!response.ok) {
+        throw new Error("Failed to post inquiry");
+      }
+
+      // Clear the inquiry input after successful submission
       setSubject("");
-      setQuestion("");
-      setFormEmptyError(false);
-      setShowModal(true); // Show the modal after successful submission
+      setMessageInquiry(""); // Changed here
     } catch (error) {
       console.error(error);
     }
   };
+
 
   const handleModalClose = () => {
     setShowModal(false);
@@ -83,8 +86,8 @@ const Inquiry = ({ userId }) => {
                       Our Location
                     </h4>
                     <p className="text-base text-body-color dark:text-dark-6">
-                    Natalio B. Bacalso Ave, Cebu City,
-											6000 Cebu, Philippines
+                      Natalio B. Bacalso Ave, Cebu City,
+                      6000 Cebu, Philippines
                     </p>
                   </div>
                 </div>
@@ -124,7 +127,7 @@ const Inquiry = ({ userId }) => {
                       Phone Number
                     </h4>
                     <p className="text-base text-body-color dark:text-dark-6">
-                    +63 32 411 2000 (trunkline)
+                      +63 32 411 2000 (trunkline)
                     </p>
                   </div>
                 </div>
@@ -152,7 +155,7 @@ const Inquiry = ({ userId }) => {
                       Email Address
                     </h4>
                     <p className="text-base text-body-color dark:text-dark-6">
-                    info@cit.edu
+                      info@cit.edu
                     </p>
                   </div>
                 </div>
@@ -167,16 +170,16 @@ const Inquiry = ({ userId }) => {
                     </p>
                   )}
                   <TextInput
-                        value={subject}
-                        onChange={(e) => setSubject(e.target.value)}
-                        placeholder="ID Number"
-                        label="Subject"
-                        type="text"
-                        id="idno"
-                      />
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder="ID Number"
+                    label="Subject"
+                    type="text"
+                    id="idno"
+                  />
                   <QuestionInput
-                    question={question}
-                    setQuestion={setQuestion}
+                    question={messageInquiry} // Changed here
+                    setQuestion={setMessageInquiry} // Changed here
                     className="mt-2"
                   />
                   <button
