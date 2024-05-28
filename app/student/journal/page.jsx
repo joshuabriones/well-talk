@@ -30,10 +30,19 @@ const StudentJournal = () => {
 
   const fetchEntries = async () => {
     try {
-      const response = await fetch("/api/users/student/viewallentries");
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_GET_ALL_JOURNALS}`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+
       const data = await response.json();
+      console.log(data);
       const myEntries = data.filter(
-        (item) => item.userId === parseInt(session?.user.id)
+        (item) => item.student.id === parseInt(userSession.id)
       );
       setJournalEntries(myEntries);
 
@@ -174,11 +183,11 @@ const StudentJournal = () => {
     setIsEditing(false);
   };
 
-  // useEffect(() => {
-  //   fetchEntries();
+  useEffect(() => {
+    fetchEntries();
 
-  //   if (!highlightEntry) setHighlightEntry(journalEntries[0]);
-  // }, [session?.user]);
+    if (!highlightEntry) setHighlightEntry(journalEntries[0]);
+  }, []);
 
   return (
     <div className="w-full flex flex-col justify-center items-center bg-white font-Merriweather">
