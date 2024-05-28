@@ -1,13 +1,12 @@
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "./../../css/createblog.css";
-import { useSession } from "next-auth/react";
+import { getUserSession } from "@/lib/helperFunctions";
 import { logout } from "@/lib/helperFunctions";
 
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { data: session, status } = useSession();
+  const userSession = getUserSession();
   const router = useRouter();
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -17,9 +16,9 @@ function ProfileMenu() {
   };
 
   const handleProfile = () => {
-    if (session) {
+    if (userSession) {
       // Redirect to the user's profile based on their role
-      router.push(`/${session.user.role}/profile`);
+      router.push(`/${userSession.role}/profile`);
     }
   };
 
@@ -41,7 +40,7 @@ function ProfileMenu() {
         className="flex items-center gap-2 rounded-full py-3 pr-2 mr-20 pl-0.5 lg:ml-auto"
       >
         <img
-          src={session?.user.image}
+          src={userSession?.image}
           alt="Profile"
           className="h-10 w-10 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-2"
         />

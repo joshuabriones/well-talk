@@ -9,7 +9,6 @@ import Cookies from "js-cookie";
 import { getUserSession } from "@/lib/helperFunctions";
 
 import JournalList from "@/components/JournalList";
-import { parse } from "path";
 
 const StudentJournal = () => {
   const userSession = getUserSession();
@@ -180,8 +179,6 @@ const StudentJournal = () => {
 
   //   if (!highlightEntry) setHighlightEntry(journalEntries[0]);
   // }, [session?.user]);
-
-  console.log(journalEntries[0]);
 
   return (
     <div className="w-full flex flex-col justify-center items-center bg-white font-Merriweather">
