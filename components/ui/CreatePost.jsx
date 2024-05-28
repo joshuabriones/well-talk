@@ -1,13 +1,15 @@
 "use client";
 import { imgDB } from "@/firebaseConfig";
+import { API_ENDPOINT } from "@/lib/api";
+import { XCircleIcon } from "@heroicons/react/solid";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import Cookies from "js-cookie";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { BsFillImageFill } from "react-icons/bs";
 import { v4 } from "uuid";
 import PostCard from "./PostsCard";
 import FullButton from "./buttons/FullButton";
-import { XCircleIcon } from "@heroicons/react/solid";
 
 const CreatePostSection = ({ userSession }) => {
   const [postContent, setPostContent] = useState("");
@@ -36,20 +38,26 @@ const CreatePostSection = ({ userSession }) => {
   const postHandler = async (e) => {
     e.preventDefault();
 
+    const user = JSON.parse(Cookies.get("user"));
+
     try {
-      const response = await fetch("/api/users/counselor/createpost", {
+      const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.CREATE_POST}?counselorId=${user.id}`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
         body: JSON.stringify({
-          userId: session.user.id,
+          userId: user.id,
           postContent: postContent,
           image: image,
         }),
       });
+
       if (!response.ok) {
         throw new Error("Failed to post");
       }
-      const data = await response.json();
-      console.log(data);
+
       setPostContent("");
       setSelectedFile(null);
       setImage(null);
