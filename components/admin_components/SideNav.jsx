@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { useSession, signOut } from "next-auth/react";
-
+import { useState } from "react";
+import { logout } from "@/lib/helperFunctions";
 import { styled, useTheme } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
 import { deepOrange } from "@mui/material/colors";
@@ -26,6 +25,7 @@ import GroupIcon from "@mui/icons-material/Group";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Box } from "@mui/material";
+import { getUserSession } from "@/lib/helperFunctions";
 
 const drawerWidth = 240;
 
@@ -86,9 +86,9 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function SideNav({ setPage }) {
-  const { data: session } = useSession();
+  const userSession = getUserSession();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
   const navLinks = [
     {
       name: "Dashboard",
@@ -148,10 +148,11 @@ export default function SideNav({ setPage }) {
         </Toolbar>
         <div className="flex items-center font-Merriweather">
           <Avatar sx={{ bgcolor: deepOrange[500] }}>
-            {session?.user?.name[0]}
+            {userSession?.email[0]?.toUpperCase()}
+            {userSession?.email[1]?.toUpperCase()}
           </Avatar>
           <div className="ml-2">
-            <h3 className="font-bold">{session?.user?.name}</h3>
+            <h3 className="font-bold">{userSession?.email}</h3>
             <p className="text-xs text-slate-100">Admin</p>
           </div>
         </div>
@@ -225,7 +226,7 @@ export default function SideNav({ setPage }) {
                   justifyContent: open ? "initial" : "center",
                   px: 2.5,
                 }}
-                onClick={() => signOut()}
+                onClick={() => logout()}
               >
                 <ListItemIcon
                   sx={{
