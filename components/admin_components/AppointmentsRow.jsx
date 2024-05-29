@@ -20,7 +20,7 @@ const AppointmentsRow = ({
   };
 
   const roleColor = () => {
-    switch (appointment.status) {
+    switch (appointment.appointmentStatus) {
       case "Done":
         return "text-green-600 bg-green-100";
       case "Cancelled":
@@ -37,12 +37,12 @@ const AppointmentsRow = ({
   return (
     <tr className="border-b">
       <td className="flex gap-3 items-center pl-8 py-4">
-        {formatDate(appointment.date)}
+        {formatDate(appointment.appointmentDate)}
       </td>
-      <td>{appointment.purpose}</td>
+      <td>{appointment.appointmentPurpose}</td>
       <td>
         <span className={`${roleColor()} font-bold p-2 rounded-lg`}>
-          {appointment.status}
+          {appointment.appointmentStatus}
         </span>
       </td>
       <td>{appointment.student.firstName}</td>

@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
+import { API_ENDPOINT } from "@/lib/api";
 import AppointmentsTable from "@/components/admin_components/AppointmentsTable";
+import Cookies from "js-cookie";
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -15,37 +17,45 @@ const Appointments = () => {
   }, []);
 
   async function fetchAppointments() {
-    const response = await fetch("/api/appointment/view-appointments");
+    const response = await fetch(
+      `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_GET_ALL_APPOINTMENTS}`,
+      {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      }
+    );
     const data = await response.json();
 
-    const retrievedAppointments = data.appointments;
+    const retrievedAppointments = data;
 
     // TESTING (must filter to PENDING status only)
 
     setAppointments(
       retrievedAppointments.filter(
-        (appointment) => appointment.status === "Pending"
+        (appointment) => appointment.appointmentStatus === "Pending"
       )
     );
   }
 
-  async function handleApproveAppointment(appointmentID, counselorID) {
+  async function handleApproveAppointment(appointmentID, counselorEmail) {
     const isConfirmed = window.confirm(
       `Are you sure you want to set this appointment?`
     );
     if (isConfirmed) {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/appointment/mark-appointment-as-approved",
+          `${process.env.BASE_URL}${API_ENDPOINT.SET_APPOINTMENT_COUNSELOR}${counselorEmail}&appointmentId=${appointmentID}`,
           {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${Cookies.get("token")}`,
             },
-            body: JSON.stringify({
-              appointmentId: appointmentID,
-              counselorId: counselorID,
-            }),
+            // body: JSON.stringify({
+            //   appointmentId: appointmentID,
+            //   counselorId: counselorID,
+            // }),
           }
         );
         if (!response.ok) {

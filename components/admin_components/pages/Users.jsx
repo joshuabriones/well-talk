@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
+import { API_ENDPOINT } from "@/lib/api";
 import UserTable from "@/components/admin_components/UserTable";
+import Cookies from "js-cookie";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -11,13 +13,18 @@ const Users = () => {
     const fetchUsers = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/users/viewallusers"
+          `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_USERS}`,
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setUsers(data.users);
+        setUsers(data.filter((user) => user.role !== "admin"));
       } catch (error) {
         setError(error.message);
       } finally {

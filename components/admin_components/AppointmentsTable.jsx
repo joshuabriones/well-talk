@@ -26,7 +26,9 @@ const AppointmentsTable = ({
 
   const filteredAppointments = appointments.filter(
     (appointment) =>
-      appointment.purpose.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      appointment.appointmentPurpose
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) &&
       (selectedStatus === "all" ||
         appointment.appointmentStatus === selectedStatus)
   );

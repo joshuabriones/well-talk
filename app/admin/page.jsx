@@ -23,7 +23,8 @@ const AdminDashboard = () => {
     return <Load route="login" />;
   }
 
-  if (userSession && userSession.role) return <Load route={userSession.role} />;
+  if (userSession && userSession.role !== "admin")
+    return <Load route={userSession.role} />;
 
   return (
     <div className="w-full min-h-screen flex bg-white">

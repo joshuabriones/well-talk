@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 
 import CloseIcon from "@mui/icons-material/Close";
 import toast from "react-hot-toast";
+import { API_ENDPOINT } from "@/lib/api";
+import Cookies from "js-cookie";
 
 export default function AppointmentModal({
   setOpenModal,
@@ -22,14 +24,19 @@ export default function AppointmentModal({
     const fetchUsers = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/users/viewallusers"
+          `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_COUNSELORS}`,
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
 
-        setCounselors(data.users.filter((user) => user.role === "counselor"));
+        setCounselors(data);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -91,7 +98,10 @@ export default function AppointmentModal({
       <button
         className="bg-black py-2 px-4 rounded-lg text-white absolute right-3 bottom-4 hover:bg-slate-800"
         onClick={() =>
-          handleApproveAppointment(appointmentID, selectedUser?.id)
+          handleApproveAppointment(
+            appointmentID,
+            selectedUser?.institutionalEmail
+          )
         }
       >
         Set Appointment
