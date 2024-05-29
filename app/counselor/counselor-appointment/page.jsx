@@ -89,9 +89,9 @@ export default function Appointment() {
       const deleted = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.DELETE_APPOINTMENT}${selectedID}`,
         {
-          method: "PUT",
+          method: "DELETE",
           headers: {
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
         }
       );
