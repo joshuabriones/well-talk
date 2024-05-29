@@ -25,31 +25,33 @@ export default function Home() {
   // inquiries sample
   const [inquiries, setInquiries] = useState([]);
 
-  useEffect(() => {
-    const fetchInquiries = async () => {
-      try {
-        const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_INQUIRIES}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
-        });
+  const fetchInquiries = async () => {
+    try {
+      const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_INQUIRIES}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch inquiries");
-        }
-
-        const data = await response.json();
-        console.log(data);
-        setInquiries(data.inquiries);
-      } catch (error) {
-        console.error("Error fetching inquiries:", error);
+      if (!response.ok) {
+        throw new Error("Failed to fetch inquiries");
       }
-    };
+
+      const data = await response.json();
+      console.log(data);
+      setInquiries(data);
+    } catch (error) {
+      console.error("Error fetching inquiries:", error);
+    }
+  };
+
+  useEffect(() => {
+
 
     fetchInquiries();
-  }, [inquiries, currentPage]);
+  }, [currentPage]);
 
   const handleRowClick = (id) => {
     setSelectedID(id);
@@ -184,17 +186,17 @@ export default function Home() {
                       <div className="avatar">
                         <div className="mask mask-squircle w-12 h-12">
                           <img
-                            src={inquiry.user.image}
+                            src={inquiry?.sender.image}
                             alt="Avatar Tailwind CSS Component"
                           />
                         </div>
                       </div>
                       <div>
                         <div className="font-bold">
-                          {inquiry.user.firstName} {inquiry.user.lastName}
+                          {inquiry?.sender?.firstName} {inquiry?.sender?.lastName}
                         </div>
                         <div className="text-sm opacity-50">
-                          {inquiry.user.institutionalEmail}
+                          {inquiry.sender.institutionalEmail}
                         </div>
                       </div>
                     </div>
@@ -208,7 +210,7 @@ export default function Home() {
                   </td>
                   <td className="text-center">
                     <div
-                      className={`w-24 h-5 badge badge-xs ${inquiry.status === "open"
+                      className={`w-24 h-5 badge badge-xs ${inquiry.status === false
                         ? "badge-warning"
                         : "badge-success"
                         }`}

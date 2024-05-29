@@ -1,15 +1,16 @@
 import { HiDotsHorizontal } from "react-icons/hi";
 
 const PostCard = ({ post }) => {
+  console.log(post);
   const formatDate = () => {
-    const dateObject = new Date(post?.datePosted);
+    const dateObject = new Date(post?.postDate);
     // Extract date components
     const options = { year: "numeric", month: "long", day: "numeric" };
     return dateObject.toLocaleDateString("en-US", options);
   };
 
   const formatTime = () => {
-    const dateObject = new Date(post?.datePosted);
+    const dateObject = new Date(post?.postDate);
     // Extract time components
     const hours = dateObject.getHours();
     const minutes = dateObject.getMinutes().toString().padStart(2, "0"); // Ensure two digits
@@ -26,18 +27,18 @@ const PostCard = ({ post }) => {
       <div className="flex border border-gray-300 ml-0 sm:mr-0 sm:mx-3 pl-2 pr-1 sm:pr-0 sm:px-5 py-3 hover:bg-gray-50">
         <div className="mt-3 w-12 h-12 text-lg flex-none">
           <img
-            src={post?.user.image || "https://via.placeholder.com/150"}
+            src={post?.postImage || "https://via.placeholder.com/150"}
             className="flex-none w-12 h-12 rounded-full cursor-pointer"
-            alt={post?.currentUser?.username}
+            alt={post.author?.username}
           />
         </div>
 
         <div className="w-full px-4 py-3">
           <div className="w-full flex justify-between relative">
             <h2 className="font-semibold cursor-pointer">
-              {`${post?.user?.firstName} ${post?.user?.lastName}`}
+              {`${post.author?.firstName} ${post.author?.lastName}`}
               <span className="text-slate-500 font-normal pl-1.5">
-                {post?.user?.institutionalEmail}
+                {post.author?.institutionalEmail}
               </span>
             </h2>
 
@@ -48,10 +49,10 @@ const PostCard = ({ post }) => {
             {post?.postContent}
           </p>
 
-          {post?.image && (
+          {post?.postImage && (
             <div className="max-w-3xl max-h-80 mx-auto rounded-md cursor-pointer">
               <img
-                src={post?.image}
+                src={post?.postImage}
                 className="max-w-full max-h-80 rounded-md my-2 mx-auto"
                 alt="avatar"
               />

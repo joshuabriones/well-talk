@@ -2,7 +2,7 @@
 import { imgDB } from "@/firebaseConfig";
 import { API_ENDPOINT } from "@/lib/api";
 import { XCircleIcon } from "@heroicons/react/solid";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"; // Changed from uploadBytesResumable to uploadBytes
 import Cookies from "js-cookie";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -18,69 +18,84 @@ const CreatePostSection = ({ userSession }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const { data: session } = useSession();
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
   const fetchPosts = async () => {
     try {
-      const response = await fetch("/api/users/viewallposts");
+      const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_POSTS}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch posts");
       }
       const data = await response.json();
-      setPosts(data.posts);
+      setPosts(data);
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
   };
+
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   const postHandler = async (e) => {
     e.preventDefault();
 
     const user = JSON.parse(Cookies.get("user"));
 
-    try {
-      const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.CREATE_POST}?counselorId=${user.id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-        body: JSON.stringify({
-          userId: user.id,
-          postContent: postContent,
-          image: image,
-        }),
-      });
+    if (selectedFile) {
+      const imgsRef = ref(imgDB, `Postimages/${v4()}`);
+      const snapshot = await uploadBytes(imgsRef, selectedFile);
+      const imgUrl = await getDownloadURL(snapshot.ref);
+      setImage(imgUrl);
 
-      if (!response.ok) {
-        throw new Error("Failed to post");
+      try {
+        const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.CREATE_POST}?counselorId=${user.id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+          body: JSON.stringify({
+            userId: user.id,
+            postContent: postContent,
+            postImage: imgUrl,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to post");
+        }
+
+        const data = await response.json();
+
+        setPostContent("");
+        setSelectedFile(null);
+        setImage(null);
+        fetchPosts();
+      } catch (error) {
+        console.error("Error posting:", error);
       }
-
-      setPostContent("");
-      setSelectedFile(null);
-      setImage(null);
-      fetchPosts();
-    } catch (error) {
-      console.error("Error posting:", error);
     }
   };
 
-  const handleFileSelection = async (e) => {
+  const handleFileSelection = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const imgsRef = ref(imgDB, `Postimages/${v4()}`);
-      const snapshot = await uploadBytesResumable(imgsRef, file);
-      const imgUrl = await getDownloadURL(snapshot.ref);
-      setImage(imgUrl);
-      setSelectedFile(file); // Set the file after the image URL is obtained
-    }
+    setSelectedFile(file);
+
+    const objectUrl = URL.createObjectURL(file);
+    setImage(objectUrl);
   };
 
   const removeImage = () => {
-    setImage(""); // Clear the image state
-    setSelectedFile(null); // Clear the selected file state
+    URL.revokeObjectURL(image);
+
+    setImage("");
+    setSelectedFile(null); 
   };
 
   return (
@@ -147,12 +162,12 @@ const CreatePostSection = ({ userSession }) => {
       </div>
 
       {/* Conditional rendering based on posts array */}
-      {posts.length === 0 ? (
+      {posts && posts.length === 0 ? (
         <p className="text-center mt-4 text-gray-500">
           No posts yet. Come back later.
         </p>
       ) : (
-        posts.map((post) => <PostCard key={post.postId} post={post} />)
+        posts && posts.map((post) => <PostCard key={post?.postId} post={post} />)
       )}
     </div>
   );
