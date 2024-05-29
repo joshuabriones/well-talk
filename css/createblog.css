@@ -1,7 +1,0 @@
-.nav-list-button {
-    transition: transform 0.2s ease;
-  }
-  
-  .nav-list-button:hover {
-    transform: scale(1.05); /* Scale the button slightly on hover */
-  }

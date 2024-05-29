@@ -513,7 +513,7 @@ export default function Appointment() {
                     <p>
                       🤗 Please state the type of appointment and your purpose.
                     </p>
-                    <div className="w-full flex lg:flex-col gap-5 mt-4 flex-col">
+                    <div className="w-full flex lg:flex-col gap-5 my-5 flex-col">
                       <TextInput
                         value={appointmentType}
                         onChange={(e) => setAppointmentType(e.target.value)}
@@ -529,13 +529,15 @@ export default function Appointment() {
                         id={purpose}
                       />
                     </div>
-
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-2 border-black mt-10 rounded-xl px-4 py-2 font-Merriweather gap-4 md:gap-0">
+                    <hr />
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-5 rounded-xl px-4 py-2 font-Merriweather gap-4 md:gap-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-2 border-black  rounded-xl md:rounded-full px-4 py-2 font-Merriweather gap-4 md:gap-0 w-full h-auto md:h-[56px]">
                       <div className="font-bold w-full md:w-auto">
                         DATE: {appointmentDate}
                       </div>
                       <div className="font-bold w-full md:w-auto">
-                        TIME: {timeFormatter(selectedTime)}
+                        TIME: {timeFormatter(selectedTime)} 
+                      </div>
                       </div>
                       <div className="w-full md:w-2/12">
                         <FullButton

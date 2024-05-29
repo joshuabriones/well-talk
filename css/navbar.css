@@ -1,0 +1,28 @@
+.nav-list-button {
+    transition: transform 0.2s ease;
+  }
+  
+  .nav-list-button:hover {
+    transform: scale(1.05); /* Scale the button slightly on hover */
+  }
+
+  .menu-bar {
+    width: 25px;
+    height: 3px;
+    background-color: #6B9080;
+    margin: 5px 0;
+    transition: transform 0.3s ease;
+  }
+  
+  .open .menu-bar:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+  }
+  
+  .open .menu-bar:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .open .menu-bar:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+  }
+  

@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import "./../../css/createblog.css";
+import "./../../css/navbar.css";
 import { getUserSession } from "@/lib/helperFunctions";
 import { logout } from "@/lib/helperFunctions";
 
@@ -37,7 +37,7 @@ function ProfileMenu() {
     <div className="relative">
       <button
         onClick={() => setIsMenuOpen((prev) => !prev)}
-        className="flex items-center gap-2 rounded-full py-3 pr-2 mr-20 pl-0.5 lg:ml-auto"
+        className="flex items-center gap-2 rounded-full py-3 pr-2 mr-8  md:mr-20 pl-0.5 lg:ml-auto"
       >
         <img
           src={userSession?.image}
@@ -119,7 +119,7 @@ function NavList({ userType }) {
   }
 
   return (
-    <ul className="mt-2 mb-4 flex flex-col gap-12 lg:mb-0 lg:mt-0 lg:flex-row lg:items-right font-Merriweather font-bold text-xl mr-8">
+    <ul className="mt-2 mb-4 flex flex-col gap-12 lg:mb-0 lg:mt-0 lg:flex-row lg:items-right font-Merriweather font-bold text-xl mx-10">
       {navigationItems.map((item, index) => (
         <a
           key={index}
@@ -170,38 +170,28 @@ export function Navbar({ userType }) {
     <nav
       id="navbar"
       style={navbarStyles}
-      className="mx-auto max-w-screen-auto p-2 lg:pl-6 w-full "
+      className="mx-auto max-w-screen-auto p-2 lg:pl-6 w-full"
     >
       <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
-        <div className="ml-24 text-2xl text-[#6B9080] font-bold flex flex-row">
+      <button
+          onClick={() => setIsNavOpen((prev) => !prev)}
+          className={`ml-8 lg:hidden flex justify-start ${isNavOpen ? 'open' : ''}`}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+</svg>
+
+        </button>
+        <div className="ml-4 md:ml-24 text-2xl text-[#6B9080] font-bold flex flex-row">
           WellTalk
         </div>
         <div className="hidden lg:block flex items-center gap-8 lg:ml-auto">
           <NavList userType={userType} router={router} />
         </div>
-        <button
-          onClick={() => setIsNavOpen((prev) => !prev)}
-          className="ml-auto mr-2 lg:hidden"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 text-blue-gray-700"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16m-7 6h7"
-            />
-          </svg>
-        </button>
         {userType !== "landing" && <ProfileMenu />}
       </div>
       {isNavOpen && (
-        <div className="bg-white lg:hidden">
+        <div className="bg-white lg:hidden absolute top-18 left-0 right-0">
           <NavList userType={userType} router={router} />
         </div>
       )}
