@@ -87,7 +87,7 @@ export default function Appointment() {
 
     try {
       const deleted = await fetch(
-        `/api/appointment/cancel-appointment?appointmentId=${selectedID}`,
+        `${process.env.BASE_URL}${API_ENDPOINT.DELETE_APPOINTMENT}${selectedID}`,
         {
           method: "PUT",
           headers: {
@@ -100,6 +100,7 @@ export default function Appointment() {
     }
 
     // Reset
+    fetchAppointments();
     setDeleteModal(false);
     setSelectedID(null);
   };
@@ -182,7 +183,8 @@ export default function Appointment() {
                   <td>
                     <div className="flex flex-row gap-x-3">
                       <div className="text-sm">
-                        {formatDate(appointments.date)} {appointments.timeStart}
+                        {formatDate(appointments.appointmentDate)}{" "}
+                        {appointments.appointmentStartTime}
                       </div>
                     </div>
                   </td>
