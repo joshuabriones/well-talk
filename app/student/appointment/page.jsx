@@ -5,7 +5,6 @@ import TextAreaInput from "@/components/ui/inputs/TextAreaInput";
 import TextInput from "@/components/ui/inputs/TextInput";
 import StudentAddAppointment from "@/components/ui/modals/counselor/appointments/StudentAddAppointment";
 import hdrAppointment from "@/public/images/headers/hdrAppointment.png";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 // css
 import "@/styles/counselor.css";
@@ -16,6 +15,7 @@ import StudentModalAppointmentInfo from "@/components/ui/modals/counselor/appoin
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 
 import toast from "react-hot-toast";
+import Loading from "@/components/Loading";
 import { Badge, Calendar, Popover, Whisper } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 import Load from "@/components/Load";
@@ -101,6 +101,7 @@ export default function Appointment() {
       }
     );
     const data = await response.json();
+    console.log(data);
     setAppointmentOnThatDate(data);
   };
 
@@ -281,6 +282,7 @@ export default function Appointment() {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
   return (
     <div className="min-h-screen w-full">
       {/* navigation bar */}
@@ -336,9 +338,9 @@ export default function Appointment() {
           </div>
 
           {isViewAppointment ? (
-            <div className="flex flex-col text-center">
+            <div className="w-full flex flex-col text-center">
               {/* table*/}
-              <div className="overflow-x-auto px-56 py-10 ">
+              <div className="overflow-x-auto lg:px-56 lg:py-10 md:px-48 md:6 sm:px-1 sm:py-4">
                 <table className="table bg-gray-100">
                   {/* head */}
                   <thead>
@@ -472,7 +474,7 @@ export default function Appointment() {
               </div>
             </div>
           ) : (
-            <div className="flex w-full py-10 px-8 gap-10 justify-center">
+            <div className="flex w-full py-10 px-8 gap-10 justify-center md:flex-row sm:flex-col">
               <div className="flex-1">
                 <Calendar
                   bordered
@@ -560,7 +562,7 @@ export default function Appointment() {
           )}
         </div>
       ) : (
-        <div>Loading...</div>
+        <Loading />
       )}
 
       {/* modals */}
