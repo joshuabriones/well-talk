@@ -95,14 +95,15 @@ export default function Appointment() {
           },
         }
       );
+
+      if (deleted.ok) {
+        setDeleteModal(false);
+        setSelectedID(null);
+        fetchAppointments();
+      }
     } catch (err) {
       console.log(err);
     }
-
-    // Reset
-    fetchAppointments();
-    setDeleteModal(false);
-    setSelectedID(null);
   };
 
   // handle reschedule // TO BE ADDED AFTER CALENDAR IMPLEMENTATION
@@ -151,13 +152,13 @@ export default function Appointment() {
         </div>
       </div>
 
-      <div className="flex flex-col text-center">
+      <div className="flex flex-col text-center gap-4 pb-4">
         <h3 className="flex items-center justify-center gap-8 mt-10 text-green-600 font-semibold text-lg">
           📒 My Appointments
         </h3>
         {/* table*/}
 
-        <div className="overflow-x-auto px-56 py-10 ">
+        <div className="overflow-x-auto max-w-full lg:px-10 xs:px-1">
           <table className="table bg-gray-100">
             {/* head */}
             <thead>
@@ -232,7 +233,7 @@ export default function Appointment() {
 
                   {/* Delete and Edit */}
                   <td>
-                    <div className="flex flex-row justify-center items-center gap-x-5">
+                    <div className="flex lg:flex-row justify-center items-center lg:gap-x-5 xs:gap-2 xs:flex-col">
                       <button
                         className="btn btn-xs"
                         onClick={(e) => {
@@ -303,7 +304,7 @@ export default function Appointment() {
           selectedID={selectedID}
           appointments={appointments}
           setAppointments={setAppointments}
-
+          fetchAppointments={fetchAppointments}
           // TO BE ADDED
           // handleRescedule={handleReschedule}
           // handleUpdateStatus={handleUpdateStatus}

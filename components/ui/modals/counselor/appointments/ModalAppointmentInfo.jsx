@@ -7,19 +7,23 @@ import { useSession } from "next-auth/react";
 import StudentHistory from "@/components/ui/modals/counselor/appointments/StudentHistory";
 
 import "@/styles/counselor.css";
+import Cookies from "js-cookie";
+import { API_ENDPOINT } from "@/lib/api";
+import { getUserSession } from "@/lib/helperFunctions";
 
 const ModalAppointmentInfo = ({
   setAppointmentModal,
   selectedID,
   appointments,
   setAppointments,
+  fetchAppointments,
 }) => {
   const [isChecked, setIsChecked] = useState(true);
   const [appointment, setAppointment] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [notes, setNotes] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
-  const { data: session } = useSession();
+  const userSession = getUserSession();
 
   const [studentHistoryModal, setStudentHistoryModal] = useState(false);
 
@@ -97,22 +101,31 @@ const ModalAppointmentInfo = ({
   };
 
   const handleDone = async () => {
+    if (notes.trim() === "" || additionalNotes.trim() === "") {
+      alert("Please fill out all fields");
+      return;
+    }
+
     try {
       const response = await fetch(
-        "/api/appointment/mark-appointment-as-done",
+        `${process.env.BASE_URL}${API_ENDPOINT.SET_APPOINTMENT_DONE}${selectedID}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
           body: JSON.stringify({
-            appointmentId: selectedID,
-            counselorId: session.user.id,
-            notes,
-            additionalNotes,
+            appointmentNotes: notes,
+            appointmentAdditionalNotes: additionalNotes,
           }),
         }
       );
+
+      if (response.ok) {
+        alert("Appointment status updated!");
+        await fetchAppointments();
+      }
     } catch (error) {
       console.error(error);
     }
@@ -140,7 +153,7 @@ const ModalAppointmentInfo = ({
             <tbody>
               <tr>
                 <th>ID Number:</th>
-                <td>{appointment ? appointment.student?.idNumber : ""}</td>
+                <td>{appointment ? appointment.student?.id : ""}</td>
               </tr>
               <tr>
                 <th>Name:</th>
@@ -152,35 +165,40 @@ const ModalAppointmentInfo = ({
               </tr>
               <tr>
                 <th>Purpose:</th>
-                <td>{appointment ? appointment.purpose : ""}</td>
+                <td>{appointment ? appointment.appointmentPurpose : ""}</td>
               </tr>
               <tr>
                 <th>Addtional Notes:</th>
-                <td>{appointment ? appointment.additionalNotes : ""}</td>
+                <td>{appointment ? appointment.appointmentNotes : ""}</td>
               </tr>
               <tr>
                 <th>Date:</th>
-                <td>{appointment ? formatDate(appointment.date) : ""}</td>
+                <td>
+                  {appointment ? formatDate(appointment.appointmentDate) : ""}
+                </td>
               </tr>
               <tr>
                 <th>Time:</th>
-                <td>{appointment ? `${appointment.timeStart}` : ""}</td>
+                <td>
+                  {appointment ? `${appointment.appointmentStartTime}` : ""}
+                </td>
               </tr>
               <tr>
                 <th>Status:</th>
                 <td
                   className={`w-24 h-5 badge badge-xs ${
-                    appointment && appointment.status === "Pending"
+                    appointment && appointment.appointmentStatus === "Pending"
                       ? "badge-warning"
-                      : appointment && appointment.status === "Done"
+                      : appointment && appointment.appointmentStatus === "Done"
                       ? "badge-success"
-                      : appointment && appointment.status === "Approved"
+                      : appointment &&
+                        appointment.appointmentStatus === "Assigned"
                       ? "badge-info"
                       : ""
                   }`}
                   style={{ width: "30%" }}
                 >
-                  {appointment ? `${appointment.status}` : ""}
+                  {appointment ? `${appointment.appointmentStatus}` : ""}
                 </td>
               </tr>
             </tbody>
