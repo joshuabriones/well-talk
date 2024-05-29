@@ -126,9 +126,9 @@ export default function StudentProfile() {
 					/>
 				</div>
 
-      <section className="w-full mt-4 md:mt-6 p-8 md:p-12 flex flex-col justify-center items-center">
+      <section className="w-full pt-4 md:mt-6 p-8 md:p-12 flex flex-col justify-center items-center">
         <div className="w-full max-w-screen-lg mx-auto flex flex-col gap-4 md:gap-8">
-          <section className="flex flex-col md:flex-row items-center md:gap-10 mb-12">
+          <section className="flex flex-col md:flex-row items-center md:gap-10 mb-8 justify-center items-center">
             {/* Avatar */}
             <div className="w-full md:w-2/12 flex justify-center items-center avatar">
               <div className="w-48 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-1">

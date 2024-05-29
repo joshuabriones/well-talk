@@ -34,7 +34,7 @@ export default function Home() {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("/api/users/viewallposts"); // Replace with your API endpoint
+      const response = await fetch("http://localhost:8080/counselor/post/getAllPosts"); // Replace with your API endpoint
       if (!response.ok) {
         throw new Error("Failed to fetch posts");
       }
@@ -66,6 +66,10 @@ export default function Home() {
   console.log(userSession);
 
   const getSortedPosts = () => {
+    if (!Array.isArray(posts)) {
+      return [];
+    }
+  
     if (sortPostBy === "Latest") {
       return [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
     } else if (sortPostBy === "Oldest") {
