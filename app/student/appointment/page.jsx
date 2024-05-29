@@ -14,14 +14,14 @@ import { Navbar } from "@/components/ui/Navbar";
 import StudentModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 
-import toast from "react-hot-toast";
+import Load from "@/components/Load";
 import Loading from "@/components/Loading";
+import { API_ENDPOINT } from "@/lib/api";
+import { getUserSession } from "@/lib/helperFunctions";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 import { Badge, Calendar, Popover, Whisper } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
-import Load from "@/components/Load";
-import Cookies from "js-cookie";
-import { getUserSession } from "@/lib/helperFunctions";
-import { API_ENDPOINT } from "@/lib/api";
 
 export default function Appointment() {
   const AppointmentPerPage = 10;
@@ -131,10 +131,10 @@ export default function Appointment() {
 
     // CORS ISSUE - TO BE FIXED
     try {
-      const deleted = await fetch(
+      const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.DELETE_APPOINTMENT}${selectedID}`,
         {
-          method: "PUT",
+          method: "DELETE",
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
@@ -142,15 +142,15 @@ export default function Appointment() {
       );
       if (!response.ok) {
         throw new Error("Failed to delete appointment");
+      } else {
+        toast.success("Appointment deleted successfully");
+        fetchAppointments();
+        setDeleteModal(false);
+        setSelectedID(null);
       }
-
-      // Refresh appointments list or update state as needed
-      fetchAppointments();
     } catch (err) {
       console.log(err);
     }
-    setDeleteModal(false);
-    setSelectedID(null);
   };
 
   // handle reschedule // TO BE ADDED AFTER CALENDAR IMPLEMENTATION
@@ -300,9 +300,11 @@ export default function Appointment() {
 
         {/* Content */}
         <div className="relative z-10 flex items-center justify-center h-full">
-          <div className="flex flex-col text-left px-44 py-10 gap-y-4">
-            <h1 className="font-Merriweather text-8xl">Appointments</h1>
-            <p className="w-1/2 font-Jaldi text-xl">
+          <div className="flex flex-col text-left px-6 md:px-20 lg:px-44 py-10 gap-y-4">
+            <h1 className="font-Merriweather text-4xl md:text-6xl lg:text-8xl">
+              Appointments
+            </h1>
+            <p className="w-full md:w-3/4 lg:w-1/2 font-Jaldi text-lg md:text-xl">
               Manage sessions effortlessly and provide tailored guidance and
               support to students through efficient booking and coordination.
               Streamline your scheduling process and ensure students receive
@@ -341,100 +343,87 @@ export default function Appointment() {
             <div className="w-full flex flex-col text-center">
               {/* table*/}
               <div className="overflow-x-auto lg:px-56 lg:py-10 md:px-48 md:6 sm:px-1 sm:py-4">
-                <table className="table bg-gray-100">
-                  {/* head */}
-                  <thead>
-                    <tr className="bg-gray-200 font-bold">
-                      <th className="text-center p-5">ID</th>
-                      <th>Date</th>
-                      <th className="p-5">Time</th>
-                      <th>Appointment Type</th>
-                      <th className="">Reason</th>
-                      <th className="text-center">Status</th>
-                      {/* Delete and Edit*/}
-                      <th className="no-hover-highlight"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentAppointments?.map((appointments) => (
-                      <tr
-                        key={appointments.appointmentId}
-                        onClick={() =>
-                          handleRowClick(appointments.appointmentId)
-                        }
-                        className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
-                      >
-                        <td className="text-center">
-                          {appointments?.appointmentId}
-                        </td>
-                        <td>
-                          <div className="flex flex-row gap-x-3">
-                            <div className="text-sm">
-                              {formatDate(appointments?.appointmentDate)}
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="flex flex-row gap-x-3">
-                            <div>{appointments?.appointmentStartTime}</div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="flex items-center gap-3">
-                            {appointments?.appointmentType}
-                          </div>
-                        </td>
-                        <td>
-                          <p>
-                            {appointments?.appointmentPurpose.length > 50
-                              ? `${appointments.appointmentPurpose.substring(
-                                  0,
-                                  40
-                                )}...`
-                              : appointments.appointmentPurpose}
-                          </p>
-                        </td>
-                        <td className="text-center">
-                          <div
-                            className={`w-24 h-5 badge badge-xs ${
-                              appointments &&
-                              appointments.appointmentStatus === "Pending"
-                                ? "badge-warning"
-                                : appointments &&
-                                  appointments.appointmentStatus === "Done"
-                                ? "badge-success"
-                                : appointments &&
-                                  appointments.appointmentStatus === "Approved"
-                                ? "badge-info"
-                                : ""
-                            }`}
-                          >
-                            {appointments?.appointmentStatus}
-                          </div>
-                        </td>
-
-                        {/* Delete and Edit */}
-                        <td>
-                          <div className="flex flex-row justify-center items-center gap-x-5">
-                            <button
-                              className="btn btn-xs"
-                              onClick={(e) => {
-                                // Stop event propagation to prevent row hover effect
-                                e.stopPropagation();
-                                showDeleteModal(appointments.appointmentId);
-                              }}
-                            >
-                              Delete
-                            </button>
-                            {/* <button className="btn btn-xs text-green-700">
-                              Edit
-                            </button> */}
-                          </div>
-                        </td>
+                <div className="overflow-x-auto">
+                  <table className="w-full table-auto">
+                    {/* head */}
+                    <thead className="bg-gray-200">
+                      <tr className="font-bold">
+                        <th className="text-center py-2">ID</th>
+                        <th>Date</th>
+                        <th className="py-2">Time</th>
+                        <th>Appointment Type</th>
+                        <th>Reason</th>
+                        <th className="text-center">Status</th>
+                        {/* Delete and Edit*/}
+                        <th className="no-hover-highlight"></th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {currentAppointments?.map((appointment) => (
+                        <tr
+                          key={appointment.appointmentId}
+                          onClick={() =>
+                            handleRowClick(appointment.appointmentId)
+                          }
+                          className="cursor-pointer hover:bg-gray-100 transition duration-300 ease-in-out"
+                        >
+                          <td className="text-center py-2">
+                            {appointment.appointmentId}
+                          </td>
+                          <td>
+                            <div className="text-sm">
+                              {formatDate(appointment.appointmentDate)}
+                            </div>
+                          </td>
+                          <td className="py-2">
+                            {appointment.appointmentStartTime}
+                          </td>
+                          <td>{appointment.appointmentType}</td>
+                          <td>
+                            <p className="truncate">
+                              {appointment.appointmentPurpose.length > 50
+                                ? `${appointment.appointmentPurpose.substring(
+                                    0,
+                                    40
+                                  )}...`
+                                : appointment.appointmentPurpose}
+                            </p>
+                          </td>
+                          <td className="text-center">
+                            <div
+                              className={`badge ${
+                                appointment.appointmentStatus === "Pending"
+                                  ? "badge-warning"
+                                  : appointment.appointmentStatus === "Done"
+                                  ? "badge-success"
+                                  : appointment.appointmentStatus === "Approved"
+                                  ? "badge-info"
+                                  : ""
+                              }`}
+                            >
+                              {appointment.appointmentStatus}
+                            </div>
+                          </td>
+                          {/* Delete and Edit */}
+                          <td>
+                            <div className="flex justify-center items-center">
+                              <button
+                                className="btn btn-xs"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  showDeleteModal(appointment.appointmentId);
+                                }}
+                              >
+                                Delete
+                              </button>
+                              {/* <button className="btn btn-xs text-green-700">Edit</button> */}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
                 {/* Pagination controls */}
                 <div className="join pt-5">
@@ -474,7 +463,7 @@ export default function Appointment() {
               </div>
             </div>
           ) : (
-            <div className="flex w-full py-10 px-8 gap-10 justify-center md:flex-row sm:flex-col">
+            <div className="flex w-full py-10 px-8 gap-10 justify-center md:flex-row flex-col">
               <div className="flex-1">
                 <Calendar
                   bordered
@@ -524,7 +513,7 @@ export default function Appointment() {
                     <p>
                       🤗 Please state the type of appointment and your purpose.
                     </p>
-                    <div className="w-full flex lg:flex-col gap-5 mt-4 sm:flex-col">
+                    <div className="w-full flex lg:flex-col gap-5 mt-4 flex-col">
                       <TextInput
                         value={appointmentType}
                         onChange={(e) => setAppointmentType(e.target.value)}
@@ -541,15 +530,18 @@ export default function Appointment() {
                       />
                     </div>
 
-                    <div className="flex justify-between items-center border-2 border-black mt-10 rounded-xl px-4 p-2 font-Merriweather">
-                      <div className="font-bold">DATE: {appointmentDate}</div>
-                      <div className="font-bold">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-2 border-black mt-10 rounded-xl px-4 py-2 font-Merriweather gap-4 md:gap-0">
+                      <div className="font-bold w-full md:w-auto">
+                        DATE: {appointmentDate}
+                      </div>
+                      <div className="font-bold w-full md:w-auto">
                         TIME: {timeFormatter(selectedTime)}
                       </div>
-                      <div className="w-2/12">
+                      <div className="w-full md:w-2/12">
                         <FullButton
-                          disabled={selectedTime ? false : true}
+                          disabled={!selectedTime}
                           onClick={handleAppointmentSubmit}
+                          className="w-full"
                         >
                           Submit
                         </FullButton>

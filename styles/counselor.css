@@ -1,22 +1,66 @@
 table {
 	text-align: left;
 	border-collapse: collapse;
-}
-
-th,
-td {
+	width: 100%; /* Ensure the table takes full width */
+  }
+  
+  th,
+  td {
 	vertical-align: top;
 	padding-top: 5px;
 	padding-bottom: 5px;
-}
-
-.modal-box th {
+  }
+  
+  .modal-box th {
 	width: 30%;
 	font-family: "Merriweather", serif;
-}
-
-.modal-box td {
+  }
+  
+  .modal-box td {
 	width: 70%;
 	font-family: "Merriweather", serif;
 	padding-left: 10px;
-}
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+	th,
+	td {
+	  padding-top: 10px;
+	  padding-bottom: 10px;
+	}
+  
+	.modal-box th,
+	.modal-box td {
+	  display: block;
+	  width: 100%;
+	  text-align: left; /* Ensures the text aligns to the left */
+	  padding-left: 0;
+	  padding-right: 0;
+	}
+  
+	.modal-box th {
+	  font-size: 1.2rem; /* Adjust font size for better readability */
+	}
+  
+	.modal-box td {
+	  padding-top: 5px; /* Add some padding for separation */
+	  padding-bottom: 5px;
+	}
+  }
+  
+  @media (max-width: 480px) {
+	th,
+	td {
+	  padding-top: 15px;
+	  padding-bottom: 15px;
+	}
+  
+	.modal-box th,
+	.modal-box td {
+	  font-size: 1rem; /* Further adjust font size */
+	  padding-top: 7px; /* Add more padding for separation */
+	  padding-bottom: 7px;
+	}
+  }
+  

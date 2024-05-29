@@ -69,6 +69,10 @@ export default function Home() {
 
 
   const getSortedPosts = () => {
+    if (!Array.isArray(posts)) {
+      return [];
+    }
+  
     if (sortPostBy === "Latest") {
       return [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
     } else if (sortPostBy === "Oldest") {
