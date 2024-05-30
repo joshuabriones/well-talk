@@ -15,7 +15,6 @@ export default function Home() {
   const [selectedButton, setSelectedButton] = useState("featured");
   const [posts, setPosts] = useState([]);
   const [showFilterPostModal, setShowFilterModal] = useState(false);
-  const [sortPostBy, setSortPostBy] = useState("Latest");
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const userSession = getUserSession();
@@ -58,17 +57,6 @@ export default function Home() {
 
   console.log(userSession);
 
-  const getSortedPosts = () => {
-    if (sortPostBy === "Latest") {
-      return [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
-    } else if (sortPostBy === "Oldest") {
-      return [...posts].sort((a, b) => new Date(a.date) - new Date(b.date));
-    } else {
-      return posts;
-    }
-  };
-
-  const sortedPosts = getSortedPosts();
 
   return (
     <div>
@@ -96,7 +84,7 @@ export default function Home() {
             <div className="max-w-8xl mx-auto px-5 flex w-full">
               <div className="flex flex-col  flex-grow-1 items-start my-6">
                 <h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
-                  {sortPostBy} Posts
+                  Posts
                 </h1>
                 <p className="font-Jaldi text-xl sm:text-base">
                   Check out the latest posts from the university's Guidance
@@ -137,12 +125,12 @@ export default function Home() {
             <div className="w-full p-2 mx-auto flex-grow max-h-[90vh] overflow-y-auto">
               {loading ? (
                 <LoadingState />
-              ) : sortedPosts.length === 0 ? (
+              ) : posts.length === 0 ? ( // Check if the posts array is empty
                 <p className="text-center mt-4 text-gray-500">
                   No posts yet. Come back later.
                 </p>
               ) : (
-                sortedPosts.map((post) => (
+                posts.map((post) => ( // Use 'posts' instead of 'sortedPosts' if you haven't sorted the posts yet
                   <PostCard key={post.postId} post={post} />
                 ))
               )}

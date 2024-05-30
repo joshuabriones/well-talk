@@ -4,12 +4,12 @@ import Card from "@/components/ui/Card";
 import CreatePostSection from "@/components/ui/CreatePost";
 import Footer from "@/components/ui/Footer";
 import { Navbar } from "@/components/ui/Navbar";
-import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { API_ENDPOINT } from "@/lib/api";
 
 export default function Home() {
   const [selectedButton, setSelectedButton] = useState("featured");
@@ -68,21 +68,31 @@ export default function Home() {
   // }
 
 
-  const getSortedPosts = () => {
-    if (!Array.isArray(posts) || posts.some(post => !post.date || !post.postTime)) {
-      console.error('One or more posts are missing the "date" or "postTime" property');
-      return [];
-    }
+  // const getSortedPosts = () => {
+  //   if (!Array.isArray(posts)) {
+  //     return [];
+  //   }
   
-    return [...posts].sort((a, b) => {
-      const dateTimeA = new Date(`${a.date}T${a.postTime}`);
-      const dateTimeB = new Date(`${b.date}T${b.postTime}`);
-      return dateTimeB - dateTimeA;
-    });
-  };
+  //   return [...posts].sort((a, b) => {
+  //     // Combine date and time into a full ISO 8601 timestamp string
+  //     const dateTimeA = new Date(`${a.postDate}T${a.postTime}`);
+  //     const dateTimeB = new Date(`${b.postDate}T${b.postTime}`);
+      
+  //     if (sortPostBy === "Latest") {
+  //       // Sort by latest date and time first
+  //       return dateTimeB - dateTimeA;
+  //     } else if (sortPostBy === "Oldest") {
+  //       // Sort by oldest date and time first
+  //       return dateTimeA - dateTimeB;
+  //     } else {
+  //       // If no sort order is specified, return the posts unsorted
+  //       return posts;
+  //     }
+  //   });
+  // };
   
 
-  const sortedPosts = getSortedPosts();
+  // const sortedPosts = getSortedPosts();
 
   return (
     <div>
