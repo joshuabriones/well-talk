@@ -84,7 +84,7 @@ export default function Home() {
             <div className="max-w-8xl mx-auto px-5 flex w-full">
               <div className="flex flex-col  flex-grow-1 items-start my-6">
                 <h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
-                  {sortPostBy} Posts
+                  Posts
                 </h1>
                 <p className="font-Jaldi text-xl sm:text-base">
                   Check out the latest posts from the university's Guidance
@@ -125,12 +125,12 @@ export default function Home() {
             <div className="w-full p-2 mx-auto flex-grow max-h-[90vh] overflow-y-auto">
               {loading ? (
                 <LoadingState />
-              ) : sortedPosts.length === 0 ? (
+              ) : posts.length === 0 ? ( // Check if the posts array is empty
                 <p className="text-center mt-4 text-gray-500">
                   No posts yet. Come back later.
                 </p>
               ) : (
-                sortedPosts.map((post) => (
+                posts.map((post) => ( // Use 'posts' instead of 'sortedPosts' if you haven't sorted the posts yet
                   <PostCard key={post.postId} post={post} />
                 ))
               )}
