@@ -1,22 +1,49 @@
+"use client";
+
 import TextInput from "@/components/ui/inputs/TextInput";
 import { useState } from "react";
 import FullButton from "../../buttons/FullButton";
 import HollowButton from "../../buttons/HollowButton";
+import { API_ENDPOINT } from "@/lib/api";
+import Cookies from "js-cookie";
 
-const AddReferral = ({ onOpen }) => {
+const AddReferral = ({ teacherId, onOpen }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [reason, setReason] = useState("");
 
-  const handleSubmit = (e) => {
+  console.log(teacherId, firstName, lastName, email, idNumber, reason);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({
-      firstName,
-      lastName,
-      idNumber,
-      reason,
-    });
+
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.CREATE_REFERRAL}${teacherId}`,
+        {
+          method: "POST",
+          Authorization: `Bearer ${Cookies.get("token")}`,
+          body: JSON.stringify({
+            studentId: idNumber,
+            studentEmail: email,
+            studentFirstName: firstName,
+            studentLastName: lastName,
+            reason: reason,
+          }),
+        }
+      );
+
+      console.log(response);
+      if (!response.ok) {
+        throw new Error("Failed to create referral");
+      }
+      const data = await response.json();
+      // console.log(data);
+    } catch (error) {
+      console.error("Error creating referral:", error);
+    }
   };
 
   const handleClose = () => {
@@ -81,6 +108,16 @@ const AddReferral = ({ onOpen }) => {
               </div>
               <div className="">
                 <TextInput
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  label="Email"
+                  type="text"
+                  id="email"
+                />
+              </div>
+              <div className="">
+                <TextInput
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                   placeholder="Reason"
@@ -93,7 +130,9 @@ const AddReferral = ({ onOpen }) => {
               {/* Submit */}
               <div className="mt-3 px-16 h-12 flex flex-row gap-x-6">
                 <HollowButton onClick={handleClose}>Cancel</HollowButton>
-                <FullButton type="submit">Refer Student</FullButton>
+                <FullButton type="submit" onClick={handleSubmit}>
+                  Refer Student
+                </FullButton>
               </div>
             </div>
           </form>

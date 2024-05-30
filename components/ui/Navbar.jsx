@@ -96,8 +96,8 @@ function NavList({ userType }) {
     case "teacher":
       navigationItems = [
         { label: "Home", route: "/teacher" },
-        { label: "Referral", route: "/teacher/referral" },
-        { label: "Inquiry", route: "/teacher/inquiry" },
+        { label: "Referral", route: "/referral" },
+        { label: "Inquiry", route: "/inquiry" },
       ];
       break;
     case "counselor":
