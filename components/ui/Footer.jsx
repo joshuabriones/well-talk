@@ -1,21 +1,26 @@
+import { useState } from "react";
+import EmergencyModal from "./emergency/Emergency";
+
 const Footer = () => {
+	const [openEmergencyModal, setOpenEmergencyModal] = useState(false);
+
 	return (
-	  <section id="footer" className="relative">
-		<div className="pattern-overlay pattern-left absolute -z-10">
-		  <img src="/images/landing/lleft.png" alt="pattern" />
-		</div>
-		<div className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10">
-		  <img
-			src="/images/landing/lright.png"
-			alt="pattern"
-			className="w-full h-full object-contain"
-		  />
-		</div>
-  
-		<div className="container mx-auto footer-container px-5 lg:px-0">
-		  <footer className="grid grid-cols-1 lg:grid-cols-6 gap-6 pb-10 lg:pb-20 mx-8">
-			{/* Links */}
-			{/* <div className="lg:col-span-2">
+		<section id="footer" className="relative">
+			<div className="pattern-overlay pattern-left absolute -z-10">
+				<img src="/images/landing/lleft.png" alt="pattern" />
+			</div>
+			<div className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10">
+				<img
+					src="/images/landing/lright.png"
+					alt="pattern"
+					className="w-full h-full object-contain"
+				/>
+			</div>
+
+			<div className="container mx-auto footer-container px-5 lg:px-0">
+				<footer className="grid grid-cols-1 lg:grid-cols-6 gap-6 pb-10 lg:pb-20 mx-8">
+					{/* Links */}
+					{/* <div className="lg:col-span-2">
 			  <ul className="nav flex-column">
 				<li className="nav-item mb-2">
 				  <a href="#" className="uppercase hover:text-gray-500">
@@ -44,9 +49,9 @@ const Footer = () => {
 				</li>
 			  </ul>
 			</div> */}
-  
-			{/* Contact Details */}
-			{/* <div className="lg:col-span-4 flex justify-end">
+
+					{/* Contact Details */}
+					{/* <div className="lg:col-span-4 flex justify-end">
   <div className="grid grid-cols-subgrid col-span-2">
     <div className="col-span-2 lg:text-right">
       <p className="m-0">
@@ -57,19 +62,25 @@ const Footer = () => {
     </div>
   </div>
 </div> */}
+				</footer>
 
-		  </footer>
-  
-		  {/* Copyright */}
-		  <footer className="border-t">
-			<div className="flex justify-center pt-5 lg:pt-10">
-			  <p className="mb-0">© 2024 WellTalk. All rights reserved.</p>
+				{/* Copyright */}
+				<footer className="border-t flex flex-col justify-center items-center gap-y-4">
+					<div className="flex justify-center pt-5 lg:pt-10">
+						<p className="mb-0">© 2024 WellTalk. All rights reserved.</p>
+					</div>
+					<button
+						className="w-fit h-fit px-4 py-2 rounded-lg border border-black text-red-700 font-Merriweather hover:bg-red-700 hover:text-white hover:border-red-700"
+						onClick={() => setOpenEmergencyModal(true)}
+					>
+						EMERGENCY
+					</button>
+				</footer>
 			</div>
-		  </footer>
-		</div>
-	  </section>
+
+			{openEmergencyModal && <EmergencyModal onOpen={setOpenEmergencyModal} />}
+		</section>
 	);
-  };
-  
-  export default Footer;
-  
+};
+
+export default Footer;
