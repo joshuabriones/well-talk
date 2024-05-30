@@ -259,10 +259,10 @@ export default function StudentProfile() {
                   <div className="w-full md:w-1/2">
                     <TextInput
                       label="birthDate"
-                      value={isEditMode ? formatTime(updatedProfile.birthDate) : formatTime(studentProfile?.birthDate)}
+                      value={formatTime(studentProfile?.birthDate)}
                       onChange={handleChange("birthDate")}
                       readOnly={!isEditMode}
-                      disabled={!isEditMode}
+                      disabled={true}
                     />
                   </div>
                   <div className="w-full md:w-1/2">
