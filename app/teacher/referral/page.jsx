@@ -8,7 +8,7 @@ import "@/styles/counselor.css";
 
 // modals
 import Header from "@/components/Header";
-import { Navbar } from "@/components/ui/landing/LandingNav";
+import { Navbar } from "@/components/ui/Navbar";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import AddReferral from "@/components/ui/modals/teacher/AddReferral";
 import ReferralInfo from "@/components/ui/modals/teacher/ReferralInfo";
@@ -137,7 +137,7 @@ export default function Referral() {
 
   return (
     <div className="min-h-screen w-full">
-      <Navbar userType="counselor" />
+      <Navbar userType="teacher" />
       <Header
         image={hdrReferrals.src}
         desc="Unlock student potential! Teachers, utilize this referral portal to recommend students who could thrive with counseling support. Your insight fuels our commitment to student well-being and success."

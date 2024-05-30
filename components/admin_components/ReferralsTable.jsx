@@ -14,18 +14,18 @@ const ReferralsTable = ({ referrals, onDelete }) => {
     setCurrentPage(pageNumber);
   };
 
-  const filteredReferrals = referrals.filter((referral) =>
+  const filteredReferrals = referrals?.filter((referral) =>
     referral.reason.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastReferral = currentPage * 10;
   const indexOfFirstReferral = indexOfLastReferral - 10;
-  const currentReferrals = filteredReferrals.slice(
+  const currentReferrals = filteredReferrals?.slice(
     indexOfFirstReferral,
     indexOfLastReferral
   );
 
-  const totalPages = Math.ceil(currentReferrals.length / 10);
+  const totalPages = Math.ceil(currentReferrals?.length / 10);
 
   return (
     <div className="px-10 w-full">
@@ -72,7 +72,7 @@ const ReferralsTable = ({ referrals, onDelete }) => {
           </tr>
         </thead>
         <tbody>
-          {currentReferrals.map((referral) => (
+          {currentReferrals?.map((referral) => (
             <ReferralsRow
               key={referral.referralId}
               referral={referral}
