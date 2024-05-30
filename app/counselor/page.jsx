@@ -4,12 +4,12 @@ import Card from "@/components/ui/Card";
 import CreatePostSection from "@/components/ui/CreatePost";
 import Footer from "@/components/ui/Footer";
 import { Navbar } from "@/components/ui/Navbar";
+import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { API_ENDPOINT } from "@/lib/api";
 
 export default function Home() {
   const [selectedButton, setSelectedButton] = useState("featured");
@@ -69,18 +69,18 @@ export default function Home() {
 
 
   const getSortedPosts = () => {
-    if (!Array.isArray(posts)) {
+    if (!Array.isArray(posts) || posts.some(post => !post.date || !post.postTime)) {
+      console.error('One or more posts are missing the "date" or "postTime" property');
       return [];
     }
   
-    if (sortPostBy === "Latest") {
-      return [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
-    } else if (sortPostBy === "Oldest") {
-      return [...posts].sort((a, b) => new Date(a.date) - new Date(b.date));
-    } else {
-      return posts;
-    }
+    return [...posts].sort((a, b) => {
+      const dateTimeA = new Date(`${a.date}T${a.postTime}`);
+      const dateTimeB = new Date(`${b.date}T${b.postTime}`);
+      return dateTimeB - dateTimeA;
+    });
   };
+  
 
   const sortedPosts = getSortedPosts();
 

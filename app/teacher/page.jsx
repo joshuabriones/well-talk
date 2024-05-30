@@ -1,16 +1,15 @@
 "use client";
-import LoadingState from "@/components/Load";
+import { default as Load, default as LoadingState } from "@/components/Load";
 import Card from "@/components/ui/Card";
 import Footer from "@/components/ui/Footer";
 import { Navbar } from "@/components/ui/Navbar";
 import PostCard from "@/components/ui/PostsCard";
+import { API_ENDPOINT } from "@/lib/api";
+import { getUserSession } from "@/lib/helperFunctions";
+import Cookies from "js-cookie";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { GiSettingsKnobs } from "react-icons/gi";
-import Cookies from "js-cookie";
-import { getUserSession } from "@/lib/helperFunctions";
-import Load from "@/components/Load";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -24,13 +23,19 @@ export default function Home() {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("/api/users/viewallposts"); // Replace with your API endpoint
+      const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_POSTS}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch posts");
       }
       const data = await response.json();
-      setPosts(data.posts);
-      setLoading(false); // Assuming the posts are in data.posts
+      setPosts(data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching posts:", error);
       setLoading(false);
@@ -52,17 +57,17 @@ export default function Home() {
 
   console.log(userSession);
 
-  // const getSortedPosts = () => {
-  // 	if (sortPostBy === "Latest") {
-  // 		return [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
-  // 	} else if (sortPostBy === "Oldest") {
-  // 		return [...posts].sort((a, b) => new Date(a.date) - new Date(b.date));
-  // 	} else {
-  // 		return posts;
-  // 	}
-  // };
+  const getSortedPosts = () => {
+  	if (sortPostBy === "Latest") {
+  		return [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+  	} else if (sortPostBy === "Oldest") {
+  		return [...posts].sort((a, b) => new Date(a.date) - new Date(b.date));
+  	} else {
+  		return posts;
+  	}
+  };
 
-  // const sortedPosts = getSortedPosts();
+  const sortedPosts = getSortedPosts();
 
   return (
     <div>

@@ -1,6 +1,7 @@
 import { HiDotsHorizontal } from "react-icons/hi";
 
 const PostCard = ({ post }) => {
+  console.log(post);
   const formatDate = () => {
     const dateObject = new Date(post?.postDate);
     // Extract date components
@@ -9,13 +10,15 @@ const PostCard = ({ post }) => {
   };
 
   const formatTime = () => {
-    const dateObject = new Date(post?.postDate);
-    // Extract time components
-    const hours = dateObject.getHours();
-    const minutes = dateObject.getMinutes().toString().padStart(2, "0"); // Ensure two digits
+    // Assuming postTime is in the format "HH:MM:SS"
+    const [hours, minutes] = post.postTime.split(':');
+
+    // Convert hours to 12-hour format and set AM/PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = ((hours % 12) || 12).toString().padStart(2, '0'); // Convert "00" to "12"
 
     // Format the date and time strings
-    return `${hours}:${minutes}`;
+    return `${formattedHours}:${minutes} ${ampm}`;
   };
 
   const formattedDate = formatDate();
