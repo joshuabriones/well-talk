@@ -1,9 +1,4 @@
-import { useState } from "react";
-import EmergencyModal from "./emergency/Emergency";
-
 const Footer = () => {
-	const [openEmergencyModal, setOpenEmergencyModal] = useState(false);
-
 	return (
 		<section id="footer" className="relative">
 			<div className="pattern-overlay pattern-left absolute -z-10">
@@ -69,16 +64,11 @@ const Footer = () => {
 					<div className="flex justify-center pt-5 lg:pt-10">
 						<p className="mb-0">© 2024 WellTalk. All rights reserved.</p>
 					</div>
-					<button
-						className="w-fit h-fit px-4 py-2 rounded-lg border border-black text-red-700 font-Merriweather hover:bg-red-700 hover:text-white hover:border-red-700"
-						onClick={() => setOpenEmergencyModal(true)}
-					>
+					<button className="w-fit h-fit px-4 py-2 rounded-lg border border-black text-red-700 font-Merriweather hover:bg-red-700 hover:text-white hover:border-red-700">
 						EMERGENCY
 					</button>
 				</footer>
 			</div>
-
-			{openEmergencyModal && <EmergencyModal onOpen={setOpenEmergencyModal} />}
 		</section>
 	);
 };
