@@ -194,7 +194,7 @@ export default function StudentProfile() {
                   <div className="w-full md:w-full">
                     <TextInput
                       label="First Name"
-                      value={isEditMode ? updatedProfile.firstName : studentProfile?.firstName}
+                      value={isEditMode ? updatedProfile?.firstName : studentProfile?.firstName}
                       onChange={handleChange("firstName")}
                       placeholder="First Name"
                       readOnly={!isEditMode}
