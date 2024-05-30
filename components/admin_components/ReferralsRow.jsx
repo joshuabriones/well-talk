@@ -24,13 +24,17 @@ const ReferralRow = ({ referral, onDelete }) => {
     }
   };
 
+  console.log(referral);
+
   return (
     <tr className="border-b">
       <td className="flex gap-3 items-center pl-8 py-4">
-        {referral.referFirstName} {referral.referLastName}
+        {referral.studentFirstName} {referral.studentLastName}
       </td>
-      <td>{referral.referStudentId}</td>
-      <td>{referral.teacher.name}</td>
+      <td>{referral.studentId}</td>
+      <td>
+        {referral.teacher.firstName} {referral.teacher.lastName}
+      </td>
       <td>{referral.reason}</td>
       <td>
         <span className={`${roleColor()} font-bold p-2 rounded-lg`}>

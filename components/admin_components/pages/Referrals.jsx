@@ -1,67 +1,40 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReferralsTable from "../ReferralsTable";
-
-// Dummy data
-function getRandomElement(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-const firstNames = [
-  "John",
-  "Jane",
-  "Michael",
-  "Emily",
-  "Chris",
-  "Sarah",
-  "David",
-  "Laura",
-  "James",
-  "Anna",
-];
-const lastNames = [
-  "Smith",
-  "Johnson",
-  "Williams",
-  "Jones",
-  "Brown",
-  "Davis",
-  "Miller",
-  "Wilson",
-  "Moore",
-  "Taylor",
-];
-const reasons = [
-  "Academic Issues",
-  "Behavioral Issues",
-  "Personal Problems",
-  "Family Issues",
-  "Health Concerns",
-];
-const additionalNotes = ["Note 1", "Note 2", "Note 3", "Note 4", "Note 5"];
-const statuses = ["Pending", "Reviewed", "Resolved", "Closed"];
-
-const teachers = Array.from({ length: 5 }, (_, i) => ({
-  id: i + 1,
-  name: `Teacher ${i + 1}`,
-}));
-
-const referralsGenerated = Array.from({ length: 20 }, (_, i) => ({
-  referralId: i + 1,
-  teacher: getRandomElement(teachers),
-  referFirstName: getRandomElement(firstNames),
-  referLastName: getRandomElement(lastNames),
-  referStudentId: `S${Math.floor(Math.random() * 1000)
-    .toString()
-    .padStart(4, "0")}`,
-  reason: getRandomElement(reasons),
-  additionalNotes: getRandomElement(additionalNotes),
-  status: getRandomElement(statuses),
-  isDeleted: false,
-}));
+import { API_ENDPOINT } from "@/lib/api";
+import Cookies from "js-cookie";
+import { getUserSession } from "@/lib/helperFunctions";
 
 const Referrals = () => {
-  const [referrals, setReferrals] = useState(referralsGenerated);
+  const [referrals, setReferrals] = useState();
+  const userSession = getUserSession();
+
+  useEffect(() => {
+    if (userSession) {
+      try {
+        fetchReferrals();
+      } catch (error) {
+        console.error("Error fetching referrals", error);
+      }
+    }
+  }, []);
+
+  const fetchReferrals = async () => {
+    const response = await fetch(
+      `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_REFERRALS}`,
+      {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Error fetching appointments");
+    }
+    const data = await response.json();
+    setReferrals(data);
+  };
 
   const handleDeleteReferral = (referralId) => {
     setReferrals(
