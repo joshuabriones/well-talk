@@ -7,7 +7,6 @@ import PostCard from "@/components/ui/PostsCard";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -17,18 +16,18 @@ export default function Home() {
   const router = useRouter();
   const userSession = getUserSession();
 
-  // to be removed
-  const { data: session, status } = useSession();
-
   const fetchPosts = async () => {
     try {
-      const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_POSTS}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_POSTS}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch posts");
       }
@@ -56,7 +55,6 @@ export default function Home() {
 
   console.log(userSession);
 
-
   return (
     <div>
       <main className="min-h-screen">
@@ -83,7 +81,7 @@ export default function Home() {
             <div className="max-w-8xl mx-auto px-5 flex w-full">
               <div className="flex flex-col  flex-grow-1 items-start my-6">
                 <h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
-                  {sortPostBy} Posts
+                  Posts
                 </h1>
                 <p className="font-Jaldi text-xl sm:text-base">
                   Check out the latest posts from the university's Guidance
@@ -129,9 +127,11 @@ export default function Home() {
                   No posts yet. Come back later.
                 </p>
               ) : (
-                posts.map((post) => ( // Use 'posts' instead of 'sortedPosts' if you haven't sorted the posts yet
-                  <PostCard key={post.postId} post={post} />
-                ))
+                posts.map(
+                  (
+                    post // Use 'posts' instead of 'sortedPosts' if you haven't sorted the posts yet
+                  ) => <PostCard key={post.postId} post={post} />
+                )
               )}
             </div>
           </div>
