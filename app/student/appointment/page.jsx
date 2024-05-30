@@ -342,19 +342,19 @@ export default function Appointment() {
 						<div className="w-full flex flex-col text-center">
 							{/* table*/}
 							<div className="overflow-x-auto lg:px-56 lg:py-10 md:px-48 md:6 sm:px-1 sm:py-4">
-								<div className="overflow-x-auto">
+								<div className="overflow-x-auto mt-12 md:mt-2">
 									<table className="w-full table-auto">
 										{/* head */}
 										<thead className="bg-gray-200">
-											<tr className="font-bold">
-												<th className="text-center py-2">
+											<tr className="font-bold text-center">
+												<th className="py-2">
 													ID
 												</th>
-												<th>Date</th>
+												<th className="py-2">Date</th>
 												<th className="py-2">Time</th>
-												<th>Appointment Type</th>
-												<th>Reason</th>
-												<th className="text-center">
+												<th className="py-2">Appointment Type</th>
+												<th className="py-2">Reason</th>
+												<th className="py-2">
 													Status
 												</th>
 												{/* Delete and Edit*/}

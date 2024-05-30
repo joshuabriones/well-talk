@@ -74,9 +74,9 @@ export default function Landing() {
 				<div className="grid grid-cols-12 mt-6">
 					<div className="col-span-12 text-center">
 						<div
-							className="rounded-xl text-white p-4 md:py-6 lg:py-12"
+							className="rounded-xl text-white p-8 mx-8 md:py-6 lg:py-12"
 							style={{ backgroundColor: "#1F2724" }}>
-							<h4 className="font-Merriweather text-gray-50 text-3xl font-semibold sm:text-4xl">
+							<h4 className="font-Merriweather text-gray-50 text-2xl md:text-3xl font-semibold sm:text-4xl">
 								Have any additional questions?
 							</h4>
 							<p className="font-Jaldi text-gray-50 mt-4">
