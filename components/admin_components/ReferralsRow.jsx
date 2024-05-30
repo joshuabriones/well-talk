@@ -46,6 +46,12 @@ const ReferralRow = ({ referral, onDelete }) => {
           <DeleteIcon sx={{ color: "red" }} />
           <button onClick={handleDelete}>Delete</button>
         </span>
+        <button
+          className="bg-green-500 py-[5px] px-2 rounded-md text-white hover:bg-green-600"
+          onClick={() => alert("Accepted")}
+        >
+          Accept
+        </button>
       </td>
     </tr>
   );
