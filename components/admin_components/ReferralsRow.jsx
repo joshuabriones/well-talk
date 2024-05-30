@@ -1,5 +1,7 @@
 import { Avatar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Cookies from "js-cookie";
+import { API_ENDPOINT } from "@/lib/api";
 
 const ReferralRow = ({ referral, onDelete }) => {
   const handleDelete = () => {
@@ -22,6 +24,24 @@ const ReferralRow = ({ referral, onDelete }) => {
       default:
         return "text-red-600 bg-red-100";
     }
+  };
+
+  const handleAccept = async () => {
+    const response = await fetch(
+      `${process.env.BASE_URL}${API_ENDPOINT.ACCEPT_REFERRAL}${referral.referralId}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Error accepting referral");
+    }
+    const data = await response.json();
+    console.log(data);
   };
 
   console.log(referral);
@@ -48,7 +68,7 @@ const ReferralRow = ({ referral, onDelete }) => {
         </span>
         <button
           className="bg-green-500 py-[5px] px-2 rounded-md text-white hover:bg-green-600"
-          onClick={() => alert("Accepted")}
+          onClick={handleAccept}
         >
           Accept
         </button>
