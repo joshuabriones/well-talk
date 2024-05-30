@@ -76,7 +76,7 @@ export default function Home() {
           />
         </div>
         {/*Posts*/}
-        <div className="flex flex-col md:flex-row py-24 px-4 md:px-12 items-center justify-center">
+        <div className="flex flex-col md:flex-row py-24 px-4 md:px-12">
           <div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 flex-grow-2 w-full md:w-11/12">
             <div className="max-w-8xl mx-auto px-5 flex w-full">
               <div className="flex flex-col  flex-grow-1 items-start my-6">
