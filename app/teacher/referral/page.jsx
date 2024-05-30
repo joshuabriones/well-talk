@@ -115,7 +115,13 @@ export default function Referral() {
         throw new Error("Failed to fetch referrals");
       }
       const data = await response.json();
-      setReferrals(data);
+
+      setReferrals(
+        data.filter(
+          (referral) =>
+            referral.teacher.institutionalEmail === userSession.email
+        )
+      );
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -173,7 +179,12 @@ export default function Referral() {
         ></ReferralInfo>
       )}
 
-      {addReferral && <AddReferral onOpen={setAddReferral}></AddReferral>}
+      {addReferral && (
+        <AddReferral
+          teacherId={userSession.id}
+          onOpen={setAddReferral}
+        ></AddReferral>
+      )}
     </div>
   );
 }
