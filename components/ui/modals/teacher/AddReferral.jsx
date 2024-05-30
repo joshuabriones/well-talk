@@ -24,7 +24,10 @@ const AddReferral = ({ teacherId, onOpen }) => {
         `${process.env.BASE_URL}${API_ENDPOINT.CREATE_REFERRAL}${teacherId}`,
         {
           method: "POST",
-          Authorization: `Bearer ${Cookies.get("token")}`,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
           body: JSON.stringify({
             studentId: idNumber,
             studentEmail: email,
