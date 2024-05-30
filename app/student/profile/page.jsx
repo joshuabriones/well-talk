@@ -28,6 +28,7 @@ export default function StudentProfile() {
   });
 
   const userSession = getUserSession();
+  console.log(userSession);
 
   useEffect(() => {
     const fetchStudentProfile = async () => {
@@ -44,6 +45,7 @@ export default function StudentProfile() {
         }
         const data = await response.json();
         setStudentProfile(data);
+        setUpdatedProfile(data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -51,16 +53,12 @@ export default function StudentProfile() {
       }
     };
 
-
     fetchStudentProfile();
   }, []);
-
 
   if (userSession && userSession.role !== "student") {
     return <Load route={userSession.role} />;
   }
-
-  console.log(userSession);
 
   const formatTime = (time) => {
     return new Date(time).toLocaleDateString("en-US", {
@@ -70,13 +68,12 @@ export default function StudentProfile() {
     });
   };
 
-  const handleUpdateProfile = async () => {
+  const handleUpdateProfile = () => {
     setIsEditMode(true);
   };
 
   const validatePassword = (password) => {
-    const regex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return regex.test(password);
   };
 
@@ -90,10 +87,11 @@ export default function StudentProfile() {
 
   const handleCancelEdit = () => {
     setIsEditMode(false);
-    setUpdatedProfile(studentProfile);
+    setUpdatedProfile(studentProfile); 
   };
 
   const handleSaveProfile = async () => {
+    console.log("Updated Profile Data:", updatedProfile); 
     try {
       const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.UPDATE_STUDENT}${userSession.id}`, {
         method: "PUT",
@@ -101,20 +99,20 @@ export default function StudentProfile() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${Cookies.get("token")}`,
         },
-        body: JSON.stringify(updatedProfile), // Make sure to pass the updated profile information
+        body: JSON.stringify(updatedProfile),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to update student profile");
+        const errorData = await response.json();
+        console.error("Server error response:", errorData);
+        throw new Error(`Failed to update student profile: ${response.statusText}`);
       }
 
       const data = await response.json();
-      setStudentProfile(data); // Update the local state with the new profile data
-      console.log(data);
+      setStudentProfile(data);
       setIsEditMode(false);
     } catch (error) {
       console.error("Error updating student profile:", error);
-      setLoading(false);
     }
   };
 
@@ -132,6 +130,10 @@ export default function StudentProfile() {
     }));
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="p-4 mt-16 md:p-12">
       <section>
@@ -139,20 +141,15 @@ export default function StudentProfile() {
       </section>
       <div
         className="pattern-overlay pattern-left absolute -z-10"
-        style={{ transform: "scaleY(-1)", top: "-50px" }}>
-        <img
-          src="/images/landing/lleft.png"
-          alt="pattern"
-        />
+        style={{ transform: "scaleY(-1)", top: "-50px" }}
+      >
+        <img src="/images/landing/lleft.png" alt="pattern" />
       </div>
       <div
         className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
-        style={{ transform: "scaleY(-1)", top: "-15px" }}>
-        <img
-          src="/images/landing/lright.png"
-          alt="pattern"
-          className="w-full h-full object-contain"
-        />
+        style={{ transform: "scaleY(-1)", top: "-15px" }}
+      >
+        <img src="/images/landing/lright.png" alt="pattern" className="w-full h-full object-contain" />
       </div>
 
       <section className="w-full pt-4 md:mt-6 p-8 md:p-12 flex flex-col justify-center items-center">
@@ -161,23 +158,20 @@ export default function StudentProfile() {
             {/* Avatar */}
             <div className="w-full md:w-2/12 flex justify-center items-center avatar">
               <div className="w-48 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-1">
-                <img src={userSession?.image} />
+                <img src={userSession?.image} alt="avatar" />
               </div>
             </div>
             {/* User Info */}
             <div className="w-full md:w-10/12 flex flex-col justify-center md:mt-0 mt-4">
               <h1 className="font-Merriweather text-2xl md:text-4xl font-bold tracking-tight mt-4">
-                Hello, {studentProfile?.firstName}{" "}
-                {studentProfile?.lastName}
+                Hello, {studentProfile?.firstName} {studentProfile?.lastName}
               </h1>
               <p className="font-Merriweather tracking-tight font-thin my-2">
                 {studentProfile?.institutionalEmail}
               </p>
               <div className="w-full md:w-5/12 mt-1">
                 {!isEditMode && (
-                  <FullButton onClick={handleUpdateProfile}>
-                    Update Profile
-                  </FullButton>
+                  <FullButton onClick={handleUpdateProfile}>Update Profile</FullButton>
                 )}
               </div>
             </div>
@@ -258,7 +252,7 @@ export default function StudentProfile() {
                 <div className="flex flex-col md:flex-row gap-4 pb-6">
                   <div className="w-full md:w-1/2">
                     <TextInput
-                      label="birthDate"
+                      label="Birth Date"
                       value={formatTime(studentProfile?.birthDate)}
                       onChange={handleChange("birthDate")}
                       readOnly={!isEditMode}
@@ -277,8 +271,12 @@ export default function StudentProfile() {
                   <div className="w-full">
                     <TextInput
                       label="Address"
-                      value={isEditMode ? `${updatedProfile.barangay}, ${updatedProfile.province}, ${updatedProfile.specificAddress}` : `${studentProfile?.barangay}, ${studentProfile?.province}, ${studentProfile?.specificAddress}`}
-                      onChange={handleChange("barangay")}
+                      value={
+                        isEditMode
+                          ? `${updatedProfile.barangay}, ${updatedProfile.province}, ${updatedProfile.specificAddress}`
+                          : `${studentProfile?.barangay}, ${studentProfile?.province}, ${studentProfile?.specificAddress}`
+                      }
+                      onChange={handleChange("barangay", "province", "specificAddress")}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
                     />
@@ -300,9 +298,7 @@ export default function StudentProfile() {
                     onChange={handlePasswordChange("currentPassword")}
                     placeholder="Enter current password"
                     label="Current Password"
-                    showInvalidPassword={
-                      showInvalidPassword.currentPassword
-                    }
+                    showInvalidPassword={showInvalidPassword.currentPassword}
                     readOnly
                     disabled
                   />
@@ -337,16 +333,8 @@ export default function StudentProfile() {
           {isEditMode && (
             <div className="flex justify-end mt-4">
               <div className="flex flex-row gap-6 w-full">
-                <HollowButton
-                  onClick={handleCancelEdit}
-                >
-                  Cancel
-                </HollowButton>
-                <FullButton
-                  onClick={handleSaveProfile}
-                >
-                  Save
-                </FullButton>
+                <HollowButton onClick={handleCancelEdit}>Cancel</HollowButton>
+                <FullButton onClick={handleSaveProfile}>Save</FullButton>
               </div>
             </div>
           )}
