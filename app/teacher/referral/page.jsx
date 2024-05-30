@@ -158,7 +158,7 @@ export default function Referral() {
         </div>
       </div>
 
-      {/* {deleteModal && (
+      {deleteModal && (
         <ModalDelete
           setDeleteModal={setDeleteModal}
           handleDelete={handleDelete}
@@ -173,7 +173,7 @@ export default function Referral() {
         ></ReferralInfo>
       )}
 
-      {addReferral && <AddReferral onOpen={setAddReferral}></AddReferral>} */}
+      {addReferral && <AddReferral onOpen={setAddReferral}></AddReferral>}
     </div>
   );
 }
@@ -226,44 +226,31 @@ const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
     <tbody>
       {currentList.map((referrals) => (
         <tr
-          key={referrals.id}
-          onClick={() => handleRowClick(referrals.id)}
+          key={referrals.referralId}
+          onClick={() => handleRowClick(referrals.referralId)}
           className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
         >
-          <td className="text-center">{referrals.id}</td>
+          <td className="text-center">{referrals.referralId}</td>
           <td>
             <div className="flex flex-row gap-x-3">
-              <div className="text-sm">{referrals.date}</div>
+              <div className="text-sm">{referrals.dateOfRefferal}</div>
             </div>
           </td>
           <td>
             <div className="flex flex-row gap-x-3">
-              <div>{referrals.referred.idNumber}</div>
+              <div>{referrals.studentId}</div>
             </div>
           </td>
           <td>
             <div className="flex items-center gap-3">
-              <div className="avatar">
-                <div className="mask mask-squircle w-12 h-12">
-                  <img
-                    src={referrals.referred.avatar}
-                    alt="Avatar Tailwind CSS Component"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="font-bold">{referrals.referred.name}</div>
-                <div className="text-sm opacity-50">
-                  {referrals.referred.email}
-                </div>
-              </div>
+              <div>{referrals.studentEmail}</div>
             </div>
           </td>
           <td>
             <p>
-              {referrals.reason.length > 50
-                ? `${referrals.reason.substring(0, 40)}...`
-                : referrals.reason}
+              {referrals?.reason?.length > 50
+                ? `${referrals?.reason?.substring(0, 40)}...`
+                : referrals?.reason}
             </p>
           </td>
           <td className="text-center">
@@ -273,7 +260,7 @@ const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
                   ? "badge-warning"
                   : referrals && referrals.status === "Responded"
                   ? "badge-success"
-                  : referrals && referrals.status === "Appointed"
+                  : referrals && referrals.status === "Accepted"
                   ? "badge-info"
                   : ""
               }`}
