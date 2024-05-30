@@ -115,10 +115,10 @@ const Home = () => {
 					/>
 				</div>
 				{/*Posts*/}
-				<div className="flex flex-col md:flex-row py-24 px-4 md:px-12 items-center justify-center">
-					<div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 flex-grow-2 w-full md:w-11/12">
-						<div className="max-w-8xl mx-auto px-5 flex w-full">
-							<div className="flex flex-col  flex-grow-1 items-start my-6">
+				<div className="flex flex-col md:flex-row py-24 px-4 md:px-12">
+					<div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 w-full md:w-11/12 flex flex-col">
+						<div className="max-w-8xl mx-auto px-5 flex flex-col w-full">
+							<div className="flex flex-col  flex-grow items-start my-6">
 								<h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
 									{sortPostBy} Posts
 								</h1>

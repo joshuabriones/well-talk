@@ -22,6 +22,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { API_ENDPOINT } from "@/lib/api";
 import Load from "@/components/Load";
 import { getUserSession } from "@/lib/helperFunctions";
+import { faCity } from "@fortawesome/free-solid-svg-icons";
 
 const Registration = () => {
   const router = useRouter();
@@ -167,9 +168,9 @@ const Registration = () => {
                 contactNumber: contactNumber,
                 specificAddress: specificAddress,
                 barangay: barangay,
-                cityMunicipality: cityMunicipality,
+                faCity: cityMunicipality,
                 province: province,
-                zipcode: zipcode,
+                zipCode: zipcode,
               }),
             }
           );

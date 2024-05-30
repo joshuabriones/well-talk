@@ -8,7 +8,7 @@ import "@/styles/counselor.css";
 
 // modals
 import Header from "@/components/Header";
-import { Navbar } from "@/components/ui/landing/LandingNav";
+import { Navbar } from "@/components/ui/Navbar";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import AddReferral from "@/components/ui/modals/teacher/AddReferral";
 import ReferralInfo from "@/components/ui/modals/teacher/ReferralInfo";
@@ -115,7 +115,13 @@ export default function Referral() {
         throw new Error("Failed to fetch referrals");
       }
       const data = await response.json();
-      setReferrals(data);
+
+      setReferrals(
+        data.filter(
+          (referral) =>
+            referral.teacher.institutionalEmail === userSession.email
+        )
+      );
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -131,7 +137,7 @@ export default function Referral() {
 
   return (
     <div className="min-h-screen w-full">
-      <Navbar userType="counselor" />
+      <Navbar userType="teacher" />
       <Header
         image={hdrReferrals.src}
         desc="Unlock student potential! Teachers, utilize this referral portal to recommend students who could thrive with counseling support. Your insight fuels our commitment to student well-being and success."
@@ -173,7 +179,12 @@ export default function Referral() {
         ></ReferralInfo>
       )}
 
-      {addReferral && <AddReferral onOpen={setAddReferral}></AddReferral>}
+      {addReferral && (
+        <AddReferral
+          teacherId={userSession.id}
+          onOpen={setAddReferral}
+        ></AddReferral>
+      )}
     </div>
   );
 }
