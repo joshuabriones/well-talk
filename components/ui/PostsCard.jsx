@@ -29,7 +29,7 @@ const PostCard = ({ post }) => {
       <div className="flex border border-gray-300 ml-0 sm:mr-0 sm:mx-3 pl-2 pr-1 sm:pr-0 sm:px-5 py-3 hover:bg-gray-50">
         <div className="mt-3 w-12 h-12 text-lg flex-none">
           <img
-            src={post?.postImage || "https://via.placeholder.com/150"}
+            src={post?.author?.image || "https://via.placeholder.com/150"}
             className="flex-none w-12 h-12 rounded-full cursor-pointer"
             alt={post.author?.username}
           />

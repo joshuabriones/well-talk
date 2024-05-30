@@ -15,7 +15,6 @@ export default function Home() {
   const [selectedButton, setSelectedButton] = useState("featured");
   const [posts, setPosts] = useState([]);
   const [showFilterPostModal, setShowFilterModal] = useState(false);
-  const [sortPostBy, setSortPostBy] = useState("Latest");
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const userSession = getUserSession();
@@ -58,17 +57,6 @@ export default function Home() {
 
   console.log(userSession);
 
-  const getSortedPosts = () => {
-    if (sortPostBy === "Latest") {
-      return [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
-    } else if (sortPostBy === "Oldest") {
-      return [...posts].sort((a, b) => new Date(a.date) - new Date(b.date));
-    } else {
-      return posts;
-    }
-  };
-
-  const sortedPosts = getSortedPosts();
 
   return (
     <div>
