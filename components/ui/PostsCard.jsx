@@ -1,7 +1,6 @@
 import { HiDotsHorizontal } from "react-icons/hi";
 
 const PostCard = ({ post }) => {
-  console.log(post);
   const formatDate = () => {
     const dateObject = new Date(post?.postDate);
     // Extract date components
