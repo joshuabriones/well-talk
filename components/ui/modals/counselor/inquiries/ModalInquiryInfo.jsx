@@ -17,6 +17,8 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
 
   const userSession = getUserSession();
 
+  console.log("dfd", inquiry?.status);
+
   console.log("Inquiry", inquiries);
   // for dialog
   const toggleChecked = () => {
@@ -40,7 +42,7 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
   // Update respondable based on inquiry status
   useEffect(() => {
     if (inquiry && inquiry.status) {
-      setRespondable(inquiry.status === "open" ? "Pending" : "Responded");
+      setRespondable(inquiry.status === 0 ? "Pending" : "Responded");
     }
   }, [inquiry]);
 
@@ -135,18 +137,23 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
             <div className="font-Merriweather font-bold">Response:</div>
             <textarea
               placeholder="Type your response here..."
-              value={response}
+              value={
+                inquiry?.counselorReply ? inquiry.counselorReply : response
+              }
               onChange={(e) => setResponse(e.target.value)}
               className={`textarea textarea-bordered textarea-md w-full max-w-full font-Jaldi mt-2 text-lg overflow-auto resize-none ${
                 respondable === 1 ? "pointer-events-none opacity-50" : ""
               }`}
-              readOnly={respondable === 1}
+              readOnly={inquiry?.status ? true : false}
             ></textarea>
           </div>
 
           <div className="gap-x-4 mt-3 px-44">
-            <HollowButton onClick={() => setConfirmResponse(true)}>
-              Respond
+            <HollowButton
+              disabled={inquiry?.status}
+              onClick={() => setConfirmResponse(true)}
+            >
+              {inquiry?.status ? "Responded" : "Respond"}
             </HollowButton>
           </div>
         </div>
