@@ -4,7 +4,6 @@ import { API_ENDPOINT } from "@/lib/api";
 import { XCircleIcon } from "@heroicons/react/solid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"; // Changed from uploadBytesResumable to uploadBytes
 import Cookies from "js-cookie";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -236,7 +235,9 @@ const CreatePostSection = ({ userSession }) => {
         </p>
       ) : (
         posts &&
-        posts.map((post) => <PostCard key={post?.postId} post={post} />)
+        posts.map((post) => (
+          <PostCard key={post?.postId} post={post} fetchPosts={fetchPosts} />
+        ))
       )}
     </div>
   );
