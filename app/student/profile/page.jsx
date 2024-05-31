@@ -1,5 +1,5 @@
 "use client";
-import { PlusIcon } from '@heroicons/react/solid';
+import { PlusIcon } from "@heroicons/react/solid";
 import { Navbar } from "@/components/ui/Navbar";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
@@ -10,12 +10,14 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid"; // Make sure this is configured correctly
-import { imgDB } from "@/firebaseConfig"
+import { imgDB } from "@/firebaseConfig";
+import toast from "react-hot-toast";
+import Loading from "@/components/Loading";
+import { logout } from "@/lib/helperFunctions";
 
 export default function StudentProfile() {
   const userSession = getUserSession();
   const [isEditMode, setIsEditMode] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const [studentProfile, setStudentProfile] = useState(null);
   const [updatedProfile, setUpdatedProfile] = useState({});
   const [loading, setLoading] = useState(true);
@@ -29,6 +31,7 @@ export default function StudentProfile() {
     currentPassword: false,
     newPassword: false,
     confirmPassword: false,
+    passwordMismatch: false,
   });
 
   useEffect(() => {
@@ -92,12 +95,11 @@ export default function StudentProfile() {
 
   const handleChangeAddress = (e) => {
     const value = e.target.value;
-    const parts = value.split(',');
+    const parts = value.split(",");
 
-    const barangay = parts[0] ? parts[0].trim() : '';
-    const specificAddress = parts[1] ? parts[1].trim() : '';
-    const city = parts[2] ? parts[2].trim() : '';
-
+    const barangay = parts[0] ? parts[0].trim() : "";
+    const specificAddress = parts[1] ? parts[1].trim() : "";
+    const city = parts[2] ? parts[2].trim() : "";
 
     setUpdatedProfile((prevProfile) => ({
       ...prevProfile,
@@ -107,7 +109,6 @@ export default function StudentProfile() {
     }));
   };
 
-
   const handleCancelEdit = () => {
     setIsEditMode(false);
     setUpdatedProfile(studentProfile);
@@ -115,6 +116,26 @@ export default function StudentProfile() {
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
+
+    if (passwords.newPassword !== passwords.confirmPassword) {
+      setShowInvalidPassword((prevShowInvalidPassword) => ({
+        ...prevShowInvalidPassword,
+        passwordMismatch: true,
+      }));
+      return;
+    }
+
+    if (passwords.newPassword && !validatePassword(passwords.newPassword)) {
+      setShowInvalidPassword((prevShowInvalidPassword) => ({
+        ...prevShowInvalidPassword,
+        newPassword: true,
+      }));
+      toast.error(
+        "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character."
+      );
+      return;
+    }
+
     try {
       const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.UPDATE_STUDENT}${userSession.id}`,
@@ -154,6 +175,43 @@ export default function StudentProfile() {
         );
       }
 
+      if (passwords.newPassword && passwords.confirmPassword) {
+        try {
+          const passwordResponse = await fetch(
+            `${process.env.BASE_URL}${API_ENDPOINT.CHANGE_PASSWORD}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${Cookies.get("token")}`,
+              },
+              body: JSON.stringify({
+                email: updatedProfile.institutionalEmail,
+                oldPassword: passwords.currentPassword,
+                newPassword: passwords.newPassword,
+              }),
+            }
+          );
+
+          if (!passwordResponse.ok) {
+            const errorData = await passwordResponse.json();
+            console.error("Server error response:", errorData);
+            throw new Error(
+              `Failed to update password: ${passwordResponse.statusText}`
+            );
+          } else {
+            toast.success(
+              "Profile updated successfully. You will be logged out for security reasons. Please log in again."
+            );
+            setTimeout(() => {
+              logout();
+            }, 3000);
+          }
+        } catch (error) {
+          console.error("Error updating password:", error);
+        }
+      }
+
       const data = await response.json();
       setStudentProfile(data);
       setIsEditMode(false);
@@ -175,33 +233,33 @@ export default function StudentProfile() {
     setShowInvalidPassword((prevShowInvalidPassword) => ({
       ...prevShowInvalidPassword,
       [label]: pw && !validatePassword(pw),
+      passwordMismatch:
+        label === "confirmPassword" ? pw !== passwords.newPassword : false,
     }));
   };
 
   const handleFileChange = async (e) => {
-		const file = e.target.files[0];
-		if (file) {
-		  const imgRef = ref(imgDB, `UserAvatars/${v4()}`);
-		  const snapshot = await uploadBytes(imgRef, file);
-		  const imgUrl = await getDownloadURL(snapshot.ref);
-		  setUpdatedProfile((prevProfile) => ({
-			...prevProfile,
-			image: imgUrl,
-		  }));
-		}
-	  };
+    const file = e.target.files[0];
+    if (file) {
+      const imgRef = ref(imgDB, `UserAvatars/${v4()}`);
+      const snapshot = await uploadBytes(imgRef, file);
+      const imgUrl = await getDownloadURL(snapshot.ref);
+      setUpdatedProfile((prevProfile) => ({
+        ...prevProfile,
+        image: imgUrl,
+      }));
+    }
+  };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
-
 
   console.log("Student Profile:", studentProfile);
   console.log("Updated Profile:", updatedProfile);
 
   return (
     <div className="p-4 mt-16 md:p-12">
-
       <Navbar userType="student" />
 
       <div
@@ -392,7 +450,6 @@ export default function StudentProfile() {
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
                     />
-
                   </div>
                 </div>
               </div>
@@ -404,17 +461,17 @@ export default function StudentProfile() {
                   Security Information
                 </h1>
                 <div className="flex flex-col gap-6">
-                  {/* <TextDisplay
+                  <TextInput
                     type="password"
                     id="currentPassword"
-                    value="●●●●●●●●"
+                    value={passwords.currentPassword}
                     onChange={handlePasswordChange("currentPassword")}
                     placeholder="Enter current password"
                     label="Current Password"
                     showInvalidPassword={showInvalidPassword.currentPassword}
-                    readOnly
-                    disabled
-                  /> */}
+                    readOnly={!isEditMode}
+                    disabled={!isEditMode}
+                  />
                   {/* New Password */}
                   <TextInput
                     type="password"
