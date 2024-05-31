@@ -5,7 +5,7 @@ import { XCircleIcon } from "@heroicons/react/solid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"; // Changed from uploadBytesResumable to uploadBytes
 import Cookies from "js-cookie";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { BsFillImageFill } from "react-icons/bs";
@@ -106,7 +106,7 @@ const CreatePostSection = ({ userSession }) => {
     setSelectedFile(null);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCharacterCount(postContent.length);
   }, [postContent]);
 
