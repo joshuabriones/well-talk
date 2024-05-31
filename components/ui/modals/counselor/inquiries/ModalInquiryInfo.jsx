@@ -130,6 +130,22 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
                   {inquiry?.status ? "Replied" : "Pending"}
                 </td>
               </tr>
+              {inquiry?.status && (
+                <tr>
+                  <th>Counselor:</th>
+                  <td>
+                    {inquiry?.counselor?.firstName}{" "}
+                    {inquiry?.counselor?.lastName} (
+                    {inquiry?.counselor?.institutionalEmail})
+                  </td>
+                </tr>
+              )}
+              {inquiry?.status && (
+                <tr>
+                  <th>Response Date:</th>
+                  <td>{inquiry?.replyDate}</td>
+                </tr>
+              )}
             </tbody>
           </table>
 
