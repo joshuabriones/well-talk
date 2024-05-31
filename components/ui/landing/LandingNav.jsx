@@ -72,28 +72,17 @@ export function Navbar({ userType }) {
 			className="mx-auto max-w-screen-auto p-6 lg:pl-6 bg-blue-gray-900 w-full"
 		>
 			<div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
-				<div className="ml-24 text-2xl text-[#6B9080] font-bold">WellTalk</div>
+				<div className="ml-8 md:ml-24 text-2xl text-[#6B9080] font-bold">WellTalk</div>
 				<div className="hidden lg:block flex items-center gap-8 lg:ml-auto">
 					<NavList userType={userType} />
 				</div>
 				<button
 					onClick={() => setIsNavOpen((prev) => !prev)}
-					className="ml-auto mr-2 lg:hidden"
+					className="ml-auto mr-8 lg:hidden"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						className="h-6 w-6 text-blue-gray-700"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M4 6h16M4 12h16m-7 6h7"
-						/>
-					</svg>
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+</svg>
 				</button>
 			</div>
 			{isNavOpen && (
