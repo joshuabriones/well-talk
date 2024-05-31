@@ -7,11 +7,15 @@ import { useState } from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { imgDB } from "@/firebaseConfig";
 import { v4 } from "uuid";
+import { getUserSession } from "@/lib/helperFunctions";
 
-const PostCard = ({ post, fetchPosts, userSession }) => {
+const PostCard = ({ post, fetchPosts}) => {
   console.log(post);
   const [openActions, setOpenActions] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const userSession = getUserSession();
+  const isTeacherOrStudent = userSession.role === 'teacher' || userSession.role === 'student';
+
   const formatDate = () => {
     const dateObject = new Date(post?.postDate);
     // Extract date components
@@ -76,13 +80,14 @@ const PostCard = ({ post, fetchPosts, userSession }) => {
               </span>
             </h2>
 
-            <button
-              onClick={() => setOpenActions((prev) => !prev)}
-              className="mr-3"
-            >
-              <HiDotsHorizontal />
-            </button>
-
+            {!isTeacherOrStudent && (
+              <button
+                onClick={() => setOpenActions((prev) => !prev)}
+                className="mr-3"
+              >
+                <HiDotsHorizontal />
+              </button>
+            )}
             {openActions && (
               <div className="w-30 h-22 px-1 shadow-xl bg-white border border-slate-300 text-slate-600 font-semibold absolute right-7 top-0 z-20 rounded-xl">
                 <ul className="p-0.5 cursor-pointer text-start">
