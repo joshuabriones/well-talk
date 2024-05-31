@@ -38,12 +38,11 @@ const AddReferral = ({ teacherId, onOpen }) => {
         }
       );
 
-      console.log(response);
       if (!response.ok) {
         throw new Error("Failed to create referral");
       }
       const data = await response.json();
-      // console.log(data);
+      console.log(data);
     } catch (error) {
       console.error("Error creating referral:", error);
     }

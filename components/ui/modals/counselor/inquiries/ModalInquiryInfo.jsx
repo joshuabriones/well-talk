@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import iconDelete from "@/public/images/icons/iconDelete.png";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import ModalConfirmResponse from "./ModalConfirmResponse";
+import { API_ENDPOINT } from "@/lib/api";
+import Cookies from "js-cookie";
+import { getUserSession } from "@/lib/helperFunctions";
 
 const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
   const [isChecked, setIsChecked] = useState(true);
@@ -12,6 +15,9 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
 
   const [confirmResponse, setConfirmResponse] = useState(false);
 
+  const userSession = getUserSession();
+
+  console.log("Inquiry", inquiries);
   // for dialog
   const toggleChecked = () => {
     setIsChecked(!isChecked);
@@ -21,23 +27,10 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
   useEffect(() => {
     const handleFindInquiry = async () => {
       if (selectedID) {
-        try {
-          const response = await fetch(
-            `/api/inquiry/view-inquiry?inquiryId=${selectedID}`
-          );
-          if (!response.ok) {
-            throw new Error(
-              `Failed to fetch inquiry (status ${response.status})`
-            );
-          }
-          const data = await response.json();
-          if (data.inquiry && data.inquiry.counselorReply) {
-            setResponse(data.inquiry.counselorReply);
-          }
-          setInquiry(data.inquiry);
-        } catch (error) {
-          console.error("Error fetching inquiry:", error.message);
-        }
+        const selected = inquiries.find(
+          (inquiry) => inquiry.inquiryId === selectedID
+        );
+        setInquiry(selected);
       }
     };
 
@@ -55,19 +48,19 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
     const currentResponse = response;
 
     try {
-      const response = await fetch(`/api/inquiry/reply-inquiry`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          inquiry: inquiry,
-          inquiryId: selectedID,
-          counselorReply: currentResponse,
-          replyDate: new Date().toISOString(),
-          counselorId: 1,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.REPLY_INQUIRY}${inquiry.inquiryId}?counselorId=${userSession.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+          body: JSON.stringify({
+            counselorReply: currentResponse,
+          }),
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to respond to inquiry");
       }
@@ -100,13 +93,13 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
             <tbody>
               <tr>
                 <th>ID Number:</th>
-                <td>{inquiry ? inquiry.user.idNumber : ""}</td>
+                <td>{inquiry ? inquiry.sender.idNumber : ""}</td>
               </tr>
               <tr>
                 <th>Name:</th>
                 <td>
                   {inquiry
-                    ? `${inquiry.user.firstName} ${inquiry.user.lastName}`
+                    ? `${inquiry.sender.firstName} ${inquiry.sender.lastName}`
                     : ""}
                 </td>
               </tr>
@@ -116,7 +109,7 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
               </tr>
               <tr>
                 <th>Inquiry:</th>
-                <td>{inquiry ? inquiry.message : ""}</td>
+                <td>{inquiry ? inquiry.messageInquiry : ""}</td>
               </tr>
               <tr>
                 <th>Date and Time:</th>
@@ -126,13 +119,13 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
                 <th>Status:</th>
                 <td
                   className={`h-fit badge badge-md ${
-                    inquiry?.status === "open"
+                    inquiry?.status === false
                       ? "badge-warning"
                       : "badge-success"
                   }`}
                   style={{ width: "30%" }}
                 >
-                  {inquiry ? inquiry.status : ""}
+                  {inquiry?.status ? "Replied" : "Pending"}
                 </td>
               </tr>
             </tbody>
@@ -145,11 +138,9 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
               value={response}
               onChange={(e) => setResponse(e.target.value)}
               className={`textarea textarea-bordered textarea-md w-full max-w-full font-Jaldi mt-2 text-lg overflow-auto resize-none ${
-                respondable === "Responded"
-                  ? "pointer-events-none opacity-50"
-                  : ""
+                respondable === 1 ? "pointer-events-none opacity-50" : ""
               }`}
-              readOnly={respondable === "Responded"}
+              readOnly={respondable === 1}
             ></textarea>
           </div>
 

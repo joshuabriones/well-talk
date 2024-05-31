@@ -16,6 +16,8 @@ const Appointments = () => {
     }
   }, []);
 
+  console.log(appointments);
+
   async function fetchAppointments() {
     const response = await fetch(
       `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_GET_ALL_APPOINTMENTS}`,

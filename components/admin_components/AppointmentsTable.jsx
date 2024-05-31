@@ -85,17 +85,18 @@ const AppointmentsTable = ({
         </select>
       </div>
 
-      <table className="mt-8 lg:w-full sm:w-[900px]">
+      <table className="mt-8 lg:w-full xs:w-[900px]">
         <thead className="bg-slate-200">
-          <tr className="text-left">
-            <th className="px-10 py-4 rounded-tl-xl">Appointment Date</th>
-            <th className="py-4">Purpose</th>
-            <th className="py-4">Status</th>
-            <th className="py-4">Student</th>
-            <th className="py-4 rounded-tr-xl">Action</th>
+          <tr className="">
+            <th className="py-4 rounded-tl-xl text-center">Appointment Date</th>
+            <th className="py-4 text-center">Time</th>
+            <th className="py-4 text-center">Purpose</th>
+            <th className="py-4 text-center">Status</th>
+            <th className="py-4 text-center">Student</th>
+            <th className="py-4 text-center rounded-tr-xl">Action</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-center">
           {currentAppointments.map((appointment) => (
             <AppointmentsRow
               key={appointment.appointmentId}
