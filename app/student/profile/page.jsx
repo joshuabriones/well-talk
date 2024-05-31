@@ -8,8 +8,10 @@ import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { z } from "zod";
 
 export default function StudentProfile() {
+  const userSession = getUserSession();
   const [isEditMode, setIsEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [studentProfile, setStudentProfile] = useState(null);
@@ -27,19 +29,19 @@ export default function StudentProfile() {
     confirmPassword: false,
   });
 
-  const userSession = getUserSession();
-  console.log(userSession);
-
   useEffect(() => {
     const fetchStudentProfile = async () => {
       try {
-        const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch posts");
         }
@@ -73,7 +75,8 @@ export default function StudentProfile() {
   };
 
   const validatePassword = (password) => {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return regex.test(password);
   };
 
@@ -87,25 +90,47 @@ export default function StudentProfile() {
 
   const handleCancelEdit = () => {
     setIsEditMode(false);
-    setUpdatedProfile(studentProfile); 
+    setUpdatedProfile(studentProfile);
   };
 
-  const handleSaveProfile = async () => {
-    console.log("Updated Profile Data:", updatedProfile); 
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.UPDATE_STUDENT}${userSession.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-        body: JSON.stringify(updatedProfile),
-      });
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.UPDATE_STUDENT}${userSession.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+          body: JSON.stringify({
+            institutionalEmail: updatedProfile.institutionalEmail,
+            idNumber: updatedProfile.idNumber,
+            firstName: updatedProfile.firstName,
+            lastName: updatedProfile.lastName,
+            gender: updatedProfile.gender,
+            password: updatedProfile.password,
+            image: updatedProfile.image,
+            college: updatedProfile.college,
+            program: updatedProfile.program,
+            year: updatedProfile.year,
+            birthDate: updatedProfile.birthDate,
+            specificAddress: updatedProfile.specificAddress,
+            barangay: updatedProfile.barangay,
+            city: updatedProfile.city,
+            province: updatedProfile.province,
+            zipCode: updatedProfile.zipCode,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Server error response:", errorData);
-        throw new Error(`Failed to update student profile: ${response.statusText}`);
+        throw new Error(
+          `Failed to update student profile: ${response.statusText}`
+        );
       }
 
       const data = await response.json();
@@ -115,6 +140,8 @@ export default function StudentProfile() {
       console.error("Error updating student profile:", error);
     }
   };
+
+  console.log("Updated Profile:", updatedProfile);
 
   const handlePasswordChange = (label) => (e) => {
     const pw = e.target.value;
@@ -134,6 +161,9 @@ export default function StudentProfile() {
     return <div>Loading...</div>;
   }
 
+  console.log("Student Profile:", studentProfile);
+  console.log("Updated Profile:", updatedProfile);
+
   return (
     <div className="p-4 mt-16 md:p-12">
       <section>
@@ -149,16 +179,20 @@ export default function StudentProfile() {
         className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
         style={{ transform: "scaleY(-1)", top: "-15px" }}
       >
-        <img src="/images/landing/lright.png" alt="pattern" className="w-full h-full object-contain" />
+        <img
+          src="/images/landing/lright.png"
+          alt="pattern"
+          className="w-full h-full object-contain"
+        />
       </div>
 
       <section className="w-full pt-4 md:mt-6 p-8 md:p-12 flex flex-col justify-center items-center">
         <div className="w-full max-w-screen-lg mx-auto flex flex-col gap-4 md:gap-8">
-          <section className="flex flex-col md:flex-row items-center md:gap-10 mb-8 justify-center items-center">
+          <section className="flex flex-col md:flex-row md:gap-10 mb-8 justify-center items-center">
             {/* Avatar */}
             <div className="w-full md:w-2/12 flex justify-center items-center avatar">
               <div className="w-48 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-1">
-                <img src={userSession?.image} alt="avatar" />
+                <img src={studentProfile?.image} alt="avatar" />
               </div>
             </div>
             {/* User Info */}
@@ -171,7 +205,9 @@ export default function StudentProfile() {
               </p>
               <div className="w-full md:w-5/12 mt-1">
                 {!isEditMode && (
-                  <FullButton onClick={handleUpdateProfile}>Update Profile</FullButton>
+                  <FullButton onClick={handleUpdateProfile}>
+                    Update Profile
+                  </FullButton>
                 )}
               </div>
             </div>
@@ -188,7 +224,11 @@ export default function StudentProfile() {
                   <div className="w-full md:w-full">
                     <TextInput
                       label="First Name"
-                      value={isEditMode ? updatedProfile?.firstName : studentProfile?.firstName}
+                      value={
+                        isEditMode
+                          ? updatedProfile?.firstName
+                          : studentProfile?.firstName
+                      }
                       onChange={handleChange("firstName")}
                       placeholder="First Name"
                       readOnly={!isEditMode}
@@ -198,7 +238,11 @@ export default function StudentProfile() {
                   <div className="w-full md:w-full">
                     <TextInput
                       label="Last Name"
-                      value={isEditMode ? updatedProfile.lastName : studentProfile?.lastName}
+                      value={
+                        isEditMode
+                          ? updatedProfile.lastName
+                          : studentProfile?.lastName
+                      }
                       onChange={handleChange("lastName")}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
@@ -207,7 +251,11 @@ export default function StudentProfile() {
                   <div className="w-full md:w-1/2">
                     <TextInput
                       label="Gender"
-                      value={isEditMode ? updatedProfile.gender : studentProfile?.gender}
+                      value={
+                        isEditMode
+                          ? updatedProfile.gender
+                          : studentProfile?.gender
+                      }
                       onChange={handleChange("gender")}
                       readOnly
                       disabled
@@ -221,7 +269,11 @@ export default function StudentProfile() {
                   <div className="w-full md:w-1/2">
                     <TextInput
                       label="ID Number"
-                      value={isEditMode ? updatedProfile.idNumber : studentProfile?.idNumber}
+                      value={
+                        isEditMode
+                          ? updatedProfile.idNumber
+                          : studentProfile?.idNumber
+                      }
                       onChange={handleChange("idNumber")}
                       readOnly
                       disabled
@@ -230,7 +282,11 @@ export default function StudentProfile() {
                   <div className="w-full md:w-1/2">
                     <TextInput
                       label="Program"
-                      value={isEditMode ? updatedProfile.program : studentProfile?.program}
+                      value={
+                        isEditMode
+                          ? updatedProfile.program
+                          : studentProfile?.program
+                      }
                       onChange={handleChange("program")}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
@@ -239,7 +295,9 @@ export default function StudentProfile() {
                   <div className="w-full md:w-1/2">
                     <TextInput
                       label="Year Level"
-                      value={isEditMode ? updatedProfile.year : studentProfile?.year}
+                      value={
+                        isEditMode ? updatedProfile.year : studentProfile?.year
+                      }
                       onChange={handleChange("year")}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
@@ -262,7 +320,11 @@ export default function StudentProfile() {
                   <div className="w-full md:w-1/2">
                     <TextInput
                       label="Contact Number"
-                      value={isEditMode ? updatedProfile.contactNumber : studentProfile?.contactNumber}
+                      value={
+                        isEditMode
+                          ? updatedProfile.contactNumber
+                          : studentProfile?.contactNumber
+                      }
                       onChange={handleChange("contactNumber")}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
@@ -276,7 +338,11 @@ export default function StudentProfile() {
                           ? `${updatedProfile.barangay}, ${updatedProfile.province}, ${updatedProfile.specificAddress}`
                           : `${studentProfile?.barangay}, ${studentProfile?.province}, ${studentProfile?.specificAddress}`
                       }
-                      onChange={handleChange("barangay", "province", "specificAddress")}
+                      onChange={handleChange(
+                        "barangay",
+                        "province",
+                        "specificAddress"
+                      )}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
                     />
