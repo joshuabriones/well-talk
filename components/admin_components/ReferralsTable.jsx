@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import ReferralsRow from "./ReferralsRow";
 
-const ReferralsTable = ({ referrals, onDelete }) => {
+const ReferralsTable = ({ referrals, onDelete, fetchReferrals }) => {
   const [searchTerm, setSearchTerm] = useState("");
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const handleDelete = (referralId) => {
     onDelete(referralId);
+    fetchReferrals();
   };
 
   const handlePageChange = (pageNumber) => {
@@ -25,22 +25,22 @@ const ReferralsTable = ({ referrals, onDelete }) => {
     indexOfLastReferral
   );
 
-  const totalPages = Math.ceil(currentReferrals?.length / 10);
+  const totalPages = Math.ceil(filteredReferrals?.length / 10);
 
   return (
     <div className="px-10 w-full">
       <div className="flex justify-between">
-        <div class="relative">
+        <div className="relative">
           <input
             type="text"
             placeholder="Search reasons..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            class="relative w-full h-12 px-4 transition-all border rounded-xl text-slate-500 autofill:bg-white"
+            className="relative w-full h-12 px-4 transition-all border rounded-xl text-slate-500 autofill:bg-white"
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="absolute w-6 h-6 cursor-pointer top-3 right-4 stroke-slate-400 peer-disabled:cursor-not-allowed"
+            className="absolute w-6 h-6 cursor-pointer top-3 right-4 stroke-slate-400 peer-disabled:cursor-not-allowed"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -77,6 +77,7 @@ const ReferralsTable = ({ referrals, onDelete }) => {
               key={referral.referralId}
               referral={referral}
               onDelete={handleDelete}
+              fetchReferrals={fetchReferrals}
             />
           ))}
         </tbody>

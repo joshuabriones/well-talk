@@ -1,20 +1,65 @@
 import { Avatar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import HelpIcon from '@mui/icons-material/Help';
+import HelpIcon from "@mui/icons-material/Help";
 import ConfirmationPopup from "../ui/modals/Confirmation";
 import Cookies from "js-cookie";
-import {useState} from "react";
+import { useState } from "react";
 import { API_ENDPOINT } from "@/lib/api";
 
-const ReferralRow = ({ referral, onDelete }) => {
+const ReferralsRow = ({ referral, onDelete, fetchReferrals }) => {
   const [showConfirm, setShowConfirm] = useState(false); // State to control confirmation dialog
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     const isConfirmed = window.confirm(
       `Are you sure you want to delete referral?`
     );
     if (isConfirmed) {
-      onDelete(referral.referralId);
+      try {
+        const response = await fetch(
+          `${process.env.BASE_URL}${API_ENDPOINT.DELETE_REFERRAL}${referral.referralId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Error deleting referral");
+        }
+        onDelete(referral.referralId);
+        fetchReferrals();
+        console.log("Deleted");
+      } catch (error) {
+        console.error("Error deleting referral", error);
+      }
+    }
+  };
+
+  const handleAccept = async () => {
+    // Show confirmation dialog
+    setShowConfirm(true);
+  };
+
+  const confirmAccept = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.ACCEPT_REFERRAL}${referral.referralId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Error accepting referral");
+      }
+      const data = await response.json();
+      console.log(data);
+      fetchReferrals();
+    } catch (error) {
+      console.error("Error accepting referral", error);
     }
   };
 
@@ -30,31 +75,6 @@ const ReferralRow = ({ referral, onDelete }) => {
         return "text-red-600 bg-red-100";
     }
   };
-
-  const handleAccept = async () => {
-    // Show confirmation dialog
-    setShowConfirm(true);
-  };
-
-  const confirmAccept = async () => {
-    const response = await fetch(
-      `${process.env.BASE_URL}${API_ENDPOINT.ACCEPT_REFERRAL}${referral.referralId}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      console.error("Error accepting referral");
-    }
-    const data = await response.json();
-    console.log(data);
-  };
-
-  console.log(referral);
 
   return (
     <tr className="border-b">
@@ -84,7 +104,7 @@ const ReferralRow = ({ referral, onDelete }) => {
         </button>
         {showConfirm && (
           <ConfirmationPopup
-          icon={<HelpIcon />} // Example icon, replace with appropriate icon
+            icon={<HelpIcon />} // Example icon, replace with appropriate icon
             title="Confirm"
             message="Are you sure you want to accept this referral?"
             onConfirm={() => {
@@ -99,4 +119,4 @@ const ReferralRow = ({ referral, onDelete }) => {
   );
 };
 
-export default ReferralRow;
+export default ReferralsRow;

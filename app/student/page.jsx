@@ -4,6 +4,7 @@ import Card from "@/components/ui/Card";
 import Footer from "@/components/ui/Footer";
 import { Navbar } from "@/components/ui/Navbar";
 import PostCard from "@/components/ui/PostsCard";
+import FloatingIcon from "@/components/ui/emergency/FloatingIcon";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
@@ -156,6 +157,7 @@ function Home() {
 					</div>
 				</div>
 				<Footer />
+				<FloatingIcon />
 			</main>
 		</div>
 	);
