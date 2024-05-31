@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import { API_ENDPOINT } from "@/lib/api";
 import FloatingIcon from "@/components/ui/emergency/FloatingIcon";
 import dynamic from "next/dynamic";
 

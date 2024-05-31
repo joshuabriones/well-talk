@@ -178,7 +178,6 @@ const CreatePostSection = ({ userSession }) => {
             className="hidden"
             type="file"
             onChange={handleFileSelection}
-            x
             accept="image/*"
           />
           <BsFillImageFill className="text-2xl cursor-pointer mr-2 mt-1" />
