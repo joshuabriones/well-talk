@@ -6,7 +6,6 @@ import Footer from "@/components/ui/Footer";
 import { Navbar } from "@/components/ui/Navbar";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { API_ENDPOINT } from "@/lib/api";
@@ -22,8 +21,6 @@ const Home = () => {
 	const userSession = getUserSession();
 	const router = useRouter();
 
-	// to be removed
-	const { data: session, status } = useSession();
 
 	/* Handling unauthenticated users */
 	if (Cookies.get("token") === undefined || Cookies.get("token") === null) {

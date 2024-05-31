@@ -284,7 +284,7 @@ export default function Profile() {
 										Security Information
 									</h1>
 									<div className="flex flex-col gap-6">
-										<TextDisplay
+										{/* <TextDisplay
 											type="password"
 											id="currentPassword"
 											value="●●●●●●●●"
@@ -298,7 +298,7 @@ export default function Profile() {
 											}
 											readOnly
 											disabled
-										/>
+										/> */}
 										{/* New Password */}
 										<TextInput
 											type="password"
