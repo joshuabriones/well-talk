@@ -12,7 +12,7 @@ const Dashboard = ({ userSession }) => {
       <LineGraph userSession={userSession} />
       <div className="grid lg:grid-cols-3 md:gap-10 sm:grid-cols-2">
         <BarGraph userSession={userSession} />
-        <PieGraph />
+        <PieGraph userSession={userSession} />
       </div>
     </section>
   );
