@@ -267,14 +267,14 @@ const ModalAppointmentInfo = ({
         )}
       </div>
 
-      {studentHistoryModal && (
+      {/* {studentHistoryModal && (
         <div>
           <StudentHistory
             onOpen={setStudentHistoryModal}
             details={sampleHistory}
           ></StudentHistory>
         </div>
-      )}
+      )} */}
     </>
   );
 };
