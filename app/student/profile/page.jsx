@@ -3,7 +3,6 @@ import { Navbar } from "@/components/ui/Navbar";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextInput from "@/components/ui/inputs/TextInput";
-import TextDisplay from "@/components/ui/student/TextDisplay";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
@@ -92,16 +91,15 @@ export default function StudentProfile() {
     const parts = value.split(',');
 
     const barangay = parts[0] ? parts[0].trim() : '';
-    const province = parts[1] ? parts[1].trim() : '';
-    const specificAddress = parts[2] ? parts[2].trim() : '';
+    const specificAddress = parts[1] ? parts[1].trim() : '';
+    const city = parts[2] ? parts[2].trim() : '';
 
-    console.log('Barangay:', barangay);
 
     setUpdatedProfile((prevProfile) => ({
       ...prevProfile,
       barangay: barangay,
-      province: province,
       specificAddress: specificAddress,
+      city: city,
     }));
   };
 
@@ -180,7 +178,7 @@ export default function StudentProfile() {
     return <div>Loading...</div>;
   }
 
-  
+
   console.log("Student Profile:", studentProfile);
   console.log("Updated Profile:", updatedProfile);
 
@@ -355,13 +353,14 @@ export default function StudentProfile() {
                       label="Address"
                       value={
                         isEditMode
-                          ? `${updatedProfile.barangay}, ${updatedProfile.province}, ${updatedProfile.specificAddress}`
-                          : `${studentProfile?.barangay}, ${studentProfile?.province}, ${studentProfile?.specificAddress}`
+                          ? `${updatedProfile.barangay}, ${updatedProfile.specificAddress}, ${updatedProfile.city}`
+                          : `${studentProfile?.barangay}, ${studentProfile?.specificAddress}, ${studentProfile?.city}`
                       }
                       onChange={handleChangeAddress}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
                     />
+
                   </div>
                 </div>
               </div>
