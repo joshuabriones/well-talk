@@ -9,9 +9,9 @@ const Dashboard = ({ userSession }) => {
       <h1 className="font-bold text-3xl mb-1">Dashboard</h1>
       <p className="text-slate-600 mb-7">Welcome back to WellTalk Admin!</p>
       <TotalCountCard userSession={userSession} />
-      <LineGraph />
+      <LineGraph userSession={userSession} />
       <div className="grid lg:grid-cols-3 md:gap-10 sm:grid-cols-2">
-        <BarGraph />
+        <BarGraph userSession={userSession} />
         <PieGraph />
       </div>
     </section>

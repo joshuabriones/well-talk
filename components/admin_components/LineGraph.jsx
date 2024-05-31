@@ -1,86 +1,60 @@
-import { Cancel } from "@mui/icons-material";
 import { LineChart } from "@tremor/react";
-const chartdata = [
-  {
-    date: "Jan 22",
-    Approved: 2890,
-    Pending: 2338,
-    Cancelled: 1800,
-  },
-  {
-    date: "Feb 22",
-    Approved: 2756,
-    Pending: 2103,
-    Cancelled: 1930,
-  },
-  {
-    date: "Mar 22",
-    Approved: 3322,
-    Pending: 2194,
-    Cancelled: 2000,
-  },
-  {
-    date: "Apr 22",
-    Approved: 3470,
-    Pending: 2108,
-    Cancelled: 4200,
-  },
-  {
-    date: "May 22",
-    Approved: 3475,
-    Pending: 1812,
-    Cancelled: 2323,
-  },
-  {
-    date: "Jun 22",
-    Approved: 3129,
-    Pending: 1726,
-    Cancelled: 4034,
-  },
-  {
-    date: "Jul 22",
-    Approved: 3490,
-    Pending: 1982,
-    Cancelled: 2005,
-  },
-  {
-    date: "Aug 22",
-    Approved: 2903,
-    Pending: 2012,
-    Cancelled: 1990,
-  },
-  {
-    date: "Sep 22",
-    Approved: 2643,
-    Pending: 2342,
-    Cancelled: 2111,
-  },
-  {
-    date: "Oct 22",
-    Approved: 2837,
-    Pending: 2473,
-    Cancelled: 2341,
-  },
-  {
-    date: "Nov 22",
-    Approved: 2954,
-    Pending: 3848,
-    Cancelled: 3343,
-  },
-  {
-    date: "Dec 22",
-    Approved: 3239,
-    Pending: 3736,
-    Cancelled: 3459,
-  },
-];
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { API_ENDPOINT } from "@/lib/api";
 
-// const dataFormatter = (number) =>
-//   `$${Intl.NumberFormat('us').format(number).toString()}`;
+export function LineGraph({ userSession }) {
+  const [appointments, setAppointments] = useState([]);
 
-const dataFormatter = (number) => number.toString();
+  const fetchAppointments = async () => {
+    const response = await fetch(
+      `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_GET_ALL_APPOINTMENTS}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      }
+    );
+    const data = await response.json();
+    setAppointments(data);
+  };
 
-export function LineGraph() {
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
+
+  const processData = () => {
+    // Initialize data object
+    const data = {};
+
+    // Iterate over appointments and aggregate counts
+    appointments.forEach((appointment) => {
+      const month = appointment.appointmentDate; // Extract month from date
+      const status = appointment.appointmentStatus;
+
+      if (!data[month]) {
+        // Initialize month if not already present
+        data[month] = { Assigned: 0, Done: 0, Pending: 0 };
+      }
+
+      // Increment count for corresponding status
+      data[month][status]++;
+    });
+
+    // Convert data object into array of objects
+    return Object.keys(data).map((month) => ({
+      date: month, // Assuming month is in the format "MM"
+      ...data[month],
+    }));
+  };
+
+  const chartData = processData();
+  console.log(chartData);
+
+  const dataFormatter = (number) => number.toString();
+
   return (
     <div className="mt-7 rounded-2xl bg-white p-8 drop-shadow-lg w-full">
       <h3 className="text-lg font-bold text-tremor-content-strong">
@@ -88,11 +62,11 @@ export function LineGraph() {
       </h3>
       <LineChart
         className="h-96 w-full"
-        data={chartdata}
+        data={chartData}
         index="date"
         valueFormatter={dataFormatter}
-        categories={["Approved", "Cancelled", "Pending"]}
-        colors={["indigo", "cyan", "purple-500"]}
+        categories={["Assigned", "Done", "Pending"]}
+        colors={["indigo", "red", "yellow", "green"]}
         yAxisWidth={60}
         showAnimation={true}
         curveType="monotone"

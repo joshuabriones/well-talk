@@ -4,32 +4,6 @@ import { API_ENDPOINT } from "@/lib/api";
 
 const TotalCountCard = ({ userSession }) => {
   const [totalCountData, setTotalCountData] = useState([{}]);
-  // const totalCountData = [
-  //   {
-  //     title: "Total Students",
-  //     count: 312,
-  //     icon: "/student-ad.png",
-  //     bg: "bg-gradient-red-card",
-  //   },
-  //   {
-  //     title: "Total Teachers",
-  //     count: 21,
-  //     icon: "/teacher-ad.png",
-  //     bg: "bg-gradient-green-card",
-  //   },
-  //   {
-  //     title: "Total Counselors",
-  //     count: 5,
-  //     icon: "/counselor-da.png",
-  //     bg: "bg-gradient-blue-card",
-  //   },
-  //   {
-  //     title: "Total Appointments",
-  //     count: 300,
-  //     icon: "/calendar-ad.png",
-  //     bg: "bg-gradient-purple-card",
-  //   },
-  // ];
 
   const fetchUsers = async () => {
     const response = await fetch(
@@ -90,6 +64,9 @@ const TotalCountCard = ({ userSession }) => {
 
   useEffect(() => {
     fetchUsers();
+  }, []);
+
+  useEffect(() => {
     fetchAppointments();
   }, []);
 
