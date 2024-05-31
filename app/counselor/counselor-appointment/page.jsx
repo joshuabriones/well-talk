@@ -11,7 +11,7 @@ import "@/styles/counselor.css";
 
 // modals
 import { Navbar } from "@/components/ui/Navbar";
-import StudentModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
+import AddStudent from "@/components/ui/modals/counselor/appointments/AddStudent";
 import ModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 
@@ -41,6 +41,8 @@ const Appointment = () => {
   const [appointments, setAppointments] = useState([]);
   const [students, setStudents] = useState([{}]);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [openAddStudent, setOpenAddStudent] = useState(false);
 
   const userSession = getUserSession();
 
@@ -92,7 +94,7 @@ const Appointment = () => {
         appointment?.counselor?.id === userSession?.id &&
         appointment.appointmentStatus === "Assigned"
     );
-    console.log(filteredData);
+    console.log("Appointments: ", filteredData);
     setAppointments(filteredData);
   };
 
@@ -178,6 +180,10 @@ const Appointment = () => {
       console.log(err);
     }
   };
+
+  const filteredStudents = students.filter((user) =>
+    user?.firstName?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // handle reschedule // TO BE ADDED AFTER CALENDAR IMPLEMENTATION
   // const handleReschedule = () => {
@@ -288,7 +294,7 @@ const Appointment = () => {
       );
 
       if (response.ok) {
-        console.log("Appointment created successfully");
+        toast.success("Appointment set successfully");
       }
 
       setPurpose("");
@@ -298,7 +304,7 @@ const Appointment = () => {
       setIsAddAppointment(false);
       setIsViewAppointment(true);
     } catch (error) {
-      console.log(error);
+      toast.error("Failed to set appointment");
     }
   };
 
@@ -364,8 +370,7 @@ const Appointment = () => {
               View Appointments
             </button>
           </div>
-
-          {isViewAppointment ? (
+          {appointments && isViewAppointment ? (
             <div className="overflow-x-auto max-w-full lg:px-10 xs:px-1 flex flex-col items-center mt-10">
               <table className="table bg-gray-100">
                 {/* head */}
@@ -427,12 +432,12 @@ const Appointment = () => {
                       </td>
                       <td>
                         <p>
-                          {appointments.appointmentPurpose.length > 50
-                            ? `${appointments.appointmentPurpose.substring(
+                          {appointments?.appointmentPurpose?.length > 50
+                            ? `${appointments?.appointmentPurpose?.substring(
                                 0,
                                 40
                               )}...`
-                            : appointments.appointmentPurpose}
+                            : appointments?.appointmentPurpose}
                         </p>
                       </td>
                       <td className="text-center">
@@ -504,7 +509,13 @@ const Appointment = () => {
             </div>
           ) : (
             <div className="flex w-full py-10 px-8 gap-10 justify-center md:flex-row flex-col">
-              <div className="flex-1">
+              <div className="flex-1 flex flex-col gap-2">
+                <button
+                  onClick={() => setOpenAddStudent(true)}
+                  className="px-4 py-2 bg-white border border-black rounded-md hover:bg-black hover:text-white duration-300 self-end"
+                >
+                  Add Student
+                </button>
                 <Calendar
                   bordered
                   renderCell={renderCell}
@@ -549,11 +560,22 @@ const Appointment = () => {
                     ))}
                   </div>
                   <hr />
-                  <p>👨🏻‍🎓 Select a student you wish to assign an appointment</p>
+                  <p className="mb-2">
+                    👨🏻‍🎓 Select a student you wish to assign an appointment
+                  </p>
+                  <SearchInput
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                  />
                   <div className="mt-4 w-full max-h-[10%] overflow-y-scroll text-left">
-                    {students.map((student) => (
+                    {filteredStudents.map((student) => (
                       <button
-                        onClick={() => setSelectedStudentId(student.id)}
+                        onClick={() => {
+                          toast.success(
+                            `Student selected: ${student.firstName} ${student.lastName}`
+                          );
+                          setSelectedStudentId(student.id);
+                        }}
                         className="bg-primary-green text-white block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg"
                         key={student.id}
                       >
@@ -636,11 +658,46 @@ const Appointment = () => {
           // handleUpdateStatus={handleUpdateStatus}
         ></ModalAppointmentInfo>
       )}
+
+      {openAddStudent && <AddStudent setOpenAddStudent={setOpenAddStudent} />}
     </div>
   );
 };
 
 export default dynamic(() => Promise.resolve(Appointment), { ssr: false });
+
+function SearchInput({ searchTerm, setSearchTerm }) {
+  return (
+    <div class="relative">
+      <input
+        type="text"
+        placeholder="Search students..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        class="relative w-full h-12 px-4 transition-all border rounded-xl text-slate-500 autofill:bg-white"
+      />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="absolute w-6 h-6 cursor-pointer top-3 right-4 stroke-slate-400 peer-disabled:cursor-not-allowed"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        aria-hidden="true"
+        aria-labelledby="title-9 description-9"
+        role="graphics-symbol"
+      >
+        <title id="title-9">Search icon</title>
+        <desc id="description-9">Icon description here</desc>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+        />
+      </svg>
+    </div>
+  );
+}
 
 function getTodoList(date) {
   const day = date.getDate();
