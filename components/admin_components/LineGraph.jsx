@@ -56,7 +56,7 @@ export function LineGraph({ userSession }) {
   const dataFormatter = (number) => number.toString();
 
   return (
-    <div className="mt-7 rounded-2xl bg-white p-8 drop-shadow-lg w-full">
+    <div className="mt-7 rounded-2xl bg-white p-8 shadow-2xl w-full col-span-2">
       <h3 className="text-lg font-bold text-tremor-content-strong">
         Appointments Over Time
       </h3>

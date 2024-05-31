@@ -75,7 +75,7 @@ const TotalCountCard = ({ userSession }) => {
       {totalCountData.map((data, index) => (
         <div
           key={data.title}
-          className={`shadow-xl text-slate-50 ${data.bg} rounded-2xl px-7 lg:py-5 sm:py-3 flex justify-between items-center`}
+          className={`shadow-2xl text-slate-50 ${data.bg} rounded-2xl px-7 lg:py-5 sm:py-3 flex justify-between items-center`}
         >
           <div>
             <div className="text-lg">{data.title}</div>

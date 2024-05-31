@@ -48,7 +48,7 @@ export const BarGraph = ({ userSession }) => {
   }, []);
 
   return (
-    <div className="w-full rounded-2xl shadow-xl bg-white mt-7 p-8 lg:col-span-2 sm:col-span-3">
+    <div className="w-full rounded-2xl shadow-2xl bg-white mt-7 p-8 lg:col-span-2 sm:col-span-3">
       <h3 className="text-lg font-bold text-tremor-content-strong">
         Total Users
       </h3>

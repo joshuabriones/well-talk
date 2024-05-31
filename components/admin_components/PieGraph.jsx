@@ -44,7 +44,7 @@ export const PieGraph = ({ userSession }) => {
   const dataFormatter = (number) => number.toString();
 
   return (
-    <div className="w-full flex flex-col items-center justify-between shadow-xl rounded-2xl bg-white mt-7 p-8 lg:col-span-1 sm:col-span-3">
+    <div className="w-full flex flex-col items-center justify-between shadow-2xl rounded-2xl bg-white mt-7 p-8 lg:col-span-1 sm:col-span-3">
       <h3 className="text-lg font-bold text-tremor-content-strong">
         Student Programs
       </h3>
