@@ -15,7 +15,9 @@ const AddReferral = ({ teacherId, onOpen }) => {
   const [reason, setReason] = useState("");
 
   console.log(teacherId, firstName, lastName, email, idNumber, reason);
-
+const handleClose = () => {
+    onOpen(false);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,6 +43,8 @@ const AddReferral = ({ teacherId, onOpen }) => {
       if (!response.ok) {
         throw new Error("Failed to create referral");
       }
+
+      handleClose();
       const data = await response.json();
       console.log(data);
     } catch (error) {
@@ -48,9 +52,7 @@ const AddReferral = ({ teacherId, onOpen }) => {
     }
   };
 
-  const handleClose = () => {
-    onOpen(false);
-  };
+  
 
   return (
     <>
@@ -60,7 +62,7 @@ const AddReferral = ({ teacherId, onOpen }) => {
         className="modal-toggle"
         checked={true}
       />
-      <div className="modal" role="dialog">
+      <div className="modal border border-slate-100 border-2" role="dialog">
         <div
           className="modal-box p-12 px-16 flex flex-col overflow-auto justify-center"
           style={{
