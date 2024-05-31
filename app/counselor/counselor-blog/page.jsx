@@ -1,7 +1,7 @@
 "use client";
 import { Navbar } from "@/components/ui/Navbar";
 import { useState } from "react";
-import "../../../css/createblog.css";
+// import "../../../css/createblog.css";
 import CreatePostSection from "@/components/ui/CreatePost";
 
 export default function CounselorBlog() {
