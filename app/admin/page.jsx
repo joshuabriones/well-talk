@@ -12,12 +12,10 @@ import Appointments from "@/components/admin_components/pages/Appointments";
 import Load from "@/components/Load";
 import Cookies from "js-cookie";
 import { getUserSession } from "@/lib/helperFunctions";
-import { useRouter } from "next/navigation";
 
 const AdminDashboard = () => {
   const userSession = getUserSession();
   const [page, setPage] = useState("Dashboard");
-  const router = useRouter();
 
   if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
     return <Load route="login" />;
@@ -34,7 +32,7 @@ const AdminDashboard = () => {
         sx={{ flexGrow: 1, p: 3, backgroundColor: "white" }}
       >
         <DrawerHeader />
-        {page === "Dashboard" && <Dashboard />}
+        {page === "Dashboard" && <Dashboard userSession={userSession} />}
         {page === "Appointments" && <Appointments />}
         {page === "Users" && <Users />}
         {page === "Referrals" && <Referrals />}

@@ -73,6 +73,7 @@ const AppointmentsTable = ({
             />
           </svg>
         </div>
+
         <select
           value={selectedStatus}
           onChange={handleStatusChange}

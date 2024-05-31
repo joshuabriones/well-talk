@@ -3,10 +3,12 @@ import Loading from "@/components/Loading";
 import { Navbar } from "@/components/ui/Navbar";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
+import Dropdown from "@/components/ui/inputs/Dropdown";
 import TextInput from "@/components/ui/inputs/TextInput";
 import { imgDB } from "@/firebaseConfig";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
+import { collegeOptions } from "@/lib/inputOptions";
 import { PlusIcon } from "@heroicons/react/solid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import Cookies from "js-cookie";
@@ -15,8 +17,9 @@ import { v4 } from "uuid"; // Make sure this is configured correctly
 
 export default function Profile() {
 	const [isEditMode, setIsEditMode] = useState(false);
+    const [editCollege, setEditCollege] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const [counselorProfile, setCounselorProfile] = useState(null);
+	const [teacherProfile, setTeacherProfile] = useState(null);
 	const [updatedProfile, setUpdatedProfile] = useState({});
 	const [loading, setLoading] = useState(true);
 	const [passwords, setPasswords] = useState({
@@ -35,10 +38,10 @@ export default function Profile() {
 	console.log(userSession);
 
 	useEffect(() => {
-		const fetchCounselorProfile = async () => {
+		const fetchTeacherProfile = async () => {
 			try {
 				const response = await fetch(
-					`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_ID}${userSession.id}`,
+					`${process.env.BASE_URL}${API_ENDPOINT.GET_TEACHER_BY_ID}${userSession.id}`,
 					{
 						method: "GET",
 						headers: {
@@ -51,7 +54,7 @@ export default function Profile() {
 					throw new Error("Failed to fetch posts");
 				}
 				const data = await response.json();
-				setCounselorProfile(data);
+				setTeacherProfile(data);
 				setUpdatedProfile(data);
 				setLoading(false);
 			} catch (error) {
@@ -60,15 +63,16 @@ export default function Profile() {
 			}
 		};
 
-		fetchCounselorProfile();
+		fetchTeacherProfile();
 	}, []);
 
-	if (userSession && userSession.role !== "counselor") {
+	if (userSession && userSession.role !== "teacher") {
 		return <Loading route={userSession.role} />;
 	}
 
 	const handleUpdateProfile = () => {
 		setIsEditMode(true);
+        setEditCollege(true);
 	};
 
 	const validatePassword = (password) => {
@@ -87,14 +91,14 @@ export default function Profile() {
 
 	const handleCancelEdit = () => {
 		setIsEditMode(false);
-		setUpdatedProfile(counselorProfile);
+		setUpdatedProfile(teacherProfile);
 	};
 
 	const handleSaveProfile = async (e) => {
 		e.preventDefault();
 		try {
 			const response = await fetch(
-				`${process.env.BASE_URL}${API_ENDPOINT.UPDATE_COUNSELOR}${userSession.id}`,
+				`${process.env.BASE_URL}${API_ENDPOINT.UPDATE_TEACHER}${userSession.id}`,
 				{
 					method: "PUT",
 					headers: {
@@ -109,6 +113,7 @@ export default function Profile() {
 						gender: updatedProfile.gender,
 						password: updatedProfile.password,
 						image: updatedProfile.image,
+						college: updatedProfile.college,
 					}),
 				}
 			);
@@ -117,15 +122,15 @@ export default function Profile() {
 				const errorData = await response.json();
 				console.error("Server error response:", errorData);
 				throw new Error(
-					`Failed to update counselor profile: ${response.statusText}`
+					`Failed to update teacher profile: ${response.statusText}`
 				);
 			}
 
 			const data = await response.json();
-			setCounselorProfile(data);
+			setTeacherProfile(data);
 			setIsEditMode(false);
 		} catch (error) {
-			console.error("Error updating counselor profile:", error);
+			console.error("Error updating teacher profile:", error);
 		}
 	};
 	console.log("Updated Profile:", updatedProfile);
@@ -160,12 +165,12 @@ export default function Profile() {
 	if (loading) {
 		return <div>Loading...</div>;
 	}
-	console.log("Counselor Profile:", counselorProfile);
+	console.log("Teacher Profile:", teacherProfile);
 	console.log("Updated Profile:", updatedProfile);
 
 	return (
 		<div className="p-4 mt-16 md:p-12">
-			<Navbar userType="counselor" />
+			<Navbar userType="teacher" />
 			<div
 				className="pattern-overlay pattern-left absolute -z-10"
 				style={{ transform: "scaleY(-1)", top: "-50px" }}>
@@ -190,7 +195,7 @@ export default function Profile() {
 						<div className="w-full md:w-2/12 flex justify-center items-center avatar relative">
 							<div className="w-48 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-1">
 								<img
-									src={counselorProfile?.image}
+									src={teacherProfile?.image}
 									alt="avatar"
 								/>
 								{isEditMode && (
@@ -212,11 +217,11 @@ export default function Profile() {
 						{/* User Info */}
 						<div className="w-full md:w-10/12 flex flex-col justify-center md:mt-0 mt-4">
 							<h1 className="font-Merriweather text-2xl md:text-4xl font-bold tracking-tight mt-4">
-								Hello, {counselorProfile?.firstName}{" "}
-								{counselorProfile?.lastName}
+								Hello, {teacherProfile?.firstName}{" "}
+								{teacherProfile?.lastName}
 							</h1>
 							<p className="font-Merriweather tracking-tight font-thin my-2">
-								{counselorProfile?.institutionalEmail}
+								{teacherProfile?.institutionalEmail}
 							</p>
 							<div className="w-full md:w-5/12 mt-1">
 								{!isEditMode && (
@@ -242,7 +247,7 @@ export default function Profile() {
 											value={
 												isEditMode
 													? updatedProfile?.firstName
-													: counselorProfile?.firstName
+													: teacherProfile?.firstName
 											}
 											onChange={handleChange("firstName")}
 											placeholder="First Name"
@@ -256,7 +261,7 @@ export default function Profile() {
 											value={
 												isEditMode
 													? updatedProfile.lastName
-													: counselorProfile?.lastName
+													: teacherProfile?.lastName
 											}
 											onChange={handleChange("lastName")}
 											readOnly={!isEditMode}
@@ -274,7 +279,7 @@ export default function Profile() {
 											value={
 												isEditMode
 													? updatedProfile.idNumber
-													: counselorProfile?.idNumber
+													: teacherProfile?.idNumber
 											}
 											onChange={handleChange("idNumber")}
 											readOnly
@@ -287,13 +292,59 @@ export default function Profile() {
 											value={
 												isEditMode
 													? updatedProfile.gender
-													: counselorProfile?.gender
+													: teacherProfile?.gender
 											}
 											onChange={handleChange("gender")}
 											readOnly
 											disabled
 										/>
 									</div>
+								</div>
+							</div>
+							<div>
+								<div className="w-full pb-6">
+									{/* {editCollege ? (
+										<Dropdown
+											label="Department"
+											value={
+												updatedProfile.college ||
+												teacherProfile?.college ||
+												""
+											}
+											onChange={(value) =>
+												setUpdatedProfile(
+													(prevProfile) => ({
+														...prevProfile,
+														college: value,
+													})
+												)
+											}
+											readOnly={!isEditMode}
+											disabled={!isEditMode}
+											dropdownOptions={collegeOptions}
+											isEditMode={isEditMode}
+										/>
+									) : ( */}
+										<TextInput
+											label="Department"
+											value={
+												updatedProfile.college ||
+												teacherProfile?.college ||
+												""
+											}
+											onChange={(e) =>
+												setUpdatedProfile(
+													(prevProfile) => ({
+														...prevProfile,
+														college: e.target.value,
+													})
+												)
+											}
+											readOnly
+											disabled
+                                            // style={{ display: isEditMode ? "none" : "block" }}
+										/>
+									{/* )} */}
 								</div>
 							</div>
 							{/* Additional Details */}

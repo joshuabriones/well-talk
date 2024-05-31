@@ -1,14 +1,16 @@
 "use client";
+import { PlusIcon } from '@heroicons/react/solid';
 import { Navbar } from "@/components/ui/Navbar";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextInput from "@/components/ui/inputs/TextInput";
-import TextDisplay from "@/components/ui/student/TextDisplay";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { z } from "zod";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { v4 } from "uuid"; // Make sure this is configured correctly
+import { imgDB } from "@/firebaseConfig"
 
 export default function StudentProfile() {
   const userSession = getUserSession();
@@ -88,6 +90,24 @@ export default function StudentProfile() {
     }));
   };
 
+  const handleChangeAddress = (e) => {
+    const value = e.target.value;
+    const parts = value.split(',');
+
+    const barangay = parts[0] ? parts[0].trim() : '';
+    const specificAddress = parts[1] ? parts[1].trim() : '';
+    const city = parts[2] ? parts[2].trim() : '';
+
+
+    setUpdatedProfile((prevProfile) => ({
+      ...prevProfile,
+      barangay: barangay,
+      specificAddress: specificAddress,
+      city: city,
+    }));
+  };
+
+
   const handleCancelEdit = () => {
     setIsEditMode(false);
     setUpdatedProfile(studentProfile);
@@ -110,6 +130,7 @@ export default function StudentProfile() {
             firstName: updatedProfile.firstName,
             lastName: updatedProfile.lastName,
             gender: updatedProfile.gender,
+            contactNumber: updatedProfile.contactNumber,
             password: updatedProfile.password,
             image: updatedProfile.image,
             college: updatedProfile.college,
@@ -157,18 +178,32 @@ export default function StudentProfile() {
     }));
   };
 
+  const handleFileChange = async (e) => {
+		const file = e.target.files[0];
+		if (file) {
+		  const imgRef = ref(imgDB, `UserAvatars/${v4()}`);
+		  const snapshot = await uploadBytes(imgRef, file);
+		  const imgUrl = await getDownloadURL(snapshot.ref);
+		  setUpdatedProfile((prevProfile) => ({
+			...prevProfile,
+			image: imgUrl,
+		  }));
+		}
+	  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
+
 
   console.log("Student Profile:", studentProfile);
   console.log("Updated Profile:", updatedProfile);
 
   return (
     <div className="p-4 mt-16 md:p-12">
-      <section>
-        <Navbar userType="student" />
-      </section>
+
+      <Navbar userType="student" />
+
       <div
         className="pattern-overlay pattern-left absolute -z-10"
         style={{ transform: "scaleY(-1)", top: "-50px" }}
@@ -190,9 +225,24 @@ export default function StudentProfile() {
         <div className="w-full max-w-screen-lg mx-auto flex flex-col gap-4 md:gap-8">
           <section className="flex flex-col md:flex-row md:gap-10 mb-8 justify-center items-center">
             {/* Avatar */}
-            <div className="w-full md:w-2/12 flex justify-center items-center avatar">
+            <div className="w-full md:w-2/12 flex justify-center items-center avatar relative">
               <div className="w-48 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-1">
                 <img src={studentProfile?.image} alt="avatar" />
+                {isEditMode && (
+                  <label
+                    htmlFor="file-upload"
+                    className="absolute bottom-0 right-5 bg-primary-green text-white p-1 rounded-full cursor-pointer"
+                  >
+                    <input
+                      id="file-upload"
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                    />
+                    <PlusIcon className="h-5 w-5 text-white" />
+                  </label>
+                )}
               </div>
             </div>
             {/* User Info */}
@@ -335,17 +385,14 @@ export default function StudentProfile() {
                       label="Address"
                       value={
                         isEditMode
-                          ? `${updatedProfile.barangay}, ${updatedProfile.province}, ${updatedProfile.specificAddress}`
-                          : `${studentProfile?.barangay}, ${studentProfile?.province}, ${studentProfile?.specificAddress}`
+                          ? `${updatedProfile.barangay}, ${updatedProfile.specificAddress}, ${updatedProfile.city}`
+                          : `${studentProfile?.barangay}, ${studentProfile?.specificAddress}, ${studentProfile?.city}`
                       }
-                      onChange={handleChange(
-                        "barangay",
-                        "province",
-                        "specificAddress"
-                      )}
+                      onChange={handleChangeAddress}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
                     />
+
                   </div>
                 </div>
               </div>
@@ -357,7 +404,7 @@ export default function StudentProfile() {
                   Security Information
                 </h1>
                 <div className="flex flex-col gap-6">
-                  <TextDisplay
+                  {/* <TextDisplay
                     type="password"
                     id="currentPassword"
                     value="●●●●●●●●"
@@ -367,7 +414,7 @@ export default function StudentProfile() {
                     showInvalidPassword={showInvalidPassword.currentPassword}
                     readOnly
                     disabled
-                  />
+                  /> */}
                   {/* New Password */}
                   <TextInput
                     type="password"

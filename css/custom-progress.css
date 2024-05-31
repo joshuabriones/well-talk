@@ -6,3 +6,14 @@
 .custom-progress-bar.hidden {
   opacity: 0; /* Hidden state with opacity 0 */
 }
+
+.custom-textarea {
+  outline: none;
+  border: 2px solid transparent;
+}
+
+.custom-textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #32CD32; /* Custom green outline */
+  border-color: "primary-green";
+}
