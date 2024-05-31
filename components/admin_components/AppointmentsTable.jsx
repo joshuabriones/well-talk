@@ -73,19 +73,17 @@ const AppointmentsTable = ({
             />
           </svg>
         </div>
-        <div className="flex gap-4">
-          <select
-            value={selectedStatus}
-            onChange={handleStatusChange}
-            className="w-40 rounded-xl text-slate-500"
-          >
-            <option value="all">All</option>
-            <option value="Completed">Completed</option>
-            <option value="Approve">Approve</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
-          <button>Add Appointment</button>
-        </div>
+
+        <select
+          value={selectedStatus}
+          onChange={handleStatusChange}
+          className="w-40 rounded-xl text-slate-500"
+        >
+          <option value="all">All</option>
+          <option value="Completed">Completed</option>
+          <option value="Approve">Approve</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
       </div>
 
       <table className="mt-8 lg:w-full xs:w-[900px]">
