@@ -1,6 +1,6 @@
-import React from "react";
+import Cookies from "js-cookie";
 
-const TotalCountCard = () => {
+const TotalCountCard = ({ userSession }) => {
   const totalCountData = [
     {
       title: "Total Students",
