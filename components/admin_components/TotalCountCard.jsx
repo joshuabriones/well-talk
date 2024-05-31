@@ -4,6 +4,7 @@ import { API_ENDPOINT } from "@/lib/api";
 
 const TotalCountCard = ({ userSession }) => {
   const [totalCountData, setTotalCountData] = useState([{}]);
+  const [totalAppointments, setTotalAppointments] = useState(null);
 
   const fetchUsers = async () => {
     const response = await fetch(
@@ -51,22 +52,16 @@ const TotalCountCard = ({ userSession }) => {
       }
     );
     const appointmentData = await appointments.json();
-    setTotalCountData((prev) => [
-      ...prev,
-      {
-        title: "Total Appointments",
-        count: appointmentData.length,
-        icon: "/calendar-ad.png",
-        bg: "bg-gradient-purple-card",
-      },
-    ]);
+    setTotalAppointments({
+      title: "Total Appointments",
+      count: appointmentData.length,
+      icon: "/calendar-ad.png",
+      bg: "bg-gradient-purple-card",
+    });
   };
 
   useEffect(() => {
     fetchUsers();
-  }, []);
-
-  useEffect(() => {
     fetchAppointments();
   }, []);
 
@@ -84,6 +79,20 @@ const TotalCountCard = ({ userSession }) => {
           <img src={data.icon} className="h-2/3 p-3 border-2 rounded-full" />
         </div>
       ))}
+      {totalAppointments && (
+        <div
+          className={`shadow-2xl text-slate-50 ${totalAppointments.bg} rounded-2xl px-7 lg:py-5 sm:py-3 flex justify-between items-center`}
+        >
+          <div>
+            <div className="text-lg">{totalAppointments.title}</div>
+            <div className="text-6xl font-bold">{totalAppointments.count}</div>
+          </div>
+          <img
+            src={totalAppointments.icon}
+            className="h-2/3 p-3 border-2 rounded-full"
+          />
+        </div>
+      )}
     </div>
   );
 };
