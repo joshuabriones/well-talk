@@ -33,6 +33,7 @@
 		"arctic": "^1.5.0",
 		"axios": "^1.6.8",
 		"bcrypt": "^5.1.1",
+		"bcryptjs": "^2.4.3",
 		"busboy": "^1.6.0",
 		"daisyUI": "npm:daisyui@^4.10.2",
 		"date-fns": "^3.6.0",
