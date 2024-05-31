@@ -166,9 +166,9 @@ export default function StudentProfile() {
 
   return (
     <div className="p-4 mt-16 md:p-12">
-      <section>
+
         <Navbar userType="student" />
-      </section>
+
       <div
         className="pattern-overlay pattern-left absolute -z-10"
         style={{ transform: "scaleY(-1)", top: "-50px" }}

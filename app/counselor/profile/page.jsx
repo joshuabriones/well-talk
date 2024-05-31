@@ -1,26 +1,154 @@
 "use client";
+import Loading from "@/components/Loading";
 import { Navbar } from "@/components/ui/Navbar";
-import InputName from "@/components/ui/inputs/InputName";
+import FullButton from "@/components/ui/buttons/FullButton";
+import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextInput from "@/components/ui/inputs/TextInput";
-import UpdateProfile from "@/components/ui/modals/counselor/updateProfile/updateProfile";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
+import TextDisplay from "@/components/ui/student/TextDisplay";
+import { API_ENDPOINT } from "@/lib/api";
+import { getUserSession } from "@/lib/helperFunctions";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 
 export default function Profile() {
+	const [isEditMode, setIsEditMode] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const { data: session } = useSession();
+	const [counselorProfile, setCounselorProfile] = useState(null);
+	const [updatedProfile, setUpdatedProfile] = useState({});
+	const [loading, setLoading] = useState(true);
+	const [passwords, setPasswords] = useState({
+		currentPassword: "",
+		newPassword: "",
+		confirmPassword: "",
+	});
+
+	const [showInvalidPassword, setShowInvalidPassword] = useState({
+		currentPassword: false,
+		newPassword: false,
+		confirmPassword: false,
+	});
+
+	const userSession = getUserSession();
+	console.log(userSession);
+
+	useEffect(() => {
+		const fetchCounselorProfile = async () => {
+			try {
+				const response = await fetch(
+					`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_ID}${userSession.id}`,
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${Cookies.get("token")}`,
+						},
+					}
+				);
+				if (!response.ok) {
+					throw new Error("Failed to fetch posts");
+				}
+				const data = await response.json();
+				setCounselorProfile(data);
+				setUpdatedProfile(data);
+				setLoading(false);
+			} catch (error) {
+				console.error("Error fetching posts:", error);
+				setLoading(false);
+			}
+		};
+
+		fetchCounselorProfile();
+	}, []);
+
+	if (userSession && userSession.role !== "counselor") {
+		return <Loading route={userSession.role} />;
+	}
 
 	const handleUpdateProfile = () => {
-		setShowModal(true);
+		setIsEditMode(true);
 	};
 
-	const handleCloseModal = () => {
-		setShowModal(false);
+	const validatePassword = (password) => {
+		const regex =
+			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+		return regex.test(password);
 	};
+
+	const handleChange = (key) => (e) => {
+		const value = e.target.value;
+		setUpdatedProfile((prevProfile) => ({
+			...prevProfile,
+			[key]: value,
+		}));
+	};
+
+	const handleCancelEdit = () => {
+		setIsEditMode(false);
+		setUpdatedProfile(counselorProfile);
+	};
+
+	const handleSaveProfile = async (e) => {
+		e.preventDefault();
+		try {
+			const response = await fetch(
+				`${process.env.BASE_URL}${API_ENDPOINT.UPDATE_COUNSELOR}${userSession.id}`,
+				{
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${Cookies.get("token")}`,
+					},
+					body: JSON.stringify({
+						institutionalEmail: updatedProfile.institutionalEmail,
+						idNumber: updatedProfile.idNumber,
+						firstName: updatedProfile.firstName,
+						lastName: updatedProfile.lastName,
+						gender: updatedProfile.gender,
+						password: updatedProfile.password,
+						image: updatedProfile.image,
+					}),
+				}
+			);
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				console.error("Server error response:", errorData);
+				throw new Error(
+					`Failed to update counselor profile: ${response.statusText}`
+				);
+			}
+
+			const data = await response.json();
+			setCounselorProfile(data);
+			setIsEditMode(false);
+		} catch (error) {
+			console.error("Error updating counselor profile:", error);
+		}
+	};
+	console.log("Updated Profile:", updatedProfile);
+
+	const handlePasswordChange = (label) => (e) => {
+		const pw = e.target.value;
+
+		setPasswords((prevPasswords) => ({
+			...prevPasswords,
+			[label]: pw,
+		}));
+
+		setShowInvalidPassword((prevShowInvalidPassword) => ({
+			...prevShowInvalidPassword,
+			[label]: pw && !validatePassword(pw),
+		}));
+	};
+
+	if (loading) {
+		return <div>Loading...</div>;
+	}
+	console.log("Counselor Profile:", counselorProfile);
+	console.log("Updated Profile:", updatedProfile);
 
 	return (
-		<div>
-			<main>
+		<div className="p-4 mt-16 md:p-12">
 				<Navbar userType="counselor" />
 				<div
 					className="pattern-overlay pattern-left absolute -z-10"
@@ -39,63 +167,188 @@ export default function Profile() {
 						className="w-full h-full object-contain"
 					/>
 				</div>
-				<div className="mx-60 mt-24">
-					{/* top part */}
-					<div className="flex mt-4 pt-24">
-						<div className="avatar flex">
-							<div className="w-40 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-2">
-								<img src={session?.user.image} />
-							</div>
-						</div>
-						<div className="ml-16 my-4">
-							<h1 className="font-Merriweather text-4xl font-thin tracking-tight">
-								Hello, {session?.user.name}
-							</h1>
-							<p className="font-Merriweather tracking-tight font-thin my-2">
-								{session?.user.email}
-							</p>
-							<button
-								className="btn w-44 text-sm rounded-full bg-[#222222] font-Merriweather text-white"
-								onClick={handleUpdateProfile}>
-								Update Profile
-							</button>
-							{/* Render the modal conditionally */}
-							{showModal && (
-								<UpdateProfile onClose={handleCloseModal} />
-							)}
-						</div>
-					</div>
-					{/* ubos */}
-					<div>
-						<div className="flex flex-col gap-y-2.5 my-16 py-4">
-							<div className="w-full flex flex-row gap-x-6">
-								<InputName
-									firstName={session?.user.name.split(" ")[0]}
-									lastName={session?.user.name.split(" ")[1]}
-									gender={session?.user.gender}
-									readOnly={true}
-								/>
-							</div>
-							<div className="w-full flex flex-row gap-x-6">
-								<div className="w-full">
-									<TextInput
-										label="ID Number"
-										type="text"
-										value={session?.user.idNumber}
-									/>
-								</div>
-								<div className="w-full">
-									<TextInput
-										label="Password"
-										type="password"
-										value={session?.user.password}
+				<section className="w-full pt-4 md:mt-6 p-8 md:p-12 flex flex-col justify-center items-center">
+					<div className="w-full max-w-screen-lg mx-auto flex flex-col gap-4 md:gap-8">
+						<section className="flex flex-col md:flex-row md:gap-10 mb-8 justify-center items-center">
+							{/* Avatar */}
+							<div className="w-full md:w-2/12 flex justify-center items-center avatar">
+								<div className="w-48 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-1">
+									<img
+										src={counselorProfile?.image}
+										alt="avatar"
 									/>
 								</div>
 							</div>
-						</div>
+							{/* User Info */}
+							<div className="w-full md:w-10/12 flex flex-col justify-center md:mt-0 mt-4">
+								<h1 className="font-Merriweather text-2xl md:text-4xl font-bold tracking-tight mt-4">
+									Hello, {counselorProfile?.firstName}{" "}
+									{counselorProfile?.lastName}
+								</h1>
+								<p className="font-Merriweather tracking-tight font-thin my-2">
+									{counselorProfile?.institutionalEmail}
+								</p>
+								<div className="w-full md:w-5/12 mt-1">
+									{!isEditMode && (
+										<FullButton
+											onClick={handleUpdateProfile}>
+											Update Profile
+										</FullButton>
+									)}
+								</div>
+							</div>
+						</section>
+
+						<section className="flex flex-col md:flex-row gap-6 md:gap-10 mt-2">
+							{/* User Information */}
+							<div className="w-full md:w-4/6">
+								<div className="">
+									<h1 className="font-Merriweather text-slate-600 text-2xl font-semibold tracking-tight py-4">
+										User Information
+									</h1>
+									<div className="flex flex-col md:flex-row gap-4 pb-6">
+										<div className="w-full md:w-full">
+											<TextInput
+												label="First Name"
+												value={
+													isEditMode
+														? updatedProfile?.firstName
+														: counselorProfile?.firstName
+												}
+												onChange={handleChange(
+													"firstName"
+												)}
+												placeholder="First Name"
+												readOnly={!isEditMode}
+												disabled={!isEditMode}
+											/>
+										</div>
+										<div className="w-full md:w-full">
+											<TextInput
+												label="Last Name"
+												value={
+													isEditMode
+														? updatedProfile.lastName
+														: counselorProfile?.lastName
+												}
+												onChange={handleChange(
+													"lastName"
+												)}
+												readOnly={!isEditMode}
+												disabled={!isEditMode}
+											/>
+										</div>
+									</div>
+								</div>
+								{/* College Information */}
+								<div>
+									<div className="flex flex-col md:flex-row gap-4 pb-6">
+										<div className="w-full md:w-1/2">
+											<TextInput
+												label="ID Number"
+												value={
+													isEditMode
+														? updatedProfile.idNumber
+														: counselorProfile?.idNumber
+												}
+												onChange={handleChange(
+													"idNumber"
+												)}
+												readOnly
+												disabled
+											/>
+										</div>
+										<div className="w-full md:w-1/2">
+											<TextInput
+												label="Gender"
+												value={
+													isEditMode
+														? updatedProfile.gender
+														: counselorProfile?.gender
+												}
+												onChange={handleChange(
+													"gender"
+												)}
+												readOnly
+												disabled
+											/>
+										</div>
+									</div>
+								</div>
+								{/* Additional Details */}
+							</div>
+							{/* Security Information */}
+							<div className="w-full md:w-2/6">
+								<div>
+									<h1 className="font-Merriweather text-slate-600 text-2xl font-semibold tracking-tight py-4">
+										Security Information
+									</h1>
+									<div className="flex flex-col gap-6">
+										<TextDisplay
+											type="password"
+											id="currentPassword"
+											value="●●●●●●●●"
+											onChange={handlePasswordChange(
+												"currentPassword"
+											)}
+											placeholder="Enter current password"
+											label="Current Password"
+											showInvalidPassword={
+												showInvalidPassword.currentPassword
+											}
+											readOnly
+											disabled
+										/>
+										{/* New Password */}
+										<TextInput
+											type="password"
+											id="newPassword"
+											value={passwords.newPassword}
+											onChange={handlePasswordChange(
+												"newPassword"
+											)}
+											placeholder="Enter new password"
+											label="New Password"
+											showInvalidPassword={
+												showInvalidPassword.newPassword
+											}
+											readOnly={!isEditMode}
+											disabled={!isEditMode}
+										/>
+										<TextInput
+											type="password"
+											id="confirmPassword"
+											value={passwords.confirmPassword}
+											onChange={handlePasswordChange(
+												"confirmPassword"
+											)}
+											placeholder="Confirm new password"
+											label="Confirm Password"
+											showInvalidPassword={
+												showInvalidPassword.confirmPassword
+											}
+											readOnly={!isEditMode}
+											disabled={!isEditMode}
+										/>
+									</div>
+								</div>
+							</div>
+						</section>
+
+						{isEditMode && (
+							<div className="flex justify-end mt-4">
+								<div className="flex flex-row gap-6 w-full">
+									<HollowButton onClick={handleCancelEdit}>
+										Cancel
+									</HollowButton>
+									<FullButton onClick={handleSaveProfile}>
+										Save
+									</FullButton>
+								</div>
+							</div>
+						)}
 					</div>
-				</div>
-			</main>
+				</section>
 		</div>
 	);
 }
