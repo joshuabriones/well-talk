@@ -1,3 +1,5 @@
+"use client";
+
 import phone from "@/public/images/emer/phone.png";
 
 import "@/css/emergency/floatingicon.css";
