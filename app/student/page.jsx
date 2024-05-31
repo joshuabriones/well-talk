@@ -8,90 +8,90 @@ import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
 import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function Home() {
-  const [selectedButton, setSelectedButton] = useState("featured");
-  const [posts, setPosts] = useState([]);
-  const [showFilterPostModal, setShowFilterModal] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const userSession = getUserSession();
+function Home() {
+	const [selectedButton, setSelectedButton] = useState("featured");
+	const [posts, setPosts] = useState([]);
+	const [showFilterPostModal, setShowFilterModal] = useState(false);
+	const [loading, setLoading] = useState(true);
+	const router = useRouter();
+	const userSession = getUserSession();
 
-  // to be removed
-  const { data: session, status } = useSession();
+	// to be removed
+	const { data: session, status } = useSession();
 
-  const fetchPosts = async () => {
-    try {
-      const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_POSTS}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch posts");
-      }
-      const data = await response.json();
-      setPosts(data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-      setLoading(false);
-    }
-  };
-  /* Handling unauthenticated users */
-  if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
-    return <Load route="login" />;
-  }
+	const fetchPosts = async () => {
+		try {
+			const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_POSTS}`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${Cookies.get("token")}`,
+				},
+			});
+			if (!response.ok) {
+				throw new Error("Failed to fetch posts");
+			}
+			const data = await response.json();
+			setPosts(data);
+			setLoading(false);
+		} catch (error) {
+			console.error("Error fetching posts:", error);
+			setLoading(false);
+		}
+	};
+	/* Handling unauthenticated users */
+	if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
+		return <Load route="login" />;
+	}
 
-  if (userSession && userSession.role !== "student") {
-    return <Load route={userSession.role} />;
-  }
+	if (userSession && userSession.role !== "student") {
+		return <Load route={userSession.role} />;
+	}
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+	useEffect(() => {
+		fetchPosts();
+	}, []);
 
-  console.log(userSession);
+	console.log(userSession);
 
-
-  return (
-    <div>
-      <main className="min-h-screen">
-        <Navbar userType="student" />
-        <div
-          className="pattern-overlay pattern-left absolute -z-10"
-          style={{ transform: "scaleY(-1)", top: "-50px" }}
-        >
-          <img src="/images/landing/lleft.png" alt="pattern" />
-        </div>
-        <div
-          className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
-          style={{ transform: "scaleY(-1)", top: "-15px" }}
-        >
-          <img
-            src="/images/landing/lright.png"
-            alt="pattern"
-            className="w-full h-full object-contain"
-          />
-        </div>
-        {/*Posts*/}
-        <div className="flex flex-col md:flex-row py-24 px-4 md:px-12 ">
-          <div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 flex-grow-2 w-full md:w-11/12 flex flex-col">
-            <div className="max-w-8xl mx-auto px-5 flex w-full">
-              <div className="flex flex-col  flex-grow-1 items-start my-6">
-                <h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
-                  Posts
-                </h1>
-                <p className="font-Jaldi text-xl sm:text-base">
-                  Check out the latest posts from the university's Guidance
-                  Counselor!
-                </p>
-              </div>
-              {/* <div className="ml-auto relative">
+	return (
+		<div>
+			<main className="min-h-screen">
+				<Navbar userType="student" />
+				<div
+					className="pattern-overlay pattern-left absolute -z-10"
+					style={{ transform: "scaleY(-1)", top: "-50px" }}
+				>
+					<img src="/images/landing/lleft.png" alt="pattern" />
+				</div>
+				<div
+					className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+					style={{ transform: "scaleY(-1)", top: "-15px" }}
+				>
+					<img
+						src="/images/landing/lright.png"
+						alt="pattern"
+						className="w-full h-full object-contain"
+					/>
+				</div>
+				{/*Posts*/}
+				<div className="flex flex-col md:flex-row py-24 px-4 md:px-12 ">
+					<div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 flex-grow-2 w-full md:w-11/12 flex flex-col">
+						<div className="max-w-8xl mx-auto px-5 flex w-full">
+							<div className="flex flex-col  flex-grow-1 items-start my-6">
+								<h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
+									Posts
+								</h1>
+								<p className="font-Jaldi text-xl sm:text-base">
+									Check out the latest posts from the university's Guidance
+									Counselor!
+								</p>
+							</div>
+							{/* <div className="ml-auto relative">
 								<GiSettingsKnobs
 									className="fill-black stroke-0 hover:stroke-2 text-2xl cursor-pointer text-center"
 									onClick={() =>
@@ -121,41 +121,44 @@ export default function Home() {
 									</div>
 								)}
 							</div> */}
-            </div>
-            <hr/>
-            <div className="w-full p-2 mx-auto flex-grow max-h-[90vh] overflow-y-auto mt-4">
-              {loading ? (
-                <LoadingState />
-              ) : posts.length === 0 ? ( // Check if the posts array is empty
-                <p className="text-center mt-4 text-gray-500">
-                  No posts yet. Come back later.
-                </p>
-              ) : (
-                posts.map((post) => ( // Use 'posts' instead of 'sortedPosts' if you haven't sorted the posts yet
-                  <PostCard key={post.postId} post={post} />
-                ))
-              )}
-            </div>
-          </div>
-          {/*Blogs*/}
-          <div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 flex-grow-2 w-full">
-            <div className="flex flex-col px-4 flex-grow-1 items-start my-6">
-              <h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
-                Editor's Picks
-              </h1>
-              <p className="font-Jaldi text-xl sm:text-base">
-                Check out the latest posts from the university's Guidance
-                Counselor!
-              </p>
-            </div>
-            <hr/>
-            <div className="w-full mx-auto flex-grow max-h-[90vh] overflow-y-auto mt-4">
-              <Card />
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </main>
-    </div>
-  );
+						</div>
+						<hr />
+						<div className="w-full p-2 mx-auto flex-grow max-h-[90vh] overflow-y-auto mt-4">
+							{loading ? (
+								<LoadingState />
+							) : posts.length === 0 ? ( // Check if the posts array is empty
+								<p className="text-center mt-4 text-gray-500">
+									No posts yet. Come back later.
+								</p>
+							) : (
+								posts.map(
+									(
+										post // Use 'posts' instead of 'sortedPosts' if you haven't sorted the posts yet
+									) => <PostCard key={post.postId} post={post} />
+								)
+							)}
+						</div>
+					</div>
+					{/*Blogs*/}
+					<div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 flex-grow-2 w-full">
+						<div className="flex flex-col px-4 flex-grow-1 items-start my-6">
+							<h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
+								Editor's Picks
+							</h1>
+							<p className="font-Jaldi text-xl sm:text-base">
+								Check out the latest posts from the university's Guidance Counselor!
+							</p>
+						</div>
+						<hr />
+						<div className="w-full mx-auto flex-grow max-h-[90vh] overflow-y-auto mt-4">
+							<Card />
+						</div>
+					</div>
+				</div>
+				<Footer />
+			</main>
+		</div>
+	);
 }
+
+export default dynamic(() => Promise.resolve(Home), { ssr: false });
