@@ -27,13 +27,16 @@ export default function Home() {
 
   const fetchInquiries = async () => {
     try {
-      const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_INQUIRIES}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_INQUIRIES}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch inquiries");
@@ -48,8 +51,6 @@ export default function Home() {
   };
 
   useEffect(() => {
-
-
     fetchInquiries();
   }, [currentPage]);
 
@@ -193,7 +194,8 @@ export default function Home() {
                       </div>
                       <div>
                         <div className="font-bold">
-                          {inquiry?.sender?.firstName} {inquiry?.sender?.lastName}
+                          {inquiry?.sender?.firstName}{" "}
+                          {inquiry?.sender?.lastName}
                         </div>
                         <div className="text-sm opacity-50">
                           {inquiry.sender.institutionalEmail}
@@ -210,12 +212,13 @@ export default function Home() {
                   </td>
                   <td className="text-center">
                     <div
-                      className={`w-24 h-5 badge badge-xs ${inquiry.status === false
-                        ? "badge-warning"
-                        : "badge-success"
-                        }`}
+                      className={`w-24 h-5 badge badge-xs ${
+                        inquiry.status === false
+                          ? "badge-warning"
+                          : "badge-success"
+                      }`}
                     >
-                      {inquiry.status}
+                      {inquiry.status ? "Replied" : "Pending"}
                     </div>
                   </td>
 
@@ -260,8 +263,9 @@ export default function Home() {
               ].map((_, index) => (
                 <button
                   key={index}
-                  className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
-                    }`}
+                  className={`join-item btn ${
+                    currentPage === index + 1 ? "btn-active" : ""
+                  }`}
                   onClick={() => setCurrentPage(index + 1)}
                 >
                   {index + 1}
