@@ -17,7 +17,7 @@ const Referrals = () => {
         console.error("Error fetching referrals", error);
       }
     }
-  }, []);
+  }, [userSession]);
 
   const fetchReferrals = async () => {
     const response = await fetch(
@@ -31,6 +31,7 @@ const Referrals = () => {
 
     if (!response.ok) {
       console.error("Error fetching appointments");
+      return;
     }
     const data = await response.json();
     setReferrals(data);
@@ -40,13 +41,18 @@ const Referrals = () => {
     setReferrals(
       referrals.filter((referral) => referral.referralId !== referralId)
     );
+    fetchReferrals();
   };
 
   return (
     <div className="w-full bg-white font-Merriweather">
       <div>
         <h1 className="font-bold text-3xl mb-10">Referrals</h1>
-        <ReferralsTable referrals={referrals} onDelete={handleDeleteReferral} />
+        <ReferralsTable
+          referrals={referrals}
+          onDelete={handleDeleteReferral}
+          fetchReferrals={fetchReferrals}
+        />
       </div>
     </div>
   );
