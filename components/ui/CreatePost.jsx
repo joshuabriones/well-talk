@@ -236,7 +236,12 @@ const CreatePostSection = ({ userSession }) => {
       ) : (
         posts &&
         posts.map((post) => (
-          <PostCard key={post?.postId} post={post} fetchPosts={fetchPosts} />
+          <PostCard
+            key={post?.postId}
+            post={post}
+            fetchPosts={fetchPosts}
+            userSession={userSession}
+          />
         ))
       )}
     </div>
