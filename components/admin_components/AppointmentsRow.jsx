@@ -36,17 +36,18 @@ const AppointmentsRow = ({
 
   return (
     <tr className="border-b">
-      <td className="flex gap-3 items-center pl-8 py-4">
+      <td className="py-4 text-center">
         {formatDate(appointment.appointmentDate)}
       </td>
+      <td>{appointment.appointmentStartTime}</td>
       <td>{appointment.appointmentPurpose}</td>
-      <td>
+      <td className="py-4 text-center">
         <span className={`${roleColor()} font-bold p-2 rounded-lg`}>
           {appointment.appointmentStatus}
         </span>
       </td>
-      <td>{appointment.student.firstName}</td>
-      <td>
+      <td className="py-4 text-center">{appointment.student.firstName}</td>
+      <td className="py-4 text-center">
         <span className="hover:bg-red-200 p-2 rounded-md cursor-pointer">
           <button onClick={handleDelete}>
             <DeleteIcon sx={{ color: "red" }} />
