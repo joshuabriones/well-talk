@@ -64,9 +64,6 @@ const Footer = () => {
 					<div className="flex justify-center pt-5 lg:pt-10">
 						<p className="mb-0">© 2024 WellTalk. All rights reserved.</p>
 					</div>
-					<button className="w-fit h-fit px-4 py-2 rounded-lg border border-black text-red-700 font-Merriweather hover:bg-red-700 hover:text-white hover:border-red-700">
-						EMERGENCY
-					</button>
 				</footer>
 			</div>
 		</section>
