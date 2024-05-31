@@ -7,7 +7,7 @@ import HollowButton from "@/components/ui/buttons/HollowButton";
 import { API_ENDPOINT } from "@/lib/api";
 import Cookies from "js-cookie";
 
-const AddStudent = ({ teacherId, setOpenAddStudent }) => {
+const AddStudent = ({ setOpenAddStudent }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -17,12 +17,19 @@ const AddStudent = ({ teacherId, setOpenAddStudent }) => {
     setOpenAddStudent(false);
   };
   const handleSubmit = async (e) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to add this student?"
+    );
+    if (!confirmed) {
+      return; // Don't proceed if the user cancels
+    }
+
     e.preventDefault();
 
     // TO BE UPDATED WITH THE CORRECT API ENDPOINT
     try {
       const response = await fetch(
-        `${process.env.BASE_URL}${API_ENDPOINT.CREATE_REFERRAL}${teacherId}`,
+        `${process.env.BASE_URL}${API_ENDPOINT.REGISTER_STUDENT}`,
         {
           method: "POST",
           headers: {
@@ -30,24 +37,26 @@ const AddStudent = ({ teacherId, setOpenAddStudent }) => {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
           body: JSON.stringify({
-            studentId: idNumber,
-            studentEmail: email,
-            studentFirstName: firstName,
-            studentLastName: lastName,
-            reason: reason,
+            idNumber,
+            institutionalEmail: email,
+            firstName: firstName,
+            lastName: lastName,
+            role: "student",
+            image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
+            password: "12345678",
           }),
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to create referral");
+        throw new Error("Failed to create student");
       }
 
       handleClose();
       const data = await response.json();
       console.log(data);
     } catch (error) {
-      console.error("Error creating referral:", error);
+      console.error("Error creating student:", error.message);
     }
   };
 

@@ -15,7 +15,7 @@ const AddReferral = ({ teacherId, onOpen }) => {
   const [reason, setReason] = useState("");
 
   console.log(teacherId, firstName, lastName, email, idNumber, reason);
-const handleClose = () => {
+  const handleClose = () => {
     onOpen(false);
   };
   const handleSubmit = async (e) => {
@@ -51,8 +51,6 @@ const handleClose = () => {
       console.error("Error creating referral:", error);
     }
   };
-
-  
 
   return (
     <>
