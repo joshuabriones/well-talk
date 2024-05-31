@@ -1,9 +1,14 @@
 import { Avatar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import HelpIcon from '@mui/icons-material/Help';
+import ConfirmationPopup from "../ui/modals/Confirmation";
 import Cookies from "js-cookie";
+import {useState} from "react";
 import { API_ENDPOINT } from "@/lib/api";
 
 const ReferralRow = ({ referral, onDelete }) => {
+  const [showConfirm, setShowConfirm] = useState(false); // State to control confirmation dialog
+
   const handleDelete = () => {
     const isConfirmed = window.confirm(
       `Are you sure you want to delete referral?`
@@ -27,6 +32,11 @@ const ReferralRow = ({ referral, onDelete }) => {
   };
 
   const handleAccept = async () => {
+    // Show confirmation dialog
+    setShowConfirm(true);
+  };
+
+  const confirmAccept = async () => {
     const response = await fetch(
       `${process.env.BASE_URL}${API_ENDPOINT.ACCEPT_REFERRAL}${referral.referralId}`,
       {
@@ -72,6 +82,18 @@ const ReferralRow = ({ referral, onDelete }) => {
         >
           Accept
         </button>
+        {showConfirm && (
+          <ConfirmationPopup
+          icon={<HelpIcon />} // Example icon, replace with appropriate icon
+            title="Confirm"
+            message="Are you sure you want to accept this referral?"
+            onConfirm={() => {
+              confirmAccept();
+              setShowConfirm(false); // Hide confirmation popup after accepting
+            }}
+            onCancel={() => setShowConfirm(false)} // Hide confirmation popup on cancel
+          />
+        )}
       </td>
     </tr>
   );
