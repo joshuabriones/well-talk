@@ -8,7 +8,6 @@ import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { z } from "zod";
 
 export default function StudentProfile() {
   const userSession = getUserSession();
@@ -88,6 +87,25 @@ export default function StudentProfile() {
     }));
   };
 
+  const handleChangeAddress = (e) => {
+    const value = e.target.value;
+    const parts = value.split(',');
+
+    const barangay = parts[0] ? parts[0].trim() : '';
+    const province = parts[1] ? parts[1].trim() : '';
+    const specificAddress = parts[2] ? parts[2].trim() : '';
+
+    console.log('Barangay:', barangay);
+
+    setUpdatedProfile((prevProfile) => ({
+      ...prevProfile,
+      barangay: barangay,
+      province: province,
+      specificAddress: specificAddress,
+    }));
+  };
+
+
   const handleCancelEdit = () => {
     setIsEditMode(false);
     setUpdatedProfile(studentProfile);
@@ -110,6 +128,7 @@ export default function StudentProfile() {
             firstName: updatedProfile.firstName,
             lastName: updatedProfile.lastName,
             gender: updatedProfile.gender,
+            contactNumber: updatedProfile.contactNumber,
             password: updatedProfile.password,
             image: updatedProfile.image,
             college: updatedProfile.college,
@@ -161,13 +180,14 @@ export default function StudentProfile() {
     return <div>Loading...</div>;
   }
 
+  
   console.log("Student Profile:", studentProfile);
   console.log("Updated Profile:", updatedProfile);
 
   return (
     <div className="p-4 mt-16 md:p-12">
 
-        <Navbar userType="student" />
+      <Navbar userType="student" />
 
       <div
         className="pattern-overlay pattern-left absolute -z-10"
@@ -338,11 +358,7 @@ export default function StudentProfile() {
                           ? `${updatedProfile.barangay}, ${updatedProfile.province}, ${updatedProfile.specificAddress}`
                           : `${studentProfile?.barangay}, ${studentProfile?.province}, ${studentProfile?.specificAddress}`
                       }
-                      onChange={handleChange(
-                        "barangay",
-                        "province",
-                        "specificAddress"
-                      )}
+                      onChange={handleChangeAddress}
                       readOnly={!isEditMode}
                       disabled={!isEditMode}
                     />
