@@ -1,4 +1,5 @@
 "use client";
+import { PlusIcon } from '@heroicons/react/solid';
 import { Navbar } from "@/components/ui/Navbar";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
@@ -8,6 +9,9 @@ import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { v4 } from "uuid"; // Make sure this is configured correctly
+import { imgDB } from "@/firebaseConfig"
 
 export default function StudentProfile() {
   const userSession = getUserSession();
@@ -176,6 +180,19 @@ export default function StudentProfile() {
     }));
   };
 
+  const handleFileChange = async (e) => {
+		const file = e.target.files[0];
+		if (file) {
+		  const imgRef = ref(imgDB, `UserAvatars/${v4()}`);
+		  const snapshot = await uploadBytes(imgRef, file);
+		  const imgUrl = await getDownloadURL(snapshot.ref);
+		  setUpdatedProfile((prevProfile) => ({
+			...prevProfile,
+			image: imgUrl,
+		  }));
+		}
+	  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -210,9 +227,24 @@ export default function StudentProfile() {
         <div className="w-full max-w-screen-lg mx-auto flex flex-col gap-4 md:gap-8">
           <section className="flex flex-col md:flex-row md:gap-10 mb-8 justify-center items-center">
             {/* Avatar */}
-            <div className="w-full md:w-2/12 flex justify-center items-center avatar">
+            <div className="w-full md:w-2/12 flex justify-center items-center avatar relative">
               <div className="w-48 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-1">
                 <img src={studentProfile?.image} alt="avatar" />
+                {isEditMode && (
+                  <label
+                    htmlFor="file-upload"
+                    className="absolute bottom-0 right-5 bg-primary-green text-white p-1 rounded-full cursor-pointer"
+                  >
+                    <input
+                      id="file-upload"
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                    />
+                    <PlusIcon className="h-5 w-5 text-white" />
+                  </label>
+                )}
               </div>
             </div>
             {/* User Info */}
