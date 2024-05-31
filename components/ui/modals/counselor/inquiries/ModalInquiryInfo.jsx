@@ -6,7 +6,12 @@ import { API_ENDPOINT } from "@/lib/api";
 import Cookies from "js-cookie";
 import { getUserSession } from "@/lib/helperFunctions";
 
-const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
+const ModalInquiryInfo = ({
+  setInquiryModal,
+  selectedID,
+  inquiries,
+  fetchInquiries,
+}) => {
   const [isChecked, setIsChecked] = useState(true);
   const [inquiry, setInquiry] = useState(null);
 
@@ -188,6 +193,7 @@ const ModalInquiryInfo = ({ setInquiryModal, selectedID, inquiries }) => {
           setConfirmResponse={setConfirmResponse}
           setInquiryModal={setInquiryModal}
           handleResponse={handleResponse}
+          fetchInquiries={fetchInquiries}
         />
       )}
     </>
