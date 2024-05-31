@@ -122,7 +122,8 @@ export default function Home() {
 								)}
 							</div> */}
             </div>
-            <div className="w-full p-2 mx-auto flex-grow max-h-[90vh] overflow-y-auto">
+            <hr/>
+            <div className="w-full p-2 mx-auto flex-grow max-h-[90vh] overflow-y-auto mt-4">
               {loading ? (
                 <LoadingState />
               ) : posts.length === 0 ? ( // Check if the posts array is empty
@@ -147,7 +148,8 @@ export default function Home() {
                 Counselor!
               </p>
             </div>
-            <div className="w-full mx-auto flex-grow max-h-[90vh] overflow-y-auto">
+            <hr/>
+            <div className="w-full mx-auto flex-grow max-h-[90vh] overflow-y-auto mt-4">
               <Card />
             </div>
           </div>

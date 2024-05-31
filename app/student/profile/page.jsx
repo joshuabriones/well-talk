@@ -357,7 +357,7 @@ export default function StudentProfile() {
                   Security Information
                 </h1>
                 <div className="flex flex-col gap-6">
-                  <TextDisplay
+                  {/* <TextDisplay
                     type="password"
                     id="currentPassword"
                     value="●●●●●●●●"
@@ -367,7 +367,7 @@ export default function StudentProfile() {
                     showInvalidPassword={showInvalidPassword.currentPassword}
                     readOnly
                     disabled
-                  />
+                  /> */}
                   {/* New Password */}
                   <TextInput
                     type="password"
