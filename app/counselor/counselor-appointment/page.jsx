@@ -3,7 +3,6 @@
 import FullButton from "@/components/ui/buttons/FullButton";
 import TextAreaInput from "@/components/ui/inputs/TextAreaInput";
 import TextInput from "@/components/ui/inputs/TextInput";
-import StudentAddAppointment from "@/components/ui/modals/counselor/appointments/StudentAddAppointment";
 import hdrAppointment from "@/public/images/headers/hdrAppointment.png";
 import { useEffect, useState } from "react";
 // css
@@ -43,6 +42,8 @@ const Appointment = () => {
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [openAddStudent, setOpenAddStudent] = useState(false);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   const userSession = getUserSession();
 
@@ -268,8 +269,10 @@ const Appointment = () => {
   const handleTimeSlotClick = (time) => {
     if (!isTimeSlotTaken(time)) {
       setSelectedTime(time); // Update the selected time
+      setSelectedTimeSlot(time); // Update the selected time slot
       const duration = "1:00"; // Duration to add
       setEndTime(addTime(selectedTime, duration));
+      toast.success(`Time slot selected: ${timeFormatter(time)}`);
     }
   };
 
@@ -308,6 +311,10 @@ const Appointment = () => {
       fetchAppointmentsOnThatDate();
       setIsAddAppointment(false);
       setIsViewAppointment(true);
+      setSelectedStudent(null); 
+      setSelectedStudentId(null); 
+      setSelectedTime("");
+      setSelectedTimeSlot(null);
     } catch (error) {
       toast.error("Failed to set appointment");
     }
@@ -355,21 +362,19 @@ const Appointment = () => {
         <div>
           <div className="w-full mt-8 flex items-center gap-3 justify-center">
             <button
-              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-                isAddAppointment
-                  ? "bg-primary-green text-white"
-                  : "border border-primary-green text-primary-green"
-              }`}
+              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
+                ? "bg-primary-green text-white"
+                : "border border-primary-green text-primary-green"
+                }`}
               onClick={handleAddAppointmentClick}
             >
               Set Appointment
             </button>
             <button
-              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-                isViewAppointment
-                  ? "bg-primary-green text-white"
-                  : "border border-primary-green text-primary-green"
-              }`}
+              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
+                ? "bg-primary-green text-white"
+                : "border border-primary-green text-primary-green"
+                }`}
               onClick={handleViewAppointmentClick}
             >
               View Appointments
@@ -439,9 +444,9 @@ const Appointment = () => {
                         <p>
                           {appointments?.appointmentPurpose?.length > 50
                             ? `${appointments?.appointmentPurpose?.substring(
-                                0,
-                                40
-                              )}...`
+                              0,
+                              40
+                            )}...`
                             : appointments?.appointmentPurpose}
                         </p>
                       </td>
@@ -494,9 +499,8 @@ const Appointment = () => {
                   ].map((_, index) => (
                     <button
                       key={index}
-                      className={`join-item btn ${
-                        currentPage === index + 1 ? "btn-active" : ""
-                      }`}
+                      className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
+                        }`}
                       onClick={() => setCurrentPage(index + 1)}
                     >
                       {index + 1}
@@ -527,7 +531,8 @@ const Appointment = () => {
                   onSelect={(date) => {
                     if (date >= new Date().setHours(0, 0, 0, 0)) {
                       setAppointmentDate(formatDateCalendar(date));
-                      toast.success("Date selected");
+                      const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+                      toast.success(`Date selected: ${formattedDate}`);
                     }
                   }}
                   disabledDate={(date) =>
@@ -554,11 +559,12 @@ const Appointment = () => {
                         key={index}
                         disabled={isTimeSlotTaken(time)}
                         onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-                        className={`time-slot-button ${
-                          isTimeSlotTaken(time)
-                            ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
+                        className={`time-slot-button ${isTimeSlotTaken(time)
+                          ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
+                          : time === selectedTimeSlot
+                            ? "bg-primary-green-dark text-white" // Apply a different style to the selected time slot
                             : "bg-primary-green text-white hover:bg-primary-green-dark duration-300"
-                        }  py-2 px-4 rounded-md`}
+                          }  py-2 px-4 rounded-md`}
                       >
                         {timeFormatter(time)}
                       </button>
@@ -576,16 +582,15 @@ const Appointment = () => {
                     {filteredStudents.map((student) => (
                       <button
                         onClick={() => {
-                          toast.success(
-                            `Student selected: ${student.firstName} ${student.lastName}`
-                          );
+                          toast.success(`Student selected: ${student.firstName} ${student.lastName}`);
                           setSelectedStudentId(student.id);
+                          setSelectedStudent(student.id); // Update the selected student
                         }}
-                        className="bg-primary-green text-white block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg"
+                        className={`bg-primary-green text-white block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${selectedStudent === student.id ? "bg-primary-green-dark" : "" // Apply a different style to the selected student
+                          }`}
                         key={student.id}
                       >
-                        {student.idNumber} ⸺ {student.firstName}{" "}
-                        {student.lastName}
+                        {student.idNumber} ⸺ {student.firstName} {student.lastName}
                       </button>
                     ))}
                   </div>
@@ -664,9 +669,9 @@ const Appointment = () => {
           appointments={appointments}
           setAppointments={setAppointments}
           fetchAppointments={fetchAppointments}
-          // TO BE ADDED
-          // handleRescedule={handleReschedule}
-          // handleUpdateStatus={handleUpdateStatus}
+        // TO BE ADDED
+        // handleRescedule={handleReschedule}
+        // handleUpdateStatus={handleUpdateStatus}
         ></ModalAppointmentInfo>
       )}
 
