@@ -29,6 +29,7 @@ const Appointment = () => {
 
   const [selectedID, setSelectedID] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   //modals
   const [deleteModal, setDeleteModal] = useState(false);
@@ -283,6 +284,7 @@ const Appointment = () => {
     if (!confirmed) {
       return; // Don't proceed if the user cancels
     }
+    setIsLoading(true);
     try {
       const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_CREATE_APPOINTMENT}${selectedStudentId}`,
@@ -317,6 +319,8 @@ const Appointment = () => {
       setSelectedTimeSlot(null);
     } catch (error) {
       toast.error("Failed to set appointment");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -650,13 +654,22 @@ const Appointment = () => {
                             !selectedTime ||
                             !appointmentDate ||
                             !purpose ||
-                            !appointmentType
+                            !appointmentType ||
+                            isLoading
                           }
                         >
-                          Submit
+                          {isLoading ? "Submitting..." : "Submit"}
                         </FullButton>
                       </div>
                     </div>
+                    {isLoading && (
+                      <div className="flex gap-2 items-center mt-5">
+                        <span className="loading loading-dots loading-lg"></span>
+                        <span className="text-lg">
+                          Processing your appointment, please wait a moment...
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
