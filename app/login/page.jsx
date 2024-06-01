@@ -176,6 +176,14 @@ const Login = () => {
 											type="password"
 											className="w-full"
 										/>
+										<div className="flex justify-end">
+										<div
+											className="text-[#6B9080] text-md font-Jaldi  hover:text-green-800 cursor-pointer"
+											onClick={(e) => setShowForgotPasswordModal(true)}
+										>
+											Forgot your Password?
+										</div>
+									</div>
 									</div>
 
 									{/* buttons */}
@@ -186,14 +194,7 @@ const Login = () => {
 									</div>
 
 									{/* forgot password */}
-									<div className="flex justify-center items-center">
-										<div
-											className="text-[#6B9080] text-md font-Jaldi  hover:text-green-800 cursor-pointer"
-											onClick={(e) => setShowForgotPasswordModal(true)}
-										>
-											Forgot your Password?
-										</div>
-									</div>
+									
 									<div className="relative">
 										<hr className="my-8 border-t border-gray-300" />
 										<span className="px-2 text-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-800">
