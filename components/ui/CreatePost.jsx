@@ -19,6 +19,7 @@ const CreatePostSection = ({ userSession }) => {
   const [posts, setPosts] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [characterCount, setCharacterCount] = useState(0);
+  const [userData, setUserData] = useState(null);
 
   const fetchPosts = async () => {
     try {
@@ -45,6 +46,37 @@ const CreatePostSection = ({ userSession }) => {
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (userSession.role === "counselor") {
+        const response = await fetch(
+          `${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_ID}${userSession.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
+  
+        if (!response.ok) {
+          console.error("Failed to fetch user data");
+          return;
+        }
+  
+        const data = await response.json();
+  
+        // Log the fetched data
+        console.log("Fetched User Data:", data);
+  
+        setUserData(data);
+      }
+    };
+  
+    fetchUserData();
+  }, [userSession]);
 
   const postHandler = async (e) => {
     e.preventDefault();
@@ -131,12 +163,12 @@ const CreatePostSection = ({ userSession }) => {
     <div className="max-w-5xl mx-auto max-h-[90vh] overflow-y-auto">
       <div className="flex items-center">
         <img
-          src={userSession?.image}
+          src={userData?.image}
           alt="User Profile"
           className="w-10 h-10 rounded-full mr-3"
         />
         <span className="font-semibold flex flex-col font-Jaldi cursor-pointer">
-          {userSession?.email.split("@")[0]}
+        {userData?.firstName} {userData?.lastName}
           <span className="text-slate-500 font-Jaldi">
             {userSession?.email}
           </span>
