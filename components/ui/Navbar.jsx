@@ -1,15 +1,58 @@
+import { getUserSession, logout } from "@/lib/helperFunctions";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import "./../../css/navbar.css";
-import { getUserSession } from "@/lib/helperFunctions";
-import { logout } from "@/lib/helperFunctions";
+import { API_ENDPOINT } from "@/lib/api";
+import Cookies from "js-cookie";
 
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const userSession = getUserSession();
   const router = useRouter();
-
+  const [userData, setUserData] = useState(null);
   const closeMenu = () => setIsMenuOpen(false);
+
+
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      let endpoint;
+      switch (userSession.role) {
+        case "student":
+          endpoint = API_ENDPOINT.GET_STUDENT_BY_ID;
+          break;
+        case "teacher":
+          endpoint = API_ENDPOINT.GET_TEACHER_BY_ID;
+          break;
+        case "counselor":
+          endpoint = API_ENDPOINT.GET_COUNSELOR_BY_ID;
+          break;
+        default:
+          return;
+      }
+
+      const response = await fetch(
+        `${process.env.BASE_URL}${endpoint}${userSession.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Failed to fetch user data");
+        return;
+      }
+
+      const data = await response.json();
+      setUserData(data);
+    };
+
+    fetchUserData();
+  }, [userSession]);
 
   const handleSignOut = () => {
     logout();
@@ -40,15 +83,14 @@ function ProfileMenu() {
         className="flex items-center gap-2 rounded-full py-3 pr-2 mr-8  md:mr-20 pl-0.5 lg:ml-auto"
       >
         <img
-          src={userSession?.image}
+          src={userData?.image}
           alt="Profile"
           className="h-10 w-10 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-2"
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className={`h-4 w-4 transition-transform ${
-            isMenuOpen ? "rotate-180" : ""
-          }`}
+          className={`h-4 w-4 transition-transform ${isMenuOpen ? "rotate-180" : ""
+            }`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -67,9 +109,8 @@ function ProfileMenu() {
             <button
               key={index}
               onClick={action || closeMenu}
-              className={`block px-4 py-2 text-sm  ${
-                index === profileMenuItems.length - 1 ? "rounded-b-lg" : ""
-              }`}
+              className={`block px-4 py-2 text-sm  ${index === profileMenuItems.length - 1 ? "rounded-b-lg" : ""
+                }`}
             >
               {label}
             </button>
@@ -124,9 +165,8 @@ function NavList({ userType }) {
         <a
           key={index}
           onClick={() => router.push(item.route)}
-          className={`text-base font-bold text-slate-800 hover:text-slate-800 cursor-pointer${
-            router.pathname === item.route ? "text-slate-800" : ""
-          } nav-list-button`}
+          className={`text-base font-bold text-slate-800 hover:text-slate-800 cursor-pointer${router.pathname === item.route ? "text-slate-800" : ""
+            } nav-list-button`}
         >
           {item.label}
         </a>
@@ -173,13 +213,13 @@ export function Navbar({ userType }) {
       className="mx-auto max-w-screen-auto p-2 lg:pl-6 w-full"
     >
       <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
-      <button
+        <button
           onClick={() => setIsNavOpen((prev) => !prev)}
           className={`ml-8 lg:hidden flex justify-start ${isNavOpen ? 'open' : ''}`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-8">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-</svg>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
 
         </button>
         <div className="ml-4 md:ml-24 text-2xl text-[#6B9080] font-bold flex flex-row">
