@@ -81,14 +81,15 @@ const PostCard = ({ post, fetchPosts }) => {
               </span>
             </h2>
 
-            {!isTeacherOrStudent && (
-              <button
-                onClick={() => setOpenActions((prev) => !prev)}
-                className="mr-3"
-              >
-                <HiDotsHorizontal />
-              </button>
-            )}
+            {!isTeacherOrStudent &&
+              post.author.institutionalEmail === userSession.email && (
+                <button
+                  onClick={() => setOpenActions((prev) => !prev)}
+                  className="mr-3"
+                >
+                  <HiDotsHorizontal />
+                </button>
+              )}
             {openActions && (
               <div className="w-30 h-22 px-1 shadow-xl bg-white border border-slate-300 text-slate-600 font-semibold absolute right-7 top-0 z-20 rounded-xl">
                 <ul className="p-0.5 cursor-pointer text-start">
