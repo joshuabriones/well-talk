@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 // css
 import "@/styles/counselor.css";
+import { toast } from "react-hot-toast";
 
 // modals
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
@@ -93,15 +94,23 @@ export default function Home() {
   // };
   const handleDelete = async () => {
     try {
-      const response = await fetch(`/api/inquiry/delete-inquiry`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ inquiryId: selectedID }),
-      });
-      const data = await response.json();
-      console.log(data);
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.DELETE_INQUIRY}${selectedID}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to delete inquiry");
+      }
+      if (response.status !== 204) { // Check if the response is not empty
+        const data = await response.json();
+        console.log(data);
+      }
 
       // Update local state to reflect the deletion
       const updatedInquiries = inquiries.filter(
@@ -111,6 +120,7 @@ export default function Home() {
 
       // Close modal and reset selected ID
       setDeleteModal(false);
+      toast.success("Inquiry deleted successfully");
       setSelectedID(null);
     } catch (error) {
       console.error("Failed to delete inquiry", error);
@@ -219,11 +229,10 @@ export default function Home() {
                   </td>
                   <td className="text-center">
                     <div
-                      className={`w-24 h-5 badge badge-xs ${
-                        inquiry.status === false
-                          ? "badge-warning"
-                          : "badge-success"
-                      }`}
+                      className={`w-24 h-5 badge badge-xs ${inquiry.status === false
+                        ? "badge-warning"
+                        : "badge-success"
+                        }`}
                     >
                       {inquiry.status ? "Replied" : "Pending"}
                     </div>
@@ -270,9 +279,8 @@ export default function Home() {
               ].map((_, index) => (
                 <button
                   key={index}
-                  className={`join-item btn ${
-                    currentPage === index + 1 ? "btn-active" : ""
-                  }`}
+                  className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
+                    }`}
                   onClick={() => setCurrentPage(index + 1)}
                 >
                   {index + 1}
