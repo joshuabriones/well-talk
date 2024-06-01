@@ -9,12 +9,13 @@ import { imgDB } from "@/firebaseConfig";
 import { v4 } from "uuid";
 import { getUserSession } from "@/lib/helperFunctions";
 
-const PostCard = ({ post, fetchPosts}) => {
+const PostCard = ({ post, fetchPosts }) => {
   console.log(post);
   const [openActions, setOpenActions] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const userSession = getUserSession();
-  const isTeacherOrStudent = userSession.role === 'teacher' || userSession.role === 'student';
+  const isTeacherOrStudent =
+    userSession.role === "teacher" || userSession.role === "student";
 
   const formatDate = () => {
     const dateObject = new Date(post?.postDate);
@@ -72,8 +73,8 @@ const PostCard = ({ post, fetchPosts}) => {
         </div>
 
         <div className="w-full px-4 py-3">
-          <div className="w-full flex justify-between relative">
-            <h2 className="font-semibold cursor-pointer">
+          <div className="w-full flex justify-between relative text-lg">
+            <h2 className="font-semibold cursor-pointer ">
               {`${post.author?.firstName} ${post.author?.lastName}`}
               <span className="text-slate-500 font-normal pl-1.5">
                 {post.author?.institutionalEmail}
