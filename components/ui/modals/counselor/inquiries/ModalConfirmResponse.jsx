@@ -10,7 +10,6 @@ const ModalConfirmResponse = ({
   setConfirmResponse,
   setInquiryModal,
   handleResponse,
-  fetchInquiries,
 }) => {
   const [isChecked, setIsChecked] = useState(true);
   const [showConfirmed, setShowConfirmed] = useState(false);
@@ -34,7 +33,6 @@ const ModalConfirmResponse = ({
   const handleReset = () => {
     setConfirmResponse(false);
     setInquiryModal(false);
-    fetchInquiries();
   };
 
   return (

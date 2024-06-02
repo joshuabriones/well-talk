@@ -12,6 +12,7 @@ const Inquiry = ({ userId }) => {
   const [formEmptyError, setFormEmptyError] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showConfirmed, setShowConfirmed] = useState(false);
+  const [showInquiryModal, setShowInquiryModal] = useState(false);
 
   const handleInquirySubmission = async () => {
     if (subject === "" || messageInquiry === "") { // Changed here
@@ -211,6 +212,7 @@ const Inquiry = ({ userId }) => {
                     <ModalConfirmResponse
                       setConfirmResponse={setShowModal}
                       handleResponse={handleResponse}
+                      setInquiryModal={setShowInquiryModal}
                     />
                   )}
                   {showConfirmed && <ModalConfirmed />}

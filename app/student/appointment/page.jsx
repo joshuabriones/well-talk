@@ -16,6 +16,7 @@ import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete"
 
 import Load from "@/components/Load";
 import Loading from "@/components/Loading";
+import ModalConfirmResponseAppointment from "@/components/ui/modals/student/appointments/ModalConfirmedResponseAppointment";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
@@ -23,7 +24,6 @@ import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 import { Badge, Calendar, Popover, Whisper } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
-import ModalConfirmResponseAppointment from "@/components/ui/modals/student/appointments/ModalConfirmedResponseAppointment";
 
 const Appointment = () => {
   const AppointmentPerPage = 10;
@@ -43,7 +43,7 @@ const Appointment = () => {
     new Date().toISOString().split("T")[0]
   );
 
-	const [confirmResponseModal, setConfirmResponseModal] = useState(false);
+  const [confirmResponseModal, setConfirmResponseModal] = useState(false);
 
   const userSession = getUserSession();
   const [selectedTime, setSelectedTime] = useState(""); // State to store the selected time
@@ -247,10 +247,10 @@ const Appointment = () => {
     }
   };
 
-	const handleAppointmentSubmit = async () => {
-		// Open the confirm response modal
-		setConfirmResponseModal(true);
-	};
+  const handleAppointmentSubmit = async () => {
+    // Open the confirm response modal
+    setConfirmResponseModal(true);
+  };
 
   const handleAppointmentSubmitConfirmed = async () => {
     setConfirmResponseModal(false);
@@ -337,21 +337,19 @@ const Appointment = () => {
         <div>
           <div className="w-full mt-8 flex items-center gap-3 justify-center">
             <button
-              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-                isAddAppointment
+              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
                   ? "bg-primary-green text-white"
                   : "border border-primary-green text-primary-green"
-              }`}
+                }`}
               onClick={handleAddAppointmentClick}
             >
               Set Appointment
             </button>
             <button
-              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-                isViewAppointment
+              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
                   ? "bg-primary-green text-white"
                   : "border border-primary-green text-primary-green"
-              }`}
+                }`}
               onClick={handleViewAppointmentClick}
             >
               View Appointments
@@ -404,23 +402,22 @@ const Appointment = () => {
                             <p className="truncate">
                               {appointment.appointmentPurpose.length > 50
                                 ? `${appointment.appointmentPurpose.substring(
-                                    0,
-                                    40
-                                  )}...`
+                                  0,
+                                  40
+                                )}...`
                                 : appointment.appointmentPurpose}
                             </p>
                           </td>
                           <td className="text-center py-2">
                             <div
-                              className={`badge ${
-                                appointment.appointmentStatus === "Pending"
+                              className={`badge ${appointment.appointmentStatus === "Pending"
                                   ? "badge-warning"
                                   : appointment.appointmentStatus === "Done"
-                                  ? "badge-success"
-                                  : appointment.appointmentStatus === "Approved"
-                                  ? "badge-info"
-                                  : ""
-                              }`}
+                                    ? "badge-success"
+                                    : appointment.appointmentStatus === "Approved"
+                                      ? "badge-info"
+                                      : ""
+                                }`}
                             >
                               {appointment.appointmentStatus}
                             </div>
@@ -464,9 +461,8 @@ const Appointment = () => {
                     ].map((_, index) => (
                       <button
                         key={index}
-                        className={`join-item btn ${
-                          currentPage === index + 1 ? "btn-active" : ""
-                        }`}
+                        className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
+                          }`}
                         onClick={() => setCurrentPage(index + 1)}
                       >
                         {index + 1}
@@ -523,13 +519,12 @@ const Appointment = () => {
                         key={index}
                         disabled={isTimeSlotTaken(time)}
                         onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-                        className={`time-slot-button ${
-                          isTimeSlotTaken(time)
+                        className={`time-slot-button ${isTimeSlotTaken(time)
                             ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
                             : time === selectedTimeSlot
-                            ? "bg-primary-green-dark text-white" // Apply a different style to the selected time slot
-                            : "bg-primary-green text-white hover:bg-primary-green-dark duration-300"
-                        }  py-2 px-4 rounded-md`}
+                              ? "bg-primary-green-dark text-white" // Apply a different style to the selected time slot
+                              : "bg-primary-green text-white hover:bg-primary-green-dark duration-300"
+                          }  py-2 px-4 rounded-md`}
                       >
                         {timeFormatter(time)}
                       </button>
@@ -609,9 +604,9 @@ const Appointment = () => {
           selectedID={selectedID}
           appointments={appointments}
 
-          // TO BE ADDED
-          // handleRescedule={handleReschedule}
-          // handleUpdateStatus={handleUpdateStatus}
+        // TO BE ADDED
+        // handleRescedule={handleReschedule}
+        // handleUpdateStatus={handleUpdateStatus}
         ></StudentModalAppointmentInfo>
       )}
 
@@ -620,14 +615,14 @@ const Appointment = () => {
           setShowAddAppointmentModal={setShowAddAppointmentModal}
         />
       )}
-      			{confirmResponseModal && (
-				<ModalConfirmResponseAppointment
-					setConfirmResponse={setConfirmResponseModal}
-					setAppointmentModal={setAppointmentModal}
-					handleResponse={handleAppointmentSubmitConfirmed}
-					fetchAppointments={fetchAppointments}
-				/>
-			)}
+      {confirmResponseModal && (
+        <ModalConfirmResponseAppointment
+          setConfirmResponse={setConfirmResponseModal}
+          setAppointmentModal={setAppointmentModal}
+          handleResponse={handleAppointmentSubmitConfirmed}
+          fetchAppointments={fetchAppointments}
+        />
+      )}
     </div>
   );
 };
