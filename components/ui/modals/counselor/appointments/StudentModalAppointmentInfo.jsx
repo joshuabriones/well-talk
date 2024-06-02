@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import iconDelete from "@/public/images/icons/iconDelete.png";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import FullButton from "@/components/ui/buttons/FullButton";
-import { useSession } from "next-auth/react";
 
 import "@/styles/counselor.css";
 
@@ -19,7 +18,6 @@ const ModalAppointmentInfo = ({
   const [openModal, setOpenModal] = useState(false);
   const [notes, setNotes] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
-  const { data: session } = useSession();
 
   // for dialog
   const toggleChecked = () => {

@@ -1298,13 +1298,12 @@ export default Registration;
 // import React, { useEffect, useState } from "react";
 // import Link from "next/link";
 // import { useRouter } from "next/navigation";
-// import { useSession } from "next-auth/react";
+
 // import Image from "next/image";
 
 // const RegisterPage = () => {
 //   const [error, setError] = useState("");
 //   const router = useRouter();
-//   const { data: session, status: sessionStatus } = useSession();
 
 //   useEffect(() => {
 //     if (sessionStatus === "authenticated") {

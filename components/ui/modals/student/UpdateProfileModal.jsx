@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import FullButton from "../../buttons/FullButton";
 import TextInput from "../../inputs/TextInput";
@@ -7,8 +6,6 @@ import TextDisplay from "../../student/TextDisplay";
 import HollowButton from "../../buttons/HollowButton";
 
 const UpdateProfileModal = ({ onClose, student }) => {
-  const { data: session } = useSession();
-
   const [tabSelected, setTabSelected] = useState("Account Settings");
 
   const [passwords, setPasswords] = useState({

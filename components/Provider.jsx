@@ -2,22 +2,19 @@
 
 import ContextWrapper from "@/context/ContextWrapper";
 import GlobalContext from "@/context/GlobalContext";
-import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
 
-const Provider = ({ children, session }) => {
-	const globalContextValue = {}; // Provide the actual context value here
+const Provider = ({ children }) => {
+  const globalContextValue = {}; // Provide the actual context value here
 
-	return (
-		<SessionProvider session={session}>
-			<GlobalContext.Provider value={globalContextValue}>
-				<ContextWrapper>
-					<Toaster position="top-center" />
-					{children}
-				</ContextWrapper>
-			</GlobalContext.Provider>
-		</SessionProvider>
-	);
+  return (
+    <GlobalContext.Provider value={globalContextValue}>
+      <ContextWrapper>
+        <Toaster position="top-center" />
+        {children}
+      </ContextWrapper>
+    </GlobalContext.Provider>
+  );
 };
 
 export default Provider;

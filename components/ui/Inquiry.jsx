@@ -6,7 +6,7 @@ import TextInput from "./inputs/TextInput";
 import ModalConfirmResponse from "./modals/counselor/inquiries/ModalConfirmResponse";
 import ModalConfirmed from "./modals/counselor/inquiries/ModalConfirmed";
 
-const Inquiry = ({ userId }) => {
+const Inquiry = () => {
   const [subject, setSubject] = useState("");
   const [messageInquiry, setMessageInquiry] = useState(""); // Changed here
   const [formEmptyError, setFormEmptyError] = useState(false);
@@ -14,7 +14,8 @@ const Inquiry = ({ userId }) => {
   const [showConfirmed, setShowConfirmed] = useState(false);
 
   const handleInquirySubmission = async () => {
-    if (subject === "" || messageInquiry === "") { // Changed here
+    if (subject === "" || messageInquiry === "") {
+      // Changed here
       setFormEmptyError(true);
       return;
     }
@@ -23,18 +24,21 @@ const Inquiry = ({ userId }) => {
     const userId = user.id;
 
     try {
-      const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.CREATE_INQUIRY}?userId=${userId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-        body: JSON.stringify({
-          userId,
-          subject,
-          messageInquiry,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.CREATE_INQUIRY}?userId=${userId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+          body: JSON.stringify({
+            userId,
+            subject,
+            messageInquiry,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to post inquiry");
@@ -47,7 +51,6 @@ const Inquiry = ({ userId }) => {
       console.error(error);
     }
   };
-
 
   const handleModalClose = () => {
     setShowModal(false);
@@ -103,8 +106,7 @@ const Inquiry = ({ userId }) => {
                       Our Location
                     </h4>
                     <p className="text-base text-body-color dark:text-dark-6">
-                      Natalio B. Bacalso Ave, Cebu City,
-                      6000 Cebu, Philippines
+                      Natalio B. Bacalso Ave, Cebu City, 6000 Cebu, Philippines
                     </p>
                   </div>
                 </div>
