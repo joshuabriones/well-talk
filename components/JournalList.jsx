@@ -1,6 +1,7 @@
 "use client";
-import Image from "next/image";
 import { formatDate } from "@/lib/helperFunctions";
+import Image from "next/image";
+import ReactHtmlParser from 'react-html-parser';
 
 const JournalList = ({
   entries,
@@ -13,9 +14,8 @@ const JournalList = ({
       {entries.map((entry, i) => (
         <div
           key={i}
-          className={`w-full p-8 rounded-2xl shadow-2xl border-r-[#6B9080] border-r-8 mb-10 relative text-black ${
-            !isEditing && "cursor-pointer"
-          }`}
+          className={`w-full p-8 rounded-2xl shadow-2xl border-r-[#6B9080] border-r-8 mb-10 relative text-black ${!isEditing && "cursor-pointer"
+            }`}
           onClick={() => handleClickedEntry(entry.journalId)}
         >
           <h2 className="text-2xl mb-1 text-black">{entry.title}</h2>
@@ -24,8 +24,8 @@ const JournalList = ({
           </p>
           <p className="font-light text-s">
             {entry?.entry?.split(" ").length > 26
-              ? entry?.entry?.split(" ").slice(0, 26).join(" ") + "..."
-              : entry?.entry}
+              ? ReactHtmlParser(entry?.entry?.split(" ").slice(0, 26).join(" ") + "...")
+              : ReactHtmlParser(entry?.entry)}
           </p>
           <Image
             src={"/images/journal-spring.png"}

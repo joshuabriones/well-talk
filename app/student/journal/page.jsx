@@ -1,16 +1,19 @@
 "use client";
+import JournalList from "@/components/JournalList";
 import Load from "@/components/Load";
 import { Navbar } from "@/components/ui/Navbar";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
+import "@/styles/globals.css";
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 import Cookies from "js-cookie";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import ReactHtmlParser from 'react-html-parser';
 import JournalModal from "./_modal/JournalModal";
-
-import JournalList from "@/components/JournalList";
-import dynamic from "next/dynamic";
 
 const StudentJournal = () => {
 	const userSession = getUserSession();
@@ -134,7 +137,7 @@ const StudentJournal = () => {
 	const handleEditEntry = async () => {
 		try {
 			const response = await fetch(
-				`${process.env.BASE_URL}${API_ENDPOINT.STUDENT_UPDATE_JOURNAL}${userSession.id}`,
+				`${process.env.BASE_URL}${API_ENDPOINT.STUDENT_UPDATE_JOURNAL}${highlightEntry.journalId}`,
 				{
 					method: "PUT",
 					headers: {
@@ -178,6 +181,8 @@ const StudentJournal = () => {
 		setEditEntry(highlightEntry?.entry || "");
 	}, [isEditing]);
 
+
+
 	return (
 		<div className="w-full flex flex-col justify-center items-center bg-white font-Merriweather">
 			<Navbar userType="student" />
@@ -203,17 +208,28 @@ const StudentJournal = () => {
 							<h1 className="text-4xl text-[#6B9080]">{highlightEntry?.title}</h1>
 						)}
 						{isEditing ? (
-							<textarea
-								type="text"
-								className="mt-9 text-lg font-light text-black w-full h-full bg-white border"
-								value={editEntry}
-								onChange={(e) => setEditEntry(e.target.value)}
-							></textarea>
+							// 	<textarea
+							// 	type="text"
+							// 	className="mt-9 text-lg font-light text-black w-full h-full bg-white border"
+							// 	value={editEntry}
+							// 	onChange={(e) => setEditEntry(e.target.value)}
+							// ></textarea>
+							<div className="ckeditor-custom">
+								<CKEditor
+									editor={ClassicEditor}
+									data={editEntry}
+									onChange={(event, editor) => {
+										const data = editor.getData();
+										setEditEntry(data);
+									}}
+								/>
+							</div>
 						) : (
 							<p className="mt-9 text-lg font-light text-black">
-								{highlightEntry?.entry}
+								{ReactHtmlParser(highlightEntry?.entry)}
 							</p>
 						)}
+
 						<Image
 							src={"/images/journal-spring.png"}
 							height={38}
