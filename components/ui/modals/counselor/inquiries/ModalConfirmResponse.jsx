@@ -4,15 +4,18 @@ import sendResponse from "@/public/images/icons/sendResponse.png";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import FullButton from "@/components/ui/buttons/FullButton";
 import ModalConfirmed from "./ModalConfirmed";
+import { getUserSession } from "@/lib/helperFunctions";
 
 const ModalConfirmResponse = ({
   response,
   setConfirmResponse,
   setInquiryModal,
   handleResponse,
+  fetchInquiries,
 }) => {
   const [isChecked, setIsChecked] = useState(true);
   const [showConfirmed, setShowConfirmed] = useState(false);
+  const userSession = getUserSession();
 
   // for dialog
   const toggleChecked = () => {
@@ -27,6 +30,7 @@ const ModalConfirmResponse = ({
     setTimeout(() => {
       setShowConfirmed(false);
       handleReset();
+      if (userSession.role === "counselor") fetchInquiries();
     }, 3000);
   };
 
