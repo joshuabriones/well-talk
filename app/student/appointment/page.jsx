@@ -359,9 +359,8 @@ const Appointment = () => {
           {isViewAppointment ? (
             <div className="w-full flex flex-col text-center">
               {/* table*/}
-              <div className="overflow-x-auto lg:px-56 lg:py-10 md:px-48 md:6 sm:px-1 sm:py-4">
-                <div className="overflow-x-auto mt-12 md:mt-2">
-                  <table className="w-full table-auto">
+              <div className="overflow-x-auto max-w-full lg:px-10 xs:px-1 flex flex-col items-center mt-10">
+                <table className="table bg-gray-100">
                     {/* head */}
                     <thead className="bg-gray-200">
                       <tr className="font-bold text-center">
@@ -382,7 +381,7 @@ const Appointment = () => {
                           onClick={() =>
                             handleRowClick(appointment.appointmentId)
                           }
-                          className="cursor-pointer hover:bg-gray-100 transition duration-300 ease-in-out"
+                          className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
                         >
                           <td className="text-center py-2">
                             {appointment.appointmentId}
@@ -408,20 +407,28 @@ const Appointment = () => {
                                 : appointment.appointmentPurpose}
                             </p>
                           </td>
-                          <td className="text-center py-2">
-                            <div
-                              className={`badge ${appointment.appointmentStatus === "Pending"
-                                  ? "badge-warning"
-                                  : appointment.appointmentStatus === "Done"
-                                    ? "badge-success"
-                                    : appointment.appointmentStatus === "Approved"
-                                      ? "badge-info"
-                                      : ""
-                                }`}
-                            >
-                              {appointment.appointmentStatus}
-                            </div>
-                          </td>
+                          <td className="text-center flex justify-center">
+										<div
+											className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}>
+													{appointment &&
+														appointment.appointmentStatus ===
+															"Pending" &&
+														"🟡"}
+													{appointment &&
+														appointment.appointmentStatus ===
+															"Done" &&
+														"🟢"}
+													{appointment &&
+														appointment.appointmentStatus ===
+															"Assigned" &&
+														"🔵"}
+													<span className="ml-2 text-bold text-sm">
+														{appointment
+															? appointment.appointmentStatus
+															: ""}
+													</span>
+												</div>
+											</td>
                           {/* Delete and Edit */}
                           <td>
                             <div className="text-center py-2">
@@ -441,7 +448,7 @@ const Appointment = () => {
                       ))}
                     </tbody>
                   </table>
-                </div>
+
 
                 {/* Pagination controls */}
                 <div className="join pt-5">

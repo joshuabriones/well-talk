@@ -26,8 +26,7 @@ const TableTitle = ({ addReferral }) => {
 			<h1 className="font-Merriweather text-lg ">Referral Records</h1>
 			<button
 				className="w-36 font-Merriweather text-sm px-6 py-2 border border-black rounded-lg hover:bg-[#6B9080] hover:text-white hover:border-white transition duration-300 ease-in-out"
-				onClick={addReferral}
-			>
+				onClick={addReferral}>
 				Add Referral
 			</button>
 		</div>
@@ -41,8 +40,7 @@ const TableHeaders = ({ handleSort }) => {
 				<th
 					className="hover:bg-gray-300 cursor-pointer p-5 text-center"
 					onClick={() => handleSort("id")}
-					style={{ width: "5%" }}
-				>
+					style={{ width: "5%" }}>
 					ID
 				</th>
 				<th>Date and Time</th>
@@ -52,8 +50,7 @@ const TableHeaders = ({ handleSort }) => {
 				<th
 					className="hover:bg-gray-300 cursor-pointer p-5 text-center"
 					onClick={() => handleSort("status")}
-					style={{ width: "10%" }}
-				>
+					style={{ width: "10%" }}>
 					Status
 				</th>
 				{/* Delete and Edit*/}
@@ -70,12 +67,13 @@ const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
 				<tr
 					key={referrals.referralId}
 					onClick={() => handleRowClick(referrals.referralId)}
-					className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
-				>
+					className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out">
 					<td className="text-center">{referrals.referralId}</td>
 					<td>
 						<div className="flex flex-row gap-x-3">
-							<div className="text-sm">{referrals.dateOfRefferal}</div>
+							<div className="text-sm">
+								{referrals.dateOfRefferal}
+							</div>
 						</div>
 					</td>
 					<td>
@@ -97,16 +95,21 @@ const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
 					</td>
 					<td className="text-center">
 						<div
-							className={`w-24 h-5 badge badge-xs ${referrals && referrals.status === "Pending"
-								? "badge-warning"
-								: referrals && referrals.status === "Responded"
-									? "badge-success"
-									: referrals && referrals.status === "Accepted"
-										? "badge-info"
-										: ""
-								}`}
-						>
-							{referrals.status}
+							className={`w-26 h-6 rounded-lg border border-black flex items-center justify-center ${
+								referrals && referrals.status === "Pending"
+									? "status-pending"
+									: referrals &&
+									  referrals.status === "Responded"
+									? "status-responded"
+									: referrals &&
+									  referrals.status === "Accepted"
+									? "status-accepted"
+									: ""
+							}`}>
+							{referrals.status === "Pending" && "🟡"}
+							{referrals.status === "Responded" && "🔵"}
+							{referrals.status === "Accepted" && "🟢"}
+							<span className="ml-2">{referrals.status}</span>
 						</div>
 					</td>
 
@@ -117,11 +120,12 @@ const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
 								onClick={(e) => {
 									e.stopPropagation();
 									showDeleteModal(referrals.referralId);
-								}}
-							>
+								}}>
 								Delete
 							</button>
-							<button className="btn btn-xs text-green-700">Edit</button>
+							<button className="btn btn-xs text-green-700">
+								Edit
+							</button>
 						</div>
 					</td>
 				</tr>
@@ -138,24 +142,25 @@ const PaginationControls = ({ currentPage, setCurrentPage, list }) => {
 			<button
 				onClick={() => setCurrentPage(currentPage - 1)}
 				disabled={currentPage === 1}
-				className="join-item btn w-28"
-			>
+				className="join-item btn w-28">
 				Previous
 			</button>
-			{[...Array(Math.ceil(list.length / ReferralsPerPage))].map((_, index) => (
-				<button
-					key={index}
-					className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""}`}
-					onClick={() => setCurrentPage(index + 1)}
-				>
-					{index + 1}
-				</button>
-			))}
+			{[...Array(Math.ceil(list.length / ReferralsPerPage))].map(
+				(_, index) => (
+					<button
+						key={index}
+						className={`join-item btn ${
+							currentPage === index + 1 ? "btn-active" : ""
+						}`}
+						onClick={() => setCurrentPage(index + 1)}>
+						{index + 1}
+					</button>
+				)
+			)}
 			<button
 				onClick={() => setCurrentPage(currentPage + 1)}
 				disabled={ReferralsPerPage > list.length}
-				className="join-item btn w-28"
-			>
+				className="join-item btn w-28">
 				Next
 			</button>
 		</div>
@@ -236,7 +241,10 @@ const Referral = () => {
 	// Calculate the index range of refferal to display for the current page
 	const indexOfLastInquiry = currentPage * ReferralsPerPage;
 	const indexOfFirstInquiry = indexOfLastInquiry - ReferralsPerPage;
-	const currentList = referrals.slice(indexOfFirstInquiry, indexOfLastInquiry);
+	const currentList = referrals.slice(
+		indexOfFirstInquiry,
+		indexOfLastInquiry
+	);
 
 	const handleSort = (column) => {
 		const order = sortOrder === "asc" ? "desc" : "asc";
@@ -254,8 +262,10 @@ const Referral = () => {
 				// Define priority order for status
 				const statusOrder = ["Pending", "Accepted"];
 				return order === "asc"
-					? statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
-					: statusOrder.indexOf(b.status) - statusOrder.indexOf(a.status);
+					? statusOrder.indexOf(a.status) -
+							statusOrder.indexOf(b.status)
+					: statusOrder.indexOf(b.status) -
+							statusOrder.indexOf(a.status);
 			}
 			return 0;
 		});
@@ -280,7 +290,11 @@ const Referral = () => {
 			const data = await response.json();
 
 			setReferrals(
-				data.filter((referral) => referral.teacher.institutionalEmail === userSession.email)
+				data.filter(
+					(referral) =>
+						referral.teacher.institutionalEmail ===
+						userSession.email
+				)
 			);
 		} catch (error) {
 			console.error("Error fetching posts:", error);
@@ -326,20 +340,20 @@ const Referral = () => {
 			{deleteModal && (
 				<ModalDelete
 					setDeleteModal={setDeleteModal}
-					handleDelete={handleDelete}
-				></ModalDelete>
+					handleDelete={handleDelete}></ModalDelete>
 			)}
 
 			{referralModal && (
 				<ReferralInfo
 					setReferralModal={setReferralModal}
 					selectedID={selectedID}
-					referrals={referrals}
-				></ReferralInfo>
+					referrals={referrals}></ReferralInfo>
 			)}
 
 			{addReferral && (
-				<AddReferral teacherId={userSession.id} onOpen={setAddReferral}></AddReferral>
+				<AddReferral
+					teacherId={userSession.id}
+					onOpen={setAddReferral}></AddReferral>
 			)}
 		</div>
 	);

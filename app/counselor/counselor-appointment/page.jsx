@@ -390,8 +390,8 @@ const Appointment = () => {
 						<div className="overflow-x-auto max-w-full lg:px-10 xs:px-1 flex flex-col items-center mt-10">
 							<table className="table bg-gray-100">
 								{/* head */}
-								<thead>
-									<tr className="bg-gray-200 font-bold">
+								<thead className="bg-gray-200">
+								<tr className="font-bold text-center">
 										<th className="text-center p-5">ID</th>
 										<th>Date and Time</th>
 										<th className="p-5">ID Number</th>
@@ -488,14 +488,28 @@ const Appointment = () => {
 															: appointments?.appointmentPurpose}
 													</p>
 												</td>
-												<td className="text-center">
-													<div
-														className={`w-24 h-5 badge badge-xs badge-success`}>
-														{
-															appointments.appointmentStatus
-														}
-													</div>
-												</td>
+												<td className="text-center flex justify-center">
+										<div
+											className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}>
+													{appointments &&
+														appointments.appointmentStatus ===
+															"Pending" &&
+														"🟡"}
+													{appointments &&
+														appointments.appointmentStatus ===
+															"Done" &&
+														"🟢"}
+													{appointments &&
+														appointments.appointmentStatus ===
+															"Assigned" &&
+														"🔵"}
+													<span className="ml-2 text-bold text-sm">
+														{appointments
+															? appointments.appointmentStatus
+															: ""}
+													</span>
+												</div>
+											</td>
 
 												{/* Delete and Edit */}
 												<td>

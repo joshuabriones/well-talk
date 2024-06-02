@@ -10,6 +10,8 @@ import toast from "react-hot-toast";
 import { BsFillImageFill } from "react-icons/bs";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { v4 } from "uuid";
+import FullButton from "./buttons/FullButton";
+import HollowButton from "./buttons/HollowButton";
 
 const PostCard = ({ post, fetchPosts }) => {
   console.log(post);
@@ -85,10 +87,10 @@ const PostCard = ({ post, fetchPosts }) => {
 
         <div className="w-full px-4 py-3">
           <div className="w-full flex justify-between relative text-lg">
-            <h2 className="font-semibold cursor-pointer ">
-              {`${post.author?.firstName} ${post.author?.lastName}`}
-              <span className="text-slate-500 font-normal pl-1.5">
-                {post.author?.institutionalEmail}
+            <h2 className="font-semibold font-Merriweather cursor-pointer ">
+              {`${post.author?.firstName} ${post.author?.lastName}`} 
+              <span className="text-slate-500 font-normal font-Jaldi pl-1.5">
+              • {post.author?.institutionalEmail}
               </span>
             </h2>
 
@@ -243,7 +245,7 @@ function EditPostModal({
 
   return (
     <div className="w-full h-full bg-black bg-opacity-50 fixed top-0 left-0 z-50">
-      <div className="w-1/2 h-[55%] px-4 font-Merriweather bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl shadow-xl">
+      <div className="w-4/12 h-[30%] px-4 font-Merriweather bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl shadow-xl">
         <h2 className="text-center font-semibold text-xl py-3 border-b border-gray-300">
           Edit Post
         </h2>
@@ -288,19 +290,19 @@ function EditPostModal({
             />
             <BsFillImageFill className="text-2xl cursor-pointer mr-2 mt-1" />
           </label>
-          <div className="flex gap-2">
-            <button
+          <div className="flex gap-2 w-7/12">
+            <HollowButton
               onClick={() => setOpenEditModal((prev) => !prev)}
               className="bg-white border-[1px] border-black text-black px-4 py-2 rounded-md font-semibold"
             >
               Cancel
-            </button>
-            <button
+            </HollowButton>
+            <FullButton
               onClick={handleUpdatePost}
               className="bg-green-500 px-4 py-2 rounded-md font-semibold"
             >
               Update Post
-            </button>
+            </FullButton>
           </div>
         </div>
       </div>

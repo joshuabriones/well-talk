@@ -77,6 +77,14 @@ const ModalInquiryInfo = ({
 			console.error("Error responding to inquiry:", error.message);
 		}
 	};
+	const handleCancel = () => {
+		setIsChecked(!isChecked);
+	  };
+
+	  const handleModalClose = () => {
+		setIsChecked(false); // Close the modal
+		setInquiryModal(false); // Close the parent modal
+	  };
 
 	return (
 		<>
@@ -90,7 +98,14 @@ const ModalInquiryInfo = ({
 			<div
 				className="modal"
 				role="dialog">
+										
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+				<label
+						 className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-0 flex items-center justify-center"
+						htmlFor="my_modal_7"
+						onClick={handleModalClose}>
+						Close
+					</label>
 					<div className="bg-white dark:bg-slate-800 shadow-xl border border-slate-200 border-2 rounded-xl hover:-translate-y-1 duration-500 w-full lg:w-4/12 p-2 lg:p-4 relative">
 						<section className=" items-center md:gap-4 mb-8 justify-center w-full">
 							<div className="w-full flex justify-center avatar absolute -top-16 md:-top-24">
@@ -143,17 +158,19 @@ const ModalInquiryInfo = ({
 										</tr>
 										<tr>
 											<th>Status:</th>
-											<td
-												className={`h-fit badge badge-md font-bold ${
-													inquiry?.status === false
-														? "badge-warning"
-														: "badge-success"
-												}`}
-												style={{ width: "50%" }}>
+											<td className="text-center">
+										<div
+											className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}>
+											{inquiry?.status === false
+												? "🟡"
+												: "🟢"}
+											<span className="ml-2 text-bold text-sm">
 												{inquiry?.status
 													? "Replied"
 													: "Pending"}
-											</td>
+											</span>
+										</div>
+									</td>
 										</tr>
 										{inquiry?.status && (
 											<tr>
@@ -210,7 +227,7 @@ const ModalInquiryInfo = ({
 								</div>
 							</div>
 
-							<div className="gap-x-4 mt-3 px-10">
+							<div className="flex gap-x-4 gap-y-4 mt-3 px-10">
 								<FullButton
 									disabled={inquiry?.status}
 									onClick={() => setConfirmResponse(true)}>
@@ -219,12 +236,7 @@ const ModalInquiryInfo = ({
 							</div>
 						</section>
 					</div>
-					<label
-						className="modal-backdrop"
-						htmlFor="my_modal_7"
-						onClick={() => setInquiryModal(false)}>
-						Close
-					</label>
+
 				</div>
 
 				{confirmResponse && (
