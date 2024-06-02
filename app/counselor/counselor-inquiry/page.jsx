@@ -44,7 +44,6 @@ export default function Home() {
       }
 
       const data = await response.json();
-      console.log(data);
       setInquiries(data);
     } catch (error) {
       console.error("Error fetching inquiries:", error);
@@ -109,7 +108,6 @@ export default function Home() {
       }
       if (response.status !== 204) { // Check if the response is not empty
         const data = await response.json();
-        console.log(data);
       }
 
       // Update local state to reflect the deletion

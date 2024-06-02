@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { useState } from "react";
 import FullButton from "../../buttons/FullButton";
 import HollowButton from "../../buttons/HollowButton";
+import { toast } from "react-hot-toast";
 
 const AddReferral = ({ teacherId, onOpen }) => {
 	const [firstName, setFirstName] = useState("");
@@ -60,7 +61,7 @@ const AddReferral = ({ teacherId, onOpen }) => {
 
 			handleClose();
 			const data = await response.json();
-			console.log(data);
+			toast.success("Referral created successfully");
 		} catch (error) {
 			console.error("Error creating referral:", error);
 		}
