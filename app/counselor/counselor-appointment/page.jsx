@@ -1,11 +1,11 @@
 "use client";
 
 import FullButton from "@/components/ui/buttons/FullButton";
+import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextAreaInput from "@/components/ui/inputs/TextAreaInput";
 import TextInput from "@/components/ui/inputs/TextInput";
 import hdrAppointment from "@/public/images/headers/hdrAppointment.png";
 import { useEffect, useState } from "react";
-import HollowButton from "@/components/ui/buttons/HollowButton";
 // css
 import "@/styles/counselor.css";
 
@@ -14,6 +14,7 @@ import { Navbar } from "@/components/ui/Navbar";
 import AddStudent from "@/components/ui/modals/counselor/appointments/AddStudent";
 import ModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
+import ModalConfirmResponseAppointment from "@/components/ui/modals/student/appointments/ModalConfirmedResponseAppointment";
 
 import Load from "@/components/Load";
 import Loading from "@/components/Loading";
@@ -46,6 +47,8 @@ const Appointment = () => {
 	const [openAddStudent, setOpenAddStudent] = useState(false);
 	const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 	const [selectedStudent, setSelectedStudent] = useState(null);
+
+	const [confirmResponseModal, setConfirmResponseModal] = useState(false);
 
 	const userSession = getUserSession();
 
@@ -279,12 +282,12 @@ const Appointment = () => {
 	};
 
 	const handleAppointmentSubmit = async () => {
-		const confirmed = window.confirm(
-			"Are you sure you want to add this appointment?"
-		);
-		if (!confirmed) {
-			return; // Don't proceed if the user cancels
-		}
+		// Open the confirm response modal
+		setConfirmResponseModal(true);
+	};
+
+	const handleAppointmentSubmitConfirmed = async () => {
+		setConfirmResponseModal(false);
 		setIsLoading(true);
 		try {
 			const response = await fetch(
@@ -305,7 +308,7 @@ const Appointment = () => {
 			);
 
 			if (response.ok) {
-				toast.success("Appointment set successfully");
+				toast.success("Appointment has been sent to admin successfully");
 			}
 
 			setPurpose("");
@@ -367,20 +370,18 @@ const Appointment = () => {
 				<div>
 					<div className="w-full mt-8 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isAddAppointment
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
 									? "bg-primary-green text-white"
 									: "border border-primary-green text-primary-green"
-							}`}
+								}`}
 							onClick={handleAddAppointmentClick}>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isViewAppointment
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
 									? "bg-primary-green text-white"
 									: "border border-primary-green text-primary-green"
-							}`}
+								}`}
 							onClick={handleViewAppointmentClick}>
 							View Appointments
 						</button>
@@ -481,9 +482,9 @@ const Appointment = () => {
 															?.appointmentPurpose
 															?.length > 50
 															? `${appointments?.appointmentPurpose?.substring(
-																	0,
-																	40
-															  )}...`
+																0,
+																40
+															)}...`
 															: appointments?.appointmentPurpose}
 													</p>
 												</td>
@@ -537,17 +538,16 @@ const Appointment = () => {
 										...Array(
 											Math.ceil(
 												appointments.length /
-													AppointmentPerPage
+												AppointmentPerPage
 											)
 										),
 									].map((_, index) => (
 										<button
 											key={index}
-											className={`join-item btn ${
-												currentPage === index + 1
+											className={`join-item btn ${currentPage === index + 1
 													? "btn-active"
 													: ""
-											}`}
+												}`}
 											onClick={() =>
 												setCurrentPage(index + 1)
 											}>
@@ -622,14 +622,13 @@ const Appointment = () => {
 												onClick={() =>
 													handleTimeSlotClick(time)
 												} // Set the selected time on click
-												className={`time-slot-button ${
-													isTimeSlotTaken(time)
+												className={`time-slot-button ${isTimeSlotTaken(time)
 														? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
 														: time ===
-														  selectedTimeSlot
-														? "bg-primary-green-dark text-white" // Apply a different style to the selected time slot
-														: "bg-primary-green text-white hover:bg-primary-green-dark duration-300"
-												}  py-2 px-4 rounded-md`}>
+															selectedTimeSlot
+															? "bg-primary-green-dark text-white" // Apply a different style to the selected time slot
+															: "bg-primary-green text-white hover:bg-primary-green-dark duration-300"
+													}  py-2 px-4 rounded-md`}>
 												{timeFormatter(time)}
 											</button>
 										))}
@@ -646,14 +645,14 @@ const Appointment = () => {
 												setSearchTerm={setSearchTerm}
 											/>
 										</div>
-                    <div className="w-5/12 md:w-2/12">
-										<HollowButton
-											onClick={() =>
-												setOpenAddStudent(true)
-											}>
-											Add Student
-										</HollowButton>
-                    </div>
+										<div className="w-5/12 md:w-2/12">
+											<HollowButton
+												onClick={() =>
+													setOpenAddStudent(true)
+												}>
+												Add Student
+											</HollowButton>
+										</div>
 									</div>
 
 									<div className="mt-4 w-full max-h-[10%] overflow-y-scroll text-left">
@@ -670,12 +669,11 @@ const Appointment = () => {
 														student.id
 													); // Update the selected student
 												}}
-												className={`bg-primary-green text-white block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${
-													selectedStudent ===
-													student.id
+												className={`bg-primary-green text-white block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${selectedStudent ===
+														student.id
 														? "bg-primary-green-dark"
 														: "" // Apply a different style to the selected student
-												}`}
+													}`}
 												key={student.id}>
 												{student.idNumber} ⸺{" "}
 												{student.firstName}{" "}
@@ -781,14 +779,22 @@ const Appointment = () => {
 					setAppointments={setAppointments}
 					fetchAppointments={fetchAppointments}
 					role="counselor"
-					// TO BE ADDED
-					// handleRescedule={handleReschedule}
-					// handleUpdateStatus={handleUpdateStatus}
+				// TO BE ADDED
+				// handleRescedule={handleReschedule}
+				// handleUpdateStatus={handleUpdateStatus}
 				></ModalAppointmentInfo>
 			)}
 
 			{openAddStudent && (
 				<AddStudent setOpenAddStudent={setOpenAddStudent} />
+			)}
+			{confirmResponseModal && (
+				<ModalConfirmResponseAppointment
+					setConfirmResponse={setConfirmResponseModal}
+					setAppointmentModal={setAppointmentModal}
+					handleResponse={handleAppointmentSubmitConfirmed}
+					fetchAppointments={fetchAppointments}
+				/>
 			)}
 		</div>
 	);

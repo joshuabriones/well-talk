@@ -23,6 +23,7 @@ import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 import { Badge, Calendar, Popover, Whisper } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
+import ModalConfirmResponseAppointment from "@/components/ui/modals/student/appointments/ModalConfirmedResponseAppointment";
 
 const Appointment = () => {
   const AppointmentPerPage = 10;
@@ -41,6 +42,8 @@ const Appointment = () => {
   const [appointmentDate, setAppointmentDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+
+	const [confirmResponseModal, setConfirmResponseModal] = useState(false);
 
   const userSession = getUserSession();
   const [selectedTime, setSelectedTime] = useState(""); // State to store the selected time
@@ -244,8 +247,13 @@ const Appointment = () => {
     }
   };
 
-  const handleAppointmentSubmit = async (e) => {
-    e.preventDefault();
+	const handleAppointmentSubmit = async () => {
+		// Open the confirm response modal
+		setConfirmResponseModal(true);
+	};
+
+  const handleAppointmentSubmitConfirmed = async () => {
+    setConfirmResponseModal(false);
     setIsLoading(true);
 
     try {
@@ -612,6 +620,14 @@ const Appointment = () => {
           setShowAddAppointmentModal={setShowAddAppointmentModal}
         />
       )}
+      			{confirmResponseModal && (
+				<ModalConfirmResponseAppointment
+					setConfirmResponse={setConfirmResponseModal}
+					setAppointmentModal={setAppointmentModal}
+					handleResponse={handleAppointmentSubmitConfirmed}
+					fetchAppointments={fetchAppointments}
+				/>
+			)}
     </div>
   );
 };
