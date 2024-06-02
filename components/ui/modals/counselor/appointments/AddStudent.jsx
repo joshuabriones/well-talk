@@ -6,11 +6,15 @@ import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import { API_ENDPOINT } from "@/lib/api";
 import Cookies from "js-cookie";
+import { collegeOptions } from "@/lib/inputOptions";
+import { programOptions } from "@/lib/inputOptions";
 
 const AddStudent = ({ setOpenAddStudent }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [college, setCollege] = useState("");
+  const [program, setProgram] = useState("");
   const [idNumber, setIdNumber] = useState("");
 
   const handleClose = () => {
@@ -41,6 +45,8 @@ const AddStudent = ({ setOpenAddStudent }) => {
             institutionalEmail: email,
             firstName: firstName,
             lastName: lastName,
+            college: college,
+            program: program,
             role: "student",
             image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
             password: "12345678",
@@ -117,6 +123,68 @@ const AddStudent = ({ setOpenAddStudent }) => {
                   id="idNumber"
                 />
               </div>
+              <div className="w-full flex flex-row gap-x-6">
+								<div className="flex flex-col w-full">
+									<label
+										htmlFor="gender"
+										className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full">
+										<select
+											value={college}
+											onChange={(e) =>
+												setCollege(e.target.value)
+											}
+											className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
+											required>
+											{collegeOptions.map((option) => (
+												<option
+													key={option.value}
+													value={option.value}>
+													{option.label}
+												</option>
+											))}
+										</select>
+										<span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+											Department
+										</span>
+									</label>
+									{/* {errors.college && (
+										<p className="text-red-500 text-sm font-Jaldi font-semibold">
+											{errors.college._errors[0]}
+										</p>
+									)} */}
+								</div>
+								<div className="flex flex-col w-full">
+									<label
+										htmlFor="gender"
+										className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full">
+										<select
+											value={program}
+											onChange={(e) =>
+												setProgram(e.target.value)
+											}
+											className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
+											required>
+											{programOptions[college]?.map(
+												(option) => (
+													<option
+														key={option.value}
+														value={option.value}>
+														{option.label}
+													</option>
+												)
+											)}
+										</select>
+										<span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+											Course
+										</span>
+									</label>
+									{/* {errors.program && (
+										<p className="text-red-500 text-sm font-Jaldi font-semibold">
+											{errors.program._errors[0]}
+										</p>
+									)} */}
+								</div>
+							</div>
               <div className="">
                 <TextInput
                   value={email}

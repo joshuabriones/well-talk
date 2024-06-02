@@ -1,13 +1,13 @@
 "use client";
 import { Navbar } from "@/components/ui/Navbar";
-import { useEffect, useState } from "react";
-import { getUserSession } from "@/lib/helperFunctions";
 import PostCard from "@/components/ui/PostsCard";
+import { getUserSession } from "@/lib/helperFunctions";
+import { useEffect, useState } from "react";
 
 const CounselorProfile = () => {
 	const [counselor, setCounselor] = useState(null);
 	const [posts, setPosts] = useState([]);
-    const userSession = getUserSession();
+	const userSession = getUserSession();
 
 	useEffect(() => {
 		// Dummy data for counselor
@@ -78,49 +78,47 @@ const CounselorProfile = () => {
 			<section>
 				<Navbar userType="student" />
 			</section>
-            <div
-					className="pattern-overlay pattern-left absolute -z-10"
-					style={{ transform: "scaleY(-1)", top: "-50px" }}>
-					<img
-						src="/images/landing/lleft.png"
-						alt="pattern"
-					/>
-				</div>
-				<div
-					className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
-					style={{ transform: "scaleY(-1)", top: "-15px" }}>
-					<img
-						src="/images/landing/lright.png"
-						alt="pattern"
-						className="w-full h-full object-contain"
-					/>
-				</div>
+			<div
+				className="pattern-overlay pattern-left absolute -z-10"
+				style={{ transform: "scaleY(-1)", top: "-50px" }}>
+				<img
+					src="/images/landing/lleft.png"
+					alt="pattern"
+				/>
+			</div>
+			<div
+				className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+				style={{ transform: "scaleY(-1)", top: "-15px" }}>
+				<img
+					src="/images/landing/lright.png"
+					alt="pattern"
+					className="w-full h-full object-contain"
+				/>
+			</div>
 			<div className="w-full rounded-xl pt-4 md:mt-6 p-4 md:p-8 flex flex-col justify-center items-center mt-20 md:mt-16">
-			
-			<div className="bg-white dark:bg-slate-800 shadow-xl border border-slate-200 border-2 rounded-xl hover:-translate-y-1 duration-500 h-full w-full lg:w-7/12 p-6 lg:p-8 relative">
-    <section className="flex flex-col md:flex-col items-center md:gap-4 mb-8 justify-center items-center w-full">
-        {/* Avatar */}
-        <div className="w-full flex justify-center avatar absolute -top-16 md:-top-24">
-            <div className="w-32 md:w-48 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-1">
-                <img src={userSession?.image} />
-            </div>
-        </div>
-        {/* User Info */}
-        <div className="w-full mt-14 md:mt-20 flex flex-col justify-center items-center md:justify-start">
-            <h1 className="font-Merriweather text-2xl md:text-2xl lg:text-4xl font-bold tracking-tight mt-4">
-                {counselor.name}
-            </h1>
-            <p className="font-Merriweather tracking-tight font-thin my-2">
-                {counselor.email}
-            </p>
-            <p className="font-Merriweather tracking-tight font-thin ">
-                {counselor.id}
-            </p>
-        </div>
-    </section>
+				<div className="bg-white dark:bg-slate-800 shadow-xl border border-slate-200 border-2 rounded-xl hover:-translate-y-1 duration-500 h-full w-full lg:w-7/12 p-6 lg:p-8 relative">
+					<section className="flex flex-col md:flex-col items-center md:gap-4 mb-8 justify-center items-center w-full">
+						{/* Avatar */}
+						<div className="w-full flex justify-center avatar absolute -top-16 md:-top-24">
+							<div className="w-32 md:w-48 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-1">
+								<img src={userSession?.image} />
+							</div>
+						</div>
+						{/* User Info */}
+						<div className="w-full mt-14 md:mt-20 flex flex-col justify-center items-center md:justify-start">
+							<h1 className="font-Merriweather text-2xl md:text-2xl lg:text-4xl font-bold tracking-tight mt-4">
+								{counselor.name}
+							</h1>
+							<p className="font-Merriweather tracking-tight font-thin my-2">
+								{counselor.email}
+							</p>
+							<p className="font-Merriweather tracking-tight font-thin ">
+								{counselor.id}
+							</p>
+						</div>
+					</section>
 
-          
-          <div className="border-l border-slate-100 h-full mx-4 md:mx-8 lg:mx-12"></div>
+					<div className="border-l border-slate-100 h-full mx-4 md:mx-8 lg:mx-12"></div>
 
 					<section className="flex flex-col gap-6 mt-2 w-full">
 						{/* Posts */}
@@ -129,7 +127,10 @@ const CounselorProfile = () => {
 								Posts by {counselor.name}
 							</h1>
 							{posts.map((post) => (
-								<PostCard key={post.id} post={post} />
+								<PostCard
+									key={post.id}
+									post={post}
+								/>
 							))}
 						</div>
 					</section>

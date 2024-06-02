@@ -1,5 +1,5 @@
 "use client";
-import Loading from "@/components/Loading";
+import { default as Load, default as LoadingState } from "@/components/Load";
 import { Navbar } from "@/components/ui/Navbar";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
@@ -66,7 +66,7 @@ export default function Profile() {
   }, []);
 
   if (userSession && userSession.role !== "counselor") {
-    return <Loading route={userSession.role} />;
+    return <LoadingState route={userSession.role} />;
   }
 
   const handleUpdateProfile = () => {
@@ -222,7 +222,7 @@ export default function Profile() {
   };
 
   if (loading) {
-    return <Loading />;
+    return <LoadingState />;
   }
 
   return (

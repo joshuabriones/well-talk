@@ -1,20 +1,18 @@
 import { useState } from "react";
-
-import sendResponse from "@/public/images/icons/sendResponse.png";
-import HollowButton from "@/components/ui/buttons/HollowButton";
 import FullButton from "@/components/ui/buttons/FullButton";
-import ModalConfirmed from "./ModalConfirmed";
+import HollowButton from "@/components/ui/buttons/HollowButton";
+import sendResponse from "@/public/images/icons/sendResponse.png";
 
-const ModalConfirmResponse = ({
+const ModalConfirmResponseAppointment = ({
   response,
   setConfirmResponse,
-  setInquiryModal,
+  setAppointmentModal,
   handleResponse,
+  fetchAppointments,
 }) => {
   const [isChecked, setIsChecked] = useState(true);
   const [showConfirmed, setShowConfirmed] = useState(false);
 
-  // for dialog
   const toggleChecked = () => {
     setIsChecked(!isChecked);
   };
@@ -22,7 +20,6 @@ const ModalConfirmResponse = ({
   const handleSubmit = () => {
     handleResponse();
 
-    // time out after 3 seconds
     setShowConfirmed(true);
     setTimeout(() => {
       setShowConfirmed(false);
@@ -32,7 +29,8 @@ const ModalConfirmResponse = ({
 
   const handleReset = () => {
     setConfirmResponse(false);
-    setInquiryModal(false);
+    setAppointmentModal(false);
+    fetchAppointments();
   };
 
   return (
@@ -52,14 +50,14 @@ const ModalConfirmResponse = ({
             className="w-28 h-28 flex justify-center mx-auto"
           />
           <h3 className="text-xl font-bold font-Merriweather py-6">
-            Do you confirm to send the response?
+            Do you confirm to submit the Appointment?
           </h3>
 
           <div className="flex flex-row gap-x-4 py-2 px-12">
             <HollowButton onClick={() => setConfirmResponse(false)}>
               Cancel
             </HollowButton>
-            <FullButton onClick={handleSubmit}>Confirm</FullButton>
+            <FullButton onClick={handleResponse}>Confirm</FullButton>
           </div>
         </div>
         <label
@@ -70,10 +68,8 @@ const ModalConfirmResponse = ({
           Close
         </label>
       </div>
-
-      {showConfirmed && <ModalConfirmed></ModalConfirmed>}
     </>
   );
 };
 
-export default ModalConfirmResponse;
+export default ModalConfirmResponseAppointment;

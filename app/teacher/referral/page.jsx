@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 // css
 import "@/styles/counselor.css";
+import { toast } from "react-hot-toast";
 
 // modals
 import Header from "@/components/Header";
@@ -96,15 +97,14 @@ const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
 					</td>
 					<td className="text-center">
 						<div
-							className={`w-24 h-5 badge badge-xs ${
-								referrals && referrals.status === "Pending"
-									? "badge-warning"
-									: referrals && referrals.status === "Responded"
+							className={`w-24 h-5 badge badge-xs ${referrals && referrals.status === "Pending"
+								? "badge-warning"
+								: referrals && referrals.status === "Responded"
 									? "badge-success"
 									: referrals && referrals.status === "Accepted"
-									? "badge-info"
-									: ""
-							}`}
+										? "badge-info"
+										: ""
+								}`}
 						>
 							{referrals.status}
 						</div>
@@ -116,7 +116,7 @@ const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
 								className="btn btn-xs"
 								onClick={(e) => {
 									e.stopPropagation();
-									showDeleteModal(referrals.id);
+									showDeleteModal(referrals.referralId);
 								}}
 							>
 								Delete
@@ -191,6 +191,7 @@ const Referral = () => {
 	const handleRowClick = (id) => {
 		setSelectedID(id);
 		setReferralModal(true);
+		console.log(id);
 	};
 
 	const showDeleteModal = (id) => {
@@ -198,20 +199,38 @@ const Referral = () => {
 		setDeleteModal(true);
 	};
 
-	const handleDelete = () => {
-		// Find
-		const selected = referrals.find((referral) => referral.id === selectedID);
+	const handleDelete = async () => {
+		try {
+			const response = await fetch(
+				`${process.env.BASE_URL}/user/referral/deleteReferral/${selectedID}`,
+				{
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${Cookies.get("token")}`,
+					},
+				}
+			);
+			if (!response.ok) {
+				throw new Error("Failed to delete referral");
+			}
+			if (response.status !== 204) { // Check if the response is not empty
+				const data = await response.json();
+			}
 
-		// Delete
-		const newReffera = referrals.filter(
-			//
-			(referral) => referral.id !== selectedID
-		);
-		setReferrals(newReffera);
+			// Update local state to reflect the deletion
+			const updatedReferrals = referrals.filter(
+				(referral) => referral.id !== selectedID
+			);
+			setReferrals(updatedReferrals);
 
-		// Reset
-		setDeleteModal(false);
-		setSelectedID(null);
+			// Close modal and reset selected ID
+			setDeleteModal(false);
+			toast.success("Referral deleted successfully");
+			setSelectedID(null);
+		} catch (error) {
+			console.error("Failed to delete referral", error);
+		}
 	};
 
 	// Calculate the index range of refferal to display for the current page
@@ -272,9 +291,8 @@ const Referral = () => {
 		if (userSession) {
 			fetchReferrals();
 		}
-	}, []);
+	}, [fetchReferrals, userSession]);
 
-	console.log(referrals);
 
 	return (
 		<div className="min-h-screen w-full">

@@ -60,21 +60,21 @@ const CreatePostSection = ({ userSession }) => {
             },
           }
         );
-  
+
         if (!response.ok) {
           console.error("Failed to fetch user data");
           return;
         }
-  
+
         const data = await response.json();
-  
+
         // Log the fetched data
         console.log("Fetched User Data:", data);
-  
+
         setUserData(data);
       }
     };
-  
+
     fetchUserData();
   }, [userSession]);
 
@@ -82,43 +82,44 @@ const CreatePostSection = ({ userSession }) => {
     e.preventDefault();
 
     const user = JSON.parse(Cookies.get("user"));
+    let imgUrl = "";
 
     if (selectedFile) {
       const imgsRef = ref(imgDB, `Postimages/${v4()}`);
       const snapshot = await uploadBytes(imgsRef, selectedFile);
-      const imgUrl = await getDownloadURL(snapshot.ref);
+      imgUrl = await getDownloadURL(snapshot.ref);
       setImage(imgUrl);
+    }
 
-      try {
-        const response = await fetch(
-          `${process.env.BASE_URL}${API_ENDPOINT.CREATE_POST}?counselorId=${user.id}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${Cookies.get("token")}`,
-            },
-            body: JSON.stringify({
-              userId: user.id,
-              postContent: postContent,
-              postImage: imgUrl,
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to post");
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.CREATE_POST}?counselorId=${user.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+          body: JSON.stringify({
+            userId: user.id,
+            postContent: postContent,
+            postImage: imgUrl,
+          }),
         }
+      );
 
-        const data = await response.json();
-
-        setPostContent("");
-        setSelectedFile(null);
-        setImage(null);
-        fetchPosts();
-      } catch (error) {
-        console.error("Error posting:", error);
+      if (!response.ok) {
+        throw new Error("Failed to post");
       }
+
+      const data = await response.json();
+
+      setPostContent("");
+      setSelectedFile(null);
+      setImage(null);
+      fetchPosts();
+    } catch (error) {
+      console.error("Error posting:", error);
     }
   };
 
@@ -168,7 +169,7 @@ const CreatePostSection = ({ userSession }) => {
           className="w-10 h-10 rounded-full mr-3"
         />
         <span className="font-semibold flex flex-col font-Jaldi cursor-pointer">
-        {userData?.firstName} {userData?.lastName}
+          {userData?.firstName} {userData?.lastName}
           <span className="text-slate-500 font-Jaldi">
             {userSession?.email}
           </span>
@@ -230,9 +231,8 @@ const CreatePostSection = ({ userSession }) => {
                   pathColor: getColor(),
                   textSize: "40px",
                 })}
-                className={`custom-progress-bar ${
-                  characterCount > 289 ? "hidden" : ""
-                }`}
+                className={`custom-progress-bar ${characterCount > 289 ? "hidden" : ""
+                  }`}
               />
             )}
 

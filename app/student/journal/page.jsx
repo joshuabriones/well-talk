@@ -119,11 +119,12 @@ const StudentJournal = () => {
 			);
 
 			if (response.ok) {
-				toast.success(`Journal entry with ID ${journalId} deleted successfully.`);
+				const deletedEntry = journalEntries.find((entry) => entry.journalId === journalId);
+				toast.success(`Journal entry with title "${deletedEntry.title}" deleted successfully.`);
 				fetchEntries();
 				setIsEditing(false);
 			} else {
-				toast.error(`Failed to delete journal entry with ID ${journalId}.`);
+				toast.error(`Failed to delete journal entry with title "${deletedEntry.title}".`);
 			}
 		} catch (error) {
 			console.error("Error occurred while deleting journal entry:", error);
@@ -133,7 +134,7 @@ const StudentJournal = () => {
 	const handleEditEntry = async () => {
 		try {
 			const response = await fetch(
-				`${process.env.BASE_URL}${API_ENDPOINT.STUDENT_UPDATE_JOURNAL}${highlightEntry?.journalId}`,
+				`${process.env.BASE_URL}${API_ENDPOINT.STUDENT_UPDATE_JOURNAL}${userSession.id}`,
 				{
 					method: "PUT",
 					headers: {
@@ -242,6 +243,7 @@ const StudentJournal = () => {
 										height={30}
 										alt="Edit Icon"
 									/>
+
 								</button>
 								<button
 									className="z-10 tooltip tooltip-success"
@@ -262,6 +264,7 @@ const StudentJournal = () => {
 									className="z-10 tooltip tooltip-success"
 									data-tip="Edit"
 									onClick={() => setIsEditing((prevState) => !prevState)}
+									disabled={journalEntries.length === 0}
 								>
 									<Image
 										src={"/images/icons/edit.png"}

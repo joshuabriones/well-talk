@@ -1,18 +1,21 @@
-import { HiDotsHorizontal } from "react-icons/hi";
-import Cookies from "js-cookie";
-import { API_ENDPOINT } from "@/lib/api";
-import { BsFillImageFill } from "react-icons/bs";
-import { XCircleIcon } from "@heroicons/react/solid";
-import { useState } from "react";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import { imgDB } from "@/firebaseConfig";
-import { v4 } from "uuid";
+import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
+import { XCircleIcon } from "@heroicons/react/solid";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import Cookies from "js-cookie";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { BsFillImageFill } from "react-icons/bs";
+import { HiDotsHorizontal } from "react-icons/hi";
+import { v4 } from "uuid";
 
 const PostCard = ({ post, fetchPosts }) => {
   console.log(post);
   const [openActions, setOpenActions] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const userSession = getUserSession();
   const isTeacherOrStudent =
     userSession.role === "teacher" || userSession.role === "student";
@@ -41,6 +44,12 @@ const PostCard = ({ post, fetchPosts }) => {
 
   const handleDeletePost = async (e) => {
     e.preventDefault();
+    setOpenDeleteModal(true);
+  };
+
+  const confirmDeletePost = async (e) => {
+    e.preventDefault();
+    setOpenDeleteModal(true);
     try {
       const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.DELETE_POST}${post.postId}`,
@@ -56,6 +65,8 @@ const PostCard = ({ post, fetchPosts }) => {
         throw new Error("Failed to delete post");
       }
       fetchPosts();
+      setOpenDeleteModal(false);
+      toast.success("Post deleted successfully");
     } catch (error) {
       console.error("Error deleting post:", error);
     }
@@ -134,6 +145,14 @@ const PostCard = ({ post, fetchPosts }) => {
           postId={post.postId}
           setOpenEditModal={setOpenEditModal}
           fetchPosts={fetchPosts}
+          setOpenActions={setOpenActions}
+        />
+      )}
+      {openDeleteModal && (
+        <ModalDelete
+          setDeleteModal={setOpenDeleteModal}
+          handleDelete={confirmDeletePost}
+          prompt="post"
         />
       )}
     </div>
@@ -148,6 +167,7 @@ function EditPostModal({
   postId,
   setOpenEditModal,
   fetchPosts,
+  setOpenActions,
 }) {
   const [postContent, setPostContent] = useState(content);
   const [image, setImage] = useState(postImage || "");
@@ -178,75 +198,46 @@ function EditPostModal({
   const handleUpdatePost = async (e) => {
     e.preventDefault();
 
-    if (image === "") {
-      alert("Please select an image to upload");
-    }
+    let imgUrl = image;
 
     if (selectedFile) {
       const imgsRef = ref(imgDB, `Postimages/${v4()}`);
       const snapshot = await uploadBytes(imgsRef, selectedFile);
-      const imgUrl = await getDownloadURL(snapshot.ref);
-
+      imgUrl = await getDownloadURL(snapshot.ref);
       setImage(imgUrl);
-      try {
-        const response = await fetch(
-          `${process.env.BASE_URL}${API_ENDPOINT.UPDATE_POST}${postId}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${Cookies.get("token")}`,
-            },
-            body: JSON.stringify({
-              postContent: postContent,
-              postImage: imgUrl,
-            }),
-          }
-        );
+    }
 
-        if (!response.ok) {
-          throw new Error("Failed to post");
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.UPDATE_POST}${postId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+          body: JSON.stringify({
+            postContent: postContent,
+            postImage: imgUrl,
+          }),
         }
+      );
 
-        const data = await response.json();
-
-        setPostContent("");
-        setSelectedFile(null);
-        setImage(null);
-        fetchPosts();
-      } catch (error) {
-        console.error("Error posting:", error);
+      if (!response.ok) {
+        throw new Error("Failed to post");
       }
-    } else {
-      try {
-        const response = await fetch(
-          `${process.env.BASE_URL}${API_ENDPOINT.UPDATE_POST}${postId}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${Cookies.get("token")}`,
-            },
-            body: JSON.stringify({
-              postContent: postContent,
-              postImage: image,
-            }),
-          }
-        );
 
-        if (!response.ok) {
-          throw new Error("Failed to post");
-        }
+      const data = await response.json();
 
-        const data = await response.json();
-
-        setPostContent("");
-        setSelectedFile(null);
-        setImage(null);
-        fetchPosts();
-      } catch (error) {
-        console.error("Error posting:", error);
-      }
+      setPostContent("");
+      setSelectedFile(null);
+      setImage(null);
+      fetchPosts();
+      setOpenEditModal(false);
+      setOpenActions(false);
+      toast.success("Post updated successfully");
+    } catch (error) {
+      console.error("Error posting:", error);
     }
   };
 
@@ -322,12 +313,12 @@ function EditPostModal({
             <BsSuitHeart className="text-xl cursor-pointer" />
             <span className="text-sm pl-4 font-semibold">Like Count Placeholder</span>
           </div>
-
+ 
           <div className="flex">
             <GoComment className="text-xl cursor-pointer" />
             <span className="text-sm pl-4 font-semibold">Comment Count Placeholder</span>
           </div>
-
+ 
           <MdOutlineBookmarkBorder className="text-xl cursor-pointer mr-3" />
         </div> */
 }
