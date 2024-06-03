@@ -1,10 +1,13 @@
 "use client";
 
+import Load from "@/components/Load";
 import FullButton from "@/components/ui/buttons/FullButton";
 import TextInput from "@/components/ui/inputs/TextInput";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import ModalRegistrationSuccessful from "@/components/ui/modals/ModalRegistrationSuccessful";
 import ModalTermsUnchecked from "@/components/ui/modals/ModalTermsUnchecked";
+import { API_ENDPOINT } from "@/lib/api";
+import { getUserSession } from "@/lib/helperFunctions";
 import {
   collegeOptions,
   genderOptions,
@@ -19,10 +22,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { API_ENDPOINT } from "@/lib/api";
-import Load from "@/components/Load";
-import { getUserSession } from "@/lib/helperFunctions";
-import { faCity } from "@fortawesome/free-solid-svg-icons";
 
 const Registration = () => {
   const router = useRouter();
@@ -168,7 +167,7 @@ const Registration = () => {
                 contactNumber: contactNumber,
                 specificAddress: specificAddress,
                 barangay: barangay,
-                faCity: cityMunicipality,
+                city: cityMunicipality,
                 province: province,
                 zipCode: zipcode,
               }),

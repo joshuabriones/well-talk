@@ -88,9 +88,9 @@ const PostCard = ({ post, fetchPosts }) => {
         <div className="w-full px-4 py-3">
           <div className="w-full flex justify-between relative text-lg">
             <h2 className="font-semibold font-Merriweather cursor-pointer ">
-              {`${post.author?.firstName} ${post.author?.lastName}`} 
+              {`${post.author?.firstName} ${post.author?.lastName}`}
               <span className="text-slate-500 font-normal font-Jaldi pl-1.5">
-              • {post.author?.institutionalEmail}
+                • {post.author?.institutionalEmail}
               </span>
             </h2>
 
@@ -245,7 +245,7 @@ function EditPostModal({
 
   return (
     <div className="w-full h-full bg-black bg-opacity-50 fixed top-0 left-0 z-50">
-      <div className="w-4/12 h-[30%] px-4 font-Merriweather bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl shadow-xl">
+      <div className="w-4/12 h-[auto] px-4 font-Merriweather bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl shadow-xl">
         <h2 className="text-center font-semibold text-xl py-3 border-b border-gray-300">
           Edit Post
         </h2>
