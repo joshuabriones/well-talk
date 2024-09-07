@@ -9,29 +9,33 @@ const Users = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_USERS}`,
-          {
-            headers: {
-              Authorization: `Bearer ${Cookies.get("token")}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_USERS}`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
         }
-        const data = await response.json();
-        setUsers(data.filter((user) => user.role !== "admin"));
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    };
+      const data = await response.json();
+      setUsers(
+        data.filter(
+          (user) => user.role !== "admin" && user.isVerified === false
+        )
+      );
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchUsers();
   }, []);
 
@@ -42,18 +46,50 @@ const Users = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  const handleDeleteUser = (userId) => {
-    setUsers(users.filter((user) => user.id !== userId));
+  const handleDeleteUser = async (userId) => {
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.DELETE_USER}${userId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        alert("User deleted successfully");
+        fetchUsers();
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handleAcceptUser = (userId) => {
-    const updatedUsers = users.map((user) => {
-      if (user.id === userId) {
-        return { ...user, status: "active" };
+  const handleAcceptUser = async (userId) => {
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.VERIFY_USER}${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+          body: JSON.stringify({
+            isVerified: 1,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        alert("User verified successfully");
+        fetchUsers();
       }
-      return user;
-    });
-    setUsers(updatedUsers);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

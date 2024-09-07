@@ -5,7 +5,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 const UserRow = ({ user, onDelete, onAccept }) => {
   const handleDelete = () => {
     const isConfirmed = window.confirm(
-      `Are you sure you want to delete ${user.name}?`
+      `Are you sure you want to delete this user?`
     );
     if (isConfirmed) {
       onDelete(user.id);
@@ -14,7 +14,7 @@ const UserRow = ({ user, onDelete, onAccept }) => {
 
   const handleAccept = () => {
     const isConfirmed = window.confirm(
-      `Are you sure you want to accept ${user.name}?`
+      `Are you sure you want to accept this user?`
     );
     if (isConfirmed) {
       onAccept(user.id);
