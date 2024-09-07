@@ -46,11 +46,25 @@ const Users = () => {
     setUsers(users.filter((user) => user.id !== userId));
   };
 
+  const handleAcceptUser = (userId) => {
+    const updatedUsers = users.map((user) => {
+      if (user.id === userId) {
+        return { ...user, status: "active" };
+      }
+      return user;
+    });
+    setUsers(updatedUsers);
+  };
+
   return (
     <div className="w-full bg-white font-Merriweather">
       <div>
         <h1 className="font-bold text-3xl mb-10">Users</h1>
-        <UserTable users={users} onDelete={handleDeleteUser} />
+        <UserTable
+          users={users}
+          onDelete={handleDeleteUser}
+          onAccept={handleAcceptUser}
+        />
       </div>
     </div>
   );
