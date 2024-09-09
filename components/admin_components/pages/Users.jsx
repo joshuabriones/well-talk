@@ -13,7 +13,7 @@ const Users = () => {
 
     try {
       const response = await fetch(
-        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_VERIFIED_USERS}`,
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_USERS}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
