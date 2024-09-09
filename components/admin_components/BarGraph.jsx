@@ -1,7 +1,7 @@
+import { API_ENDPOINT } from "@/lib/api";
 import { BarChart } from "@tremor/react";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { API_ENDPOINT } from "@/lib/api";
 
 const countUsersPerRole = (userData) => {
   const counts = {};
@@ -30,7 +30,7 @@ export const BarGraph = ({ userSession }) => {
 
   const fetchUsers = async () => {
     const response = await fetch(
-      `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_USERS}`,
+      `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_VERIFIED_USERS}`,
       {
         method: "GET",
         headers: {

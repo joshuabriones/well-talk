@@ -10,9 +10,10 @@ const Users = () => {
   const [error, setError] = useState(null);
 
   const fetchUsers = async () => {
+
     try {
       const response = await fetch(
-        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_USERS}`,
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_VERIFIED_USERS}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
