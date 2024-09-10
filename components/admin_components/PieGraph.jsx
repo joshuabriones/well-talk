@@ -8,7 +8,7 @@ export const PieGraph = ({ userSession }) => {
 
   const fetchUsers = async () => {
     const response = await fetch(
-      `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_USERS}`,
+      `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_VERIFIED_USERS}`,
       {
         method: "GET",
         headers: {

@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import UserRow from "./UserRow";
 
-const UserTable = ({ users, onDelete }) => {
+const UserTable = ({ users, onDelete, onAccept }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
   const handleDelete = (userId) => {
     onDelete(userId);
+  };
+
+  const handleAccept = (userId) => {
+    onAccept(userId);
   };
 
   const handlePageChange = (pageNumber) => {
@@ -85,18 +89,24 @@ const UserTable = ({ users, onDelete }) => {
         </thead>
         <tbody>
           {currentUsers.map((user) => (
-            <UserRow key={user.id} user={user} onDelete={handleDelete} />
+            <UserRow
+              key={user.id}
+              user={user}
+              onDelete={handleDelete}
+              onAccept={handleAccept}
+            />
           ))}
         </tbody>
       </table>
 
+      {/*  Pagination buttons */}
       <div className="flex items-center gap-2 mt-5 p-2">
         <button
           className="hover:text-slate-600 cursor-pointer"
           disabled={currentPage === 1}
           onClick={() => handlePageChange(currentPage - 1)}
         >
-          ＜ Previous
+          ＜
         </button>
         <span>
           <span className="text-red-400"> {currentPage}</span> of {totalPages}
@@ -106,7 +116,7 @@ const UserTable = ({ users, onDelete }) => {
           disabled={currentPage === totalPages}
           onClick={() => handlePageChange(currentPage + 1)}
         >
-          Next ＞
+          ＞
         </button>
       </div>
     </div>

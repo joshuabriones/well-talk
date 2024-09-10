@@ -1,13 +1,23 @@
 import { Avatar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-const UserRow = ({ user, onDelete }) => {
+const UserRow = ({ user, onDelete, onAccept }) => {
   const handleDelete = () => {
     const isConfirmed = window.confirm(
-      `Are you sure you want to delete ${user.name}?`
+      `Are you sure you want to delete this user?`
     );
     if (isConfirmed) {
       onDelete(user.id);
+    }
+  };
+
+  const handleAccept = () => {
+    const isConfirmed = window.confirm(
+      `Are you sure you want to accept this user?`
+    );
+    if (isConfirmed) {
+      onAccept(user.id);
     }
   };
 
@@ -41,10 +51,20 @@ const UserRow = ({ user, onDelete }) => {
         </span>
       </td>
       <td>
-        <span className="hover:bg-red-200 p-2 rounded-md">
+        <button
+          onClick={handleDelete}
+          className="hover:bg-red-200 p-2 rounded-md"
+          title="Delete"
+        >
           <DeleteIcon sx={{ color: "red" }} />
-          <button onClick={handleDelete}>Delete</button>
-        </span>
+        </button>
+        <button
+          onClick={handleAccept}
+          className="hover:bg-green-200 p-2 rounded-md"
+          title="Accept"
+        >
+          <CheckCircleIcon sx={{ color: "green" }} />
+        </button>
       </td>
     </tr>
   );
