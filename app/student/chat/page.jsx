@@ -1,90 +1,134 @@
 "use client";
 
 import { Navbar } from "@/components/ui/Navbar";
+import { API_ENDPOINT } from "@/lib/api";
+import { getUserSession } from "@/lib/helperFunctions";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 
 export default function Chat() {
-	const counselors = [
+	const userSession = getUserSession();
+
+	// fetch all the students that has already been messaged by the counselor
+	const students = [
 		{
+			id: 45,
 			name: "Kathryn Melissa M. Villar",
-			program: "BS Architecture Counselor",
+			program: "BS Architecture",
 			lastmsg: "Hello there! I've been assigned to take care of y...",
 			img: "https://thispersondoesnotexist.com",
 		},
 		{
+			id: 46,
 			name: "Gilda A. Yap",
-			program: "CNAHS Counselor",
+			program: "CNAHS",
 			lastmsg: "Good morning! How can I help you today? I miss t...",
 			img: "https://picsum.photos/200",
 		},
 		{
+			id: 47,
 			name: "Jennylyn M. Pascua",
-			program: "BSME, BSEM Counselor",
+			program: "BSME",
 			lastmsg: "Good afternoon! Today was a great start for me. I...",
 			img: "https://avatar.iran.liara.run/public",
 		},
-		{
-			name: "Kim Anthony Macasero",
-			program: "BSIT Counselor",
-			lastmsg: "Good evening! I have always admired your intelli...",
-			img: "https://loremflickr.com/1280/720",
-		},
-		{
-			name: "Lorena M. Pascua",
-			program: "BSA Counselor",
-			lastmsg: "Good evening! Twenty-eight days have passed sinc...",
-			img: "https://placebeard.it/1280x720",
-		},
-		{
-			name: "Marie Grace M. Villar",
-			program: "BSA Counselor",
-			lastmsg: "Good evening! The rows of papers have piled up a...",
-			img: "https://placebear.com/1280/720",
-		},
-		{
-			name: "Kathryn Melissa M. Villar",
-			program: "BS Architecture Counselor",
-			lastmsg: "Hello there! I've been assigned to tale care of...",
-			img: "https://placecage.lucidinternets.com/200/300",
-		},
-		{
-			name: "Gilda A. Yap",
-			program: "CNAHS Counselor",
-			lastmsg: "Good morning! How can I help you today? I miss ...",
-			img: "https://placecage.lucidinternets.com/g/200/300",
-		},
-		{
-			name: "Jennylyn M. Pascua",
-			program: "BSME, BSEM Counselor",
-			lastmsg: "Good afternoon! Today was a great start for me...",
-			img: "https://avatar.iran.liara.run/public",
-		},
-		{
-			name: "Kim Anthony Macasero",
-			program: "BSIT Counselor",
-			lastmsg: "Good evening! I have always admired your intell...",
-			img: "https://loremflickr.com/1280/720",
-		},
-		{
-			name: "Lorena M. Pascua",
-			program: "BSA Counselor",
-			lastmsg: "Good evening! Twenty-eight rows of carrots have...",
-			img: "https://placebeard.it/1280x720",
-		},
-		{
-			name: "Marie Grace M. Villar",
-			program: "BSA Counselor",
-			lastmsg: "Good evening! The rows of carrots have piled up and...",
-			img: "https://placebear.com/1280/720",
-		},
 	];
 
-	const messages = [{}];
+	const [loggedUser, setloggedUser] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [previewImage, setPreviewImage] = useState(null);
+	const [selectedUser, setSelectedUser] = useState(students[0]);
+	const [searchQuery, setSearchQuery] = useState("");
+	const [messages, setMessages] = useState([
+		// fetch all the messages from the database
+		// Predefined messages for testing
+		{
+			text: "Hello! How are you doing today?",
+			senderID: 45,
+			recipientID: 1,
+			timestamp: new Date().toISOString(),
+		},
+		{
+			text: "I'm good! What can I help you with today?",
+			senderID: 46,
+			recipientID: 1,
+			timestamp: new Date().toISOString(),
+		},
+		{
+			text: "Sure, I can help with that. What specifically do you need advice on?",
+			senderID: 47,
+			recipientID: 1,
+			timestamp: new Date().toISOString(),
+		},
+	]);
+
+	const [inputMessage, setInputMessage] = useState(""); // State to store input message
+
+	// to get currently logged in student
+	useEffect(() => {
+		const fetchStudentProfile = async () => {
+			try {
+				const response = await fetch(
+					`${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`,
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${Cookies.get("token")}`,
+						},
+					}
+				);
+				if (!response.ok) {
+					throw new Error("Failed to fetch student profile");
+				}
+				const data = await response.json();
+				setloggedUser(data); // Set the current student profile
+				setLoading(false);
+			} catch (error) {
+				console.error("Error fetching student profile: ", error);
+				setLoading(false);
+			}
+		};
+
+		fetchStudentProfile();
+	}, [userSession.id]);
+
+	// to get the currently selected student from chat list
+	const handleSelectStudent = (student) => {
+		setSelectedUser(student);
+	};
+
+	// search query
+	const handleSearchChange = (event) => {
+		setSearchQuery(event.target.value);
+	};
+	const filteredStudents = students.filter((student) =>
+		student.name.toLowerCase().includes(searchQuery.toLowerCase())
+	);
+
+	// input message
+	const handleSubmitMessage = (event) => {
+		event.preventDefault();
+
+		if (inputMessage.trim()) {
+			const newMessage = {
+				text: inputMessage,
+				senderID: loggedUser?.id, // the currently logged in student
+				recipientID: selectedUser.id,
+				timestamp: new Date().toISOString(),
+			};
+
+			console.log("New Message Data:", newMessage);
+
+			setMessages((prevMessages) => [...prevMessages, newMessage]);
+			setInputMessage(""); // Clear the input field after sending the message
+		}
+	};
 
 	return (
 		<div className="min-h-screen  ">
-			{/* bg-slate-50 */}
 			<Navbar userType="student" />
-			<section className="h-screen flex flex-row items-center justify-center pt-[90px] pb-10 px-28 gap-x-4">
+			<section className="h-screen flex flex-row items-center justify-center pt-[90px] pb-10 px-36 gap-x-4">
 				{/* Chat List */}
 				<section className="w-1/3 h-full px-7 py-6 flex flex-col gap-y-3 rounded-lg border bg-white">
 					<div className="flex flex-row justify-between">
@@ -95,7 +139,7 @@ export default function Chat() {
 							viewBox="0 0 24 24"
 							strokeWidth={1.5}
 							stroke="currentColor"
-							className="size-5 hover:scale-125"
+							className="size-5 hover:scale-125 cursor-pointer"
 						>
 							<path
 								strokeLinecap="round"
@@ -105,6 +149,7 @@ export default function Chat() {
 						</svg>
 					</div>
 
+					{/* Search Bar */}
 					<div className="w-full h-10 bg-gray-100 flex flex-row items-center px-4 rounded-3xl">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -124,27 +169,33 @@ export default function Chat() {
 							<input
 								type="text"
 								placeholder="Search"
+								value={searchQuery}
+								onChange={handleSearchChange}
 								className="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 placeholder:font-Jaldi font-Jaldi"
 							/>
 						</form>
 					</div>
 
+					{/* List */}
 					<div className="w-full flex-grow overflow-scroll">
-						{counselors.map((counselor, index) => (
+						{filteredStudents.map((student, index) => (
 							<div
-								key={index}
-								className="w-full h-24 px-4 flex flex-row items-center gap-x-1.5 hover:bg-gray-100 rounded-lg"
+								key={student.id}
+								className={`w-full h-24 px-4 flex flex-row items-center gap-x-1.5 hover:bg-gray-100 rounded-lg cursor-pointer ${
+									selectedUser.id === student.id ? "bg-gray-100" : ""
+								}`}
+								onClick={() => handleSelectStudent(student)}
 							>
 								<div>
 									<img
-										src={counselor.img}
+										src={student.img}
 										alt="randomperson"
 										className="rounded-full h-[65px] w-[65px] mx-3"
 									/>
 								</div>
 								<div>
-									<h1 className="text-lg font-semibold">{counselor.name}</h1>
-									<p className="text-sm text-gray-400">{counselor.lastmsg}</p>
+									<h1 className="text-lg font-semibold">{student.name}</h1>
+									<p className="text-sm text-gray-400">{student.lastmsg}</p>
 								</div>
 							</div>
 						))}
@@ -153,80 +204,84 @@ export default function Chat() {
 
 				{/* Chat */}
 				<section className="w-2/3 h-full flex flex-col justify-between px-3 pb-3 rounded-lg border bg-white">
+					{/* Chat Header */}
 					<div className="w-full h-16 px-3 border-b shadow-sm flex items-center gap-x-3">
 						<div>
 							<img
-								src="https://thispersondoesnotexist.com"
-								alt="randomperson"
+								src={selectedUser.img}
+								alt={selectedUser.name}
 								className="rounded-full h-10 w-10"
 							/>
 						</div>
-						<h1 className="font-semibold text-lg">Kathryn Melissa M. Villar</h1>
+						<h1 className="font-semibold text-lg">{selectedUser.name}</h1>
 					</div>
 
-					<div className="px-3 pt-3 pb-4 flex-grow flex flex-col gap-y-6 justify-end overflow-auto">
-						{/* Counselor */}
-						<div className="w-full min-h-9 h-fit flex flex-row items-center gap-x-3 pr-60">
-							<div>
-								<img
-									src="https://thispersondoesnotexist.com"
-									alt="randomperson"
-									className="rounded-full h-9 w-9"
-								/>
-							</div>
-							<div className="bg-emerald-200 min-h-9 h-fit rounded-tl-2xl rounded-tr-2xl rounded-br-2xl px-5 mb-1 flex items-center justify-start">
-								asdasdsadjaskdjamslkdamsdasdashbdjklskdnjfsla;dmnkdslm;adkfndsm;ldknfbd;lsdnkvdsl;fbf
-							</div>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								strokeWidth={1.5}
-								stroke="currentColor"
-								className="size-5 text-white hover:text-black hover:cursor-pointer"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-								/>
-							</svg>
-						</div>
+					<div className="px-3 pt-3 pb-4 flex-grow flex flex-col gap-y-2 justify-end overflow-auto">
+						{/* Filter messages based on recipientID */}
+						{messages
+							.filter(
+								(message) =>
+									// shows sender's message on the right
+									(message.senderID === loggedUser?.id &&
+										message.recipientID === selectedUser.id) ||
+									// shows recipient's message on the left
+									(message.recipientID === loggedUser?.id &&
+										selectedUser.id === message.senderID)
+							)
+							.map((message, index) => (
+								<div
+									key={index}
+									className={`w-full min-h-9 flex flex-row gap-x-3 ${
+										message.senderID === loggedUser?.id
+											? "justify-end"
+											: "justify-start"
+									}`}
+								>
+									{message.senderID !== loggedUser?.id && (
+										<div className="flex items-end gap-x-3">
+											<div>
+												<img
+													src={selectedUser.img}
+													alt={selectedUser.name}
+													className="rounded-full h-9 w-9"
+												/>
+											</div>
+											<div className="bg-emerald-200 max-w-3xl min-h-9 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl px-4 py-2 flex items-center justify-start break-words">
+												{message.text}
+											</div>
+										</div>
+									)}
 
-						{/* Student */}
-						<div className="w-full min-h-9 h-fit flex flex-row justify-end items-center gap-x-3 pl-60">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								strokeWidth={1.5}
-								stroke="currentColor"
-								className="size-5 text-white hover:text-black hover:cursor-pointer"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-								/>
-							</svg>
-							<div className="bg-emerald-200 min-h-9 h-fit rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl px-5 flex items-center justify-start">
-								asdasdsadjaskdjamslkdamsdasdashbdjklskdnjfsla;dmnkdslm;adkfndsm;ldknfbd;lsdnkvdsl;fbf
-							</div>
-							<div>
-								<img
-									src="https://placebeard.it/1280x720"
-									alt="randomperson"
-									className="rounded-full h-9 w-9"
-								/>
-							</div>
-						</div>
+									{message.senderID === loggedUser?.id && (
+										<div className="flex items-end gap-x-3">
+											<div className="bg-emerald-200 max-w-3xl min-h-9 rounded-tl-2xl rounded-br-2xl rounded-bl-2xl px-4 py-2 flex items-center justify-start break-words">
+												{message.text}
+											</div>
+
+											{/* <div>
+													<img
+														src={
+															previewImage ? previewImage : loggedUser?.image
+														}
+														alt="avatar"
+														className="rounded-full h-9 w-9"
+													/>
+												</div> */}
+										</div>
+									)}
+								</div>
+							))}
 					</div>
 
+					{/* Message Input */}
 					<div className="relative w-full h-10 bg-gray-100 flex items-center px-4 rounded-2xl">
-						<form action="" className="w-full">
+						<form onSubmit={handleSubmitMessage} className="w-full">
 							<input
 								type="text"
+								name="message"
 								placeholder="Type your message here"
+								value={inputMessage}
+								onChange={(e) => setInputMessage(e.target.value)}
 								className="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 placeholder:font-Jaldi font-Jaldi"
 							/>
 						</form>
@@ -237,6 +292,7 @@ export default function Chat() {
 							strokeWidth={1.5}
 							stroke="currentColor"
 							className="absolute right-4 h-6 w-6 text-gray-500 hover:text-black grayscale hover:grayscale-0 cursor-pointer"
+							onClick={handleSubmitMessage}
 						>
 							<path
 								strokeLinecap="round"
@@ -250,3 +306,39 @@ export default function Chat() {
 		</div>
 	);
 }
+
+// {
+// 	/* Student */
+// }
+// <div className="w-full min-h-9 flex flex-row gap-x-3">
+// 	<div className="flex items-end gap-x-3">
+// 		<div>
+// 			<img
+// 				src={selectedUser.img}
+// 				alt={selectedUser.name}
+// 				className="rounded-full h-9 w-9"
+// 			/>
+// 		</div>
+// 		<div className="bg-emerald-200 max-w-3xl min-h-9 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl px-5 py-2 flex items-center justify-start break-words">
+// 			The wheels on bus go round and round, round and round, round and round. The wheels on
+// 			bus go round and round, all through the town. I mean, why would you even ask that? It's
+// 			so obvious. The wheels on the bus go round and round, round and round, round and round.
+// 		</div>
+// 	</div>
+// 	<div className="flex items-center">
+// 		<svg
+// 			xmlns="http://www.w3.org/2000/svg"
+// 			fill="none"
+// 			viewBox="0 0 24 24"
+// 			strokeWidth={1.5}
+// 			stroke="currentColor"
+// 			className="size-5 text-transparent hover:text-black hover:cursor-pointer"
+// 		>
+// 			<path
+// 				strokeLinecap="round"
+// 				strokeLinejoin="round"
+// 				d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+// 			/>
+// 		</svg>
+// 	</div>
+// </div>;
