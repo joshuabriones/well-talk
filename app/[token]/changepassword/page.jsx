@@ -1,52 +1,91 @@
 "use client";
 
+import { API_ENDPOINT } from "@/lib/api";
 import { useState, useEffect } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
 
 // imgs
 import bgChangePass from "@/public/images/bgs/bgChangePass.jpg";
 import ModalChangePassword from "@/components/ui/modals/ForgotPassword/ModalChangePassword";
+import NotFoundPage from "@/app/not-found"; // Adjust the import path if necessary
 
 const ChangePassword = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [isTokenReady, setIsTokenReady] = useState(false);
-  const [token, setToken] = useState(null);
+  const [isTokenValid, setIsTokenValid] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     if (pathname && searchParams) {
       const tokenFromPath = pathname.split("/")[1]; // Get the token from the path
       setToken(tokenFromPath);
-      setIsTokenReady(true);
+      handleTokenValidation(tokenFromPath); // Pass the token directly
     }
   }, [pathname, searchParams]);
 
-  if (!isTokenReady) {
-    return <p>Loading...</p>;
+  const handleTokenValidation = async (tokenFromPath) => {
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.VERIFY_CHANGEPASSWORD_TOKEN}${tokenFromPath}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setIsTokenValid(true);
+      } else {
+        setIsTokenValid(false);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false); // Set loading to false after validation
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
   }
 
-  return (
-    <div
-      className="min-h-screen w-full relative"
-      style={{
-        minHeight: "100vh",
-      }}
-    >
+  if (isTokenValid) {
+    return (
       <div
-        className="absolute inset-0"
+        className="min-h-screen w-full relative"
         style={{
-          backgroundImage: `url(${bgChangePass.src})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center right",
-          backgroundAttachment: "fixed",
-          filter: "blur(5px)",
-          zIndex: -1,
+          minHeight: "100vh",
         }}
-      />
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${bgChangePass.src})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center right",
+            backgroundAttachment: "fixed",
+            filter: "blur(5px)",
+            zIndex: -1,
+          }}
+        />
 
-      <ModalChangePassword token={token} />
-    </div>
-  );
+        <ModalChangePassword token={token} />
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <NotFoundPage />
+      </div>
+    );
+  }
 };
 
 export default ChangePassword;
