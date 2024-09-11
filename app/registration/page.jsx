@@ -1,5 +1,7 @@
 "use client";
 
+import Select from "react-select";
+
 import Load from "@/components/Load";
 import FullButton from "@/components/ui/buttons/FullButton";
 import TextInput from "@/components/ui/inputs/TextInput";
@@ -12,6 +14,7 @@ import {
   collegeOptions,
   genderOptions,
   programOptions,
+  yearLevelOptions,
 } from "@/lib/inputOptions";
 import {
   registrationSchema,
@@ -35,11 +38,7 @@ const Registration = () => {
 
   const [birthdate, setBirthdate] = useState("");
   const [contactNumber, setContactNumber] = useState("");
-  const [specificAddress, setSpecificAddress] = useState("");
-  const [barangay, setBarangay] = useState("");
-  const [cityMunicipality, setCityMunicipality] = useState("");
-  const [province, setProvince] = useState("");
-  const [zipcode, setZipcode] = useState("");
+  const [permanentAddress, setPermanentAddress] = useState("");
 
   const [role, setRole] = useState("");
   const [roleStudent, setRoleStudent] = useState(false);
@@ -52,6 +51,8 @@ const Registration = () => {
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const [isValidPassword, setIsValidPassword] = useState(true);
+  const [selectedPrograms, setSelectedPrograms] = useState([]);
+  const [selectedYearLevels, setSelectedYearLevels] = useState([]);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [errors, setErrors] = useState({});
   const [showTermsNotAccepted, setShowTermsNotAccepted] = useState(false);
@@ -66,6 +67,19 @@ const Registration = () => {
 
   const handleTermsChange = (e) => {
     setTermsAccepted(e.target.checked);
+  };
+
+  const handleProgramChange = (selectedOptions) => {
+    setSelectedPrograms(selectedOptions); // You will get an array of selected programs
+  };
+
+  const handleYearLevelChange = (event) => {
+    const value = parseInt(event.target.value);
+    setSelectedYearLevels((prev) =>
+      prev.includes(value)
+        ? prev.filter((item) => item !== value)
+        : [...prev, value]
+    );
   };
 
   // create account
@@ -98,11 +112,7 @@ const Registration = () => {
       const studentData = {
         birthdate,
         contactNumber,
-        specificAddress,
-        barangay,
-        cityMunicipality,
-        province,
-        zipcode,
+        permanentAddress,
         college,
         program,
         year,
@@ -165,11 +175,7 @@ const Registration = () => {
                 year: year,
                 birthDate: birthdate,
                 contactNumber: contactNumber,
-                specificAddress: specificAddress,
-                barangay: barangay,
-                city: cityMunicipality,
-                province: province,
-                zipCode: zipcode,
+                permanentAddress: permanentAddress,
               }),
             }
           );
@@ -221,6 +227,9 @@ const Registration = () => {
                 password: password,
                 image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
                 role: role,
+                college: college,
+                programs: selectedPrograms.map((item) => item.value).join(", "),
+                yearLevels: selectedYearLevels.map((item) => item).join(", "),
               }),
             }
           );
@@ -508,34 +517,33 @@ const Registration = () => {
                   {/* Conditionally Rendered Fields */}
                   {role === "student" && (
                     <>
-                      <div className="flex flex-col w-full">
-                        <label
-                          htmlFor="birthdate"
-                          className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
-                        >
-                          <DatePicker
-                            selected={birthdate}
-                            onChange={(date) => setBirthdate(date)}
-                            className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
-                            showMonthDropdown
-                            showYearDropdown
-                            dropdownMode="select"
-                            locale="en-GB"
-                            maxDate={new Date()}
-                            required
-                          />
-                          <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-                            Birthdate
-                          </span>
-                        </label>
-                        {errors.birthdate && (
-                          <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                            {errors.birthdate._errors[0]}
-                          </p>
-                        )}
-                      </div>
-
                       <div className="w-full flex flex-row gap-x-6">
+                        <div className="flex flex-col w-full">
+                          <label
+                            htmlFor="birthdate"
+                            className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                          >
+                            <DatePicker
+                              selected={birthdate}
+                              onChange={(date) => setBirthdate(date)}
+                              className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
+                              showMonthDropdown
+                              showYearDropdown
+                              dropdownMode="select"
+                              locale="en-GB"
+                              maxDate={new Date()}
+                              required
+                            />
+                            <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                              Birthdate
+                            </span>
+                          </label>
+                          {errors.birthdate && (
+                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                              {errors.birthdate._errors[0]}
+                            </p>
+                          )}
+                        </div>
                         <div className="flex flex-col w-full">
                           <TextInput
                             value={contactNumber}
@@ -551,88 +559,8 @@ const Registration = () => {
                             </p>
                           )}
                         </div>
-                        <div className="flex flex-col w-full">
-                          <TextInput
-                            value={specificAddress}
-                            onChange={(e) => setSpecificAddress(e.target.value)}
-                            placeholder="Specific Address"
-                            label="Specific Address"
-                            type="text"
-                            id="specificAddress"
-                          />
-                          {errors.specificAddress && (
-                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                              {errors.specificAddress._errors[0]}
-                            </p>
-                          )}
-                        </div>
                       </div>
-                      <div className="w-full flex flex-row gap-x-6">
-                        <div className="flex flex-col w-full">
-                          <TextInput
-                            value={barangay}
-                            onChange={(e) => setBarangay(e.target.value)}
-                            placeholder="Barangay"
-                            label="Barangay"
-                            type="text"
-                            id="barangay"
-                          />
-                          {errors.barangay && (
-                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                              {errors.barangay._errors[0]}
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex flex-col w-full">
-                          <TextInput
-                            value={cityMunicipality}
-                            onChange={(e) =>
-                              setCityMunicipality(e.target.value)
-                            }
-                            placeholder="City/Municipality"
-                            label="City/Municipality"
-                            type="text"
-                            id="cityMunicipality"
-                          />
-                          {errors.cityMunicipality && (
-                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                              {errors.cityMunicipality._errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="w-full flex flex-row gap-x-6">
-                        <div className="flex flex-col w-full">
-                          <TextInput
-                            value={province}
-                            onChange={(e) => setProvince(e.target.value)}
-                            placeholder="Province"
-                            label="Province"
-                            type="text"
-                            id="province"
-                          />
-                          {errors.province && (
-                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                              {errors.province._errors[0]}
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex flex-col w-full">
-                          <TextInput
-                            value={zipcode}
-                            onChange={(e) => setZipcode(e.target.value)}
-                            placeholder="Zipcode"
-                            label="Zipcode"
-                            type="text"
-                            id="zipcode"
-                          />
-                          {errors.zipcode && (
-                            <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                              {errors.zipcode._errors[0]}
-                            </p>
-                          )}
-                        </div>
-                      </div>
+
                       <div className="w-full flex flex-row gap-x-6">
                         <div className="flex flex-col w-full">
                           <label
@@ -704,6 +632,22 @@ const Registration = () => {
                           )}
                         </div>
                       </div>
+
+                      <div className="flex flex-col w-full">
+                        <TextInput
+                          value={permanentAddress}
+                          onChange={(e) => setPermanentAddress(e.target.value)}
+                          placeholder="Permanent Address"
+                          label="Permanent Address"
+                          type="text"
+                          id="permanentAddress"
+                        />
+                        {errors.permanentAddress && (
+                          <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                            {errors.permanentAddress._errors[0]}
+                          </p>
+                        )}
+                      </div>
                     </>
                   )}
 
@@ -735,6 +679,82 @@ const Registration = () => {
                         </p>
                       )}
                     </div>
+                  )}
+
+                  {role === "counselor" && (
+                    <>
+                      <div className="flex flex-col w-full">
+                        <label
+                          htmlFor="gender"
+                          className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                        >
+                          <select
+                            value={college}
+                            onChange={(e) => setCollege(e.target.value)}
+                            className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
+                            required
+                          >
+                            {collegeOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                          <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                            Department
+                          </span>
+                        </label>
+                        {errors.college && (
+                          <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                            {errors.college._errors[0]}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex flex-col w-full">
+                        <label
+                          htmlFor="gender"
+                          className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                        >
+                          <Select
+                            value={selectedPrograms}
+                            options={programOptions[college]}
+                            onChange={handleProgramChange}
+                            className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
+                            required
+                            isMulti
+                          />
+
+                          <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                            Programs
+                          </span>
+                        </label>
+                        {errors.program && (
+                          <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                            {errors.program._errors[0]}
+                          </p>
+                        )}
+                      </div>
+                      <div>
+                        <label>Select Year Levels</label>
+                        {yearLevelOptions.map((option) => (
+                          <div
+                            key={option.value}
+                            className="flex gap-2 items-center"
+                          >
+                            <input
+                              type="checkbox"
+                              value={option.value}
+                              onChange={handleYearLevelChange}
+                              checked={selectedYearLevels.includes(
+                                option.value
+                              )}
+                              className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
+                            />
+                            <label>{option.label}</label>
+                          </div>
+                        ))}
+                      </div>
+                    </>
                   )}
                   <div className="w-full flex items-center gap-x-2 py-4">
                     <input
