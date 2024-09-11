@@ -287,6 +287,14 @@ const Appointment = () => {
 		return `${year}-${month}-${day}`;
 	};
 
+	const finalDateFormatter = (date) => {
+		const dateObject = new Date(date);
+		const options = { year: "numeric", month: "long", day: "numeric" };
+		const formattedDate = dateObject.toLocaleDateString("en-US", options);
+
+		return formattedDate;
+	};
+
 	return (
 		<div className="min-h-screen w-full">
 			{/* navigation bar */}
@@ -581,7 +589,7 @@ const Appointment = () => {
 										<div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-5 rounded-xl px-4 py-2 font-Merriweather gap-4 md:gap-6">
 											<div className="flex flex-col md:flex-row justify-between items-start md:items-center border-2 border-black  rounded-xl md:rounded-full px-4 py-2 font-Merriweather gap-4 md:gap-0 w-full h-auto md:h-[56px]">
 												<div className="font-bold w-full md:w-auto">
-													DATE: {appointmentDate}
+													DATE: {finalDateFormatter(appointmentDate)}
 												</div>
 												<div className="font-bold w-full md:w-auto">
 													TIME: {timeFormatter(selectedTime)}
