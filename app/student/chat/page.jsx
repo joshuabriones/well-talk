@@ -42,23 +42,67 @@ export default function Chat() {
 	const [messages, setMessages] = useState([
 		// fetch all the messages from the database
 		// Predefined messages for testing
+		// {
+		// 	text: "Hello! How are you doing today?",
+		// 	senderID: 45,
+		// 	recipientID: 1,
+		// 	timestamp: new Date().toISOString(),
+		// },
 		{
 			text: "Hello! How are you doing today?",
 			senderID: 45,
 			recipientID: 1,
-			timestamp: new Date().toISOString(),
-		},
-		{
-			text: "I'm good! What can I help you with today?",
-			senderID: 46,
-			recipientID: 1,
-			timestamp: new Date().toISOString(),
+			timestamp: "2024-08-11T10:30:00.000Z", // Day 1
 		},
 		{
 			text: "Sure, I can help with that. What specifically do you need advice on?",
+			senderID: 45,
+			recipientID: 1,
+			timestamp: "2024-08-13T13:00:00.000Z", // Day 3
+		},
+		{
+			text: "I'm good! What can I help you with today?",
+			senderID: 45,
+			recipientID: 1,
+			timestamp: "2024-08-12T12:45:00.000Z", // Day 2
+		},
+
+		{
+			text: "I need help with my project management skills.",
+			senderID: 46,
+			recipientID: 1,
+			timestamp: "2024-08-14T09:15:00.000Z", // Day 4
+		},
+		{
+			text: "Could you give me some tips on time management?",
+			senderID: 46,
+			recipientID: 1,
+			timestamp: "2024-08-16T14:30:00.000Z", // Day 6
+		},
+		{
+			text: "That sounds great, I have a few suggestions.",
+			senderID: 46,
+			recipientID: 1,
+			timestamp: "2024-08-15T09:20:00.000Z", // Day 5
+		},
+
+		{
+			text: "How do I handle team conflicts effectively?",
 			senderID: 47,
 			recipientID: 1,
-			timestamp: new Date().toISOString(),
+			timestamp: "2024-08-18T10:00:00.000Z", // Day 8
+		},
+		{
+			text: "Address conflicts early and ensure open communication.",
+			senderID: 47,
+			recipientID: 1,
+			timestamp: "2024-08-19T10:30:00.000Z", // Day 9
+		},
+		{
+			text: "Sure! The key is to prioritize tasks and set realistic deadlines.",
+			senderID: 47,
+			recipientID: 1,
+			timestamp: "2024-08-17T15:00:00.000Z", // Day 7
 		},
 	]);
 
@@ -217,7 +261,7 @@ export default function Chat() {
 					</div>
 
 					<div className="px-3 pt-3 pb-4 flex-grow flex flex-col gap-y-2 justify-end overflow-auto">
-						{/* Filter messages based on recipientID */}
+						{/* Filter and sort messages based on recipientID */}
 						{messages
 							.filter(
 								(message) =>
@@ -228,6 +272,8 @@ export default function Chat() {
 									(message.recipientID === loggedUser?.id &&
 										selectedUser.id === message.senderID)
 							)
+							// Sort messages by timestamp (ascending order)
+							.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
 							.map((message, index) => (
 								<div
 									key={index}
@@ -257,16 +303,6 @@ export default function Chat() {
 											<div className="bg-emerald-200 max-w-3xl min-h-9 rounded-tl-2xl rounded-br-2xl rounded-bl-2xl px-4 py-2 flex items-center justify-start break-words">
 												{message.text}
 											</div>
-
-											{/* <div>
-													<img
-														src={
-															previewImage ? previewImage : loggedUser?.image
-														}
-														alt="avatar"
-														className="rounded-full h-9 w-9"
-													/>
-												</div> */}
 										</div>
 									)}
 								</div>
