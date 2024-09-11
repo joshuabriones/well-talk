@@ -105,8 +105,10 @@ export default function Chat() {
 			timestamp: "2024-08-17T15:00:00.000Z", // Day 7
 		},
 	]);
-
 	const [inputMessage, setInputMessage] = useState(""); // State to store input message
+	const [newChat, setNewChat] = useState(false);
+	const [newStudent, setNewStudent] = useState("");
+	const [inputNewStudent, setInputNewStudent] = useState(""); // State to store input student name
 
 	// to get currently logged in student
 	useEffect(() => {
@@ -139,6 +141,7 @@ export default function Chat() {
 
 	// to get the currently selected student from chat list
 	const handleSelectStudent = (student) => {
+		setNewChat(false);
 		setSelectedUser(student);
 	};
 
@@ -169,6 +172,39 @@ export default function Chat() {
 		}
 	};
 
+	// new student
+	const handleNewStudent = (event) => {
+		event.preventDefault();
+		setNewStudent(inputNewStudent);
+	};
+
+	// handle first message -> add student to the list of students who have been messaged, send the message TO BE CHECKED!!!
+	const handleFirstMessage = (event) => {
+		event.preventDefault(); // Prevent default form submission behavior
+
+		// Check if the input message is not empty
+		if (inputMessage.trim()) {
+			// Create a new message object
+			const newMessage = {
+				text: inputMessage,
+				senderID: loggedUser?.id, // The currently logged-in student
+				recipientID: selectedUser.id, // The selected user
+				timestamp: new Date().toISOString(),
+			};
+
+			console.log("New Message Data:", newMessage);
+
+			// Update the messages state with the new message
+			setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+			// Optionally, add the selected user to a list of students who have been messaged
+			// Example: addToMessagedStudents(selectedUser.id);
+
+			// Clear the input field after sending the message
+			setInputMessage("");
+		}
+	};
+
 	return (
 		<div className="min-h-screen  ">
 			<Navbar userType="student" />
@@ -184,6 +220,7 @@ export default function Chat() {
 							strokeWidth={1.5}
 							stroke="currentColor"
 							className="size-5 hover:scale-125 cursor-pointer"
+							onClick={() => setNewChat(!newChat)}
 						>
 							<path
 								strokeLinecap="round"
@@ -246,97 +283,171 @@ export default function Chat() {
 					</div>
 				</section>
 
-				{/* Chat */}
-				<section className="w-2/3 h-full flex flex-col justify-between px-3 pb-3 rounded-lg border bg-white">
-					{/* Chat Header */}
-					<div className="w-full h-16 px-3 border-b shadow-sm flex items-center gap-x-3">
-						<div>
-							<img
-								src={selectedUser.img}
-								alt={selectedUser.name}
-								className="rounded-full h-10 w-10"
-							/>
-						</div>
-						<h1 className="font-semibold text-lg">{selectedUser.name}</h1>
-					</div>
-
-					<div className="px-3 pt-3 pb-4 flex-grow flex flex-col gap-y-2 justify-end overflow-auto">
-						{/* Filter and sort messages based on recipientID */}
-						{messages
-							.filter(
-								(message) =>
-									// shows sender's message on the right
-									(message.senderID === loggedUser?.id &&
-										message.recipientID === selectedUser.id) ||
-									// shows recipient's message on the left
-									(message.recipientID === loggedUser?.id &&
-										selectedUser.id === message.senderID)
-							)
-							// Sort messages by timestamp (ascending order)
-							.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
-							.map((message, index) => (
-								<div
-									key={index}
-									className={`w-full min-h-9 flex flex-row gap-x-3 ${
-										message.senderID === loggedUser?.id
-											? "justify-end"
-											: "justify-start"
-									}`}
-								>
-									{message.senderID !== loggedUser?.id && (
-										<div className="flex items-end gap-x-3">
-											<div>
-												<img
-													src={selectedUser.img}
-													alt={selectedUser.name}
-													className="rounded-full h-9 w-9"
-												/>
-											</div>
-											<div className="bg-emerald-200 max-w-3xl min-h-9 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl px-4 py-2 flex items-center justify-start break-words">
-												{message.text}
-											</div>
-										</div>
-									)}
-
-									{message.senderID === loggedUser?.id && (
-										<div className="flex items-end gap-x-3">
-											<div className="bg-emerald-200 max-w-3xl min-h-9 rounded-tl-2xl rounded-br-2xl rounded-bl-2xl px-4 py-2 flex items-center justify-start break-words">
-												{message.text}
-											</div>
-										</div>
-									)}
+				<section className="w-2/3 h-full px-3 pb-3 rounded-lg border bg-white">
+					{newChat === false ? (
+						<div className="w-full h-full flex flex-col justify-between">
+							{/* Chat Header */}
+							<div className="w-full h-16 px-3 border-b shadow-sm flex items-center gap-x-3">
+								<div>
+									<img
+										src={selectedUser.img}
+										alt={selectedUser.name}
+										className="rounded-full h-10 w-10"
+									/>
 								</div>
-							))}
-					</div>
+								<h1 className="font-semibold text-lg">{selectedUser.name}</h1>
+							</div>
 
-					{/* Message Input */}
-					<div className="relative w-full h-10 bg-gray-100 flex items-center px-4 rounded-2xl">
-						<form onSubmit={handleSubmitMessage} className="w-full">
-							<input
-								type="text"
-								name="message"
-								placeholder="Type your message here"
-								value={inputMessage}
-								onChange={(e) => setInputMessage(e.target.value)}
-								className="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 placeholder:font-Jaldi font-Jaldi"
-							/>
-						</form>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth={1.5}
-							stroke="currentColor"
-							className="absolute right-4 h-6 w-6 text-gray-500 hover:text-black grayscale hover:grayscale-0 cursor-pointer"
-							onClick={handleSubmitMessage}
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
-							/>
-						</svg>
-					</div>
+							<div className="px-3 pt-3 pb-4 flex-grow flex flex-col gap-y-2 justify-end overflow-auto">
+								{/* Filter and sort messages based on recipientID */}
+								{messages
+									.filter(
+										(message) =>
+											// shows sender's message on the right
+											(message.senderID === loggedUser?.id &&
+												message.recipientID === selectedUser.id) ||
+											// shows recipient's message on the left
+											(message.recipientID === loggedUser?.id &&
+												selectedUser.id === message.senderID)
+									)
+									// Sort messages by timestamp (ascending order)
+									.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+									.map((message, index) => (
+										<div
+											key={index}
+											className={`w-full min-h-9 flex flex-row gap-x-3 ${
+												message.senderID === loggedUser?.id
+													? "justify-end"
+													: "justify-start"
+											}`}
+										>
+											{message.senderID !== loggedUser?.id && (
+												<div className="flex items-end gap-x-3">
+													<div>
+														<img
+															src={selectedUser.img}
+															alt={selectedUser.name}
+															className="rounded-full h-9 w-9"
+														/>
+													</div>
+													<div className="bg-emerald-200 max-w-3xl min-h-9 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl px-4 py-2 flex items-center justify-start break-words">
+														{message.text}
+													</div>
+												</div>
+											)}
+											{message.senderID === loggedUser?.id && (
+												<div className="flex items-end gap-x-3">
+													<div className="bg-emerald-200 max-w-3xl min-h-9 rounded-tl-2xl rounded-br-2xl rounded-bl-2xl px-4 py-2 flex items-center justify-start break-words">
+														{message.text}
+													</div>
+												</div>
+											)}
+										</div>
+									))}
+							</div>
+
+							{/* Message Input */}
+							<div className="relative w-full h-10 bg-gray-100 flex items-center px-4 rounded-2xl">
+								<form onSubmit={handleSubmitMessage} className="w-full">
+									<input
+										type="text"
+										name="message"
+										placeholder="Type your message here"
+										value={inputMessage}
+										onChange={(e) => setInputMessage(e.target.value)}
+										className="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 placeholder:font-Jaldi font-Jaldi"
+									/>
+								</form>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									strokeWidth={1.5}
+									stroke="currentColor"
+									className="absolute right-4 h-6 w-6 text-gray-500 hover:text-black grayscale hover:grayscale-0 cursor-pointer"
+									onClick={handleSubmitMessage}
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+									/>
+								</svg>
+							</div>
+						</div>
+					) : (
+						<div className="w-full h-full flex flex-col justify-between">
+							{/* Chat Header */}
+							<div className="w-full h-16 px-3 border-b shadow-sm flex items-center gap-x-3">
+								<div className="w-full flex flex-row items-center">
+									<h1 className="text-sm">To:</h1>
+									{/* MISSING FUNCTION, DROP DOWN OF ALL STUDENTS */}
+									<div className="w-full">
+										<form onSubmit={handleNewStudent}>
+											<input
+												type="text"
+												name="student"
+												placeholder="Name of Student"
+												value={inputNewStudent}
+												onChange={(e) => setInputNewStudent(e.target.value)}
+												className="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 placeholder:font-Jaldi font-Jaldi text-lg"
+											/>
+										</form>
+									</div>
+								</div>
+							</div>
+
+							<div className="px-3 pt-3 pb-4 flex-grow flex flex-col gap-y-2 justify-end overflow-auto">
+								{newStudent ? (
+									<div>
+										<div>Start talking to connect with them!</div>
+									</div>
+								) : (
+									<></>
+								)}
+							</div>
+
+							{/* Message Input */}
+							<div
+								className={`relative w-full h-10 bg-gray-100 flex items-center px-4 rounded-2xl ${
+									!newStudent ? "opacity-50 cursor-not-allowed" : ""
+								}`}
+							>
+								<form onSubmit={handleFirstMessage} className="w-full">
+									<input
+										type="text"
+										name="message"
+										placeholder="Type your message here"
+										value={inputMessage}
+										onChange={(e) => setInputMessage(e.target.value)}
+										className="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 placeholder:font-Jaldi font-Jaldi"
+										disabled={!newStudent}
+									/>
+								</form>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									strokeWidth={1.5}
+									stroke="currentColor"
+									className={`absolute right-4 h-6 w-6 text-gray-500 hover:text-black grayscale hover:grayscale-0 ${
+										!newStudent
+											? "cursor-not-allowed opacity-50"
+											: "cursor-pointer"
+									}`}
+									onClick={
+										newStudent ? handleFirstMessage : (e) => e.preventDefault()
+									}
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+									/>
+								</svg>
+							</div>
+						</div>
+					)}
 				</section>
 			</section>
 		</div>
