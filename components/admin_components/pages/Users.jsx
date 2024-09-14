@@ -10,10 +10,9 @@ const Users = () => {
   const [error, setError] = useState(null);
 
   const fetchUsers = async () => {
-
     try {
       const response = await fetch(
-        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_USERS}`,
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_UNVERIFIED_USERS}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -24,11 +23,7 @@ const Users = () => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      setUsers(
-        data.filter(
-          (user) => user.role !== "admin" && user.isVerified === false
-        )
-      );
+      setUsers(data.filter((user) => user.role !== "admin"));
     } catch (error) {
       setError(error.message);
     } finally {
