@@ -1,0 +1,62 @@
+.chat-container {
+	height: 100vh;
+	width: 100vw;
+	z-index: 2000;
+
+	position: fixed;
+	right: -31%;
+
+	transition: height 1s ease, width 1s ease, right 1s ease;
+}
+
+.chat-container.open {
+	height: 100vh;
+	width: 100vw;
+	z-index: 2000;
+
+	position: fixed;
+	right: 0;
+}
+
+.chat-interaction {
+	height: 100vh;
+	width: 30%;
+	z-index: 2000;
+
+	position: absolute;
+	right: 0;
+
+	background-color: white;
+	border: 1px solid #ccc;
+}
+
+.chat-icon {
+	height: 150px;
+	width: 50px;
+	z-index: 1990;
+
+	position: absolute;
+	right: 30%;
+	bottom: 40px;
+
+	cursor: pointer;
+
+	background-color: green;
+	color: white;
+	padding: 10px;
+	border-top-left-radius: 12px;
+	border-bottom-left-radius: 12px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.chat-icon.close {
+	width: 60px;
+
+	display: flex;
+	align-items: center;
+	justify-content: left;
+}
