@@ -8,7 +8,7 @@
 
 .parallax-img {
     /* Adjust the background image properties */
-    background-image: url('/images/landing/hero-img.png');
+    background-image: url('/images/landing/citlogo.png');
     background-size: contain; /* Fit the image within the container */
     background-position: center;
     background-repeat: no-repeat;
