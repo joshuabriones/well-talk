@@ -102,6 +102,8 @@ const Registration = () => {
       lastName,
       gender,
       role,
+      college,
+      program,
       password,
       passwordCheck,
       termsAccepted,
