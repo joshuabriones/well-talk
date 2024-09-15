@@ -52,14 +52,14 @@ const Appointment = () => {
 	const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 	const [showAddAppointmentModal, setShowAddAppointmentModal] = useState(false);
 
-	/* Client side - protection */
-	if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
-		return <Load route="login" />;
-	}
+	// /* Client side - protection */
+	// if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
+	// 	return <Load route="login" />;
+	// }
 
-	if (userSession.role !== "student") {
-		return <Load role={userSession.role} />;
-	}
+	// if (userSession.role !== "student") {
+	// 	return <Load role={userSession.role} />;
+	// }
 
 	useEffect(() => {
 		if (userSession) {

@@ -65,9 +65,9 @@ export default function Profile() {
     fetchCounselorProfile();
   }, []);
 
-  if (userSession && userSession.role !== "counselor") {
-    return <LoadingState route={userSession.role} />;
-  }
+  // if (userSession && userSession.role !== "counselor") {
+  //   return <LoadingState route={userSession.role} />;
+  // }
 
   const handleUpdateProfile = () => {
     setIsEditMode(true);
@@ -210,7 +210,7 @@ export default function Profile() {
       // Generate a preview URL of the image
       const previewUrl = URL.createObjectURL(file);
       setPreviewImage(previewUrl);
-  
+
       const imgRef = ref(imgDB, `UserAvatars/${v4()}`);
       const snapshot = await uploadBytes(imgRef, file);
       const imgUrl = await getDownloadURL(snapshot.ref);
@@ -250,7 +250,10 @@ export default function Profile() {
             {/* Avatar */}
             <div className="w-full md:w-2/12 flex justify-center items-center avatar relative">
               <div className="w-48 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-1">
-              <img src={previewImage ? previewImage : counselorProfile?.image} alt="avatar" />
+                <img
+                  src={previewImage ? previewImage : counselorProfile?.image}
+                  alt="avatar"
+                />
                 {isEditMode && (
                   <label
                     htmlFor="file-upload"

@@ -61,13 +61,13 @@ const Appointment = () => {
 	const [purpose, setPurpose] = useState(""); // State to store the purpose of the appointment
 	const [appointmentOnThatDate, setAppointmentOnThatDate] = useState([]);
 
-	if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
-		return <Load route="login" />;
-	}
+	// if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
+	// 	return <Load route="login" />;
+	// }
 
-	if (userSession.role !== "counselor") {
-		return <Load role={userSession.role} />;
-	}
+	// if (userSession.role !== "counselor") {
+	// 	return <Load role={userSession.role} />;
+	// }
 
 	useEffect(() => {
 		if (userSession) {

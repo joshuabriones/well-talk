@@ -20,6 +20,8 @@ function Home() {
   const router = useRouter();
   const userSession = getUserSession();
 
+  console.log("User session:", userSession);
+
   const fetchPosts = async () => {
     try {
       const response = await fetch(
@@ -44,13 +46,13 @@ function Home() {
     }
   };
   /* Handling unauthenticated users */
-  if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
-    return <Load route="login" />;
-  }
+  // if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
+  //   return <Load route="login" />;
+  // }
 
-  if (userSession && userSession.role !== "student") {
-    return <Load route={userSession.role} />;
-  }
+  // if (userSession && userSession.role !== "student") {
+  //   return <Load route={userSession.role} />;
+  // }
 
   useEffect(() => {
     fetchPosts();

@@ -13,118 +13,120 @@ import FloatingIcon from "@/components/ui/emergency/FloatingIcon";
 import dynamic from "next/dynamic";
 
 const Home = () => {
-	const [selectedButton, setSelectedButton] = useState("featured");
-	const [posts, setPosts] = useState([]);
-	const [showFilterPostModal, setShowFilterModal] = useState(false);
-	const [sortPostBy, setSortPostBy] = useState("Latest");
-	const [loading, setLoading] = useState(true);
-	const userSession = getUserSession();
-	const router = useRouter();
+  const [selectedButton, setSelectedButton] = useState("featured");
+  const [posts, setPosts] = useState([]);
+  const [showFilterPostModal, setShowFilterModal] = useState(false);
+  const [sortPostBy, setSortPostBy] = useState("Latest");
+  const [loading, setLoading] = useState(true);
+  const userSession = getUserSession();
+  const router = useRouter();
 
+  // /* Handling unauthenticated users */
+  // if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
+  // 	return <Load route="login" />;
+  // }
 
-	/* Handling unauthenticated users */
-	if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
-		return <Load route="login" />;
-	}
+  // if (userSession && userSession.role !== "counselor") {
+  // 	return <Load route={userSession.role} />;
+  // }
 
-	if (userSession && userSession.role !== "counselor") {
-		return <Load route={userSession.role} />;
-	}
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_POSTS}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch posts");
+      }
+      const data = await response.json();
+      setPosts(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      setLoading(false);
+    }
+  };
 
-	const fetchPosts = async () => {
-		try {
-			const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_POSTS}`, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${Cookies.get("token")}`,
-				},
-			});
-			if (!response.ok) {
-				throw new Error("Failed to fetch posts");
-			}
-			const data = await response.json();
-			setPosts(data);
-			setLoading(false);
-		} catch (error) {
-			console.error("Error fetching posts:", error);
-			setLoading(false);
-		}
-	};
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
-	useEffect(() => {
-		fetchPosts();
-	}, []);
+  // if (status === "loading" || !session) {
+  // 	return <Loading />;
+  // }
 
-	// if (status === "loading" || !session) {
-	// 	return <Loading />;
-	// }
+  // Redirect authenticated users who are not students
+  // if (session.user.role !== "student") {
+  // 	router.push("/login");
+  // 	return null; // Prevent rendering anything if redirecting
+  // }
 
-	// Redirect authenticated users who are not students
-	// if (session.user.role !== "student") {
-	// 	router.push("/login");
-	// 	return null; // Prevent rendering anything if redirecting
-	// }
+  // const getSortedPosts = () => {
+  //   if (!Array.isArray(posts)) {
+  //     return [];
+  //   }
 
-	// const getSortedPosts = () => {
-	//   if (!Array.isArray(posts)) {
-	//     return [];
-	//   }
+  //   return [...posts].sort((a, b) => {
+  //     // Combine date and time into a full ISO 8601 timestamp string
+  //     const dateTimeA = new Date(`${a.postDate}T${a.postTime}`);
+  //     const dateTimeB = new Date(`${b.postDate}T${b.postTime}`);
 
-	//   return [...posts].sort((a, b) => {
-	//     // Combine date and time into a full ISO 8601 timestamp string
-	//     const dateTimeA = new Date(`${a.postDate}T${a.postTime}`);
-	//     const dateTimeB = new Date(`${b.postDate}T${b.postTime}`);
+  //     if (sortPostBy === "Latest") {
+  //       // Sort by latest date and time first
+  //       return dateTimeB - dateTimeA;
+  //     } else if (sortPostBy === "Oldest") {
+  //       // Sort by oldest date and time first
+  //       return dateTimeA - dateTimeB;
+  //     } else {
+  //       // If no sort order is specified, return the posts unsorted
+  //       return posts;
+  //     }
+  //   });
+  // };
 
-	//     if (sortPostBy === "Latest") {
-	//       // Sort by latest date and time first
-	//       return dateTimeB - dateTimeA;
-	//     } else if (sortPostBy === "Oldest") {
-	//       // Sort by oldest date and time first
-	//       return dateTimeA - dateTimeB;
-	//     } else {
-	//       // If no sort order is specified, return the posts unsorted
-	//       return posts;
-	//     }
-	//   });
-	// };
+  // const sortedPosts = getSortedPosts();
 
-	// const sortedPosts = getSortedPosts();
-
-	return (
-		<div>
-			<main className="min-h-screen">
-				<Navbar userType="counselor" />
-				<div
-					className="pattern-overlay pattern-left absolute -z-10"
-					style={{ transform: "scaleY(-1)", top: "-50px" }}
-				>
-					<img src="/images/landing/lleft.png" alt="pattern" />
-				</div>
-				<div
-					className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
-					style={{ transform: "scaleY(-1)", top: "-15px" }}
-				>
-					<img
-						src="/images/landing/lright.png"
-						alt="pattern"
-						className="w-full h-full object-contain"
-					/>
-				</div>
-				{/*Posts*/}
-				<div className="flex flex-col md:flex-row py-24 px-4 md:px-12">
-					<div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 w-full md:w-11/12 flex flex-col">
-						<div className="max-w-8xl mx-auto px-5 flex flex-col w-full">
-							<div className="flex flex-col  flex-grow items-start my-6">
-								<h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
-									{sortPostBy} Posts
-								</h1>
-								<p className="font-Jaldi text-xl sm:text-base">
-									Check out the latest posts from the university's Guidance
-									Counselor!
-								</p>
-							</div>
-							{/* <div className="ml-auto relative">
+  return (
+    <div>
+      <main className="min-h-screen">
+        <Navbar userType="counselor" />
+        <div
+          className="pattern-overlay pattern-left absolute -z-10"
+          style={{ transform: "scaleY(-1)", top: "-50px" }}
+        >
+          <img src="/images/landing/lleft.png" alt="pattern" />
+        </div>
+        <div
+          className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+          style={{ transform: "scaleY(-1)", top: "-15px" }}
+        >
+          <img
+            src="/images/landing/lright.png"
+            alt="pattern"
+            className="w-full h-full object-contain"
+          />
+        </div>
+        {/*Posts*/}
+        <div className="flex flex-col md:flex-row py-24 px-4 md:px-12">
+          <div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 w-full md:w-11/12 flex flex-col">
+            <div className="max-w-8xl mx-auto px-5 flex flex-col w-full">
+              <div className="flex flex-col  flex-grow items-start my-6">
+                <h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
+                  {sortPostBy} Posts
+                </h1>
+                <p className="font-Jaldi text-xl sm:text-base">
+                  Check out the latest posts from the university's Guidance
+                  Counselor!
+                </p>
+              </div>
+              {/* <div className="ml-auto relative">
 								<GiSettingsKnobs
 									className="fill-black stroke-0 hover:stroke-2 text-2xl cursor-pointer text-center"
 									onClick={() =>
@@ -154,36 +156,37 @@ const Home = () => {
 									</div>
 								)}
 							</div> */}
-						</div>
-						<div className="w-full p-2 mx-auto flex-grow max-h-[90vh] overflow-y-auto">
-							{loading ? (
-								<LoadingState />
-							) : (
-								<CreatePostSection userSession={userSession} />
-							)}
-						</div>
-					</div>
-					{/*Blogs*/}
-					<div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 flex-grow-2 w-full">
-						<div className="flex flex-col px-4 flex-grow-1 items-start my-6">
-							<h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
-								Editor's Picks
-							</h1>
-							<p className="font-Jaldi text-xl sm:text-base">
-								Check out the latest posts from the university's Guidance Counselor!
-							</p>
-						</div>
+            </div>
+            <div className="w-full p-2 mx-auto flex-grow max-h-[90vh] overflow-y-auto">
+              {loading ? (
+                <LoadingState />
+              ) : (
+                <CreatePostSection userSession={userSession} />
+              )}
+            </div>
+          </div>
+          {/*Blogs*/}
+          <div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 flex-grow-2 w-full">
+            <div className="flex flex-col px-4 flex-grow-1 items-start my-6">
+              <h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
+                Editor's Picks
+              </h1>
+              <p className="font-Jaldi text-xl sm:text-base">
+                Check out the latest posts from the university's Guidance
+                Counselor!
+              </p>
+            </div>
 
-						<div className="w-full mx-auto flex-grow max-h-[90vh] overflow-y-auto">
-							<Card />
-						</div>
-					</div>
-				</div>
-				<Footer />
-				<FloatingIcon />
-			</main>
-		</div>
-	);
+            <div className="w-full mx-auto flex-grow max-h-[90vh] overflow-y-auto">
+              <Card />
+            </div>
+          </div>
+        </div>
+        <Footer />
+        <FloatingIcon />
+      </main>
+    </div>
+  );
 };
 
 export default dynamic(() => Promise.resolve(Home), { ssr: false });
