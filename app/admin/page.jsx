@@ -17,12 +17,12 @@ const AdminDashboard = () => {
   const userSession = getUserSession();
   const [page, setPage] = useState("Dashboard");
 
-  if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
-    return <Load route="login" />;
-  }
+  // if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
+  //   return <Load route="login" />;
+  // }
 
-  if (userSession && userSession.role !== "admin")
-    return <Load route={userSession.role} />;
+  // if (userSession && userSession.role !== "admin")
+  //   return <Load route={userSession.role} />;
 
   return (
     <div className="w-full min-h-screen flex bg-white">
