@@ -1,4 +1,5 @@
 import Provider from "@/components/Provider";
+import FloatingChat from "@/components/ui/chat/FloatingChat";
 import FloatingIcon from "@/components/ui/emergency/FloatingIcon";
 import "@/styles/globals.css";
 import { Inter } from "next/font/google";
@@ -17,7 +18,7 @@ export default function RootLayout({ children }) {
 			<body className={inter.className}>
 				<Toaster position="top-center" />
 				<FloatingIcon />
-				{/* <FloatingChat /> */}
+				<FloatingChat />
 				<Provider>{children}</Provider>
 			</body>
 		</html>
