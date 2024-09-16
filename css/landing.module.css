@@ -1,15 +1,77 @@
 /* css/landing.module.css */
 
+/*.hero {
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	overflow: hidden;
+	background-image: url("/images/landing/aa.mp4");
+	background-attachment: fixed;
+	background-size: cover;
+	background-position: center;
+}*/
 .hero {
-    height: 100vh; /* Adjust as needed for your design */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    background-image: url('/images/landing/hdr2.png');
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center;
+	height: 100vh;
+	position: relative;
+	background: radial-gradient(
+			circle at 5% 85%,
+			rgba(138, 37, 44, 0.7),
+			transparent 40%
+		),
+		radial-gradient(
+			circle at 100% 10%,
+			rgba(244, 197, 34, 0.5),
+			transparent 40%
+		),
+		#FFFFFF;
+	background-size: cover;
+	background-position: center;
+}
+
+.parallax {
+	/* Optional parallax effect */
+	background-attachment: fixed;
+}
+
+.floating {
+	animation-name: floating;
+	animation-duration: 3s; /* Default floating duration */
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+}
+
+.floating-4 {
+	animation-name: floating;
+	animation-duration: 4s; /* Slower floating duration */
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+}
+
+/* Use a single keyframes definition for floating animation */
+@keyframes floating {
+	0% {
+		transform: translate(0, 0px);
+	}
+	50% {
+		transform: translate(0, 8px);
+	}
+	100% {
+		transform: translate(0, -0px);
+	}
+}
+/* css/landing.module.css */
+@keyframes typing {
+	from { width: 0; }
+	to { width: 100%; }
+  }
+  
+  .typing-effect {
+	display: inline-block;
+	overflow: hidden;
+	white-space: nowrap;
+	border-right: 3px solid #333; /* Cursor effect */
+	animation: typing 4s steps(40, end) 1s 1 normal both;
   }
   
