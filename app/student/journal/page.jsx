@@ -383,16 +383,16 @@ const StudentJournal = () => {
                   <div>
                     Date of Entry:{" "}
                     {`${dateFormatter(
-                      highlightEntry.dateOfEntry
-                    )}, ${timeFormatter(highlightEntry.timeOfEntry)}`}
+                      highlightEntry?.dateOfEntry
+                    )}, ${timeFormatter(highlightEntry?.timeOfEntry)}`}
                   </div>
-                  {highlightEntry.dateOfUpdate !== "January 1, 1970" &&
-                  highlightEntry.timeOfUpdate ? (
+                  {highlightEntry?.dateOfUpdate !== "January 1, 1970" &&
+                  highlightEntry?.timeOfUpdate ? (
                     <div>
                       Last Updated:{" "}
                       {`${dateFormatter(
-                        highlightEntry.dateOfUpdate
-                      )}, ${timeFormatter(highlightEntry.timeOfUpdate)}`}
+                        highlightEntry?.dateOfUpdate
+                      )}, ${timeFormatter(highlightEntry?.timeOfUpdate)}`}
                     </div>
                   ) : null}
                 </div>
