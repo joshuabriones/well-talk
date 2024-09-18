@@ -10,7 +10,7 @@ const Hero = () => {
 	};
 
 	const handleCreateAccountClick = () => {
-		router.push("/registration");
+		router.push("/login");
 	};
 	return (
 		<section className={`${styles.hero} parallax`}>
