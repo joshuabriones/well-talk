@@ -16,7 +16,6 @@ import ModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import ModalConfirmResponseAppointment from "@/components/ui/modals/student/appointments/ModalConfirmedResponseAppointment";
 
-import Load from "@/components/Load";
 import Loading from "@/components/Loading";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
@@ -291,7 +290,7 @@ const Appointment = () => {
 		setIsLoading(true);
 		try {
 			const response = await fetch(
-				`${process.env.BASE_URL}${API_ENDPOINT.STUDENT_CREATE_APPOINTMENT}${selectedStudentId}`,
+				`${process.env.BASE_URL}${API_ENDPOINT.COUNSELOR_CREATE_APPOINTMENT}${userSession.id}?studentId=${selectedStudentId}`,
 				{
 					method: "POST",
 					headers: {
@@ -307,8 +306,13 @@ const Appointment = () => {
 				}
 			);
 
+			const responseData = await response.json();
+
 			if (response.ok) {
-				toast.success("Appointment has been sent to admin successfully");
+				toast.success("Appointment has been set successfully");
+			} else {
+				console.error("Error setting appointment:", responseData);
+				toast.error("Failed to set appointment");
 			}
 
 			setPurpose("");
@@ -322,11 +326,14 @@ const Appointment = () => {
 			setSelectedTime("");
 			setSelectedTimeSlot(null);
 		} catch (error) {
+			console.error("Error setting appointment:", error);
 			toast.error("Failed to set appointment");
 		} finally {
 			setIsLoading(false);
 		}
 	};
+
+
 
 	const formatDateCalendar = (date) => {
 		const year = date.getFullYear();
@@ -371,16 +378,16 @@ const Appointment = () => {
 					<div className="w-full mt-8 flex items-center gap-3 justify-center">
 						<button
 							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
-									? "bg-primary-green text-white"
-									: "border border-primary-green text-primary-green"
+								? "bg-primary-green text-white"
+								: "border border-primary-green text-primary-green"
 								}`}
 							onClick={handleAddAppointmentClick}>
 							Set Appointment
 						</button>
 						<button
 							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
-									? "bg-primary-green text-white"
-									: "border border-primary-green text-primary-green"
+								? "bg-primary-green text-white"
+								: "border border-primary-green text-primary-green"
 								}`}
 							onClick={handleViewAppointmentClick}>
 							View Appointments
@@ -391,7 +398,7 @@ const Appointment = () => {
 							<table className="table bg-gray-100">
 								{/* head */}
 								<thead className="bg-gray-200">
-								<tr className="font-bold text-center">
+									<tr className="font-bold text-center">
 										<th className="text-center p-5">ID</th>
 										<th>Date and Time</th>
 										<th className="p-5">ID Number</th>
@@ -489,27 +496,27 @@ const Appointment = () => {
 													</p>
 												</td>
 												<td className="text-center flex justify-center">
-										<div
-											className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}>
-													{appointments &&
-														appointments.appointmentStatus ===
+													<div
+														className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}>
+														{appointments &&
+															appointments.appointmentStatus ===
 															"Pending" &&
-														"🟡"}
-													{appointments &&
-														appointments.appointmentStatus ===
+															"🟡"}
+														{appointments &&
+															appointments.appointmentStatus ===
 															"Done" &&
-														"🟢"}
-													{appointments &&
-														appointments.appointmentStatus ===
+															"🟢"}
+														{appointments &&
+															appointments.appointmentStatus ===
 															"Assigned" &&
-														"🔵"}
-													<span className="ml-2 text-bold text-sm">
-														{appointments
-															? appointments.appointmentStatus
-															: ""}
-													</span>
-												</div>
-											</td>
+															"🔵"}
+														<span className="ml-2 text-bold text-sm">
+															{appointments
+																? appointments.appointmentStatus
+																: ""}
+														</span>
+													</div>
+												</td>
 
 												{/* Delete and Edit */}
 												<td>
@@ -559,8 +566,8 @@ const Appointment = () => {
 										<button
 											key={index}
 											className={`join-item btn ${currentPage === index + 1
-													? "btn-active"
-													: ""
+												? "btn-active"
+												: ""
 												}`}
 											onClick={() =>
 												setCurrentPage(index + 1)
@@ -637,11 +644,11 @@ const Appointment = () => {
 													handleTimeSlotClick(time)
 												} // Set the selected time on click
 												className={`time-slot-button ${isTimeSlotTaken(time)
-														? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
-														: time ===
-															selectedTimeSlot
-															? "bg-primary-green-dark text-white" // Apply a different style to the selected time slot
-															: "bg-primary-green text-white hover:bg-primary-green-dark duration-300"
+													? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
+													: time ===
+														selectedTimeSlot
+														? "bg-primary-green-dark text-white" // Apply a different style to the selected time slot
+														: "bg-primary-green text-white hover:bg-primary-green-dark duration-300"
 													}  py-2 px-4 rounded-md`}>
 												{timeFormatter(time)}
 											</button>
@@ -684,9 +691,9 @@ const Appointment = () => {
 													); // Update the selected student
 												}}
 												className={`bg-primary-green text-white block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${selectedStudent ===
-														student.id
-														? "bg-primary-green-dark"
-														: "" // Apply a different style to the selected student
+													student.id
+													? "bg-primary-green-dark"
+													: "" // Apply a different style to the selected student
 													}`}
 												key={student.id}>
 												{student.idNumber} ⸺{" "}
