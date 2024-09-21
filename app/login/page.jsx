@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 // utils
+import ScrollAnimationWrapper from "@/components/layout/ScrollAnimationWrapper";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextInput from "@/components/ui/inputs/TextInput";
@@ -124,7 +125,7 @@ const Login = () => {
 	};
 
 	return (
-		<section className="py-24 md:py-28 dark:bg-[#0b1727] text-zinc-900 dark:text-white flex justify-center items-center min-h-screen">
+		<section className="py-24 md:py-28 dark:bg-[#0b1727] text-zinc-900 dark:text-white flex justify-center items-center h-screen">
 			<div
 				className="pattern-overlay pattern-left absolute top-0 left-0 -z-10"
 				style={{ transform: "scaleY(-1)", top: "-50px" }}>
@@ -148,9 +149,10 @@ const Login = () => {
 					<Navbar userType="landing" />
 				</div>
 				<ChatWidget />
+				
 				<div className="grid grid-cols-6 gap-6 h-full">
 					<div className="col-span-6 md:col-span-2 lg:col-span-3">
-						<div className="relative border border-2 w-full h-full overflow-hidden md:flex bg-maroon i justify-around items-center hidden bg-cover bg-center ml-48 bg-no-repeat h-[80vh] rounded-xl hidden md:block w-[70%] md:w-[150%] lg:w-[130%]">
+						<div className="relative border border-2 w-full h-full overflow-hidden md:flex bg-maroon i justify-around items-center hidden bg-cover bg-center ml-20 bg-no-repeat h-[90vh] rounded-xl hidden md:block w-[80%] md:w-[150%] lg:w-[160%]">
 							<div>
 								<h1 className="text-white font-bold text-3xl md:text-4xl font-Merriweather">
 									Welcome To WellTalk!
@@ -174,12 +176,13 @@ const Login = () => {
 							<div className="absolute -top-20 -right-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8 text-gray"></div>
 						</div>
 					</div>
-					<div className="flex flex-col col-span-6 md:col-span-4 lg:col-span-3 py-32 ">
+					
+					<div className="flex flex-col col-span-6 md:col-span-4 lg:col-span-3 py-32 lg:ml-56">
+					<ScrollAnimationWrapper animationType="fadeInFromRight">
 						<div className="max-w-lg w-full h-full mx-auto px-0 md:px-8 lg:px-8">
 							<div className="relative">
 								<div className="absolute inset-0 rounded-3xl bg-gold shadow-lg transform -skew-y-6 sm:skew-y-0 -rotate-6 sm:rounded-3xl w-full h-full border border-2"></div>
 								<div className="absolute inset-0 -z-10 rounded-3xl bg-maroon shadow-lg transform skew-y-6 rotate-6 sm:skew-y-0 sm:rotate-0 w-full h-full border border-2 md:hidden lg:hidden"></div>
-
 								<div className="relative bg-white border border-2 dark:bg-slate-800 shadow-xl rounded-2xl p-12 md:p-12 lg:py-10">
 									<h2 className="font-Merriweather dark:text-white text-2xl font-bold mb-3">
 										Sign In
@@ -250,6 +253,7 @@ const Login = () => {
 								</div>
 							</div>
 						</div>
+						</ScrollAnimationWrapper>
 					</div>
 				</div>
 			</div>

@@ -20,19 +20,12 @@ export default function ScrollAnimationWrapper({
       animationVariants = getScrollAnimation();
   }
 
-  const handleViewportBoxUpdate = (info) => {
-    if (info.isInView && info.offset.y > 0) {
-      info.scrollY = 0;
-    }
-  };
-
   return (
     <motion.div
       initial="offscreen"
       whileInView="onScreen"
       variants={animationVariants}
       viewport={{ amount: 0.2 }}
-      onViewportBoxUpdate={handleViewportBoxUpdate}
       className={className}
       {...props}
     >
