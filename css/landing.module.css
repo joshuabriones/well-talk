@@ -31,25 +31,23 @@
 }
 
 .parallax {
-	/* Optional parallax effect */
 	background-attachment: fixed;
 }
 
 .floating {
 	animation-name: floating;
-	animation-duration: 3s; /* Default floating duration */
+	animation-duration: 3s; 
 	animation-iteration-count: infinite;
 	animation-timing-function: ease-in-out;
 }
 
 .floating-4 {
 	animation-name: floating;
-	animation-duration: 4s; /* Slower floating duration */
+	animation-duration: 3s; 
 	animation-iteration-count: infinite;
 	animation-timing-function: ease-in-out;
 }
 
-/* Use a single keyframes definition for floating animation */
 @keyframes floating {
 	0% {
 		transform: translate(0, 0px);
@@ -61,7 +59,7 @@
 		transform: translate(0, -0px);
 	}
 }
-/* css/landing.module.css */
+
 @keyframes typing {
 	from { width: 0; }
 	to { width: 100%; }
@@ -71,7 +69,7 @@
 	display: inline-block;
 	overflow: hidden;
 	white-space: nowrap;
-	border-right: 3px solid #333; /* Cursor effect */
+	border-right: 3px solid #333;
 	animation: typing 4s steps(40, end) 1s 1 normal both;
   }
   
