@@ -41,7 +41,7 @@
 	width: 50px;
 	z-index: 1990;
 
-	position: absolute;
+	position: fixed;
 	right: 30%;
 	bottom: 40px;
 
