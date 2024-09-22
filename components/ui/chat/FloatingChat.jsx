@@ -8,7 +8,7 @@ const FloatingChat = () => {
 
 	return (
 		<div className={`chat-container ${openChat ? "open" : ""}`}>
-			<div className={`chat-interaction ${openChat ? "open" : ""} `}>CHAT</div>
+			<div className={`chat-interaction ${openChat ? "open" : ""} `}>chat interface hehe</div>
 
 			<div
 				className={`chat-icon ${openChat ? "" : "close"} `}
@@ -19,8 +19,8 @@ const FloatingChat = () => {
 					fill="none"
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
-					stroke="currentColor"
-					className="size-6"
+					stroke="black"
+					className="size-7"
 				>
 					<path
 						strokeLinecap="round"
