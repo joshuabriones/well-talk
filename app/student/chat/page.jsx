@@ -330,14 +330,14 @@ export default function Chat() {
 															className="rounded-full h-9 w-9"
 														/>
 													</div>
-													<div className="bg-emerald-200 max-w-3xl min-h-9 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl px-4 py-2 flex items-center justify-start break-words">
+													<div className="bg-silver max-w-3xl min-h-9 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl px-4 py-2 flex items-center justify-start break-words">
 														{message.text}
 													</div>
 												</div>
 											)}
 											{message.senderID === loggedUser?.id && (
 												<div className="flex items-end gap-x-3">
-													<div className="bg-emerald-200 max-w-3xl min-h-9 rounded-tl-2xl rounded-br-2xl rounded-bl-2xl px-4 py-2 flex items-center justify-start break-words">
+													<div className="bg-maroon max-w-3xl min-h-9 text-white  rounded-tl-2xl rounded-br-2xl rounded-bl-2xl px-4 py-2 flex items-center justify-start break-words">
 														{message.text}
 													</div>
 												</div>

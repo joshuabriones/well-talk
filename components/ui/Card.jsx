@@ -4,7 +4,7 @@ const Card = () => {
 		{
 			title: "Strengthening Mental Health Support for Students",
 			desc: "The distress that so many students are experiencing calls for us to act with urgency and compassion. It also calls for us to find innovative approaches that can reach more young people and help form a stronger network of support for college-age youth.",
-			img: "https://www.nami.org/wp-content/uploads/media/NAMI-Media/BlogImageArchive/2023/Student-Support_Blog.png",
+			img: "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQPninQfI_9PozknJd3stRq22ICiZ3gFqXnnrRMAIuXdn3-qEMO",
 			date: "Sept 5 2023",
 			href: "https://www.nami.org/kids-teens-young-adults/strengthening-mental-health-support-for-students/",
 		},
@@ -18,21 +18,21 @@ const Card = () => {
 		{
 			title: "Tips For Easing Back-to-School Anxiety",
 			desc: "As summer ends, a mix of emotions can fill households. While some parents eagerly anticipate sending their kids back to school, and some kids look forward to reuniting with friends and teachers, this time of year can also be met with anxiety and frustration.",
-			img: "https://www.nami.org/wp-content/uploads/media/NAMI-Media/BlogImageArchive/2023/BackToSchool_Blog.png",
+			img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRA1MpUfzoiww6g3vetIf_RZwnD2mi2KhnlTmWoE2q0qoTstj5w",
 			date: "Aug 28 2023",
 			href: "https://www.nami.org/anxiety-disorders/tips-for-easing-back-to-school-anxiety/",
 		},
 		{
 			title: "The Importance of Prioritizing Emotional Wellness over Academic Achievement",
 			desc: "As a society, we pressure youth to achieve certain milestones “on time.” Teenagers are expected to finish high school by a certain age, attend college directly after high school, graduate from college in four years and find a job (and hopefully a career) soon after.",
-			img: "https://www.nami.org/wp-content/uploads/media/NAMI-Media/BlogImageArchive/2022/Timelines_Blog.png",
+			img: "https://miro.medium.com/v2/resize:fit:640/format:webp/1*Ex9xiS6naN00crrNGROBVA.jpeg",
 			date: "Dec 12 2022",
 			href: "https://www.nami.org/bipolar-and-related-disorders/the-importance-of-prioritizing-emotional-wellness-over-academic-achievement/",
 		},
 		{
 			title: "Children Should Not Have to Be Resilient",
 			desc: "I felt pressure to continue being ‘the brave, resilient one’ in moments I deserved to rest, recuperate and simply be a child.",
-			img: "https://www.nami.org/wp-content/uploads/media/NAMI-Media/BlogImageArchive/2023/Resilience_Blog.png",
+			img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTkEkGWeYt2Ir05JO4kO0LU77CCA1VK0NBqP66qi4XMHg8lS52E",
 			date: "Feb 24 2023",
 			href: "https://www.nami.org/family-member-caregivers/children-should-not-have-to-be-resilient/",
 		},
@@ -57,10 +57,10 @@ const Card = () => {
 										className="w-40 h-32 rounded-lg object-cover"
 									/>
 									<div className="flex flex-col space-y-2">
-										<span className=" text-sm" style={{ color: "#6B9080" }}>
+										<span className=" text-sm text-maroon">
 											{item.date}
 										</span>
-										<h3 className="text-lg text-gray-800 duration-150 group-hover:text-green-800 font-semibold">
+										<h3 className="text-lg text-gray-800 duration-150 group-hover:text-gold font-semibold">
 											{item.title}
 										</h3>
 										<p className="text-gray-600 text-sm duration-150 group-hover:text-gray-800">

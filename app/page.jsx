@@ -11,28 +11,28 @@ import { Content } from "@/components/ui/landing/Steps";
 export default function Landing() {
 	const faqList = [
 		{
-			question: "What Shipping Options do you have?",
-			answer: "Partner removes the hassle and confusion that comes from managing your tax burden effectively.",
+			question: "What is WellTalk?",
+			answer: "WellTalk is a comprehensive platform designed to facilitate seamless communication and scheduling between students and counselors, ensuring a supportive environment for mental health and well-being.",
 		},
 		{
-			question: "What Shipping Options do you have?",
-			answer: "Partner removes the hassle and confusion that comes from managing your tax burden effectively.",
+			question: "How do I schedule an appointment with a counselor on WellTalk?",
+			answer: "To schedule an appointment with a counselor on WellTalk, log in to your account and navigate to the Appointments or Schedule section. From there, you can elect a convenient time slot and confirm your appointment.",
 		},
 		{
-			question: "What Shipping Options do you have?",
-			answer: "Partner removes the hassle and confusion that comes from managing your tax burden effectively.",
+			question: "Is my information confidential and secure on WellTalk?",
+			answer: "Yes, we take your privacy and security seriously on WellTalk. Your information is encrypted and stored securely according to industry standards. Only authorized personnel have access to your data, and we adhere to strict confidentiality protocols.",
 		},
 		{
-			question: "What Shipping Options do you have?",
-			answer: "Partner removes the hassle and confusion that comes from managing your tax burden effectively.",
+			question: "Can I reschedule or cancel appointments?",
+			answer: "Yes, you can reschedule or cancel appointments through your WellTalk account. Simply go to the Appointments section, locate the appointment you wish to change, and follow the prompts to adjust the date and time or cancel the appointment.",
 		},
 		{
-			question: "What Shipping Options do you have?",
-			answer: "Partner removes the hassle and confusion that comes from managing your tax burden effectively.",
+			question: "Are there resources available for self-help and mental health tips?",
+			answer: "Absolutely! WellTalk provides a wealth of resources, including self-help guides, mental health tips, and informative articles to support your well-being journey. Explore our Resources section to access these valuable materials.",
 		},
 		{
-			question: "What Shipping Options do you have?",
-			answer: "Partner removes the hassle and confusion that comes from managing your tax burden effectively.",
+			question: "Is WellTalk accessible on mobile devices?",
+			answer: "Yes, WellTalk is fully accessible on mobile devices. We've designed the app to be responsive and user-friendly on smartphones and tablets, ensuring that you can access all features and functionalities seamlessly on the go.",
 		},
 	];
 

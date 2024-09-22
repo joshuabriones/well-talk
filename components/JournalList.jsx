@@ -10,7 +10,7 @@ const JournalList = ({ entries, isEditing, handleClickedEntry, handleDeleteEntry
 			{entries.map((entry, i) => (
 				<div
 					key={i}
-					className={`w-full p-8 pl-10 rounded-2xl shadow-lg border-r-[#6B9080] border-r-8 relative text-black ${
+					className={`w-full p-8 pl-10 border-2 rounded-2xl shadow-lg border-r-maroon border-r-8 relative text-black ${
 						!isEditing && "cursor-pointer"
 					}`}
 					onClick={() => handleClickedEntry(entry.journalId)}
