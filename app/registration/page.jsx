@@ -389,7 +389,7 @@ const Registration = () => {
 												Register your <br /> account
 											</div>
 										</div>
-										<div className={`w-64 h-64 bg-white bg-opacity-20 rounded-3xl relative border-2 border-gray ${styles["floating-4"]}`}>
+										<div className={`w-64 h-64 bg-white bg-opacity-10 rounded-3xl relative border-2 border-gray ${styles["floating-4"]}`}>
 											<div className="w-6 h-6 text-maroon rounded-full flex items-center justify-center text-sm font-bold absolute top-7 left-7 border-2">
 												3
 											</div>

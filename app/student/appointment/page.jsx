@@ -297,13 +297,11 @@ const Appointment = () => {
 
 	return (
 		<div className="min-h-screen w-full">
-			{/* navigation bar */}
 			<Navbar userType="student" />
-
 			{/* header */}
-			<div className="w-full h-[45vh] md:h-[55vh] relative">
+			{/*<div className="w-full h-[45vh] md:h-[55vh] relative">
 				{/* Background image */}
-				<div
+				{/*<div
 					className="absolute inset-0 bg-cover bg-center opacity-40"
 					style={{
 						backgroundImage: `url(${hdrAppointment.src})`,
@@ -311,7 +309,7 @@ const Appointment = () => {
 				></div>
 
 				{/* Content */}
-				<div className="relative z-10 flex items-center justify-center h-full">
+				{/*<div className="relative z-10 flex items-center justify-center h-full">
 					<div className="flex flex-col text-left px-6 md:px-20 lg:px-44 py-10 gap-y-4">
 						<h1 className="font-Merriweather text-4xl md:text-6xl lg:text-8xl">
 							Appointments
@@ -323,16 +321,16 @@ const Appointment = () => {
 						</p>
 					</div>
 				</div>
-			</div>
+			</div>*/}
 
 			{userSession ? (
 				<div>
-					<div className="w-full mt-8 flex items-center gap-3 justify-center">
+					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
 							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
 								isAddAppointment
-									? "bg-primary-green text-white"
-									: "border border-primary-green text-primary-green"
+									? "bg-maroon text-white"
+									: "border-2 border-maroon text-maroon"
 							}`}
 							onClick={handleAddAppointmentClick}
 						>
@@ -341,8 +339,8 @@ const Appointment = () => {
 						<button
 							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
 								isViewAppointment
-									? "bg-primary-green text-white"
-									: "border border-primary-green text-primary-green"
+									? "bg-maroon text-white"
+									: "border-2 border-maroon text-maroon"
 							}`}
 							onClick={handleViewAppointmentClick}
 						>
@@ -484,7 +482,7 @@ const Appointment = () => {
 							</div>
 						</div>
 					) : (
-						<div className="flex w-full py-10 px-8 gap-10 justify-center md:flex-row flex-col">
+						<div className="flex w-full py-10 px-16 gap-12 justify-center md:flex-row flex-col">
 							<div className="flex-1">
 								<Calendar
 									bordered
@@ -525,9 +523,9 @@ const Appointment = () => {
 													isTimeSlotTaken(time)
 														? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
 														: time === selectedTimeSlot
-														? "bg-primary-green-dark text-white" // Apply a different style to the selected time slot
-														: "bg-primary-green text-white hover:bg-primary-green-dark duration-300"
-												}  py-2 px-4 rounded-md`}
+														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+														: "bg-maroon text-white hover:bg-maroon duration-300"
+												}  py-2 px-3 rounded-md`}
 											>
 												{timeFormatter(time)}
 											</button>

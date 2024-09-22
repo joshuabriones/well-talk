@@ -20,15 +20,16 @@ function NavList({ userType }) {
 	return (
 		<ul className="mt-2 mb-4 flex flex-col gap-12 lg:mb-0 lg:mt-0 lg:flex-row lg:items-right font-Merriweather font-bold text-xl mr-8">
 			{navigationItems.map((item, index) => (
-				<a
-					key={index}
-					onClick={() => router.push(item.route)}
-					className={`text-base font-medium text-blue-gray-500 hover:text-blue-gray-700 cursor-pointer${
-						router.pathname === item.route ? "text-blue-900" : ""
-					} nav-list-button`}
-				>
-					{item.label}
-				</a>
+				<li key={index}>
+					<a
+						onClick={() => router.push(item.route)}
+						className={`text-base font-medium text-blue-gray-500 hover:text-blue-gray-700 cursor-pointer${
+							router.pathname === item.route ? " text-blue-900" : ""
+						} nav-list-button`}
+					>
+						{item.label}
+					</a>
+				</li>
 			))}
 		</ul>
 	);
@@ -41,18 +42,11 @@ export function Navbar({ userType }) {
 
 	useEffect(() => {
 		const handleScroll = () => {
-			if (window.scrollY > 0) {
-				setIsScrolled(true);
-			} else {
-				setIsScrolled(false);
-			}
+			setIsScrolled(window.scrollY > 0);
 		};
 
 		window.addEventListener("scroll", handleScroll);
-
-		return () => {
-			window.removeEventListener("scroll", handleScroll);
-		};
+		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
 
 	const navbarStyles = {
