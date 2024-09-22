@@ -7,61 +7,72 @@ import "./../../css/navbar.css";
 
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false); // Track when the component is mounted
   const userSession = getUserSession();
   const router = useRouter();
   const [userData, setUserData] = useState(null);
-  const closeMenu = () => setIsMenuOpen(false);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      let endpoint;
-      switch (userSession.role) {
-        case "student":
-          endpoint = API_ENDPOINT.GET_STUDENT_BY_ID;
-          break;
-        case "teacher":
-          endpoint = API_ENDPOINT.GET_TEACHER_BY_ID;
-          break;
-        case "counselor":
-          endpoint = API_ENDPOINT.GET_COUNSELOR_BY_ID;
-          break;
-        default:
-          return;
-      }
+    // Mark as mounted on the client
+    setIsMounted(true);
+  }, []);
 
-      const response = await fetch(
-        `${process.env.BASE_URL}${endpoint}${userSession.id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
+  useEffect(() => {
+    if (isMounted && userSession) { // Ensure this only runs on the client
+      const fetchUserData = async () => {
+        let endpoint;
+        switch (userSession.role) {
+          case "student":
+            endpoint = API_ENDPOINT.GET_STUDENT_BY_ID;
+            break;
+          case "teacher":
+            endpoint = API_ENDPOINT.GET_TEACHER_BY_ID;
+            break;
+          case "counselor":
+            endpoint = API_ENDPOINT.GET_COUNSELOR_BY_ID;
+            break;
+          default:
+            return;
         }
-      );
 
-      if (!response.ok) {
-        console.error("Failed to fetch user data");
-        return;
-      }
+        const response = await fetch(
+          `${process.env.BASE_URL}${endpoint}${userSession.id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
 
-      const data = await response.json();
-      setUserData(data);
-    };
+        if (!response.ok) {
+          console.error("Failed to fetch user data");
+          return;
+        }
 
-    fetchUserData();
-  }, [userSession]);
+        const data = await response.json();
+        setUserData(data);
+      };
+
+      fetchUserData();
+    }
+  }, [isMounted, userSession]);
 
   const handleSignOut = () => {
     logout();
+    router.push("/login"); // Redirect after sign-out
   };
 
   const handleProfile = () => {
     if (userSession) {
-      // Redirect to the user's profile based on their role
       router.push(`/${userSession.role}/profile`);
     }
   };
+
+  if (!isMounted) {
+    return null; // Prevent rendering on the server to avoid hydration errors
+  }
 
   const profileMenuItems = [
     {
@@ -75,7 +86,7 @@ function ProfileMenu() {
   ];
 
   return (
-    <div className="relative">
+    <div>
       <button
         onClick={() => setIsMenuOpen((prev) => !prev)}
         className="flex items-center gap-2 rounded-full py-3 pr-2 mr-8  md:mr-20 pl-0.5 lg:ml-auto"
@@ -83,7 +94,7 @@ function ProfileMenu() {
         <img
           src={userData?.image}
           alt="Profile"
-          className="h-10 w-10 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-2"
+          className="h-10 w-10 rounded-full ring ring-maroon ring-offset-base-100 ring-offset-2"
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +118,7 @@ function ProfileMenu() {
           {profileMenuItems.map(({ label, action }, index) => (
             <button
               key={index}
-              onClick={action || closeMenu}
+              onClick={action || (() => setIsMenuOpen(false))}
               className={`block px-4 py-2 text-sm  ${
                 index === profileMenuItems.length - 1 ? "rounded-b-lg" : ""
               }`}
@@ -131,7 +142,6 @@ function NavList({ userType }) {
         { label: "Home", route: "/student" },
         { label: "Appointment", route: "/student/appointment" },
         { label: "Journal", route: "/student/journal" },
-        { label: "Inquiry", route: "/student/inquiry" },
         { label: "Chat", route: "/student/chat" },
       ];
       break;
@@ -139,21 +149,12 @@ function NavList({ userType }) {
       navigationItems = [
         { label: "Home", route: "/teacher" },
         { label: "Referral", route: "/teacher/referral" },
-        { label: "Inquiry", route: "/teacher/inquiry" },
       ];
       break;
     case "counselor":
       navigationItems = [
         { label: "Home", route: "/counselor" },
-        // { label: "Calendar", route: "/counselor/calendar" },
-        // { label: "Blogs", route: "/counselor/counselor-blog" },AA
-        {
-          label: "Appointments",
-          route: "/counselor/counselor-appointment",
-        },
-        // { label: "Referral", route: "/counselor/counselor-referral" },
-        // { label: "Events", route: "/counselor/counselor-events" },
-        { label: "Inquiry", route: "/counselor/counselor-inquiry" },
+        { label: "Appointments", route: "/counselor/counselor-appointment" },
         { label: "Journal", route: "/counselor/clientjournal" },
       ];
       break;
@@ -181,7 +182,6 @@ function NavList({ userType }) {
 export function Navbar({ userType }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -241,13 +241,13 @@ export function Navbar({ userType }) {
           WellTalk
         </div>
         <div className="hidden lg:block flex items-center gap-8 lg:ml-auto">
-          <NavList userType={userType} router={router} />
+          <NavList userType={userType} router={useRouter()} />
         </div>
         {userType !== "landing" && <ProfileMenu />}
       </div>
       {isNavOpen && (
         <div className="bg-white lg:hidden absolute top-18 left-0 right-0">
-          <NavList userType={userType} router={router} />
+          <NavList userType={userType} />
         </div>
       )}
     </nav>
