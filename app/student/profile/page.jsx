@@ -320,7 +320,7 @@ export default function StudentProfile() {
 										{isEditMode && (
 											<label
 												htmlFor="file-upload"
-												className="absolute bottom-0 right-5 bg-gold text-white p-1 rounded-full border-2 border-maroon cursor-pointer">
+												className="absolute bottom-0 right-5 bg-gold text-white p-1 rounded-full border-2 border-maroon cursor-pointer translate-y-1">
 												<input
 													id="file-upload"
 													type="file"

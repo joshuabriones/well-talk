@@ -341,46 +341,45 @@ const Appointment = () => {
 			<Navbar userType="counselor" />
 
 			{/* header */}
-			<div className="w-full h-[45vh] md:h-[55vh] relative">
+			{/*<div className="w-full h-[45vh] md:h-[55vh] relative">
 				{/* Background image */}
-				<div
+				{/*<div
 					className="absolute inset-0 bg-cover bg-center opacity-40"
 					style={{
 						backgroundImage: `url(${hdrAppointment.src})`,
-					}}></div>
+					}}
+				></div>
 
 				{/* Content */}
-				<div className="relative z-10 flex items-center justify-center h-full">
+				{/*<div className="relative z-10 flex items-center justify-center h-full">
 					<div className="flex flex-col text-left px-6 md:px-20 lg:px-44 py-10 gap-y-4">
 						<h1 className="font-Merriweather text-4xl md:text-6xl lg:text-8xl">
 							Appointments
 						</h1>
 						<p className="w-full md:w-3/4 lg:w-1/2 font-Jaldi text-lg md:text-xl">
-							Manage sessions effortlessly and provide tailored
-							guidance and support to students through efficient
-							booking and coordination. Streamline your scheduling
-							process and ensure students receive personalized
-							attention.
+							Manage sessions effortlessly and provide tailored guidance and support
+							to students through efficient booking and coordination. Streamline your
+							scheduling process and ensure students receive personalized attention.
 						</p>
 					</div>
 				</div>
-			</div>
+			</div>*/}
 
 			{userSession ? (
 				<div>
-					<div className="w-full mt-8 flex items-center gap-3 justify-center">
+					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
 							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
-									? "bg-primary-green text-white"
-									: "border border-primary-green text-primary-green"
+									? "bg-maroon text-white"
+									: "bg-white border-2 border-maroon text-maroon"
 								}`}
 							onClick={handleAddAppointmentClick}>
 							Set Appointment
 						</button>
 						<button
 							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
-									? "bg-primary-green text-white"
-									: "border border-primary-green text-primary-green"
+									? "bg-maroon text-white"
+									: "bg-white border-2 border-maroon text-maroon"
 								}`}
 							onClick={handleViewAppointmentClick}>
 							View Appointments
@@ -637,12 +636,12 @@ const Appointment = () => {
 													handleTimeSlotClick(time)
 												} // Set the selected time on click
 												className={`time-slot-button ${isTimeSlotTaken(time)
-														? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
+														? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
 														: time ===
 															selectedTimeSlot
-															? "bg-primary-green-dark text-white" // Apply a different style to the selected time slot
-															: "bg-primary-green text-white hover:bg-primary-green-dark duration-300"
-													}  py-2 px-4 rounded-md`}>
+															? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+															: "bg-maroon text-white hover:bg-primary-green-dark duration-300"
+													}  py-2 px-3 rounded-md`}>
 												{timeFormatter(time)}
 											</button>
 										))}
@@ -683,10 +682,10 @@ const Appointment = () => {
 														student.id
 													); // Update the selected student
 												}}
-												className={`bg-primary-green text-white block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${selectedStudent ===
+												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${selectedStudent ===
 														student.id
-														? "bg-primary-green-dark"
-														: "" // Apply a different style to the selected student
+														? "bg-white border-2 border-maroon text-maroon font-semibold"
+														: "text-white" // Apply a different style to the selected student
 													}`}
 												key={student.id}>
 												{student.idNumber} ⸺{" "}

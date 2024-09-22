@@ -60,10 +60,10 @@ const Card = () => {
 										<span className=" text-sm text-maroon">
 											{item.date}
 										</span>
-										<h3 className="text-lg text-gray-800 duration-150 group-hover:text-gold font-semibold">
+										<h3 className="text-lg text-gray duration-150 group-hover:text-gold font-semibold">
 											{item.title}
 										</h3>
-										<p className="text-gray-600 text-sm duration-150 group-hover:text-gray-800">
+										<p className="text-gray text-sm duration-150 group-hover:text-gold">
 											{item.desc}
 										</p>
 									</div>
