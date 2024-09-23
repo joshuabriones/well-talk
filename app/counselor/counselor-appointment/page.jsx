@@ -4,7 +4,6 @@ import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextAreaInput from "@/components/ui/inputs/TextAreaInput";
 import TextInput from "@/components/ui/inputs/TextInput";
-import hdrAppointment from "@/public/images/headers/hdrAppointment.png";
 import { useEffect, useState } from "react";
 // css
 import "@/styles/counselor.css";
@@ -16,7 +15,6 @@ import ModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import ModalConfirmResponseAppointment from "@/components/ui/modals/student/appointments/ModalConfirmedResponseAppointment";
 
-import Load from "@/components/Load";
 import Loading from "@/components/Loading";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
@@ -82,7 +80,8 @@ const Appointment = () => {
 
 	const fetchAppointments = async () => {
 		const response = await fetch(
-			`${process.env.BASE_URL}${API_ENDPOINT.STUDENT_GET_ALL_APPOINTMENTS}`,
+			// `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_GET_ALL_APPOINTMENTS}`,
+			`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_COUNSELORID}${userSession?.id}`,
 			{
 				headers: {
 					Authorization: `Bearer ${Cookies.get("token")}`,
@@ -95,13 +94,13 @@ const Appointment = () => {
 		}
 		const data = await response.json();
 
-		const filteredData = data.filter(
-			(appointment) =>
-				appointment?.counselor?.id === userSession?.id &&
-				appointment.appointmentStatus === "Assigned"
-		);
-		console.log("Appointments: ", filteredData);
-		setAppointments(filteredData);
+		// const filteredData = data.filter(
+		// 	(appointment) =>
+		// 		appointment?.counselor?.id === userSession?.id &&
+		// 		appointment.appointmentStatus === "Assigned"
+		// );
+		console.log("Appointments: ", data);
+		setAppointments(data);
 	};
 
 	const fetchStudents = async () => {
@@ -343,7 +342,7 @@ const Appointment = () => {
 			{/* header */}
 			{/*<div className="w-full h-[45vh] md:h-[55vh] relative">
 				{/* Background image */}
-				{/*<div
+			{/*<div
 					className="absolute inset-0 bg-cover bg-center opacity-40"
 					style={{
 						backgroundImage: `url(${hdrAppointment.src})`,
@@ -351,7 +350,7 @@ const Appointment = () => {
 				></div>
 
 				{/* Content */}
-				{/*<div className="relative z-10 flex items-center justify-center h-full">
+			{/*<div className="relative z-10 flex items-center justify-center h-full">
 					<div className="flex flex-col text-left px-6 md:px-20 lg:px-44 py-10 gap-y-4">
 						<h1 className="font-Merriweather text-4xl md:text-6xl lg:text-8xl">
 							Appointments
@@ -370,16 +369,16 @@ const Appointment = () => {
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
 							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
-									? "bg-maroon text-white"
-									: "bg-white border-2 border-maroon text-maroon"
+								? "bg-maroon text-white"
+								: "bg-white border-2 border-maroon text-maroon"
 								}`}
 							onClick={handleAddAppointmentClick}>
 							Set Appointment
 						</button>
 						<button
 							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
-									? "bg-maroon text-white"
-									: "bg-white border-2 border-maroon text-maroon"
+								? "bg-maroon text-white"
+								: "bg-white border-2 border-maroon text-maroon"
 								}`}
 							onClick={handleViewAppointmentClick}>
 							View Appointments
@@ -390,7 +389,7 @@ const Appointment = () => {
 							<table className="table bg-gray-100">
 								{/* head */}
 								<thead className="bg-gray-200">
-								<tr className="font-bold text-center">
+									<tr className="font-bold text-center">
 										<th className="text-center p-5">ID</th>
 										<th>Date and Time</th>
 										<th className="p-5">ID Number</th>
@@ -488,27 +487,27 @@ const Appointment = () => {
 													</p>
 												</td>
 												<td className="text-center flex justify-center">
-										<div
-											className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}>
-													{appointments &&
-														appointments.appointmentStatus ===
+													<div
+														className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}>
+														{appointments &&
+															appointments.appointmentStatus ===
 															"Pending" &&
-														"🟡"}
-													{appointments &&
-														appointments.appointmentStatus ===
+															"🟡"}
+														{appointments &&
+															appointments.appointmentStatus ===
 															"Done" &&
-														"🟢"}
-													{appointments &&
-														appointments.appointmentStatus ===
+															"🟢"}
+														{appointments &&
+															appointments.appointmentStatus ===
 															"Assigned" &&
-														"🔵"}
-													<span className="ml-2 text-bold text-sm">
-														{appointments
-															? appointments.appointmentStatus
-															: ""}
-													</span>
-												</div>
-											</td>
+															"🔵"}
+														<span className="ml-2 text-bold text-sm">
+															{appointments
+																? appointments.appointmentStatus
+																: ""}
+														</span>
+													</div>
+												</td>
 
 												{/* Delete and Edit */}
 												<td>
@@ -558,8 +557,8 @@ const Appointment = () => {
 										<button
 											key={index}
 											className={`join-item btn ${currentPage === index + 1
-													? "btn-active"
-													: ""
+												? "btn-active"
+												: ""
 												}`}
 											onClick={() =>
 												setCurrentPage(index + 1)
@@ -636,11 +635,11 @@ const Appointment = () => {
 													handleTimeSlotClick(time)
 												} // Set the selected time on click
 												className={`time-slot-button ${isTimeSlotTaken(time)
-														? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
-														: time ===
-															selectedTimeSlot
-															? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-															: "bg-maroon text-white hover:bg-primary-green-dark duration-300"
+													? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
+													: time ===
+														selectedTimeSlot
+														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+														: "bg-maroon text-white hover:bg-primary-green-dark duration-300"
 													}  py-2 px-3 rounded-md`}>
 												{timeFormatter(time)}
 											</button>
@@ -683,9 +682,9 @@ const Appointment = () => {
 													); // Update the selected student
 												}}
 												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${selectedStudent ===
-														student.id
-														? "bg-white border-2 border-maroon text-maroon font-semibold"
-														: "text-white" // Apply a different style to the selected student
+													student.id
+													? "bg-white border-2 border-maroon text-maroon font-semibold"
+													: "text-white" // Apply a different style to the selected student
 													}`}
 												key={student.id}>
 												{student.idNumber} ⸺{" "}
