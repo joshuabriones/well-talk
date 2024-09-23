@@ -147,9 +147,7 @@ const Login = () => {
 			<div className="container px-12 mx-auto">
 				<div className="block md:hidden">
 					<Navbar userType="landing" />
-				</div>
-				<ChatWidget />
-				
+				</div>		
 				<div className="grid grid-cols-6 gap-6 h-full">
 					<div className="col-span-6 md:col-span-2 lg:col-span-3">
 						<div className="relative border border-2 w-full h-full overflow-hidden md:flex bg-maroon i justify-around items-center hidden bg-cover bg-center ml-20 bg-no-repeat h-[90vh] rounded-xl hidden md:block w-[80%] md:w-[150%] lg:w-[160%]">
