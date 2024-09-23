@@ -62,9 +62,7 @@ const StudentJournal = () => {
 
 	const handleClickedEntry = (journalId) => {
 		if (!isEditing) {
-			const selectedEntry = journalEntries.find(
-				(entry) => entry.journalId === journalId
-			);
+			const selectedEntry = journalEntries.find((entry) => entry.journalId === journalId);
 
 			if (selectedEntry) {
 				setHighlightEntry(selectedEntry);
@@ -125,24 +123,17 @@ const StudentJournal = () => {
 			);
 
 			if (response.ok) {
-				const deletedEntry = journalEntries.find(
-					(entry) => entry.journalId === journalId
-				);
+				const deletedEntry = journalEntries.find((entry) => entry.journalId === journalId);
 				toast.success(
 					`Journal entry with title "${deletedEntry.title}" deleted successfully.`
 				);
 				fetchEntries();
 				setIsEditing(false);
 			} else {
-				toast.error(
-					`Failed to delete journal entry with title "${deletedEntry.title}".`
-				);
+				toast.error(`Failed to delete journal entry with title "${deletedEntry.title}".`);
 			}
 		} catch (error) {
-			console.error(
-				"Error occurred while deleting journal entry:",
-				error
-			);
+			console.error("Error occurred while deleting journal entry:", error);
 		}
 	};
 
@@ -170,9 +161,7 @@ const StudentJournal = () => {
 				// Update the state with the updated entry
 				setJournalEntries(
 					journalEntries.map((entry) =>
-						entry.journalId === updatedEntry.journalId
-							? updatedEntry
-							: entry
+						entry.journalId === updatedEntry.journalId ? updatedEntry : entry
 					)
 				);
 				setHighlightEntry(updatedEntry);
@@ -215,6 +204,8 @@ const StudentJournal = () => {
 		return formattedTime;
 	};
 
+	console.log(highlightEntry);
+
 	return (
 		<div className="min-h-screen">
 			<Navbar userType="student" />
@@ -238,14 +229,9 @@ const StudentJournal = () => {
 								<>
 									<button
 										className="z-10 tooltip tooltip-success text-maroon"
-										data-tip={`${
-											isEditing ? "Cancel" : "Edit"
-										}`}
-										onClick={() =>
-											setIsEditing(
-												(prevState) => !prevState
-											)
-										}>
+										data-tip={`${isEditing ? "Cancel" : "Edit"}`}
+										onClick={() => setIsEditing((prevState) => !prevState)}
+									>
 										{/* <Image
 											src={"/images/icons/edit.png"}
 											width={25}
@@ -258,7 +244,8 @@ const StudentJournal = () => {
 											viewBox="0 0 24 24"
 											strokeWidth={2}
 											stroke="#8A252C"
-											className="w-7 h-7">
+											className="w-7 h-7"
+										>
 											<path
 												strokeLinecap="round"
 												strokeLinejoin="round"
@@ -270,7 +257,8 @@ const StudentJournal = () => {
 									<button
 										className="z-10 tooltip tooltip-success"
 										data-tip="Save Changes"
-										onClick={handleEditEntry}>
+										onClick={handleEditEntry}
+									>
 										{/* <Image
 											src={"/images/icons/saveEdit.png"}
 											width={25}
@@ -283,7 +271,8 @@ const StudentJournal = () => {
 											viewBox="0 0 24 24"
 											strokeWidth={2}
 											stroke="#8A252C"
-											className="w-7 h-7">
+											className="w-7 h-7"
+										>
 											<path
 												strokeLinecap="round"
 												strokeLinejoin="round"
@@ -297,19 +286,17 @@ const StudentJournal = () => {
 									<button
 										className="z-10 tooltip tooltip-success"
 										data-tip="Edit"
-										onClick={() =>
-											setIsEditing(
-												(prevState) => !prevState
-											)
-										}
-										disabled={journalEntries.length === 0}>
+										onClick={() => setIsEditing((prevState) => !prevState)}
+										disabled={journalEntries.length === 0}
+									>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											fill="none"
 											viewBox="0 0 24 24"
 											strokeWidth={2}
 											stroke="#8A252C"
-											className="w-7 h-7">
+											className="w-7 h-7"
+										>
 											<path
 												strokeLinecap="round"
 												strokeLinejoin="round"
@@ -321,7 +308,8 @@ const StudentJournal = () => {
 									<button
 										className="z-10 tooltip tooltip-success"
 										data-tip="New Entry"
-										onClick={() => setShowModal(true)}>
+										onClick={() => setShowModal(true)}
+									>
 										{/* <Image
 											src={"/images/icons/addjournal.png"}
 											width={25}
@@ -334,7 +322,8 @@ const StudentJournal = () => {
 											viewBox="0 0 24 24"
 											strokeWidth={2}
 											stroke="#8A252C"
-											className="w-7 h-6">
+											className="w-7 h-6"
+										>
 											<path
 												strokeLinecap="round"
 												strokeLinejoin="round"
@@ -354,13 +343,10 @@ const StudentJournal = () => {
 										type="text"
 										className="text-4xl text-maroon w-full bg-white border"
 										value={editTitle}
-										onChange={(e) =>
-											setEditTitle(e.target.value)
-										}
+										onChange={(e) => setEditTitle(e.target.value)}
 									/>
 								) : (
-									<h1
-										className="text-5xl font-semibold text-maroon">
+									<h1 className="text-5xl font-semibold text-maroon">
 										{highlightEntry?.title}
 									</h1>
 								)}
@@ -389,24 +375,22 @@ const StudentJournal = () => {
 							{/* Dates Section */}
 							<div className="flex flex-row justify-between">
 								<div className="flex-none mt-auto font-Jaldi text-s italic text-gray-600">
-									<div>
-										Date of Entry:{" "}
-										{`${dateFormatter(
-											highlightEntry?.dateOfEntry
-										)}, ${timeFormatter(
-											highlightEntry?.timeOfEntry
-										)}`}
-									</div>
-									{highlightEntry?.dateOfUpdate !==
-										"January 1, 1970" &&
+									{highlightEntry === null ? null : (
+										<div>
+											Date of Entry:{" "}
+											{`${dateFormatter(
+												highlightEntry?.dateOfEntry
+											)}, ${timeFormatter(highlightEntry?.timeOfEntry)}`}
+										</div>
+									)}
+
+									{highlightEntry?.dateOfUpdate !== "January 1, 1970" &&
 									highlightEntry?.timeOfUpdate ? (
 										<div>
 											Last Updated:{" "}
 											{`${dateFormatter(
 												highlightEntry?.dateOfUpdate
-											)}, ${timeFormatter(
-												highlightEntry?.timeOfUpdate
-											)}`}
+											)}, ${timeFormatter(highlightEntry?.timeOfUpdate)}`}
 										</div>
 									) : null}
 								</div>
