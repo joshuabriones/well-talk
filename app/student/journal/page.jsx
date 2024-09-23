@@ -13,7 +13,9 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 // import ReactHtmlParser from 'react-html-parser';
 import parse from "html-react-parser";
-
+// import PublicizedToggle from "@/components/ui/toggle/PublicizedToggle";
+import Toggle from "@/components/ui/toggle/Toggle";
+// import "@/css/toggle.css";
 import JournalModal from "./_modal/JournalModal";
 
 const StudentJournal = () => {
@@ -373,7 +375,7 @@ const StudentJournal = () => {
 							</div>
 
 							{/* Dates Section */}
-							<div className="flex flex-row justify-between">
+							<div className="flex flex-row items-end justify-between">
 								<div className="flex-none mt-auto font-Jaldi text-s italic text-gray-600">
 									{highlightEntry === null ? null : (
 										<div>
@@ -394,7 +396,12 @@ const StudentJournal = () => {
 										</div>
 									) : null}
 								</div>
-								<div className="flex justify-end"></div>
+								<div className="w-fit flex flex-col items-end justify-end gap-y-1.5">
+									<Toggle />
+									<div className="font-Jaldi text-s italic text-gray-600">
+										Toggle to provide access for counselor.
+									</div>
+								</div>
 							</div>
 
 							{/* Images */}
