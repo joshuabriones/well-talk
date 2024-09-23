@@ -81,7 +81,8 @@ const Appointment = () => {
 
 	const fetchAppointments = async () => {
 		const response = await fetch(
-			`${process.env.BASE_URL}${API_ENDPOINT.STUDENT_GET_ALL_APPOINTMENTS}`,
+			// `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_GET_ALL_APPOINTMENTS}`,
+			`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_COUNSELORID}${userSession?.id}`,
 			{
 				headers: {
 					Authorization: `Bearer ${Cookies.get("token")}`,
@@ -94,13 +95,13 @@ const Appointment = () => {
 		}
 		const data = await response.json();
 
-		const filteredData = data.filter(
-			(appointment) =>
-				appointment?.counselor?.id === userSession?.id &&
-				appointment.appointmentStatus === "Assigned"
-		);
-		console.log("Appointments: ", filteredData);
-		setAppointments(filteredData);
+		// const filteredData = data.filter(
+		// 	(appointment) =>
+		// 		appointment?.counselor?.id === userSession?.id &&
+		// 		appointment.appointmentStatus === "Assigned"
+		// );
+		console.log("Appointments: ", data);
+		setAppointments(data);
 	};
 
 	const fetchStudents = async () => {
