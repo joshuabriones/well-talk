@@ -91,8 +91,7 @@ function ProfileMenu() {
 		<div>
 			<button
 				onClick={() => setIsMenuOpen((prev) => !prev)}
-				className="flex items-center gap-2 rounded-full py-3 pr-2 mr-8  md:mr-20 pl-0.5 lg:ml-auto"
-			>
+				className="flex items-center gap-2 rounded-full py-3 pr-2 mr-8  md:mr-20 pl-0.5 lg:ml-auto">
 				<img
 					src={userData?.image}
 					alt="Profile"
@@ -100,11 +99,12 @@ function ProfileMenu() {
 				/>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					className={`h-4 w-4 transition-transform ${isMenuOpen ? "rotate-180" : ""}`}
+					className={`h-4 w-4 transition-transform ${
+						isMenuOpen ? "rotate-180" : ""
+					}`}
 					fill="none"
 					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
+					stroke="currentColor">
 					<path
 						strokeLinecap="round"
 						strokeLinejoin="round"
@@ -120,9 +120,10 @@ function ProfileMenu() {
 							key={index}
 							onClick={action || (() => setIsMenuOpen(false))}
 							className={`block px-4 py-2 text-sm  ${
-								index === profileMenuItems.length - 1 ? "rounded-b-lg" : ""
-							}`}
-						>
+								index === profileMenuItems.length - 1
+									? "rounded-b-lg"
+									: ""
+							}`}>
 							{label}
 						</button>
 					))}
@@ -153,7 +154,10 @@ function NavList({ userType }) {
 		case "counselor":
 			navigationItems = [
 				{ label: "Home", route: "/counselor" },
-				{ label: "Appointments", route: "/counselor/counselor-appointment" },
+				{
+					label: "Appointments",
+					route: "/counselor/counselor-appointment",
+				},
 				{ label: "Journal", route: "/counselor/clientjournal" },
 				{ label: "Chat", route: "/counselor/chat" },
 			];
@@ -170,8 +174,7 @@ function NavList({ userType }) {
 					onClick={() => router.push(item.route)}
 					className={`text-base font-bold text-slate-800 hover:text-slate-800 cursor-pointer${
 						router.pathname === item.route ? "text-slate-800" : ""
-					} nav-list-button`}
-				>
+					} nav-list-button`}>
 					{item.label}
 				</a>
 			))}
@@ -208,7 +211,9 @@ export function Navbar({ userType }) {
 		top: 0,
 		left: 0,
 		width: "100%",
-		backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.9)" : "transparent",
+		backgroundColor: isScrolled
+			? "rgba(255, 255, 255, 0.9)"
+			: "transparent",
 		zIndex: 50,
 		transition: "background-color 0.3s ease",
 	};
@@ -217,21 +222,20 @@ export function Navbar({ userType }) {
 		<nav
 			id="navbar"
 			style={navbarStyles}
-			className="mx-auto max-w-screen-auto p-2 lg:pl-6 w-full"
-		>
+			className="mx-auto max-w-screen-auto p-2 lg:pl-6 w-full">
 			<div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
 				<button
 					onClick={() => setIsNavOpen((prev) => !prev)}
-					className={`ml-8 lg:hidden flex justify-start ${isNavOpen ? "open" : ""}`}
-				>
+					className={`ml-8 lg:hidden flex justify-start ${
+						isNavOpen ? "open" : ""
+					}`}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						strokeWidth="1.5"
 						stroke="currentColor"
-						className="size-8"
-					>
+						className="size-8">
 						<path
 							strokeLinecap="round"
 							strokeLinejoin="round"
@@ -239,11 +243,37 @@ export function Navbar({ userType }) {
 						/>
 					</svg>
 				</button>
-				<div className="ml-4 md:ml-24 text-2xl text-[#6B9080] font-bold flex flex-row">
-					WellTalk
+				<div className="ml-4 md:ml-24 flex flex-row items-center">
+					<img
+						src="/images/loggoword.png" // Replace with your actual logo path
+						alt="WellTalk Logo"
+						className="w-18 h-14" // Adjust width and height as needed
+					/>
+					<h1 className="text-3xl font-bold font-Merriweather">
+						<span
+							className="text-maroon"
+							style={{
+								textShadow:
+									"-0.25px -0.25px 0 #000, 0.25px -0.25px 0 #000, -0.25px 0.25px 0 #000, 0.25px 0.25px 0 #000",
+							}}>
+							Well
+						</span>
+						<span
+							className="text-gold"
+							style={{
+								textShadow:
+									"-0.25px -0.25px 0 #000, 0.25px -0.25px 0 #000, -0.25px 0.25px 0 #000, 0.25px 0.25px 0 #000",
+							}}>
+							Talk
+						</span>
+					</h1>
 				</div>
+
 				<div className="hidden lg:block flex items-center gap-8 lg:ml-auto">
-					<NavList userType={userType} router={useRouter()} />
+					<NavList
+						userType={userType}
+						router={useRouter()}
+					/>
 				</div>
 				<div
 					className="mr-6 bg-yellow-300"

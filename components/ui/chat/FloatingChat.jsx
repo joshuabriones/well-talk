@@ -109,9 +109,9 @@ const ChatWidget = () => {
 						<div className="relative flex items-center">
 							{/* WELLTALK LOGO DIRI */}
 							<img
-								src="/path/to/logo.png"
+								src="/images/loggoword.png" 
 								alt="Logo"
-								className="w-8 h-8 mr-2 rounded-full overflow-hidden border border-white" 
+								className="w-10 h-10 mr-2" 
 							/>
 							<h1 className="font-bold text-sm flex items-center">
 								Chat Support
