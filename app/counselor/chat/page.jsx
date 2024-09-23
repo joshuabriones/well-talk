@@ -1,9 +1,7 @@
 "use client";
 
 import { Navbar } from "@/components/ui/Navbar";
-import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
-import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 
 export default function Chat() {
@@ -34,110 +32,78 @@ export default function Chat() {
 		},
 	];
 
-	const [loggedUser, setloggedUser] = useState(null);
+	const [loggedUser, setLoggedUser] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [previewImage, setPreviewImage] = useState(null);
 	const [selectedUser, setSelectedUser] = useState(students[0]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [messages, setMessages] = useState([
-		// fetch all the messages from the database
-		// Predefined messages for testing
-		// {
-		// 	text: "Hello! How are you doing today?",
-		// 	senderID: 45,
-		// 	recipientID: 1,
-		// 	timestamp: new Date().toISOString(),
-		// },
 		{
 			text: "Hello! How are you doing today?",
 			senderID: 45,
-			recipientID: 1,
+			recipientID: 2,
 			timestamp: "2024-08-11T10:30:00.000Z", // Day 1
 		},
 		{
 			text: "Sure, I can help with that. What specifically do you need advice on?",
 			senderID: 45,
-			recipientID: 1,
+			recipientID: 2,
 			timestamp: "2024-08-13T13:00:00.000Z", // Day 3
 		},
 		{
 			text: "I'm good! What can I help you with today?",
 			senderID: 45,
-			recipientID: 1,
+			recipientID: 2,
 			timestamp: "2024-08-12T12:45:00.000Z", // Day 2
 		},
 
 		{
 			text: "I need help with my project management skills.",
 			senderID: 46,
-			recipientID: 1,
+			recipientID: 2,
 			timestamp: "2024-08-14T09:15:00.000Z", // Day 4
 		},
 		{
 			text: "Could you give me some tips on time management?",
 			senderID: 46,
-			recipientID: 1,
+			recipientID: 2,
 			timestamp: "2024-08-16T14:30:00.000Z", // Day 6
 		},
 		{
 			text: "That sounds great, I have a few suggestions.",
 			senderID: 46,
-			recipientID: 1,
+			recipientID: 2,
 			timestamp: "2024-08-15T09:20:00.000Z", // Day 5
 		},
 
 		{
 			text: "How do I handle team conflicts effectively?",
 			senderID: 47,
-			recipientID: 1,
+			recipientID: 2,
 			timestamp: "2024-08-18T10:00:00.000Z", // Day 8
 		},
 		{
 			text: "Address conflicts early and ensure open communication.",
 			senderID: 47,
-			recipientID: 1,
+			recipientID: 2,
 			timestamp: "2024-08-19T10:30:00.000Z", // Day 9
 		},
 		{
 			text: "Sure! The key is to prioritize tasks and set realistic deadlines.",
 			senderID: 47,
-			recipientID: 1,
+			recipientID: 2,
 			timestamp: "2024-08-17T15:00:00.000Z", // Day 7
 		},
 	]);
-	const [inputMessage, setInputMessage] = useState(""); // State to store input message
+	const [inputMessage, setInputMessage] = useState("");
 	const [newChat, setNewChat] = useState(false);
 	const [newStudent, setNewStudent] = useState("");
-	const [inputNewStudent, setInputNewStudent] = useState(""); // State to store input student name
+	const [inputNewStudent, setInputNewStudent] = useState("");
 
 	// to get currently logged in student
 	useEffect(() => {
-		const fetchStudentProfile = async () => {
-			try {
-				const response = await fetch(
-					`${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`,
-					{
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${Cookies.get("token")}`,
-						},
-					}
-				);
-				if (!response.ok) {
-					throw new Error("Failed to fetch student profile");
-				}
-				const data = await response.json();
-				setloggedUser(data); // Set the current student profile
-				setLoading(false);
-			} catch (error) {
-				console.error("Error fetching student profile: ", error);
-				setLoading(false);
-			}
-		};
-
-		fetchStudentProfile();
-	}, [userSession.id]);
+		setLoggedUser(userSession);
+	}, []);
 
 	// to get the currently selected student from chat list
 	const handleSelectStudent = (student) => {
@@ -178,7 +144,7 @@ export default function Chat() {
 		setNewStudent(inputNewStudent);
 	};
 
-	// handle first message -> add student to the list of students who have been messaged, send the message TO BE CHECKED!!!
+	// handle first message -> add student to the list of students who have been messaged, send the message >>> TO BE CHECKED!!!
 	const handleFirstMessage = (event) => {
 		event.preventDefault(); // Prevent default form submission behavior
 
@@ -207,7 +173,7 @@ export default function Chat() {
 
 	return (
 		<div className="min-h-screen  ">
-			<Navbar userType="student" />
+			<Navbar userType="counselor" />
 			<section className="h-screen flex flex-row items-center justify-center pt-[90px] pb-10 px-36 gap-x-4">
 				{/* Chat List */}
 				<section className="w-1/3 h-full px-7 py-6 flex flex-col gap-y-3 rounded-lg border bg-white">
