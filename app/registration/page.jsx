@@ -1,11 +1,9 @@
 "use client";
 
-import Select from "react-select";
+import ScrollAnimationWrapper from "@/components/layout/ScrollAnimationWrapper";
 import Load from "@/components/Load";
 import FullButton from "@/components/ui/buttons/FullButton";
 import TextInput from "@/components/ui/inputs/TextInput";
-import ScrollAnimationWrapper from "@/components/layout/ScrollAnimationWrapper";
-import styles from "../../css/landing.module.css";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import ModalRegistrationSuccessful from "@/components/ui/modals/ModalRegistrationSuccessful";
 import ModalTermsUnchecked from "@/components/ui/modals/ModalTermsUnchecked";
@@ -26,6 +24,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Select from "react-select";
+import styles from "../../css/landing.module.css";
 
 const Registration = () => {
   const router = useRouter();
@@ -349,7 +349,31 @@ const Registration = () => {
                     className="w-full h-full object-cover rounded-2xl"
                   />
                   <div className="absolute top-8 left-8 h-16 flex items-center">
-                    <img src="" alt="App Logo" className="h-full" />
+                    <img
+                      src="/images/loggoword.png" // Replace with your actual logo path
+                      alt="WellTalk Logo"
+                      className="w-18 h-14" // Adjust width and height as needed
+                    />
+                    <h1 className="text-3xl font-bold font-Merriweather">
+                      <span
+                        className="text-maroon"
+                        style={{
+                          textShadow:
+                            "-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px 0.5px 0 #000, 0.5px 0.5px 0 #000",
+                        }}
+                      >
+                        Well
+                      </span>
+                      <span
+                        className="text-gold"
+                        style={{
+                          textShadow:
+                            "-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px 0.5px 0 #000, 0.5px 0.5px 0 #000",
+                        }}
+                      >
+                        Talk
+                      </span>
+                    </h1>
                   </div>
 
                   <div className="absolute bottom-8 left-8 p-4 bg-opacity-50 text-white rounded-tr-2xl">
