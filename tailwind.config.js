@@ -15,6 +15,21 @@ module.exports = {
 			...defaultTheme.screens,
 		},
 		extend: {
+			keyframes: {
+				ring: {
+				  '0%': { transform: 'rotate(0deg)' },
+				  '10%': { transform: 'rotate(-10deg)' },
+				  '20%': { transform: 'rotate(10deg)' },
+				  '30%': { transform: 'rotate(-10deg)' },
+				  '40%': { transform: 'rotate(10deg)' },
+				  '50%': { transform: 'rotate(-10deg)' },
+				  '60%': { transform: 'rotate(10deg)' },
+				  '100%': { transform: 'rotate(0deg)' },
+				},
+			  },
+			  animation: {
+				bell: 'ring 0.5s ease-in-out',
+			  },
 			backgroundImage: {
 				"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
 				"gradient-conic":

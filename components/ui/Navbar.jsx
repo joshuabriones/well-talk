@@ -2,6 +2,7 @@ import GlobalContext from "@/context/GlobalContext";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession, logout } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import "./../../css/navbar.css";
@@ -183,7 +184,8 @@ function NavList({ userType }) {
 }
 
 export function Navbar({ userType }) {
-	const { showNotifications, setShowNotifications } = useContext(GlobalContext);
+	const { showNotifications, setShowNotifications } =
+		useContext(GlobalContext);
 
 	const [isNavOpen, setIsNavOpen] = useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
@@ -276,26 +278,20 @@ export function Navbar({ userType }) {
 					/>
 				</div>
 				<div
-					className="mr-6 bg-yellow-300"
+					className="mr-6  hover:animate-bell"
 					onClick={() => {
 						setShowNotifications(!showNotifications);
-					}}
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						strokeWidth={1.8}
-						stroke="black"
-						className="w-6 h-6"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
-						/>
-					</svg>
+					}}>
+					<motion.img
+					src="/images/alarm.png"
+					className="w-7 h-7 rounded-2xl cursor-pointer"
+					alt="notiffs"
+					initial={{ scale: 1 }}
+					whileHover={{ scale: 1.1 }}
+					transition={{ type: "spring", stiffness: 300 }}
+				/>
 				</div>
+
 				{userType !== "landing" && <ProfileMenu />}
 			</div>
 
