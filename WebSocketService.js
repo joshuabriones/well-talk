@@ -12,6 +12,7 @@ class WebSocketService {
             console.log('Connected: ' + frame);
             this.stompClient.subscribe('/topic/messages', message => {
                 callback(JSON.parse(message.body));
+                console.log(message);
             });
         });
     }

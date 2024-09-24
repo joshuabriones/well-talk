@@ -10,48 +10,47 @@ import { useEffect, useState } from "react";
 export default function Chat() {
     const userSession = getUserSession();
 
-    // fetch all the students that have already been messaged by the counselor
-    const students = [
-        {
-            id: 45,
-            name: "Kathryn Melissa M. Villar",
-            program: "BS Architecture",
-            lastmsg: "Hello there! I've been assigned to take care of y...",
-            img: "https://thispersondoesnotexist.com",
-        },
-        {
-            id: 46,
-            name: "Gilda A. Yap",
-            program: "CNAHS",
-            lastmsg: "Good morning! How can I help you today? I miss t...",
-            img: "https://picsum.photos/200",
-        },
-        {
-            id: 47,
-            name: "Jennylyn M. Pascua",
-            program: "BSME",
-            lastmsg: "Good afternoon! Today was a great start for me. I...",
-            img: "https://avatar.iran.liara.run/public",
-        },
-    ];
-
     const [loggedUser, setLoggedUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [previewImage, setPreviewImage] = useState(null);
-    const [selectedUser, setSelectedUser] = useState(students[0]);
+    const [selectedUser, setSelectedUser] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [messages, setMessages] = useState([]);
-    const [inputMessage, setInputMessage] = useState(""); // State to store input message
+    const [inputMessage, setInputMessage] = useState("");
     const [newChat, setNewChat] = useState(false);
-    const [newStudent, setNewStudent] = useState("");
-    const [inputNewStudent, setInputNewStudent] = useState(""); // State to store input student name
+    const [newUser, setNewUser] = useState("");
+    const [inputNewUser, setInputNewUser] = useState("");
+    const [verifiedUsers, setVerifiedUsers] = useState([]);
 
-    // to get currently logged in student
+    // Fetch all verified users
     useEffect(() => {
-        const fetchStudentProfile = async () => {
+        const fetchVerifiedUsers = async () => {
+            try {
+                const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_VERIFIED_USERS}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${Cookies.get("token")}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch verified users");
+                }
+                const data = await response.json();
+                setVerifiedUsers(data);
+            } catch (error) {
+                console.error("Error fetching verified users: ", error);
+            }
+        };
+
+        fetchVerifiedUsers();
+    }, []);
+
+    // Fetch the currently logged-in counselor
+    useEffect(() => {
+        const fetchCounselorProfile = async () => {
             try {
                 const response = await fetch(
-                    `${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`,
+                    `${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_ID}${userSession.id}`,
                     {
                         method: "GET",
                         headers: {
@@ -61,33 +60,33 @@ export default function Chat() {
                     }
                 );
                 if (!response.ok) {
-                    throw new Error("Failed to fetch student profile");
+                    throw new Error("Failed to fetch counselor profile");
                 }
                 const data = await response.json();
-                setLoggedUser(data); // Set the current student profile
+                setLoggedUser(data);
                 setLoading(false);
             } catch (error) {
-                console.error("Error fetching student profile: ", error);
+                console.error("Error fetching counselor profile: ", error);
                 setLoading(false);
             }
         };
 
-        fetchStudentProfile();
+        fetchCounselorProfile();
     }, [userSession.id]);
 
-    // to get the currently selected student from chat list
-    const handleSelectStudent = (student) => {
+    // Select a verified user from the chat list
+    const handleSelectUser = (user) => {
         setNewChat(false);
-        setSelectedUser(student);
-        fetchMessages(student.id);
+        setSelectedUser(user);
+        fetchMessages(user.id);
     };
 
-    // search query
+    // Search query
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
     };
-    const filteredStudents = students.filter((student) =>
-        student.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredUsers = verifiedUsers.filter((user) =>
+        `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     // Fetch messages from the server
@@ -116,6 +115,7 @@ export default function Chat() {
     // WebSocket connection
     useEffect(() => {
         WebSocketService.connect((message) => {
+            console.log('New message received: ', message);
             setMessages((prevMessages) => [...prevMessages, message]);
         });
 
@@ -124,14 +124,14 @@ export default function Chat() {
         };
     }, []);
 
-    // input message
+    // Submit message
     const handleSubmitMessage = async (event) => {
         event.preventDefault();
 
         if (inputMessage.trim()) {
             const newMessage = {
                 message: inputMessage,
-                senderId: loggedUser?.id, // the currently logged in student
+                senderId: loggedUser?.id,
                 receiverId: selectedUser.id,
             };
 
@@ -151,30 +151,28 @@ export default function Chat() {
 
                 const savedMessage = await response.json();
                 WebSocketService.sendMessage(savedMessage);
-                setInputMessage(""); // Clear the input field after sending the message
+                setInputMessage("");
             } catch (error) {
                 console.error("Error sending message: ", error);
             }
         }
     };
 
-    // new student
-    const handleNewStudent = (event) => {
+    // New user
+    const handleNewUser = (event) => {
         event.preventDefault();
-        setNewStudent(inputNewStudent);
+        setNewUser(inputNewUser);
     };
 
-    // handle first message -> add student to the list of students who have been messaged, send the message
+    // Handle first message -> add user to the list of users who have been messaged, send the message
     const handleFirstMessage = async (event) => {
-        event.preventDefault(); // Prevent default form submission behavior
+        event.preventDefault();
 
-        // Check if the input message is not empty
         if (inputMessage.trim()) {
-            // Create a new message object
             const newMessage = {
                 message: inputMessage,
-                senderId: loggedUser?.id, // The currently logged-in student
-                receiverId: selectedUser.id, // The selected user
+                senderId: loggedUser?.id,
+                receiverId: selectedUser.id,
             };
 
             try {
@@ -193,7 +191,7 @@ export default function Chat() {
 
                 const savedMessage = await response.json();
                 WebSocketService.sendMessage(savedMessage);
-                setInputMessage(""); // Clear the input field after sending the message
+                setInputMessage("");
             } catch (error) {
                 console.error("Error sending message: ", error);
             }
@@ -202,7 +200,7 @@ export default function Chat() {
 
     return (
         <div className="min-h-screen">
-            <Navbar userType="student" />
+            <Navbar userType="counselor" />
             <section className="h-screen flex flex-row items-center justify-center pt-[90px] pb-10 px-36 gap-x-4">
                 {/* Chat List */}
                 <section className="w-1/3 h-full px-7 py-6 flex flex-col gap-y-3 rounded-lg border bg-white">
@@ -254,23 +252,23 @@ export default function Chat() {
 
                     {/* List */}
                     <div className="w-full flex-grow overflow-scroll">
-                        {filteredStudents.map((student, index) => (
+                        {filteredUsers.map((user, index) => (
                             <div
-                                key={student.id}
-                                className={`w-full h-24 px-4 flex flex-row items-center gap-x-1.5 hover:bg-gray-100 rounded-lg cursor-pointer ${selectedUser.id === student.id ? "bg-gray-100" : ""
+                                key={user.id}
+                                className={`w-full h-24 px-4 flex flex-row items-center gap-x-1.5 hover:bg-gray-100 rounded-lg cursor-pointer ${selectedUser?.id === user.id ? "bg-gray-100" : ""
                                     }`}
-                                onClick={() => handleSelectStudent(student)}
+                                onClick={() => handleSelectUser(user)}
                             >
                                 <div>
                                     <img
-                                        src={student.img}
+                                        src={user.image}
                                         alt="randomperson"
                                         className="rounded-full h-[65px] w-[65px] mx-3"
                                     />
                                 </div>
                                 <div>
-                                    <h1 className="text-lg font-semibold">{student.name}</h1>
-                                    <p className="text-sm text-gray-400">{student.lastmsg}</p>
+                                    <h1 className="text-lg font-semibold">{`${user.firstName} ${user.lastName}`}</h1>
+                                    <p className="text-sm text-gray-400">{user.program}</p>
                                 </div>
                             </div>
                         ))}
@@ -284,12 +282,12 @@ export default function Chat() {
                             <div className="w-full h-16 px-3 border-b shadow-sm flex items-center gap-x-3">
                                 <div>
                                     <img
-                                        src={selectedUser.img}
-                                        alt={selectedUser.name}
+                                        src={selectedUser?.image}
+                                        alt={selectedUser?.firstName}
                                         className="rounded-full h-10 w-10"
                                     />
                                 </div>
-                                <h1 className="font-semibold text-lg">{selectedUser.name}</h1>
+                                <h1 className="font-semibold text-lg">{`${selectedUser?.firstName} ${selectedUser?.lastName}`}</h1>
                             </div>
 
                             <div className="px-3 pt-3 pb-4 flex-grow flex flex-col gap-y-2 justify-end overflow-auto">
@@ -299,10 +297,10 @@ export default function Chat() {
                                         (message) =>
                                             // shows sender's message on the right
                                             (message.senderId === loggedUser?.id &&
-                                                message.receiverId === selectedUser.id) ||
+                                                message.receiverId === selectedUser?.id) ||
                                             // shows recipient's message on the left
                                             (message.receiverId === loggedUser?.id &&
-                                                selectedUser.id === message.senderId)
+                                                selectedUser?.id === message.senderId)
                                     )
                                     // Sort messages by timestamp (ascending order)
                                     .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
@@ -318,8 +316,8 @@ export default function Chat() {
                                                 <div className="flex items-end gap-x-3">
                                                     <div>
                                                         <img
-                                                            src={selectedUser.img}
-                                                            alt={selectedUser.name}
+                                                            src={selectedUser?.image}
+                                                            alt={selectedUser?.firstName}
                                                             className="rounded-full h-9 w-9"
                                                         />
                                                     </div>
@@ -374,15 +372,15 @@ export default function Chat() {
                             <div className="w-full h-16 px-3 border-b shadow-sm flex items-center gap-x-3">
                                 <div className="w-full flex flex-row items-center">
                                     <h1 className="text-sm">To:</h1>
-                                    {/* MISSING FUNCTION, DROP DOWN OF ALL STUDENTS */}
+                                    {/* MISSING FUNCTION, DROP DOWN OF ALL USERS */}
                                     <div className="w-full">
-                                        <form onSubmit={handleNewStudent}>
+                                        <form onSubmit={handleNewUser}>
                                             <input
                                                 type="text"
-                                                name="student"
-                                                placeholder="Name of Student"
-                                                value={inputNewStudent}
-                                                onChange={(e) => setInputNewStudent(e.target.value)}
+                                                name="user"
+                                                placeholder="Name of User"
+                                                value={inputNewUser}
+                                                onChange={(e) => setInputNewUser(e.target.value)}
                                                 className="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 placeholder:font-Jaldi font-Jaldi text-lg"
                                             />
                                         </form>
@@ -391,7 +389,7 @@ export default function Chat() {
                             </div>
 
                             <div className="px-3 pt-3 pb-4 flex-grow flex flex-col gap-y-2 justify-end overflow-auto">
-                                {newStudent ? (
+                                {newUser ? (
                                     <div>
                                         <div>Start talking to connect with them!</div>
                                     </div>
@@ -402,7 +400,7 @@ export default function Chat() {
 
                             {/* Message Input */}
                             <div
-                                className={`relative w-full h-10 bg-gray-100 flex items-center px-4 rounded-2xl ${!newStudent ? "opacity-50 cursor-not-allowed" : ""
+                                className={`relative w-full h-10 bg-gray-100 flex items-center px-4 rounded-2xl ${!newUser ? "opacity-50 cursor-not-allowed" : ""
                                     }`}
                             >
                                 <form onSubmit={handleFirstMessage} className="w-full">
@@ -413,7 +411,7 @@ export default function Chat() {
                                         value={inputMessage}
                                         onChange={(e) => setInputMessage(e.target.value)}
                                         className="w-full h-full bg-transparent border-none focus:outline-none focus:ring-0 placeholder:font-Jaldi font-Jaldi"
-                                        disabled={!newStudent}
+                                        disabled={!newUser}
                                     />
                                 </form>
                                 <svg
@@ -422,12 +420,12 @@ export default function Chat() {
                                     viewBox="0 0 24 24"
                                     strokeWidth={1.5}
                                     stroke="currentColor"
-                                    className={`absolute right-4 h-6 w-6 text-gray-500 hover:text-black grayscale hover:grayscale-0 ${!newStudent
+                                    className={`absolute right-4 h-6 w-6 text-gray-500 hover:text-black grayscale hover:grayscale-0 ${!newUser
                                         ? "cursor-not-allowed opacity-50"
                                         : "cursor-pointer"
                                         }`}
                                     onClick={
-                                        newStudent ? handleFirstMessage : (e) => e.preventDefault()
+                                        newUser ? handleFirstMessage : (e) => e.preventDefault()
                                     }
                                 >
                                     <path
@@ -440,7 +438,7 @@ export default function Chat() {
                         </div>
                     )}
                 </section>
-            </section>  
+            </section>
         </div>
     );
 }
