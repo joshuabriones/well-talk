@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import "./../../css/navbar.css";
+import Notifications from "./Notifications";
 
 function ProfileMenu() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -267,6 +268,8 @@ export function Navbar({ userType }) {
 					</svg>
 				</div>
 				{userType !== "landing" && <ProfileMenu />}
+
+				{showNotifications && <Notifications />}
 			</div>
 
 			{isNavOpen && (
