@@ -24,9 +24,10 @@ function NavList({ userType }) {
 					<a
 						onClick={() => router.push(item.route)}
 						className={`text-base font-medium text-blue-gray-500 hover:text-blue-gray-700 cursor-pointer${
-							router.pathname === item.route ? " text-blue-900" : ""
-						} nav-list-button`}
-					>
+							router.pathname === item.route
+								? " text-blue-900"
+								: ""
+						} nav-list-button`}>
 						{item.label}
 					</a>
 				</li>
@@ -54,7 +55,9 @@ export function Navbar({ userType }) {
 		top: 0,
 		left: 0,
 		width: "100%",
-		backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.9)" : "transparent",
+		backgroundColor: isScrolled
+			? "rgba(255, 255, 255, 0.9)"
+			: "transparent",
 		zIndex: 50,
 		transition: "background-color 0.3s ease",
 	};
@@ -63,25 +66,36 @@ export function Navbar({ userType }) {
 		<nav
 			id="navbar"
 			style={navbarStyles}
-			className="mx-auto max-w-screen-auto p-6 lg:pl-6 bg-blue-gray-900 w-full"
-		>
+			className="mx-auto max-w-screen-auto p-6 lg:pl-6 bg-blue-gray-900 w-full">
 			<div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
-				<div className="ml-8 md:ml-24 text-2xl text-[#6B9080] font-bold">WellTalk</div>
+				<div className="ml-4 md:ml-24 flex flex-row items-center">
+					<img
+						src="/images/loggoword.png" // Replace with your actual logo path
+						alt="WellTalk Logo"
+						className="w-18 h-14" // Adjust width and height as needed
+					/>
+					<h1 className="text-3xl font-bold font-Merriweather">
+						<span className="text-maroon" style={{
+        textShadow: '-0.25px -0.25px 0 #000, 0.25px -0.25px 0 #000, -0.25px 0.25px 0 #000, 0.25px 0.25px 0 #000',
+    }}>Well</span>
+						<span className="text-gold" style={{
+        textShadow: '-0.25px -0.25px 0 #000, 0.25px -0.25px 0 #000, -0.25px 0.25px 0 #000, 0.25px 0.25px 0 #000',
+    }}>Talk</span>
+					</h1>
+				</div>
 				<div className="hidden lg:block flex items-center gap-8 lg:ml-auto">
 					<NavList userType={userType} />
 				</div>
 				<button
 					onClick={() => setIsNavOpen((prev) => !prev)}
-					className="ml-auto mr-8 lg:hidden"
-				>
+					className="ml-auto mr-8 lg:hidden">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						strokeWidth="1.5"
 						stroke="currentColor"
-						className="size-8"
-					>
+						className="size-8">
 						<path
 							strokeLinecap="round"
 							strokeLinejoin="round"

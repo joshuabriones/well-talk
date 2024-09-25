@@ -16,9 +16,10 @@ export default function ChatByRole() {
 		fetchSession();
 	}, []);
 
-	if (userRole === "student") {
+	if (userRole === "student" || userRole === "teacher") {
 		return <FloatingChat />;
 	}
+	
 
 	return null;
 }
