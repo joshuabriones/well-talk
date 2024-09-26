@@ -1,21 +1,19 @@
 "use client";
 
-import { API_ENDPOINT } from "@/lib/api";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-
 import NotFoundPage from "@/app/not-found";
 import FullButton from "@/components/ui/buttons/FullButton";
-import HollowButton from "@/components/ui/buttons/HollowButton";
+import { API_ENDPOINT } from "@/lib/api";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const PendingReferral = () => {
+	const router = useRouter();
+
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
 	const [isTokenValid, setIsTokenValid] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [token, setToken] = useState("");
-
-	const [confirm, setConfirm] = useState(false);
 
 	console.log(confirm);
 
@@ -59,10 +57,20 @@ const PendingReferral = () => {
 		);
 	}
 
+	const handleConfirm = async () => {
+		console.log("Confirm referral");
+		router.push("/login");
+	};
+
+	const handleDecline = async () => {
+		console.log("Decline referral");
+		router.push("/login");
+	};
+
 	if (isTokenValid) {
 		return (
 			<div className="h-screen w-full flex justify-center items-center">
-				<div className="w-[600px] h-[400px] rounded-xl py-2 px-10 flex flex-col justify-center items-center gap-y-3 shadow-xl">
+				<div className="w-[600px] h-[400px] rounded-xl py-2 px-10 flex flex-col justify-center items-center gap-y-2 shadow-xl">
 					<div className="">
 						<img src="/images/loggo.png" alt="" className="h-28" />
 					</div>
@@ -72,15 +80,14 @@ const PendingReferral = () => {
 						office. We appreciate your time and assistance.
 					</div>
 
-					<div className="w-10/12 flex gap-3 mt-5 mx-auto">
-						<HollowButton>Decline</HollowButton>
-						<FullButton
-							onClick={() => {
-								setConfirm(true);
-							}}
+					<div className="w-10/12 flex flex-col items-center mt-4 gap-1.5">
+						<FullButton onClick={handleConfirm}>I would like to proceed.</FullButton>
+						<div
+							className="text-xs cursor-pointer hover:scale-95 hover:text-[#8a252c]"
+							onClick={handleDecline}
 						>
-							Proceed
-						</FullButton>
+							Decline
+						</div>
 					</div>
 				</div>
 			</div>
