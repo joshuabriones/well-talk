@@ -250,7 +250,7 @@ export default function Profile() {
 			</div>
 			<ScrollAnimationWrapper animationType="fadeInFromLeft">
 				<section
-					className={`w-full pt-4 md:mt-6 p-8 md:p-12 flex flex-col justify-center items-center ${styles.floating}`}>
+					className={`w-full pt-20 md:mt-6 p-8 md:p-12 flex flex-col justify-center items-center ${styles.floating}`}>
 					{/* Window Container */}
 					<div className="w-full max-w-screen-lg mx-auto bg-white rounded-lg shadow-lg border-2 border-gray-200 relative">
 						{/* Header Bar */}

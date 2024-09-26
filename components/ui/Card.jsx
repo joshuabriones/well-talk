@@ -40,7 +40,7 @@ const Card = () => {
 
 	return (
 		<section className="">
-			<div className="max-w-screen-xl mx-auto px-4 md:px-8">
+			<div className="max-w-screen-xl mx-auto ">
 				<ul className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6">
 					{posts.map((item, key) => (
 						<React.Fragment key={key}>
@@ -60,12 +60,10 @@ const Card = () => {
 										<span className=" text-sm text-maroon">
 											{item.date}
 										</span>
-										<h3 className="text-lg text-gray duration-150 group-hover:text-gold font-semibold">
+										<h3 className="text-md text-gray duration-150 group-hover:text-gold font-semibold">
 											{item.title}
 										</h3>
-										<p className="text-gray text-sm duration-150 group-hover:text-gold">
-											{item.desc}
-										</p>
+										
 									</div>
 								</a>
 							</li>

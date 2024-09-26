@@ -161,7 +161,7 @@ const CreatePostSection = ({ userSession }) => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto max-h-[90vh] overflow-y-auto">
+    <div className="min-h-screen">
       <div className="flex items-center">
         <img
           src={userData?.image}

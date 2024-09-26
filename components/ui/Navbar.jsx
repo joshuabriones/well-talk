@@ -246,13 +246,13 @@ export function Navbar({ userType }) {
 						/>
 					</svg>
 				</button>
-				<div className="ml-4 md:ml-24 flex flex-row items-center">
+				<div className=" md:ml-24 flex flex-row items-center">
 					<img
 						src="/images/loggoword.png" // Replace with your actual logo path
 						alt="WellTalk Logo"
 						className="w-18 h-14" // Adjust width and height as needed
 					/>
-					<h1 className="text-3xl font-bold font-Merriweather">
+					<h1 className="hidden text-3xl font-bold font-Merriweather">
 						<span
 							className="text-maroon"
 							style={{
@@ -279,13 +279,13 @@ export function Navbar({ userType }) {
 					/>
 				</div>
 				<div
-					className="mr-6  hover:animate-bell"
+					className="ml-10 md:mr-6 lg:mr-6 hover:animate-bell flex justify-end items-end"
 					onClick={() => {
 						setShowNotifications(!showNotifications);
 					}}>
 					<motion.img
 					src="/images/alarm.png"
-					className="w-7 h-7 rounded-2xl cursor-pointer"
+					className="w-7 h-7 md:w-5 md:h-5 rounded-2xl cursor-pointer"
 					alt="notiffs"
 					initial={{ scale: 1 }}
 					whileHover={{ scale: 1.1 }}
