@@ -18,15 +18,14 @@ function Home() {
 	const [loading, setLoading] = useState(true);
 	const router = useRouter();
 	const userSession = getUserSession();
-	const [activeTab, setActiveTab] = useState("Latest"); // Set default tab to 'Latest'
-	const [pinnedPosts, setPinnedPosts] = useState([]); // Add this line
+	const [activeTab, setActiveTab] = useState("Latest");
+	const [pinnedPosts, setPinnedPosts] = useState([]);
 
 	const handleTabClick = (tab) => {
 		setActiveTab(tab);
 	};
 
 	useEffect(() => {
-		// Scroll effect or other logic for pinned posts can go here
 	}, [activeTab]);
 
 	console.log("User session:", userSession);
@@ -48,7 +47,7 @@ function Home() {
 			}
 			const data = await response.json();
 			setPosts(data);
-			setPosts(data.filter((post) => !post.isPinned)); // Assuming posts have an isPinned property
+			setPosts(data.filter((post) => !post.isPinned)); 
 			setPinnedPosts(data.filter((post) => post.isPinned));
 			setLoading(false);
 		} catch (error) {
