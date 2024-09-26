@@ -20,6 +20,16 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const userSession = getUserSession();
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState("Latest"); // Set default tab to 'Latest'
+	const [pinnedPosts, setPinnedPosts] = useState([]); // Add this line
+
+	const handleTabClick = (tab) => {
+		setActiveTab(tab);
+	};
+
+	useEffect(() => {
+		// Scroll effect or other logic for pinned posts can go here
+	}, [activeTab]);
 
   // /* Handling unauthenticated users */
   // if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
@@ -96,89 +106,76 @@ const Home = () => {
   return (
     <div>
       <main className="min-h-screen">
-        <Navbar userType="counselor" />
+				<Navbar userType="counselor" />
+
+
         <div
-          className="pattern-overlay pattern-left absolute -z-10"
-          style={{ transform: "scaleY(-1)", top: "-50px" }}
-        >
-          <img src="/images/landing/lleft.png" alt="pattern" />
-        </div>
-        <div
-          className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
-          style={{ transform: "scaleY(-1)", top: "-15px" }}
-        >
-          <img
-            src="/images/landing/lright.png"
-            alt="pattern"
-            className="w-full h-full object-contain"
-          />
-        </div>
+					className="pattern-overlay pattern-left absolute -z-10"
+					style={{ transform: "scaleY(-1)", top: "-50px" }}>
+					<img
+						src="/images/landing/lleft.png"
+						alt="pattern"
+					/>
+				</div>
+				<div
+					className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+					style={{ transform: "scaleY(-1)", top: "-15px" }}>
+					<img
+						src="/images/landing/lright.png"
+						alt="pattern"
+						className="w-full h-full object-contain"
+					/>
+				</div>
+
         {/*Posts*/}
-        <div className="flex flex-col md:flex-row py-24 px-4 md:px-12">
-          <div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 w-full md:w-11/12 flex flex-col">
-            <div className="max-w-8xl mx-auto px-5 flex flex-col w-full">
-              <div className="flex flex-col  flex-grow items-start my-6">
-                <h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
-                  {sortPostBy} Posts
-                </h1>
-                <p className="font-Jaldi text-xl sm:text-base">
-                  Check out the latest posts from the university's Guidance
-                  Counselor!
-                </p>
-              </div>
-              {/* <div className="ml-auto relative">
-								<GiSettingsKnobs
-									className="fill-black stroke-0 hover:stroke-2 text-2xl cursor-pointer text-center"
-									onClick={() =>
-										setShowFilterModal((prev) => !prev)
-									}
-								/>
-								{showFilterPostModal && (
-									<div className="absolute w-30 h-22 px-1 shadow-xl bg-slate-100 border border-slate-300 text-slate-600 font-semibold right-0 top-7 z-20 rounded-xl">
-										<ul className="p-2 cursor-pointer text-start">
-											<li
-												className="p-1 hover:bg-slate-200 rounded"
-												onClick={() => {
-													setSortPostBy("Latest");
-													setShowFilterModal(false);
-												}}>
-												Latest
-											</li>
-											<li
-												className="p-1 hover:bg-slate-200 rounded"
-												onClick={() => {
-													setSortPostBy("Oldest");
-													setShowFilterModal(false);
-												}}>
-												Oldest
-											</li>
-										</ul>
-									</div>
-								)}
-							</div> */}
-            </div>
-            <div className="w-full p-2 mx-auto flex-grow max-h-[90vh] overflow-y-auto">
+        <div className="flex flex-col md:flex-row py-28 px-4 md:px-12">
+					{/* Posts Section */}
+					<div className="md:block max-w-screen-xl mx-auto sm:px-12 lg:px-14 w-full flex-grow-2 justify-center items-center">
+						<div className="w-full bg-maroon border-2 rounded-full z-10 flex items-center justify-center sticky top-0 mb-8">
+							<div className="flex w-full justify-center">
+								<button
+									onClick={() => handleTabClick("Latest")}
+									className={`w-44 sm:w-full py-3 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
+										activeTab === "Latest"
+											? "bg-gold text-gray"
+											: "text-white hover:text-gold"
+									}`}>
+									Latest
+								</button>
+								<button
+									onClick={() => handleTabClick("Pinned")}
+									className={`w-44 sm:w-full py-3 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
+										activeTab === "Pinned"
+											? "bg-gold text-gray"
+											: "text-white hover:text-gold"
+									}`}>
+									Pinned
+								</button>
+							</div>
+						</div>
+            <div className="w-full p-2 mx-auto flex-grow">
               {loading ? (
                 <LoadingState />
-              ) : (
+              ) : activeTab === "Latest" ? (
+								posts.length === 0 ? (
+									<p className="text-center mt-4 text-gray-500">
+										No posts yet. Come back later.
+									</p>
+								) : (
                 <CreatePostSection userSession={userSession} />
-              )}
-            </div>
-          </div>
-          {/*Blogs*/}
-          <div className="max-w-screen-xl mx-auto sm:px-12 lg:px-14 flex-grow-2 w-full">
-            <div className="flex flex-col px-4 flex-grow-1 items-start my-6">
-              <h1 className="text-2xl md:text-3xl font-Merriweather font-bold">
-                Editor's Picks
-              </h1>
-              <p className="font-Jaldi text-xl sm:text-base">
-                Check out the latest posts from the university's Guidance
-                Counselor!
-              </p>
-            </div>
-
-            <div className="w-full mx-auto flex-grow max-h-[90vh] overflow-y-auto">
-              <Card />
+              )
+            ) : pinnedPosts.length === 0 ? (
+								<p className="text-center mt-4 text-gray-500">
+									No pinned posts available.
+								</p>
+							) : (
+								pinnedPosts.map((post) => (
+									<PinnedPostCard
+										key={post.postId}
+										post={post}
+									/>
+								))
+							)}
             </div>
           </div>
         </div>
