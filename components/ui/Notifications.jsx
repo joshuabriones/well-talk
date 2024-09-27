@@ -45,35 +45,39 @@ export default function Notifications() {
 	};
 
 	return (
-		<div className="bg-white absolute z-10 w-[500px] h-[600px] top-14 right-44 rounded-lg drop-shadow-2xl flex flex-col ">
-			<div className="flex justify-between text-sm border-b border-slate-200 p-5">
-				<div>Bomba Ding's Notifications</div>
-				<div className="text-blue-600">Mark All as Read</div>
+		<div className="bg-white absolute z-10 w-full max-w-lg md:max-w-xl h-[50vh] top-16 right-0 md:right-44 md:top-14 rounded-lg drop-shadow-2xl flex flex-col">
+			{/* Header */}
+			<div className="flex justify-between text-sm border-b border-slate-200 p-3 md:p-5">
+				<div className="font-semibold">Bomba Ding's Notifications</div>
+				<div className="text-blue-600 cursor-pointer text-xs md:text-sm">Mark All as Read</div>
 			</div>
 
 			{/* Notification List */}
-			<div className="flex flex-grow flex-col">
-				<div className="h-24 w-full flex flex-row px-2 group hover:bg-zinc-100">
-					<div className="h-full w-2/12 flex justify-center items-center">
+			<div className="flex flex-grow flex-col overflow-y-auto">
+				<div className="flex flex-row px-3 py-4 md:px-5 md:py-5 group hover:bg-zinc-100 ">
+					{/* Avatar */}
+					<div className="w-1/6 md:w-2/12 flex justify-center items-center">
 						<img
 							src="https://avatar.iran.liara.run/public"
-							alt=""
-							className="rounded-full h-12 w-12"
+							alt="Avatar"
+							className="rounded-full h-10 w-10 md:h-12 md:w-12"
 						/>
 					</div>
 
-					<div className="h-full w-9/12 pl-1.5 flex items-center justify-center text-sm">
+					{/* Notification Text */}
+					<div className="w-4/6 md:w-9/12 pl-2 md:pl-4 flex items-center text-xs md:text-sm text-gray-700">
 						{generateNotif(notifs[0])}
 					</div>
 
-					<div className="h-full w-1/12 flex items-center invisible group-hover:visible">
+					{/* Action Icon */}
+					<div className="w-1/6 md:w-1/12 flex items-center justify-end invisible group-hover:visible">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
 							viewBox="0 0 24 24"
 							strokeWidth={1.5}
 							stroke="black"
-							className="size-6  rounded-full p-1 hover:bg-zinc-200"
+							className="w-5 h-5 md:w-6 md:h-6 rounded-full p-1 hover:bg-zinc-200"
 						>
 							<path
 								strokeLinecap="round"

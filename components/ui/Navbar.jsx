@@ -284,11 +284,12 @@ export function Navbar({ userType }) {
 						setShowNotifications(!showNotifications);
 					}}>
 					<motion.img
-					src="/images/alarm.png"
-					className="w-7 h-7 md:w-5 md:h-5 rounded-2xl cursor-pointer"
+					src="/images/bellll.png"
+					className="w-8 h-8 md:w-9 md:h-9 rounded-2xl cursor-pointer"
 					alt="notiffs"
 					initial={{ scale: 1 }}
 					whileHover={{ scale: 1.1 }}
+					whileTap={{ scale: 0.9 }}
 					transition={{ type: "spring", stiffness: 300 }}
 				/>
 				</div>
