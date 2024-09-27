@@ -103,6 +103,8 @@ const Registration = () => {
       lastName,
       gender,
       role,
+      college,
+      program,
       password,
       passwordCheck,
       termsAccepted,
@@ -115,8 +117,6 @@ const Registration = () => {
     /* zod validation */
     if (role === "student") {
       const studentData = {
-        college,
-        program,
         birthdate,
         contactNumber,
         permanentAddress,
@@ -125,8 +125,6 @@ const Registration = () => {
       extraInfoValidation = studentSchema.safeParse(studentData);
     } else if (role === "counselor") {
       result = counselorSchema.safeParse({
-        college,
-        program,
         assignedYear,
       });
     }
@@ -233,8 +231,6 @@ const Registration = () => {
         }
         break;
     }
-
-    console.log(response);
 
     if (!response.ok) console.log("Error status: ", response.status);
     else {
