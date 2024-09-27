@@ -25,8 +25,7 @@ function Home() {
 		setActiveTab(tab);
 	};
 
-	useEffect(() => {
-	}, [activeTab]);
+	useEffect(() => {}, [activeTab]);
 
 	console.log("User session:", userSession);
 
@@ -47,7 +46,7 @@ function Home() {
 			}
 			const data = await response.json();
 			setPosts(data);
-			setPosts(data.filter((post) => !post.isPinned)); 
+			setPosts(data.filter((post) => !post.isPinned));
 			setPinnedPosts(data.filter((post) => post.isPinned));
 			setLoading(false);
 		} catch (error) {
@@ -72,28 +71,6 @@ function Home() {
 			<main className="min-h-screen">
 				<Navbar userType="student" />
 
-				<div className="md:hidden bg-maroon border-2 rounded-full z-10 flex justify-center sticky top-20 mx-6">
-					<div className="flex w-full">
-						<button
-							onClick={() => handleTabClick("Latest")}
-							className={`w-full py-3 text-base font-semibold font-Merriweather rounded-l-full transition-colors duration-300 ${
-								activeTab === "Latest"
-									? "bg-gold text-gray"
-									: "text-white hover:text-gold"
-							}`}>
-							Latest
-						</button>
-						<button
-							onClick={() => handleTabClick("Pinned")}
-							className={`w-full py-3 text-base font-semibold font-Merriweather rounded-r-full transition-colors duration-300 ${
-								activeTab === "Pinned"
-									? "bg-gold text-gray"
-									: "text-white hover:text-gold"
-							}`}>
-							Pinned
-						</button>
-					</div>
-				</div>
 				<div
 					className="pattern-overlay pattern-left absolute -z-10"
 					style={{ transform: "scaleY(-1)", top: "-50px" }}>
@@ -115,8 +92,9 @@ function Home() {
 				{/* Posts */}
 				<div className="flex flex-col md:flex-row py-28 px-4 md:px-12">
 					{/* Posts Section */}
-					<div className="hidden md:block max-w-screen-xl mx-auto sm:px-12 lg:px-14 w-full flex-grow-2 justify-center items-center">
-						<div className="w-full bg-maroon border-2 rounded-full z-10 flex items-center justify-center top-0"> 
+					<div className="md:block max-w-screen-xl mx-auto sm:px-12 lg:px-14 w-full flex-grow-2 justify-center items-center">
+						<div
+							className={`bg-maroon border-2 rounded-full z-10 flex justify-center mx-6 sticky md:static top-18`}>
 							<div className="flex w-full justify-center">
 								<button
 									onClick={() => handleTabClick("Latest")}
