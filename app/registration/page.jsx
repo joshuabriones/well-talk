@@ -195,6 +195,8 @@ const Registration = () => {
                 password: password,
                 image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
                 role: role,
+                college: college,
+                program: program,
               }),
             }
           );
@@ -735,35 +737,72 @@ const Registration = () => {
                       </>
                     )}
 
-                    {/* {role === "teacher" && (
-                    <div className="flex flex-col w-full">
-                      <label
-                        htmlFor="gender"
-                        className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
-                      >
-                        <select
-                          value={college}
-                          onChange={(e) => setCollege(e.target.value)}
-                          className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full"
-                          required
-                        >
-                          {collegeOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                        <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-                          Department
-                        </span>
-                      </label>
-                      {errors.college && (
-                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                          {errors.college._errors[0]}
-                        </p>
-                      )}
-                    </div>
-                  )} */}
+                    {role === "teacher" && (
+                      <>
+                        <div className="w-full flex flex-row gap-x-6">
+                          <div className="flex flex-col w-full">
+                            <label
+                              htmlFor="gender"
+                              className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                            >
+                              <select
+                                value={college}
+                                onChange={(e) => setCollege(e.target.value)}
+                                className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
+                                required
+                              >
+                                {collegeOptions.map((option) => (
+                                  <option
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                              <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                                Department
+                              </span>
+                            </label>
+                            {errors.college && (
+                              <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                                {errors.college._errors[0]}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex flex-col w-full">
+                            <label
+                              htmlFor="gender"
+                              className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                            >
+                              <select
+                                value={program}
+                                onChange={(e) => setProgram(e.target.value)}
+                                className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
+                                required
+                              >
+                                {programOptions[college]?.map((option) => (
+                                  <option
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                              <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                                Course
+                              </span>
+                            </label>
+                            {errors.program && (
+                              <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                                {errors.program._errors[0]}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </>
+                    )}
 
                     {role === "counselor" && (
                       <>
