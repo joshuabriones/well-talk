@@ -1,25 +1,33 @@
 "use client";
-import FloatingChat from "@/components/ui/chat/FloatingChat";
 import { getUserSession } from "@/lib/helperFunctions";
 import { useEffect, useState } from "react";
+import FloatingChat from "./FloatingChat";
 
 export default function ChatByRole() {
 	const [userRole, setUserRole] = useState(null);
 
 	useEffect(() => {
 		const fetchSession = async () => {
-			const session = await getUserSession();
-
-			setUserRole(session?.role);
+			try {
+				const session = await getUserSession();
+				setUserRole(session?.role);
+			} catch (error) {
+				console.error("Error fetching session:", error);
+			}
 		};
 
 		fetchSession();
+
+		const intervalId = setInterval(() => {
+			fetchSession();
+		}, 5000);
+
+		return () => clearInterval(intervalId);
 	}, []);
 
 	if (userRole === "student" || userRole === "teacher") {
 		return <FloatingChat />;
 	}
-	
 
 	return null;
 }

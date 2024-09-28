@@ -49,7 +49,9 @@ export default function Notifications() {
 			{/* Header */}
 			<div className="flex justify-between text-sm border-b border-slate-200 p-3 md:p-5">
 				<div className="font-semibold">Bomba Ding's Notifications</div>
-				<div className="text-blue-600 cursor-pointer text-xs md:text-sm">Mark All as Read</div>
+				<div className="text-blue-600 cursor-pointer text-xs md:text-sm">
+					Mark All as Read
+				</div>
 			</div>
 
 			{/* Notification List */}
@@ -65,7 +67,7 @@ export default function Notifications() {
 					</div>
 
 					{/* Notification Text */}
-					<div className="w-4/6 md:w-9/12 pl-2 md:pl-4 flex items-center text-xs md:text-sm text-gray-700">
+					<div className="w-4/6 md:w-9/12 md:pl-4 flex items-center text-xs md:text-sm text-gray-700">
 						{generateNotif(notifs[0])}
 					</div>
 
