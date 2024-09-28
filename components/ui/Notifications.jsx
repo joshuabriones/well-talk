@@ -11,62 +11,68 @@ export default function Notifications() {
 
 	useEffect(() => {
 		const fetchStudentProfile = async () => {
-			try {
-				const response = await fetch(
-					`${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`,
-					{
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${Cookies.get("token")}`,
-						},
+			if (userSession && !user) {
+				try {
+					const response = await fetch(
+						`${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`,
+						{
+							method: "GET",
+							headers: {
+								"Content-Type": "application/json",
+								Authorization: `Bearer ${Cookies.get("token")}`,
+							},
+						}
+					);
+
+					if (!response.ok) {
+						const errorMessage = await response.text();
+						console.error("Error fetching student profile:", errorMessage);
+						return;
 					}
-				);
-
-				if (!response.ok) {
-					throw new Error("Failed to fetch posts");
+					const data = await response.json();
+					setUser(data);
+				} catch (error) {
+					console.error("Error fetching student profile:", error);
 				}
-				const data = await response.json();
-
-				setUser(data);
-			} catch (error) {
-				console.error("Error fetching posts:", error);
 			}
 		};
 
 		fetchStudentProfile();
-	});
-
-	const fetchNotifications = async () => {
-		const response = await fetch(
-			`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS}`,
-			{
-				headers: {
-					Authorization: `Bearer ${Cookies.get("token")}`,
-				},
-			}
-		);
-
-		if (!response.ok) {
-			console.error("Error fetching notifications");
-			return;
-		}
-
-		const data = await response.json();
-
-		const sortedNotifications = data.sort((a, b) => new Date(b.date) - new Date(a.date));
-		setNotifications(sortedNotifications);
-	};
+	}, [userSession, user]);
 
 	useEffect(() => {
-		if (userSession) {
-			try {
-				fetchNotifications();
-			} catch (error) {
-				console.log(error);
+		const fetchNotifications = async () => {
+			if (userSession) {
+				try {
+					const response = await fetch(
+						`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_BY_USERID}${userSession.id}`,
+						{
+							headers: {
+								Authorization: `Bearer ${Cookies.get("token")}`,
+							},
+						}
+					);
+
+					if (!response.ok) {
+						console.error("Error fetching notifications");
+					}
+
+					const data = await response.json();
+					const sortedNotifications = data.sort(
+						(a, b) => new Date(b.date) - new Date(a.date)
+					);
+
+					setNotifications(sortedNotifications);
+				} catch (error) {
+					console.error("Error fetching notifications:", error);
+				}
 			}
-		}
-	}, []);
+		};
+
+		fetchNotifications();
+	}, [userSession]);
+
+	// console.log("User Session: ", userSession);
 
 	const dateFormatter = (dateString) => {
 		const givenDate = new Date(dateString);
@@ -100,7 +106,10 @@ export default function Notifications() {
 			{/* Notification List */}
 			<div className="flex flex-grow flex-col overflow-y-auto">
 				{notifications.map((notification, key) => (
-					<div className="flex flex-row px-3 py-4 md:px-5 md:py-5 group hover:bg-zinc-100 ">
+					<div
+						className="flex flex-row px-3 py-4 md:px-5 md:py-5 group hover:bg-zinc-100 "
+						key={key}
+					>
 						{/* Avatar */}
 						<div className="w-1/6 md:w-2/12 flex justify-center items-center">
 							<img
