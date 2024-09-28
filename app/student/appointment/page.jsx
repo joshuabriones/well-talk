@@ -1,26 +1,20 @@
 "use client";
 
+import Loading from "@/components/Loading";
+import { Navbar } from "@/components/ui/Navbar";
 import FullButton from "@/components/ui/buttons/FullButton";
 import TextAreaInput from "@/components/ui/inputs/TextAreaInput";
-import StudentAddAppointment from "@/components/ui/modals/counselor/appointments/StudentAddAppointment";
-import hdrAppointment from "@/public/images/headers/hdrAppointment.png";
-import { useEffect, useState } from "react";
-// css
-import "@/styles/counselor.css";
-
-// modals
-import { Navbar } from "@/components/ui/Navbar";
 import StudentModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
+import StudentAddAppointment from "@/components/ui/modals/counselor/appointments/StudentAddAppointment";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
-
-import Load from "@/components/Load";
-import Loading from "@/components/Loading";
 import ModalConfirmResponseAppointment from "@/components/ui/modals/student/appointments/ModalConfirmedResponseAppointment";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
+import "@/styles/counselor.css";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Badge, Calendar, Popover, Whisper } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
@@ -241,6 +235,43 @@ const Appointment = () => {
 		setConfirmResponseModal(false);
 		setIsLoading(true);
 
+		const generateNotification = async (details) => {
+			const date = notifDateFormatter(details.appointmentDate);
+			const time = notifTimeFormatter(details.appointmentStartTime);
+
+			const notif_message = `An appointment scheduled for ${date} at ${time} has been created.`;
+			const notif_type = "appointment";
+
+			try {
+				const response = await fetch(
+					`${process.env.BASE_URL}${API_ENDPOINT.CREATE_NOTIFICATION}${userSession.id}`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${Cookies.get("token")}`,
+						},
+						body: JSON.stringify({
+							message: notif_message,
+							type: notif_type,
+						}),
+					}
+				);
+
+				if (response.ok) {
+					toast.success("Notification created successfully");
+				} else {
+					// Handle non-200 responses here
+					const errorData = await response.json(); // Get error details
+					console.error("Error creating notification:", errorData);
+					toast.error("Failed to create notification: " + errorData.message);
+				}
+			} catch (error) {
+				console.error("Notification error: ", error);
+				toast.error("Failed to create notification due to an error.");
+			}
+		};
+
 		try {
 			const response = await fetch(
 				`${process.env.BASE_URL}${API_ENDPOINT.STUDENT_CREATE_APPOINTMENT}${userSession.id}`,
@@ -262,6 +293,11 @@ const Appointment = () => {
 
 			if (response.ok) {
 				toast.success("Appointment created successfully");
+				generateNotification({
+					senderId: userSession.id,
+					appointmentDate: appointmentDate,
+					appointmentStartTime: selectedTime,
+				});
 			}
 
 			setPurpose("");
@@ -295,13 +331,26 @@ const Appointment = () => {
 		return formattedDate;
 	};
 
+	const notifDateFormatter = (dateInput) => {
+		const options = { year: "numeric", month: "long", day: "numeric" };
+		const date = new Date(dateInput);
+		return date.toLocaleDateString(undefined, options);
+	};
+
+	const notifTimeFormatter = (timeString) => {
+		const hours = Number(timeString);
+		const period = hours < 12 ? "AM" : "PM";
+		const formattedHours = hours % 12 || 12;
+		return `${formattedHours} ${period}`;
+	};
+
 	return (
 		<div className="min-h-screen w-full">
 			<Navbar userType="student" />
 			{/* header */}
 			{/*<div className="w-full h-[45vh] md:h-[55vh] relative">
 				{/* Background image */}
-				{/*<div
+			{/*<div
 					className="absolute inset-0 bg-cover bg-center opacity-40"
 					style={{
 						backgroundImage: `url(${hdrAppointment.src})`,
@@ -309,7 +358,7 @@ const Appointment = () => {
 				></div>
 
 				{/* Content */}
-				{/*<div className="relative z-10 flex items-center justify-center h-full">
+			{/*<div className="relative z-10 flex items-center justify-center h-full">
 					<div className="flex flex-col text-left px-6 md:px-20 lg:px-44 py-10 gap-y-4">
 						<h1 className="font-Merriweather text-4xl md:text-6xl lg:text-8xl">
 							Appointments
