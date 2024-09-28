@@ -9,56 +9,25 @@ import LandingSlider from "@/components/ui/landing/Slider";
 import { Content } from "@/components/ui/landing/Steps";
 
 export default function Landing() {
-	const faqList = [
-		{
-			question: "What is WellTalk?",
-			answer: "WellTalk is a comprehensive platform designed to facilitate seamless communication and scheduling between students and counselors, ensuring a supportive environment for mental health and well-being.",
-		},
-		{
-			question: "How do I schedule an appointment with a counselor on WellTalk?",
-			answer: "To schedule an appointment with a counselor on WellTalk, log in to your account and navigate to the Appointments or Schedule section. From there, you can elect a convenient time slot and confirm your appointment.",
-		},
-		{
-			question: "Is my information confidential and secure on WellTalk?",
-			answer: "Yes, we take your privacy and security seriously on WellTalk. Your information is encrypted and stored securely according to industry standards. Only authorized personnel have access to your data, and we adhere to strict confidentiality protocols.",
-		},
-		{
-			question: "Can I reschedule or cancel appointments?",
-			answer: "Yes, you can reschedule or cancel appointments through your WellTalk account. Simply go to the Appointments section, locate the appointment you wish to change, and follow the prompts to adjust the date and time or cancel the appointment.",
-		},
-		{
-			question: "Are there resources available for self-help and mental health tips?",
-			answer: "Absolutely! WellTalk provides a wealth of resources, including self-help guides, mental health tips, and informative articles to support your well-being journey. Explore our Resources section to access these valuable materials.",
-		},
-		{
-			question: "Is WellTalk accessible on mobile devices?",
-			answer: "Yes, WellTalk is fully accessible on mobile devices. We've designed the app to be responsive and user-friendly on smartphones and tablets, ensuring that you can access all features and functionalities seamlessly on the go.",
-		},
-	];
-
 	return (
 		<div className="min-h-screen w-full">
 			<main>
 				<Navbar userType="landing" />
 				<Hero />
-
 				<ScrollAnimationWrapper animationType="default">
 					<Features />
 				</ScrollAnimationWrapper>
-
 				<ScrollAnimationWrapper animationType="fadeInFromLeft">
 					<Content />
 				</ScrollAnimationWrapper>
-
 				<div>
-					<div className="flex flex-col-reverse w-10/12 lg:w-9/12 sm:w-full md:flex-row mx-auto items-center">	
-							<div className="w-full md:w-3/5 lg:w-7/12">
-								<div className="w-full">
-									<LandingSlider />
-								</div>
+					<div className="flex flex-col-reverse w-10/12 lg:w-9/12 sm:w-full md:flex-row mx-auto items-center">
+						<div className="w-full md:w-3/5 lg:w-7/12">
+							<div className="w-full">
+								<LandingSlider />
 							</div>
-
-						<div className="w-full md:w-2/5 lg:w-5/12 text-center md:text-right mt-8 md:mt-0">
+						</div>
+						<div className="w-full md:w-2/5 lg:w-5/12 text-left md:text-center lg:text-center md:text-right mt-8 md:mt-0">
 							<ScrollAnimationWrapper animationType="fadeInFromRight">
 								<div className="mt-8 md:mt-0 sm:mt-0">
 									<h2 className="text-3xl sm:text-5xl lg:text-6xl font-Merriweather">
@@ -79,9 +48,7 @@ export default function Landing() {
 						</div>
 					</div>
 				</div>
-
-				<Questions faqList={faqList} />
-
+				<Questions />
 				<ScrollAnimationWrapper animationType="default">
 					<div className="w-full flex justify-center items-center mt-6 relative">
 						<div className="p-6 w-full max-w-screen-md text-center">
@@ -100,7 +67,6 @@ export default function Landing() {
 						</div>
 					</div>
 				</ScrollAnimationWrapper>
-
 				<Footer />
 			</main>
 		</div>

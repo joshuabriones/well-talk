@@ -1,8 +1,8 @@
 import GlobalContext from "@/context/GlobalContext";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession, logout } from "@/lib/helperFunctions";
-import Cookies from "js-cookie";
 import { motion } from "framer-motion";
+import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import "./../../css/navbar.css";
@@ -172,12 +172,15 @@ function NavList({ userType }) {
 		<ul className="mt-2 mb-4 flex flex-col gap-12 lg:mb-0 lg:mt-0 lg:flex-row lg:items-right font-Merriweather font-bold text-xl mx-10">
 			{navigationItems.map((item, index) => (
 				<a
-					key={index}
 					onClick={() => router.push(item.route)}
-					className={`text-base font-bold text-slate-800 hover:text-slate-800 cursor-pointer${
-						router.pathname === item.route ? "text-slate-800" : ""
-					} nav-list-button`}>
+					className={`relative text-base font-medium text-maroon-gray-700 hover:text-maroon cursor-pointer transition-colors duration-300 ${
+						router.asPath === item.route ? "text-maroon" : ""
+					}`}>
 					{item.label}
+					<span
+						className={`absolute bottom-[-6px] left-0 h-[2px] w-full bg-maroon scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ease-in-out ${
+							router.asPath === item.route ? "scale-x-100" : ""
+						}`}></span>
 				</a>
 			))}
 		</ul>
@@ -284,14 +287,14 @@ export function Navbar({ userType }) {
 						setShowNotifications(!showNotifications);
 					}}>
 					<motion.img
-					src="/images/bellll.png"
-					className="w-8 h-8 md:w-9 md:h-9 rounded-2xl cursor-pointer"
-					alt="notiffs"
-					initial={{ scale: 1 }}
-					whileHover={{ scale: 1.1 }}
-					whileTap={{ scale: 0.9 }}
-					transition={{ type: "spring", stiffness: 300 }}
-				/>
+						src="/images/bellll.png"
+						className="w-8 h-8 md:w-9 md:h-9 rounded-2xl cursor-pointer"
+						alt="notiffs"
+						initial={{ scale: 1 }}
+						whileHover={{ scale: 1.1 }}
+						whileTap={{ scale: 0.9 }}
+						transition={{ type: "spring", stiffness: 300 }}
+					/>
 				</div>
 
 				{userType !== "landing" && <ProfileMenu />}

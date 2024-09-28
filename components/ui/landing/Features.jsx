@@ -1,4 +1,5 @@
 import ScrollAnimationWrapper from "@/components/layout/ScrollAnimationWrapper";
+
 const features = [
 	{
 		icon: (
@@ -65,7 +66,7 @@ const features = [
 
 const Features = () => {
 	return (
-		<section className="w-8/12 relative py-28 container mx-auto items-center md:px-4">
+		<section className="w-11/12 lg:w-8/12 relative py-24 md:py-28 lg:py-28 container mx-auto items-center md:px-4">
 			<div className="relative z-10 max-w-screen-xl mx-auto px-4 text-gray-300 lg:flex md:px-8 gap-24 container mx-auto items-center">
 				<div className="lg:w-2/5">
 					<ScrollAnimationWrapper animationType="default">
@@ -98,7 +99,7 @@ const Features = () => {
 										<h4 className="font-Merriweather text-gray-700 text-lg font-medium">
 											{item.title}
 										</h4>
-										<p className="font-Jaldi text-gray-700 mt-1">
+										<p className="mt-2 font-Jaldi text-gray-700 text-base">
 											{item.desc}
 										</p>
 									</div>
