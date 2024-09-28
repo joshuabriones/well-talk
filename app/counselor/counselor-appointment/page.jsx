@@ -290,7 +290,7 @@ const Appointment = () => {
 		setIsLoading(true);
 		try {
 			const response = await fetch(
-				`${process.env.BASE_URL}${API_ENDPOINT.STUDENT_CREATE_APPOINTMENT}${selectedStudentId}`,
+				`${process.env.BASE_URL}${API_ENDPOINT.COUNSELOR_CREATE_APPOINTMENT}${userSession.id}?studentId=${selectedStudentId}`,
 				{
 					method: "POST",
 					headers: {
@@ -306,8 +306,13 @@ const Appointment = () => {
 				}
 			);
 
+			const responseData = await response.json();
+
 			if (response.ok) {
-				toast.success("Appointment has been sent to admin successfully");
+				toast.success("Appointment has been set successfully");
+			} else {
+				console.error("Error setting appointment:", responseData);
+				toast.error("Failed to set appointment");
 			}
 
 			setPurpose("");
@@ -321,11 +326,13 @@ const Appointment = () => {
 			setSelectedTime("");
 			setSelectedTimeSlot(null);
 		} catch (error) {
+			console.error("Error setting appointment:", error);
 			toast.error("Failed to set appointment");
 		} finally {
 			setIsLoading(false);
 		}
 	};
+
 
 	const formatDateCalendar = (date) => {
 		const year = date.getFullYear();
