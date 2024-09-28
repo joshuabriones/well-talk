@@ -7,6 +7,7 @@ import { API_ENDPOINT } from "@/lib/api";
 
 export default function JournalPage({ params }) {
   const [student, setStudent] = useState({});
+  const [publicJournals, setPublicJournals] = useState([]);
 
   const fetchStudent = async () => {
     const response = await fetch(
@@ -23,11 +24,27 @@ export default function JournalPage({ params }) {
     setStudent(data);
   };
 
+  const fetchPublicJournals = async () => {
+    const response = await fetch(
+      `${process.env.BASE_URL}${API_ENDPOINT.GET_PUBLIC_JOURNALS}${params.id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      }
+    );
+    const data = await response.json();
+    setPublicJournals(data);
+  };
+
   useEffect(() => {
     fetchStudent();
+    fetchPublicJournals();
   }, []);
 
-  console.log(student);
+  console.log(publicJournals);
 
   const dummyJournals = [
     {
@@ -96,8 +113,8 @@ export default function JournalPage({ params }) {
         <div className="flex gap-5 mt-10 w-full">
           <div className="flex-1 p-4">
             <h2 className="text-2xl font-semibold">Shared Journal</h2>
-            {dummyJournals.map((journal, index) => (
-              <details class="p-4 group">
+            {publicJournals.map((journal, index) => (
+              <details class="p-4 group" key={journal.id}>
                 <summary class="[&::-webkit-details-marker]:hidden relative pr-8 font-medium list-none cursor-pointer text-slate-700 focus-visible:outline-none transition-colors duration-300 group-hover:text-slate-900 ">
                   <h2 className="text-xl">{journal.title}</h2>
                   <svg
@@ -121,8 +138,8 @@ export default function JournalPage({ params }) {
                   </svg>
                 </summary>
                 <p class="mt-4 text-slate-500">
-                  <p className="text-slate-500">{journal.date}</p>
-                  <p className="text-slate-500">{journal.content}</p>
+                  {/* <p className="text-slate-500">{journal.date}</p> */}
+                  <p className="text-slate-500">{journal.entry}</p>
                 </p>
               </details>
             ))}
