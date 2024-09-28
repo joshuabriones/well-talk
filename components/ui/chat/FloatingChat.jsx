@@ -52,7 +52,7 @@ const ChatWidget = () => {
     );
     const data = await response.json();
     setCounselors(
-      data.filter((counselor) => counselor.college === loggedInUser.college)
+      data.filter((counselor) => counselor.college === loggedInUser?.college)
     );
   };
 
