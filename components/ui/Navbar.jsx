@@ -1,7 +1,7 @@
 import GlobalContext from "@/context/GlobalContext";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession, logout } from "@/lib/helperFunctions";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -93,7 +93,7 @@ function ProfileMenu() {
 		<div>
 			<button
 				onClick={() => setIsMenuOpen((prev) => !prev)}
-				className="flex items-center gap-2 rounded-full py-3 pr-2 mr-8  md:mr-20 pl-0.5 lg:ml-auto">
+				className="flex items-center gap-2 rounded-full py-3 pr-2 mr-6  md:mr-20 pl-0.5 lg:ml-auto">
 				<img
 					src={userData?.image}
 					alt="Profile"
@@ -169,19 +169,26 @@ function NavList({ userType }) {
 	}
 
 	return (
-		<ul className="mt-2 mb-4 flex flex-col gap-12 lg:mb-0 lg:mt-0 lg:flex-row lg:items-right font-Merriweather font-bold text-xl mx-10">
+		<ul className="mt-2 mb-4 flex flex-col gap-6 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center font-Merriweather font-bold text-lg lg:text-xl mr-8">
 			{navigationItems.map((item, index) => (
-				<a
-					onClick={() => router.push(item.route)}
-					className={`relative text-base font-medium text-maroon-gray-700 hover:text-maroon cursor-pointer transition-colors duration-300 ${
-						router.asPath === item.route ? "text-maroon" : ""
-					}`}>
-					{item.label}
-					<span
-						className={`absolute bottom-[-6px] left-0 h-[2px] w-full bg-maroon scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ease-in-out ${
-							router.asPath === item.route ? "scale-x-100" : ""
-						}`}></span>
-				</a>
+				<li
+					key={index}
+					className="group">
+					<a
+						onClick={() => router.push(item.route)}
+						className={`relative text-base font-medium text-gray hover:text-maroon cursor-pointer transition-colors duration-300 ${
+							router.asPath === item.route ? "text-maroon" : ""
+						}`}
+						style={{ textDecoration: "none" }}>
+						{item.label}
+						<span
+							className={`absolute bottom-[-6px] left-0 h-[2px] w-full bg-maroon scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ease-in-out ${
+								router.asPath === item.route
+									? "scale-x-100"
+									: ""
+							}`}></span>
+					</a>
+				</li>
 			))}
 		</ul>
 	);
@@ -193,6 +200,11 @@ export function Navbar({ userType }) {
 
 	const [isNavOpen, setIsNavOpen] = useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
+	const [isVisible, setIsVisible] = useState(false);
+
+	const toggleVisibility = () => {
+		setIsVisible(!isVisible);
+	};
 
 	console.log("showNotifications: ", showNotifications);
 
@@ -220,8 +232,9 @@ export function Navbar({ userType }) {
 		backgroundColor: isScrolled
 			? "rgba(255, 255, 255, 0.9)"
 			: "transparent",
+		backdropFilter: isScrolled ? "blur(10px)" : "none", // Add backdrop-filter for blurriness
 		zIndex: 50,
-		transition: "background-color 0.3s ease",
+		transition: "background-color 0.3s ease, backdrop-filter 0.3s ease", // Transition for backdrop-filter
 	};
 
 	return (
@@ -229,19 +242,23 @@ export function Navbar({ userType }) {
 			id="navbar"
 			style={navbarStyles}
 			className="mx-auto max-w-screen-auto p-2 lg:pl-6 w-full">
-			<div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
+			<div className="relative mx-auto flex items-center justify-between text-gray">
 				<button
-					onClick={() => setIsNavOpen((prev) => !prev)}
-					className={`ml-8 lg:hidden flex justify-start ${
-						isNavOpen ? "open" : ""
-					}`}>
+					onClick={() => {
+						setIsNavOpen((prev) => !prev);
+						toggleVisibility();
+					}}
+					className="ml-8 lg:hidden p-2 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-maroon transition duration-300"
+					aria-label="Toggle navigation menu">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						strokeWidth="1.5"
 						stroke="currentColor"
-						className="size-8">
+						className={`h-8 w-8 text-blue-gray-900 transform transition-transform duration-300 ease-in-out ${
+							isNavOpen ? "rotate-90" : "rotate-0"
+						}`}>
 						<path
 							strokeLinecap="round"
 							strokeLinejoin="round"
@@ -249,13 +266,13 @@ export function Navbar({ userType }) {
 						/>
 					</svg>
 				</button>
-				<div className=" md:ml-24 flex flex-row items-center">
+				<div className="md:ml-24 flex flex-row items-center">
 					<img
 						src="/images/loggoword.png" // Replace with your actual logo path
 						alt="WellTalk Logo"
-						className="w-18 h-14" // Adjust width and height as needed
+						className="w-18 h-14 hidden md:block" // Hidden on mobile, shown on md and larger
 					/>
-					<h1 className="hidden text-3xl font-bold font-Merriweather">
+					<h1 className="hidden md:block text-3xl font-bold font-Merriweather">
 						<span
 							className="text-maroon"
 							style={{
@@ -275,20 +292,20 @@ export function Navbar({ userType }) {
 					</h1>
 				</div>
 
-				<div className="hidden lg:block flex items-center gap-8 lg:ml-auto">
+				<div className="hidden lg:block flex items-center gap-8 lg:ml-auto ">
 					<NavList
 						userType={userType}
 						router={useRouter()}
 					/>
 				</div>
 				<div
-					className="ml-10 md:mr-6 lg:mr-6 hover:animate-bell flex justify-end items-end"
+					className="ml-44 md:ml-0 lg:ml-0 md:mr-6 lg:mr-6 hover:animate-bell flex justify-end items-end"
 					onClick={() => {
 						setShowNotifications(!showNotifications);
 					}}>
 					<motion.img
 						src="/images/bellll.png"
-						className="w-8 h-8 md:w-9 md:h-9 rounded-2xl cursor-pointer"
+						className="w-9 h-9 md:w-9 md:h-9 rounded-2xl cursor-pointer"
 						alt="notiffs"
 						initial={{ scale: 1 }}
 						whileHover={{ scale: 1.1 }}
@@ -302,11 +319,19 @@ export function Navbar({ userType }) {
 				{showNotifications && <Notifications />}
 			</div>
 
-			{isNavOpen && (
-				<div className="bg-white lg:hidden absolute top-18 left-0 right-0">
-					<NavList userType={userType} />
-				</div>
-			)}
+			<AnimatePresence>
+				{isNavOpen && (
+					<motion.div
+						className={`bg-white bg-opacity-50 lg:hidden backdrop-blur-lg p-4`}
+						initial={{ opacity: 0, translateY: -20 }}
+						animate={{ opacity: 1, translateY: 0 }} 
+						exit={{ opacity: 0, translateY: -20 }} 
+						transition={{ duration: 0.5 }} 
+					>
+						<NavList userType={userType} />
+					</motion.div>
+				)}
+			</AnimatePresence>
 		</nav>
 	);
 }

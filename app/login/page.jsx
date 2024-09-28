@@ -1,5 +1,4 @@
 "use client";
-import ChatWidget from "@/components/ui/chat/FloatingChat";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession, parseJwt } from "@/lib/helperFunctions";
@@ -147,7 +146,7 @@ const Login = () => {
 			<div className="container px-12 mx-auto">
 				<div className="block md:hidden">
 					<Navbar userType="landing" />
-				</div>		
+				</div>
 				<div className="grid grid-cols-6 gap-6 h-full">
 					<div className="col-span-6 md:col-span-2 lg:col-span-3">
 						<div className="relative border border-2 w-full h-full overflow-hidden md:flex bg-maroon i justify-around items-center hidden bg-cover bg-center ml-20 bg-no-repeat h-[90vh] rounded-xl hidden md:block w-[80%] md:w-[150%] lg:w-[160%]">
@@ -174,83 +173,87 @@ const Login = () => {
 							<div className="absolute -top-20 -right-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8 text-gray"></div>
 						</div>
 					</div>
-					
-					<div className="flex flex-col col-span-6 md:col-span-4 lg:col-span-3 py-32 lg:ml-56">
-					<ScrollAnimationWrapper animationType="fadeInFromRight">
-						<div className="max-w-lg w-full h-full mx-auto px-0 md:px-8 lg:px-8">
-							<div className="relative">
-								<div className="absolute inset-0 rounded-3xl bg-gold shadow-lg transform -skew-y-6 sm:skew-y-0 -rotate-6 sm:rounded-3xl w-full h-full border border-2"></div>
-								<div className="absolute inset-0 -z-10 rounded-3xl bg-maroon shadow-lg transform skew-y-6 rotate-6 sm:skew-y-0 sm:rotate-0 w-full h-full border border-2 md:hidden lg:hidden"></div>
-								<div className="relative bg-white border border-2 dark:bg-slate-800 shadow-xl rounded-2xl p-12 md:p-12 lg:py-10">
-									<h2 className="font-Merriweather dark:text-white text-2xl font-bold mb-3">
-										Sign In
-									</h2>
-									<form
-										className="w-full flex flex-col py-4"
-										onSubmit={handleLogin}>
-										{showInvalidCredentials && (
-											<div className="text-red-500 font-bold text-base pt-2 pb-1.5">
-												Invalid email or password. Try
-												Again.
-											</div>
-										)}
 
-										<div className="flex flex-col gap-y-3 pb-8">
-											<TextInput
-												label="Email Address"
-												value={email}
-												onChange={(e) =>
-													setEmail(e.target.value)
-												}
-												type="email"
-												className="w-full"
-											/>
-											<TextInput
-												label="Password"
-												value={password}
-												onChange={(e) =>
-													setPassword(e.target.value)
-												}
-												type="password"
-												className="w-full"
-											/>
-											<div className="flex justify-end">
-												<div
-													className="text-maroon text-md font-Jaldi hover:text-green-800 cursor-pointer"
-													onClick={(e) =>
-														setShowForgotPasswordModal(
-															true
+					<div className="flex flex-col col-span-6 md:col-span-4 lg:col-span-3 py-32 lg:ml-56">
+						<ScrollAnimationWrapper animationType="fadeInFromRight">
+							<div className="max-w-lg w-full h-full mx-auto px-0 md:px-8 lg:px-8">
+								<div className="relative">
+									<div className="absolute inset-0 rounded-3xl bg-gold shadow-lg transform -skew-y-6 sm:skew-y-0 -rotate-6 sm:rounded-3xl w-full h-full border border-2"></div>
+									<div className="absolute inset-0 -z-10 rounded-3xl bg-maroon shadow-lg transform skew-y-6 rotate-6 sm:skew-y-0 sm:rotate-0 w-full h-full border border-2 md:hidden lg:hidden"></div>
+									<div className="relative bg-white border border-2 dark:bg-slate-800 shadow-xl rounded-2xl p-12 md:p-12 lg:py-10">
+										<h2 className="font-Merriweather dark:text-white text-2xl font-bold mb-3">
+											Sign In
+										</h2>
+										<form
+											className="w-full flex flex-col py-4"
+											onSubmit={handleLogin}>
+											{showInvalidCredentials && (
+												<div className="text-red-500 font-bold text-base pt-2 pb-1.5">
+													Invalid email or password.
+													Try Again.
+												</div>
+											)}
+
+											<div className="flex flex-col gap-y-3 pb-8">
+												<TextInput
+													label="Email Address"
+													value={email}
+													onChange={(e) =>
+														setEmail(e.target.value)
+													}
+													type="email"
+													className="w-full"
+												/>
+												<TextInput
+													label="Password"
+													value={password}
+													onChange={(e) =>
+														setPassword(
+															e.target.value
 														)
-													}>
-													Forgot your Password?
+													}
+													type="password"
+													className="w-full"
+												/>
+												<div className="flex justify-end">
+													<div
+														className="text-maroon text-md font-Jaldi hover:text-green-800 cursor-pointer"
+														onClick={(e) =>
+															setShowForgotPasswordModal(
+																true
+															)
+														}>
+														Forgot your Password?
+													</div>
 												</div>
 											</div>
-										</div>
 
-										<div className="w-full flex flex-row gap-x-4 pb-1">
-											<FullButton
-												className="w-1/2"
-												onClick={handleLogin}>
-												Sign In
-											</FullButton>
-										</div>
-										<div className="relative">
-											<hr className="my-8 border-t border-gray-300" />
-											<span className="px-2 text-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-800">
-												Or
-											</span>
-										</div>
-										<div className="w-full flex flex-row gap-x-4 pb-2">
-											<HollowButton
-												className="w-1/2"
-												onClick={handleCreateAccount}>
-												Create Account
-											</HollowButton>
-										</div>
-									</form>
+											<div className="w-full flex flex-row gap-x-4 pb-1">
+												<FullButton
+													className="w-1/2"
+													onClick={handleLogin}>
+													Sign In
+												</FullButton>
+											</div>
+											<div className="relative">
+												<hr className="my-8 border-t border-gray-300" />
+												<span className="px-2 text-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-800">
+													Or
+												</span>
+											</div>
+											<div className="w-full flex flex-row gap-x-4 pb-2">
+												<HollowButton
+													className="w-1/2"
+													onClick={
+														handleCreateAccount
+													}>
+													Create Account
+												</HollowButton>
+											</div>
+										</form>
+									</div>
 								</div>
 							</div>
-						</div>
 						</ScrollAnimationWrapper>
 					</div>
 				</div>
