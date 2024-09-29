@@ -2,6 +2,7 @@
 
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
+import { error } from "jquery";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 
@@ -11,6 +12,9 @@ export default function Notifications() {
 	const [user, setUser] = useState(null);
 	const [notifications, setNotifications] = useState([]);
 	const [count, setCount] = useState(0);
+
+	console.log("User Session:", userSession);
+	console.log("User:", user);
 
 	useEffect(() => {
 		const fetchProfile = async () => {
@@ -70,28 +74,54 @@ export default function Notifications() {
 	useEffect(() => {
 		const fetchNotifications = async () => {
 			if (userSession) {
-				try {
-					const response = await fetch(
-						`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_STUDENTS}${userSession.id}`,
-						{
-							headers: {
-								Authorization: `Bearer ${Cookies.get("token")}`,
-							},
+				if (userSession.role === "student") {
+					try {
+						const response = await fetch(
+							`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_STUDENTS}${userSession.id}`,
+							{
+								headers: {
+									Authorization: `Bearer ${Cookies.get("token")}`,
+								},
+							}
+						);
+
+						if (!response.ok) {
+							console.error("Error fetching student notifications", error);
 						}
-					);
 
-					if (!response.ok) {
-						console.error("Error fetching notifications");
+						const data = await response.json();
+						const sortedNotifications = data.sort(
+							(a, b) => new Date(b.date) - new Date(a.date)
+						);
+
+						setNotifications(sortedNotifications);
+					} catch (error) {
+						console.error("Error fetching notifications:", error);
 					}
+				} else if (userSession.role === "counselor") {
+					try {
+						const response = await fetch(
+							`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_COUNSELORS}?senderId=${userSession.id}&receiverId=${userSession.id}`,
+							{
+								headers: {
+									Authorization: `Bearer ${Cookies.get("token")}`,
+								},
+							}
+						);
 
-					const data = await response.json();
-					const sortedNotifications = data.sort(
-						(a, b) => new Date(b.date) - new Date(a.date)
-					);
+						if (!response.ok) {
+							console.error("Error fetching notifications");
+						}
 
-					setNotifications(sortedNotifications);
-				} catch (error) {
-					console.error("Error fetching notifications:", error);
+						const data = await response.json();
+						const sortedNotifications = data.sort(
+							(a, b) => new Date(b.date) - new Date(a.date)
+						);
+
+						setNotifications(sortedNotifications);
+					} catch (error) {
+						console.error("Error fetching notifications:", error);
+					}
 				}
 			}
 		};
@@ -100,9 +130,6 @@ export default function Notifications() {
 		setCount((prevCount) => prevCount + 1);
 		console.log("It is fetching notifications.");
 	}, []);
-
-	console.log("User session: ", userSession);
-	console.log("count: ", count);
 
 	const dateFormatter = (dateString) => {
 		const givenDate = new Date(dateString);
@@ -127,6 +154,8 @@ export default function Notifications() {
 		let text = "";
 		const type = notification?.type;
 		const senderName = notification?.sender?.firstName + " " + notification?.sender?.lastName;
+		const receiverName =
+			notification?.receiver?.firstName + " " + notification?.receiver?.lastName;
 		const date = notifDateFormatter(notification?.appointment?.appointmentDate);
 		const time = notifTimeFormatter(notification?.appointment?.appointmentStartTime);
 
@@ -146,15 +175,46 @@ export default function Notifications() {
 		if (user?.role === "counselor") {
 			switch (type) {
 				case "appointment":
-					text = `Student ${senderName} has scheduled an appointment with you on ${date} at ${time}.`;
-					break;
+					if (notification?.sender?.id === user?.id) {
+						text = `You have scheduled an appointment with ${receiverName} on ${date} at ${time}.`;
+						break;
+					} else if (notification?.receiver?.id === user?.id) {
+						text = `${senderName} have scheduled an appointment with you on ${date} at ${time}.`;
+						break;
+					}
 			}
 		}
 
 		return text;
 	};
 
-	console.log("User: ", user);
+	const notificationImg = (notification) => {
+		let img = "";
+		const type = notification?.type;
+
+		if (user?.role === "student") {
+			switch (type) {
+				case "appointment":
+					if (notification?.sender?.id === notification?.receiver?.id) {
+						img = notification?.receiver?.image;
+					} else {
+						img = notification?.sender?.image;
+					}
+					break;
+			}
+		} else if (user?.role === "counselor") {
+			switch (type) {
+				case "appointment":
+					if (notification?.sender?.id === user?.id) {
+						img = notification?.sender?.image;
+					} else if (notification?.receiver?.id === user?.id) {
+						img = notification?.sender?.image;
+					}
+					break;
+			}
+		}
+		return img;
+	};
 
 	const notifDateFormatter = (dateInput) => {
 		const options = { year: "numeric", month: "long", day: "numeric" };
@@ -190,7 +250,7 @@ export default function Notifications() {
 						{/* Avatar */}
 						<div className="w-1/6 md:w-2/12 flex justify-center items-center">
 							<img
-								src={notification?.sender?.image}
+								src={notificationImg(notification)}
 								alt="Avatar"
 								className="rounded-full h-10 w-10 md:h-12 md:w-12"
 							/>
