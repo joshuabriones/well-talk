@@ -18,6 +18,7 @@ export default function Chat() {
   const [previewImage, setPreviewImage] = useState(null);
   const [selectedUser, setSelectedUser] = useState();
   const [students, setStudents] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [inputMessage, setInputMessage] = useState("");
   const [newChat, setNewChat] = useState(false);
@@ -26,24 +27,42 @@ export default function Chat() {
 
   const [socketMessages, setSocketMessages] = useState([]);
 
-  const fetchStudents = async () => {
-    const response = await fetch(
-      `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_STUDENTS}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-      }
-    );
-    const data = await response.json();
-    setStudents(data);
+  // Fetch both students and teachers
+  const fetchUsers = async () => {
+    try {
+      const studentResponse = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_STUDENTS}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      const teacherResponse = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_TEACHERS}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      const studentsData = await studentResponse.json();
+      const teachersData = await teacherResponse.json();
+
+      setStudents(studentsData);
+      setTeachers(teachersData);
+    } catch (error) {
+      console.error("Error fetching students/teachers:", error);
+    }
   };
 
   useEffect(() => {
-    fetchStudents();
-    setLoggedUser(userSession); // to get currently logged in student
+    fetchUsers();
+    setLoggedUser(userSession); // Get currently logged-in user
 
     const socket = new SockJS("http://localhost:8080/ws");
     const client = Stomp.over(socket);
@@ -57,7 +76,6 @@ export default function Chat() {
 
         // Check if the message already exists to prevent duplicates
         setMessages((prevMessages) => {
-          // Only add the message if it doesn't exist already
           if (!prevMessages.find((m) => m.id === newMessage.id)) {
             return [...prevMessages, newMessage];
           }
@@ -77,15 +95,18 @@ export default function Chat() {
     };
   }, []);
 
+  // Auto-select first user (student or teacher) if none is selected
   useEffect(() => {
     if (students.length > 0 && !selectedUser) {
       setSelectedUser(students[0]);
+    } else if (teachers.length > 0 && !selectedUser) {
+      setSelectedUser(teachers[0]);
     }
-  }, [students]);
+  }, [students, teachers]);
 
+  // Fetch messages for the selected user
   useEffect(() => {
     if (selectedUser) {
-      // Fetch all previous messages when the component mounts
       const fetchMessages = async () => {
         try {
           const response = await fetch(
@@ -112,28 +133,29 @@ export default function Chat() {
 
   console.log(messages);
 
-  // to get the currently selected student from chat list
-  const handleSelectStudent = (student) => {
+  // Select a user (student or teacher)
+  const handleSelectUser = (user) => {
     setNewChat(false);
-    setSelectedUser(student);
+    setSelectedUser(user);
   };
 
-  // search query
+  // Search query for both students and teachers
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
-  const filteredStudents = students.filter((student) =>
-    student.firstName.toLowerCase().includes(searchQuery.toLowerCase())
+
+  const filteredUsers = [...students, ...teachers].filter((user) =>
+    user.firstName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // input message
+  // Input message
   const handleSubmitMessage = (event) => {
     event.preventDefault();
 
     if (inputMessage.trim()) {
       const newMessage = {
         text: inputMessage,
-        senderID: loggedUser?.id, // the currently logged in student
+        senderID: loggedUser?.id,
         recipientID: selectedUser?.id,
         timestamp: new Date().toISOString(),
       };
@@ -157,35 +179,28 @@ export default function Chat() {
     }
   };
 
-  // new student
+  // New student
   const handleNewStudent = (event) => {
     event.preventDefault();
     setNewStudent(inputNewStudent);
   };
 
-  // handle first message -> add student to the list of students who have been messaged, send the message >>> TO BE CHECKED!!!
+  // Handle first message -> Add user to chat and send the message
   const handleFirstMessage = (event) => {
     event.preventDefault(); // Prevent default form submission behavior
 
-    // Check if the input message is not empty
     if (inputMessage.trim()) {
-      // Create a new message object
       const newMessage = {
         text: inputMessage,
-        senderID: loggedUser?.id, // The currently logged-in student
-        recipientID: selectedUser?.id, // The selected user
+        senderID: loggedUser?.id,
+        recipientID: selectedUser?.id,
         timestamp: new Date().toISOString(),
       };
 
       console.log("New Message Data:", newMessage);
 
-      // Update the messages state with the new message
       setMessages((prevMessages) => [...prevMessages, newMessage]);
 
-      // Optionally, add the selected user to a list of students who have been messaged
-      // Example: addToMessagedStudents(selectedUser.id);
-
-      // Clear the input field after sending the message
       setInputMessage("");
     }
   };
@@ -244,26 +259,26 @@ export default function Chat() {
 
           {/* List */}
           <div className="w-full flex-grow overflow-scroll">
-            {filteredStudents.map((student, index) => (
+            {filteredUsers.map((user, index) => (
               <div
-                key={student.id}
+                key={user.id}
                 className={`w-full h-24 px-4 flex flex-row items-center gap-x-1.5 hover:bg-gray-100 rounded-lg cursor-pointer ${
-                  selectedUser?.id === student.id ? "bg-gray-100" : ""
+                  selectedUser?.id === user.id ? "bg-gray-100" : ""
                 }`}
-                onClick={() => handleSelectStudent(student)}
+                onClick={() => handleSelectUser(user)}
               >
                 <div>
                   <img
-                    src={student.image}
+                    src={user.image}
                     alt="randomperson"
                     className="rounded-full h-[65px] w-[65px] mx-3"
                   />
                 </div>
                 <div>
                   <h1 className="text-lg font-semibold">
-                    {student.firstName} {student.lastName}
+                    {user.firstName} {user.lastName}
                   </h1>
-                  <p className="text-sm text-gray-400">{student.idNumber}</p>
+                  <p className="text-sm text-gray-400">{user.idNumber}</p>
                 </div>
               </div>
             ))}
@@ -360,7 +375,7 @@ export default function Chat() {
               <div className="w-full h-16 px-3 border-b shadow-sm flex items-center gap-x-3">
                 <div className="w-full flex flex-row items-center">
                   <h1 className="text-sm">To:</h1>
-                  {/* MISSING FUNCTION, DROP DOWN OF ALL STUDENTS */}
+                  {/* MISSING FUNCTION, DROP DOWN OF ALL userS */}
                   <div className="w-full">
                     <form onSubmit={handleNewStudent}>
                       <input
