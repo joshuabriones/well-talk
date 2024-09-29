@@ -13,8 +13,8 @@ export default function Notifications() {
 	const [count, setCount] = useState(0);
 
 	useEffect(() => {
-		const fetchStudentProfile = async () => {
-			if (userSession && !user) {
+		if (userSession?.role === "student") {
+			const fetchStudentProfile = async () => {
 				try {
 					const response = await fetch(
 						`${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`,
@@ -37,13 +37,35 @@ export default function Notifications() {
 				} catch (error) {
 					console.error("Error fetching student profile:", error);
 				}
-			}
-		};
 
-		console.log("Fetching student profile in notifications!");
+				fetchStudentProfile();
+			};
+		}
 
-		if (userSession && !user) {
-			fetchStudentProfile();
+		if (userSession?.role === "counselor") {
+			const fetchCounselorProfile = async () => {
+				try {
+					const response = await fetch(
+						`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_ID}${userSession.id}`,
+						{
+							method: "GET",
+							headers: {
+								"Content-Type": "application/json",
+								Authorization: `Bearer ${Cookies.get("token")}`,
+							},
+						}
+					);
+					if (!response.ok) {
+						throw new Error("Failed to fetch posts");
+					}
+					const data = await response.json();
+					setUser(data);
+				} catch (error) {
+					console.error("Error fetching posts:", error);
+				}
+			};
+
+			fetchCounselorProfile();
 		}
 	}, []);
 
@@ -78,7 +100,6 @@ export default function Notifications() {
 
 		fetchNotifications();
 		setCount((prevCount) => prevCount + 1);
-		console.log("It is fetching notifications.");
 	}, []);
 
 	console.log("User session: ", userSession);
@@ -109,20 +130,41 @@ export default function Notifications() {
 		const senderName = notification?.sender?.firstName + " " + notification?.sender?.lastName;
 		const date = notifDateFormatter(notification?.appointment?.appointmentDate);
 		const time = notifTimeFormatter(notification?.appointment?.appointmentStartTime);
+		const appointedStudent =
+			notification?.appointment?.student?.firstName +
+			" " +
+			notification?.appointment?.student?.lastName;
 
-		switch (type) {
-			case "appointment":
-				if (notification?.sender?.id === notification?.receiver?.id) {
-					text = `You have scheduled an appointment for ${date} at ${time}.`;
-				} else {
-					text = `Counselor ${senderName} has scheduled an appointment with you on ${date} at ${time}.`;
-				}
+		if (user?.role === "student") {
+			switch (type) {
+				case "appointment":
+					if (notification?.sender?.id === notification?.receiver?.id) {
+						text = `You have scheduled an appointment for ${date} at ${time}.`;
+					} else {
+						text = `Counselor ${senderName} has scheduled an appointment with you on ${date} at ${time}.`;
+					}
 
-				break;
+					break;
+			}
+		}
+
+		if (user?.role === "counselor") {
+			switch (type) {
+				case "appointment":
+					if (notification?.sender?.role === "student") {
+						text = `Student ${senderName} has scheduled an appointment with you on ${date} at ${time}.`;
+						break;
+					} else if (notification?.sender?.id === userSession?.id) {
+						text = `You have scheduled an appointment for ${appointedStudent} on ${date} at ${time}.`;
+						break;
+					}
+			}
 		}
 
 		return text;
 	};
+
+	console.log("User: ", user);
 
 	const notifDateFormatter = (dateInput) => {
 		const options = { year: "numeric", month: "long", day: "numeric" };

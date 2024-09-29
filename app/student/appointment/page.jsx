@@ -279,8 +279,7 @@ const Appointment = () => {
 				if (response.ok) {
 					toast.success("Notification created successfully");
 				} else {
-					// Handle non-200 responses here
-					const errorData = await response.json(); // Get error details
+					const errorData = await response.json();
 					console.error("Error creating notification:", errorData);
 					toast.error("Failed to create notification: " + errorData.message);
 				}
@@ -314,8 +313,6 @@ const Appointment = () => {
 				const appointmentData = await response.json();
 				const appointmentId = response.headers.get("Appointment-Id");
 
-				console.log("Appointment Id: ", appointmentData.appointmentId);
-				console.log("Receiver Id: ", userSession.id);
 				createNotification({
 					receiverId: userSession.id,
 					appointmentId: appointmentData.appointmentId,
