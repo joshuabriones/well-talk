@@ -1,3 +1,5 @@
+"use client";
+
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
@@ -8,6 +10,7 @@ export default function Notifications() {
 
 	const [user, setUser] = useState(null);
 	const [notifications, setNotifications] = useState([]);
+	const [count, setCount] = useState(0);
 
 	useEffect(() => {
 		const fetchStudentProfile = async () => {
@@ -37,8 +40,12 @@ export default function Notifications() {
 			}
 		};
 
-		fetchStudentProfile();
-	}, [userSession, user]);
+		console.log("Fetching student profile in notifications!");
+
+		if (userSession && !user) {
+			fetchStudentProfile();
+		}
+	}, []);
 
 	useEffect(() => {
 		const fetchNotifications = async () => {
@@ -70,9 +77,12 @@ export default function Notifications() {
 		};
 
 		fetchNotifications();
-	}, [userSession]);
+		setCount((prevCount) => prevCount + 1);
+		console.log("It is fetching notifications.");
+	}, []);
 
-	// console.log("User Session: ", userSession);
+	console.log("User session: ", userSession);
+	console.log("count: ", count);
 
 	const dateFormatter = (dateString) => {
 		const givenDate = new Date(dateString);
@@ -93,6 +103,41 @@ export default function Notifications() {
 		}
 	};
 
+	const generateNotification = (notification) => {
+		let text = "";
+		const type = notification?.type;
+		const senderName = notification?.sender?.firstName + " " + notification?.sender?.lastName;
+		const date = notifDateFormatter(notification?.appointment?.appointmentDate);
+		const time = notifTimeFormatter(notification?.appointment?.appointmentStartTime);
+
+		switch (type) {
+			case "appointment":
+				if (notification?.sender?.id === notification?.receiver?.id) {
+					text = `You have scheduled an appointment for ${date} at ${time}.`;
+				} else {
+					text = `Counselor ${senderName} has scheduled an appointment with you on ${date} at ${time}.`;
+				}
+
+				break;
+		}
+
+		return text;
+	};
+
+	const notifDateFormatter = (dateInput) => {
+		const options = { year: "numeric", month: "long", day: "numeric" };
+		const date = new Date(dateInput);
+		return date.toLocaleDateString(undefined, options);
+	};
+
+	const notifTimeFormatter = (timeString) => {
+		const [time] = timeString.split(":");
+		const hour = Number(time);
+		const period = hour < 12 ? "AM" : "PM";
+		const formattedHour = hour % 12 || 12;
+		return `${formattedHour}:00 ${period}`;
+	};
+
 	return (
 		<div className="bg-white absolute z-10 w-full max-w-lg md:max-w-xl h-[50vh] top-16 right-0 md:right-44 md:top-14 rounded-lg drop-shadow-2xl flex flex-col">
 			{/* Header */}
@@ -105,7 +150,7 @@ export default function Notifications() {
 
 			{/* Notification List */}
 			<div className="flex flex-grow flex-col overflow-y-auto">
-				{notifications.map((notification, key) => (
+				{notifications?.map((notification, key) => (
 					<div
 						className="flex flex-row px-3 py-4 md:px-5 md:py-5 group hover:bg-zinc-100 "
 						key={key}
@@ -113,7 +158,7 @@ export default function Notifications() {
 						{/* Avatar */}
 						<div className="w-1/6 md:w-2/12 flex justify-center items-center">
 							<img
-								src={user?.image}
+								src={notification?.sender?.image}
 								alt="Avatar"
 								className="rounded-full h-10 w-10 md:h-12 md:w-12"
 							/>
@@ -121,7 +166,7 @@ export default function Notifications() {
 
 						{/* Notification Text */}
 						<div className="w-4/6 md:w-9/12 md:pl-4 flex flex-col justify-center text-xs md:text-sm text-gray-700">
-							<div>{notification?.message}</div>
+							<div>{generateNotification(notification)}</div>
 							<div className="text-xs text-zinc-400 italic mt-1">
 								{dateFormatter(notification?.date)}
 							</div>
