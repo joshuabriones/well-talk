@@ -171,7 +171,7 @@ const Appointment = () => {
 		setIsViewAppointment(true);
 	};
 
-	const timeSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "1:00", "2:00", "3:00", "4:00"];
+	const timeSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
 
 	// Helper function to check if a time slot is taken
 	const isTimeSlotTaken = (time) => {
@@ -216,12 +216,26 @@ const Appointment = () => {
 		return `${endHours}:${endMinutes} ${endPeriod}`;
 	};
 
+	const convertTo24HourFormat = (time) => {
+		let [hours, minutes] = time.split(":").map(Number);
+		const period = time.includes("PM") ? "PM" : "AM";
+
+		if (period === "PM" && hours < 12) {
+			hours += 12;
+		} else if (period === "AM" && hours === 12) {
+			hours = 0;
+		}
+
+		return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+	};
+
 	const handleTimeSlotClick = (time) => {
 		if (!isTimeSlotTaken(time)) {
 			setSelectedTime(time); // Update the selected time
 			setSelectedTimeSlot(time);
 			const duration = "1:00"; // Duration to add
-			setEndTime(addTime(selectedTime, duration));
+			const endTime = addTime(time, duration);
+			setEndTime(endTime);
 			toast.success(`Time slot selected: ${timeFormatter(time)}`);
 		}
 	};
@@ -283,8 +297,8 @@ const Appointment = () => {
 					},
 					body: JSON.stringify({
 						appointmentDate: appointmentDate,
-						appointmentStartTime: selectedTime,
-						appointmentEndTime: endTime,
+						appointmentStartTime: convertTo24HourFormat(selectedTime),
+						appointmentEndTime: convertTo24HourFormat(endTime),
 						appointmentType: appointmentType,
 						appointmentPurpose: purpose,
 					}),
@@ -315,6 +329,32 @@ const Appointment = () => {
 			setIsLoading(false);
 		}
 	};
+
+	function timeFormatter(time) {
+		let [hours, minutes] = time.split(":").map(Number);
+		let period = "AM";
+
+		if (hours >= 12) {
+			period = "PM";
+			if (hours > 12) {
+				hours -= 12;
+			}
+		} else if (hours === 0) {
+			hours = 12;
+		}
+
+		// Handle cases where minutes might be missing
+		if (isNaN(minutes)) {
+			minutes = 0;
+		}
+
+		// Ensure 1:00 to 4:00 are PM
+		if (hours >= 1 && hours <= 4) {
+			period = "PM";
+		}
+
+		return `${hours}:${minutes.toString().padStart(2, "0")} ${period}`;
+	}
 
 	const formatDateCalendar = (date) => {
 		const year = date.getFullYear();
@@ -377,21 +417,19 @@ const Appointment = () => {
 				<div>
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isAddAppointment
-									? "bg-maroon text-white"
-									: "border-2 border-maroon text-maroon"
-							}`}
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
+								? "bg-maroon text-white"
+								: "border-2 border-maroon text-maroon"
+								}`}
 							onClick={handleAddAppointmentClick}
 						>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isViewAppointment
-									? "bg-maroon text-white"
-									: "border-2 border-maroon text-maroon"
-							}`}
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
+								? "bg-maroon text-white"
+								: "border-2 border-maroon text-maroon"
+								}`}
 							onClick={handleViewAppointmentClick}
 						>
 							View Appointments
@@ -443,9 +481,9 @@ const Appointment = () => {
 													<p className="truncate">
 														{appointment.appointmentPurpose.length > 50
 															? `${appointment.appointmentPurpose.substring(
-																	0,
-																	40
-															  )}...`
+																0,
+																40
+															)}...`
 															: appointment.appointmentPurpose}
 													</p>
 												</td>
@@ -455,15 +493,15 @@ const Appointment = () => {
 													>
 														{appointment &&
 															appointment.appointmentStatus ===
-																"Pending" &&
+															"Pending" &&
 															"🟡"}
 														{appointment &&
 															appointment.appointmentStatus ===
-																"Done" &&
+															"Done" &&
 															"🟢"}
 														{appointment &&
 															appointment.appointmentStatus ===
-																"Assigned" &&
+															"Assigned" &&
 															"🔵"}
 														<span className="ml-2 text-bold text-sm">
 															{appointment
@@ -512,9 +550,8 @@ const Appointment = () => {
 										].map((_, index) => (
 											<button
 												key={index}
-												className={`join-item btn ${
-													currentPage === index + 1 ? "btn-active" : ""
-												}`}
+												className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
+													}`}
 												onClick={() => setCurrentPage(index + 1)}
 											>
 												{index + 1}
@@ -569,13 +606,12 @@ const Appointment = () => {
 												key={index}
 												disabled={isTimeSlotTaken(time)}
 												onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-												className={`time-slot-button ${
-													isTimeSlotTaken(time)
-														? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
-														: time === selectedTimeSlot
+												className={`time-slot-button ${isTimeSlotTaken(time)
+													? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
+													: time === selectedTimeSlot
 														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
 														: "bg-maroon text-white hover:bg-maroon duration-300"
-												}  py-2 px-3 rounded-md`}
+													}  py-2 px-3 rounded-md`}
 											>
 												{timeFormatter(time)}
 											</button>
@@ -687,9 +723,9 @@ const Appointment = () => {
 					selectedID={selectedID}
 					appointments={appointments}
 
-					// TO BE ADDED
-					// handleRescedule={handleReschedule}
-					// handleUpdateStatus={handleUpdateStatus}
+				// TO BE ADDED
+				// handleRescedule={handleReschedule}
+				// handleUpdateStatus={handleUpdateStatus}
 				></StudentModalAppointmentInfo>
 			)}
 
