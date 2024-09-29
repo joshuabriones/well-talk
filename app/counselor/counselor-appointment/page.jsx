@@ -207,7 +207,7 @@ const Appointment = () => {
 		setIsViewAppointment(true);
 	};
 
-	const timeSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "1:00", "2:00", "3:00", "4:00"];
+	const timeSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
 
 	// Helper function to check if a time slot is taken
 	const isTimeSlotTaken = (time) => {
@@ -252,6 +252,19 @@ const Appointment = () => {
 		return `${endHours}:${endMinutes} ${endPeriod}`;
 	};
 
+	const convertTo24HourFormat = (time) => {
+		let [hours, minutes] = time.split(":").map(Number);
+		const period = time.includes("PM") ? "PM" : "AM";
+
+		if (period === "PM" && hours < 12) {
+			hours += 12;
+		} else if (period === "AM" && hours === 12) {
+			hours = 0;
+		}
+
+		return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+	};
+
 	const handleTimeSlotClick = (time) => {
 		if (!isTimeSlotTaken(time)) {
 			setSelectedTime(time); // Update the selected time
@@ -275,7 +288,7 @@ const Appointment = () => {
 			const date = notifDateFormatter(details.appointmentDate);
 			const time = notifTimeFormatter(details.appointmentStartTime);
 
-			const notif_message = `You have scheduled an appointment for Bomba Ding on at ${date} at ${time}.`;
+			const notif_message = `An appointment scheduled for ${date} at ${time} has been created.`;
 			const notif_type = "appointment";
 
 			try {
@@ -319,25 +332,21 @@ const Appointment = () => {
 					},
 					body: JSON.stringify({
 						appointmentDate: appointmentDate,
-						appointmentStartTime: selectedTime,
+						appointmentStartTime: convertTo24HourFormat(selectedTime),
+						appointmentEndTime: convertTo24HourFormat(endTime),
 						appointmentType: appointmentType,
 						appointmentPurpose: purpose,
 					}),
 				}
 			);
 
-			const responseData = await response.json();
-
 			if (response.ok) {
-				toast.success("Appointment has been set successfully");
+				toast.success("Appointment created successfully");
 				generateNotification({
 					senderId: userSession.id,
 					appointmentDate: appointmentDate,
 					appointmentStartTime: selectedTime,
 				});
-			} else {
-				console.error("Error setting appointment:", responseData);
-				toast.error("Failed to set appointment");
 			}
 
 			setPurpose("");
@@ -346,17 +355,42 @@ const Appointment = () => {
 			fetchAppointmentsOnThatDate();
 			setIsAddAppointment(false);
 			setIsViewAppointment(true);
-			setSelectedStudent(null);
-			setSelectedStudentId(null);
 			setSelectedTime("");
 			setSelectedTimeSlot(null);
 		} catch (error) {
-			console.error("Error setting appointment:", error);
-			toast.error("Failed to set appointment");
+			console.log(error);
+			toast.error("Failed to create appointment");
 		} finally {
 			setIsLoading(false);
 		}
 	};
+
+	function timeFormatter(time) {
+		let [hours, minutes] = time.split(":").map(Number);
+		let period = "AM";
+
+		if (hours >= 12) {
+			period = "PM";
+			if (hours > 12) {
+				hours -= 12;
+			}
+		} else if (hours === 0) {
+			hours = 12;
+		}
+
+		// Handle cases where minutes might be missing
+		if (isNaN(minutes)) {
+			minutes = 0;
+		}
+
+		// Ensure 1:00 to 4:00 are PM
+		if (hours >= 1 && hours <= 4) {
+			period = "PM";
+		}
+
+		return `${hours}:${minutes.toString().padStart(2, "0")} ${period}`;
+	}
+
 
 	const formatDateCalendar = (date) => {
 		const year = date.getFullYear();
@@ -413,21 +447,19 @@ const Appointment = () => {
 				<div>
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isAddAppointment
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
 									? "bg-maroon text-white"
 									: "bg-white border-2 border-maroon text-maroon"
-							}`}
+								}`}
 							onClick={handleAddAppointmentClick}
 						>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isViewAppointment
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
 									? "bg-maroon text-white"
 									: "bg-white border-2 border-maroon text-maroon"
-							}`}
+								}`}
 							onClick={handleViewAppointmentClick}
 						>
 							View Appointments
@@ -502,9 +534,9 @@ const Appointment = () => {
 												<p>
 													{appointments?.appointmentPurpose?.length > 50
 														? `${appointments?.appointmentPurpose?.substring(
-																0,
-																40
-														  )}...`
+															0,
+															40
+														)}...`
 														: appointments?.appointmentPurpose}
 												</p>
 											</td>
@@ -514,14 +546,14 @@ const Appointment = () => {
 												>
 													{appointments &&
 														appointments.appointmentStatus ===
-															"Pending" &&
+														"Pending" &&
 														"🟡"}
 													{appointments &&
 														appointments.appointmentStatus === "Done" &&
 														"🟢"}
 													{appointments &&
 														appointments.appointmentStatus ===
-															"Assigned" &&
+														"Assigned" &&
 														"🔵"}
 													<span className="ml-2 text-bold text-sm">
 														{appointments
@@ -574,9 +606,8 @@ const Appointment = () => {
 									].map((_, index) => (
 										<button
 											key={index}
-											className={`join-item btn ${
-												currentPage === index + 1 ? "btn-active" : ""
-											}`}
+											className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
+												}`}
 											onClick={() => setCurrentPage(index + 1)}
 										>
 											{index + 1}
@@ -630,13 +661,12 @@ const Appointment = () => {
 												key={index}
 												disabled={isTimeSlotTaken(time)}
 												onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-												className={`time-slot-button ${
-													isTimeSlotTaken(time)
+												className={`time-slot-button ${isTimeSlotTaken(time)
 														? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
 														: time === selectedTimeSlot
-														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-														: "bg-maroon text-white hover:bg-primary-green-dark duration-300"
-												}  py-2 px-3 rounded-md`}
+															? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+															: "bg-maroon text-white hover:bg-primary-green-dark duration-300"
+													}  py-2 px-3 rounded-md`}
 											>
 												{timeFormatter(time)}
 											</button>
@@ -670,11 +700,10 @@ const Appointment = () => {
 													setSelectedStudentId(student.id);
 													setSelectedStudent(student.id); // Update the selected student
 												}}
-												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${
-													selectedStudent === student.id
+												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${selectedStudent === student.id
 														? "bg-white border-2 border-maroon text-maroon font-semibold"
 														: "text-white" // Apply a different style to the selected student
-												}`}
+													}`}
 												key={student.id}
 											>
 												{student.idNumber} ⸺ {student.firstName}{" "}
@@ -769,9 +798,9 @@ const Appointment = () => {
 					setAppointments={setAppointments}
 					fetchAppointments={fetchAppointments}
 					role="counselor"
-					// TO BE ADDED
-					// handleRescedule={handleReschedule}
-					// handleUpdateStatus={handleUpdateStatus}
+				// TO BE ADDED
+				// handleRescedule={handleReschedule}
+				// handleUpdateStatus={handleUpdateStatus}
 				></ModalAppointmentInfo>
 			)}
 
