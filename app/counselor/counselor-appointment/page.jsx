@@ -119,9 +119,9 @@ const Appointment = () => {
 		fetchAppointmentsOnThatDate();
 	}, [appointmentDate]);
 
-	const fetchAppointmentsOnThatDate = async () => {
+	const fetchAppointmentsOnThatDate = async (counselorId) => {
 		const response = await fetch(
-			`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE}${appointmentDate}`,
+			`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE_AND_COUNSELOR}${appointmentDate}&counselorId=${userSession.id}`,
 			{
 				headers: {
 					"Content-Type": "application/json",
@@ -130,8 +130,23 @@ const Appointment = () => {
 			}
 		);
 		const data = await response.json();
+		console.log("Appointments on that date: ", data);
 		setAppointmentOnThatDate(data);
 	};
+
+	useEffect(() => {
+		if (userSession && userSession.counselorId) {
+			fetchAppointmentsOnThatDate(userSession.counselorId);
+		}
+	}, [appointmentDate, userSession]);
+
+
+	useEffect(() => {
+		if (userSession && userSession.counselorId) {
+			fetchAppointmentsOnThatDate(userSession.counselorId);
+		}
+	}, [appointmentDate, userSession]);
+
 
 	const formatDate = (date) => {
 		const dateObject = new Date(date);
@@ -268,13 +283,13 @@ const Appointment = () => {
 	const handleTimeSlotClick = (time) => {
 		if (!isTimeSlotTaken(time)) {
 			setSelectedTime(time); // Update the selected time
-			setSelectedTimeSlot(time); // Update the selected time slot
+			setSelectedTimeSlot(time);
 			const duration = "1:00"; // Duration to add
-			setEndTime(addTime(selectedTime, duration));
+			const endTime = addTime(time, duration);
+			setEndTime(endTime);
 			toast.success(`Time slot selected: ${timeFormatter(time)}`);
 		}
 	};
-
 	const handleAppointmentSubmit = async () => {
 		// Open the confirm response modal
 		setConfirmResponseModal(true);
@@ -448,8 +463,8 @@ const Appointment = () => {
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
 							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
-									? "bg-maroon text-white"
-									: "bg-white border-2 border-maroon text-maroon"
+								? "bg-maroon text-white"
+								: "bg-white border-2 border-maroon text-maroon"
 								}`}
 							onClick={handleAddAppointmentClick}
 						>
@@ -457,8 +472,8 @@ const Appointment = () => {
 						</button>
 						<button
 							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
-									? "bg-maroon text-white"
-									: "bg-white border-2 border-maroon text-maroon"
+								? "bg-maroon text-white"
+								: "bg-white border-2 border-maroon text-maroon"
 								}`}
 							onClick={handleViewAppointmentClick}
 						>
@@ -662,10 +677,10 @@ const Appointment = () => {
 												disabled={isTimeSlotTaken(time)}
 												onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
 												className={`time-slot-button ${isTimeSlotTaken(time)
-														? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
-														: time === selectedTimeSlot
-															? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-															: "bg-maroon text-white hover:bg-primary-green-dark duration-300"
+													? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
+													: time === selectedTimeSlot
+														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+														: "bg-maroon text-white hover:bg-primary-green-dark duration-300"
 													}  py-2 px-3 rounded-md`}
 											>
 												{timeFormatter(time)}
@@ -701,8 +716,8 @@ const Appointment = () => {
 													setSelectedStudent(student.id); // Update the selected student
 												}}
 												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${selectedStudent === student.id
-														? "bg-white border-2 border-maroon text-maroon font-semibold"
-														: "text-white" // Apply a different style to the selected student
+													? "bg-white border-2 border-maroon text-maroon font-semibold"
+													: "text-white" // Apply a different style to the selected student
 													}`}
 												key={student.id}
 											>
