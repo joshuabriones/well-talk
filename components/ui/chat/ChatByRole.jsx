@@ -20,7 +20,7 @@ export default function ChatByRole() {
 
 		const intervalId = setInterval(() => {
 			fetchSession();
-		}, 5000);
+		});
 
 		return () => clearInterval(intervalId);
 	}, []);

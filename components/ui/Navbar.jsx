@@ -93,7 +93,8 @@ function ProfileMenu() {
 		<div>
 			<button
 				onClick={() => setIsMenuOpen((prev) => !prev)}
-				className="flex items-center gap-2 rounded-full py-3 pr-2 mr-6  md:mr-20 pl-0.5 lg:ml-auto">
+				className="flex items-center gap-2 rounded-full py-3 pr-2 mr-6  md:mr-20 pl-0.5 lg:ml-auto"
+			>
 				<img
 					src={userData?.image}
 					alt="Profile"
@@ -101,12 +102,11 @@ function ProfileMenu() {
 				/>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					className={`h-4 w-4 transition-transform ${
-						isMenuOpen ? "rotate-180" : ""
-					}`}
+					className={`h-4 w-4 transition-transform ${isMenuOpen ? "rotate-180" : ""}`}
 					fill="none"
 					viewBox="0 0 24 24"
-					stroke="currentColor">
+					stroke="currentColor"
+				>
 					<path
 						strokeLinecap="round"
 						strokeLinejoin="round"
@@ -122,10 +122,9 @@ function ProfileMenu() {
 							key={index}
 							onClick={action || (() => setIsMenuOpen(false))}
 							className={`block px-4 py-2 text-sm  ${
-								index === profileMenuItems.length - 1
-									? "rounded-b-lg"
-									: ""
-							}`}>
+								index === profileMenuItems.length - 1 ? "rounded-b-lg" : ""
+							}`}
+						>
 							{label}
 						</button>
 					))}
@@ -171,22 +170,20 @@ function NavList({ userType }) {
 	return (
 		<ul className="mt-2 mb-4 flex flex-col gap-6 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center font-Merriweather font-bold text-lg lg:text-xl mr-8">
 			{navigationItems.map((item, index) => (
-				<li
-					key={index}
-					className="group">
+				<li key={index} className="group">
 					<a
 						onClick={() => router.push(item.route)}
 						className={`relative text-base font-medium text-gray hover:text-maroon cursor-pointer transition-colors duration-300 ${
 							router.asPath === item.route ? "text-maroon" : ""
 						}`}
-						style={{ textDecoration: "none" }}>
+						style={{ textDecoration: "none" }}
+					>
 						{item.label}
 						<span
 							className={`absolute bottom-[-6px] left-0 h-[2px] w-full bg-maroon scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ease-in-out ${
-								router.asPath === item.route
-									? "scale-x-100"
-									: ""
-							}`}></span>
+								router.asPath === item.route ? "scale-x-100" : ""
+							}`}
+						></span>
 					</a>
 				</li>
 			))}
@@ -195,8 +192,7 @@ function NavList({ userType }) {
 }
 
 export function Navbar({ userType }) {
-	const { showNotifications, setShowNotifications } =
-		useContext(GlobalContext);
+	const { showNotifications, setShowNotifications } = useContext(GlobalContext);
 
 	const [isNavOpen, setIsNavOpen] = useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
@@ -205,8 +201,6 @@ export function Navbar({ userType }) {
 	const toggleVisibility = () => {
 		setIsVisible(!isVisible);
 	};
-
-	console.log("showNotifications: ", showNotifications);
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -229,9 +223,7 @@ export function Navbar({ userType }) {
 		top: 0,
 		left: 0,
 		width: "100%",
-		backgroundColor: isScrolled
-			? "rgba(255, 255, 255, 0.9)"
-			: "transparent",
+		backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.9)" : "transparent",
 		backdropFilter: isScrolled ? "blur(10px)" : "none", // Add backdrop-filter for blurriness
 		zIndex: 50,
 		transition: "background-color 0.3s ease, backdrop-filter 0.3s ease", // Transition for backdrop-filter
@@ -241,7 +233,8 @@ export function Navbar({ userType }) {
 		<nav
 			id="navbar"
 			style={navbarStyles}
-			className="mx-auto max-w-screen-auto p-2 lg:pl-6 w-full">
+			className="mx-auto max-w-screen-auto p-2 lg:pl-6 w-full"
+		>
 			<div className="relative mx-auto flex items-center justify-between text-gray">
 				<button
 					onClick={() => {
@@ -249,7 +242,8 @@ export function Navbar({ userType }) {
 						toggleVisibility();
 					}}
 					className="ml-8 lg:hidden p-2 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-maroon transition duration-300"
-					aria-label="Toggle navigation menu">
+					aria-label="Toggle navigation menu"
+				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
@@ -258,7 +252,8 @@ export function Navbar({ userType }) {
 						stroke="currentColor"
 						className={`h-8 w-8 text-blue-gray-900 transform transition-transform duration-300 ease-in-out ${
 							isNavOpen ? "rotate-90" : "rotate-0"
-						}`}>
+						}`}
+					>
 						<path
 							strokeLinecap="round"
 							strokeLinejoin="round"
@@ -278,7 +273,8 @@ export function Navbar({ userType }) {
 							style={{
 								textShadow:
 									"-0.25px -0.25px 0 #000, 0.25px -0.25px 0 #000, -0.25px 0.25px 0 #000, 0.25px 0.25px 0 #000",
-							}}>
+							}}
+						>
 							Well
 						</span>
 						<span
@@ -286,23 +282,22 @@ export function Navbar({ userType }) {
 							style={{
 								textShadow:
 									"-0.25px -0.25px 0 #000, 0.25px -0.25px 0 #000, -0.25px 0.25px 0 #000, 0.25px 0.25px 0 #000",
-							}}>
+							}}
+						>
 							Talk
 						</span>
 					</h1>
 				</div>
 
 				<div className="hidden lg:block flex items-center gap-8 lg:ml-auto ">
-					<NavList
-						userType={userType}
-						router={useRouter()}
-					/>
+					<NavList userType={userType} router={useRouter()} />
 				</div>
 				<div
 					className="ml-44 md:ml-0 lg:ml-0 md:mr-6 lg:mr-6 hover:animate-bell flex justify-end items-end"
 					onClick={() => {
 						setShowNotifications(!showNotifications);
-					}}>
+					}}
+				>
 					<motion.img
 						src="/images/bellll.png"
 						className="w-9 h-9 md:w-9 md:h-9 rounded-2xl cursor-pointer"
@@ -324,9 +319,9 @@ export function Navbar({ userType }) {
 					<motion.div
 						className={`bg-white bg-opacity-50 lg:hidden backdrop-blur-lg p-4`}
 						initial={{ opacity: 0, translateY: -20 }}
-						animate={{ opacity: 1, translateY: 0 }} 
-						exit={{ opacity: 0, translateY: -20 }} 
-						transition={{ duration: 0.5 }} 
+						animate={{ opacity: 1, translateY: 0 }}
+						exit={{ opacity: 0, translateY: -20 }}
+						transition={{ duration: 0.5 }}
 					>
 						<NavList userType={userType} />
 					</motion.div>

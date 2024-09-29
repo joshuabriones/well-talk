@@ -4,6 +4,7 @@ import ScrollAnimationWrapper from "@/components/layout/ScrollAnimationWrapper";
 import Load from "@/components/Load";
 import FullButton from "@/components/ui/buttons/FullButton";
 import TextInput from "@/components/ui/inputs/TextInput";
+import TermsAndCondition from "@/components/TermsAndCondition";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import ModalRegistrationSuccessful from "@/components/ui/modals/ModalRegistrationSuccessful";
 import ModalTermsUnchecked from "@/components/ui/modals/ModalTermsUnchecked";
@@ -890,6 +891,9 @@ const Registration = () => {
                         checked={termsAccepted}
                         onChange={handleTermsChange}
                         disabled={!role}
+                        onClick={() =>
+                          document.getElementById("my_modal_3").showModal()
+                        }
                         className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
                       />
                       <label className="text-sm font-bold text-gray-700">
@@ -901,6 +905,11 @@ const Registration = () => {
                           terms and conditions
                         </a>
                       </label>
+                      {errors.termsAccepted && (
+                        <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                          {errors.termsAccepted._errors[0]}
+                        </p>
+                      )}
                     </div>
 
                     <div className="flex flex-col w-full mt-7">
@@ -925,6 +934,19 @@ const Registration = () => {
                 </form>
               </div>
             </div>
+
+            {/* Terms and Condition Modal */}
+            <dialog id="my_modal_3" className="modal">
+              <div className="modal-box overflow-scroll">
+                <form method="dialog">
+                  {/* if there is a button in form, it will close the modal */}
+                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                    ✕
+                  </button>
+                </form>
+                <TermsAndCondition />
+              </div>
+            </dialog>
           </div>
 
           {showTermsNotAccepted && (

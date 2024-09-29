@@ -1,115 +1,68 @@
 "use client";
-import { default as Load, default as LoadingState } from "@/components/Load";
-import Card from "@/components/ui/Card";
+import { default as LoadingState } from "@/components/Load";
 import CreatePostSection from "@/components/ui/CreatePost";
+import FloatingIcon from "@/components/ui/emergency/FloatingIcon";
 import Footer from "@/components/ui/Footer";
 import { Navbar } from "@/components/ui/Navbar";
+import PostCard from "@/components/ui/PostsCard";
+import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { API_ENDPOINT } from "@/lib/api";
-import FloatingIcon from "@/components/ui/emergency/FloatingIcon";
-import dynamic from "next/dynamic";
 
 const Home = () => {
-  const [selectedButton, setSelectedButton] = useState("featured");
-  const [posts, setPosts] = useState([]);
-  const [showFilterPostModal, setShowFilterModal] = useState(false);
-  const [sortPostBy, setSortPostBy] = useState("Latest");
-  const [loading, setLoading] = useState(true);
-  const userSession = getUserSession();
-  const router = useRouter();
-  const [activeTab, setActiveTab] = useState("Latest"); // Set default tab to 'Latest'
-	const [pinnedPosts, setPinnedPosts] = useState([]); // Add this line
+	const [selectedButton, setSelectedButton] = useState("featured");
+	const [posts, setPosts] = useState([]);
+	const [showFilterPostModal, setShowFilterModal] = useState(false);
+	const [sortPostBy, setSortPostBy] = useState("Latest");
+	const [loading, setLoading] = useState(true);
+	const userSession = getUserSession();
+	const router = useRouter();
+	const [activeTab, setActiveTab] = useState("Latest"); // Set default tab to 'Latest'
 
 	const handleTabClick = (tab) => {
 		setActiveTab(tab);
 	};
 
+	const fetchPosts = async () => {
+		try {
+			const response = await fetch(
+				`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_POSTS}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${Cookies.get("token")}`,
+					},
+				}
+			);
+			if (!response.ok) {
+				throw new Error("Failed to fetch posts");
+			}
+			const data = await response.json();
+			setPosts(data);
+			setLoading(false);
+		} catch (error) {
+			console.error("Error fetching posts:", error);
+			setLoading(false);
+		}
+	};
+
 	useEffect(() => {
-		// Scroll effect or other logic for pinned posts can go here
-	}, [activeTab]);
+		fetchPosts();
+	}, []);
 
-  // /* Handling unauthenticated users */
-  // if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
-  // 	return <Load route="login" />;
-  // }
+	// Filter pinned posts
+	const pinnedPosts = posts.filter((post) => post.isPinned);
 
-  // if (userSession && userSession.role !== "counselor") {
-  // 	return <Load route={userSession.role} />;
-  // }
-
-  const fetchPosts = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_POSTS}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch posts");
-      }
-      const data = await response.json();
-      setPosts(data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  // if (status === "loading" || !session) {
-  // 	return <Loading />;
-  // }
-
-  // Redirect authenticated users who are not students
-  // if (session.user.role !== "student") {
-  // 	router.push("/login");
-  // 	return null; // Prevent rendering anything if redirecting
-  // }
-
-  // const getSortedPosts = () => {
-  //   if (!Array.isArray(posts)) {
-  //     return [];
-  //   }
-
-  //   return [...posts].sort((a, b) => {
-  //     // Combine date and time into a full ISO 8601 timestamp string
-  //     const dateTimeA = new Date(`${a.postDate}T${a.postTime}`);
-  //     const dateTimeB = new Date(`${b.postDate}T${b.postTime}`);
-
-  //     if (sortPostBy === "Latest") {
-  //       // Sort by latest date and time first
-  //       return dateTimeB - dateTimeA;
-  //     } else if (sortPostBy === "Oldest") {
-  //       // Sort by oldest date and time first
-  //       return dateTimeA - dateTimeB;
-  //     } else {
-  //       // If no sort order is specified, return the posts unsorted
-  //       return posts;
-  //     }
-  //   });
-  // };
-
-  // const sortedPosts = getSortedPosts();
-
-  return (
-    <div>
-      <main className="min-h-screen">
+	return (
+		<div>
+			<main className="min-h-screen">
 				<Navbar userType="counselor" />
 
-
-        <div
+				<div
 					className="pattern-overlay pattern-left absolute -z-10"
 					style={{ transform: "scaleY(-1)", top: "-50px" }}>
 					<img
@@ -127,9 +80,8 @@ const Home = () => {
 					/>
 				</div>
 
-        {/*Posts*/}
-        <div className="flex flex-col md:flex-row py-28 px-4 md:px-12">
-					{/* Posts Section */}
+				{/* Posts Section */}
+				<div className="flex flex-col md:flex-row py-28 px-4 md:px-12">
 					<div className="md:block max-w-screen-xl mx-auto sm:px-12 lg:px-14 w-full flex-grow-2 justify-center items-center">
 						<div className="w-full bg-maroon border-2 rounded-full z-10 flex items-center justify-center sticky top-0 mb-8">
 							<div className="flex w-full justify-center">
@@ -153,37 +105,55 @@ const Home = () => {
 								</button>
 							</div>
 						</div>
-            <div className="w-full p-2 mx-auto flex-grow">
-              {loading ? (
-                <LoadingState />
-              ) : activeTab === "Latest" ? (
-								posts.length === 0 ? (
-									<p className="text-center mt-4 text-gray-500">
-										No posts yet. Come back later.
-									</p>
-								) : (
-                <CreatePostSection userSession={userSession} />
-              )
-            ) : pinnedPosts.length === 0 ? (
-								<p className="text-center mt-4 text-gray-500">
-									No pinned posts available.
-								</p>
+						<div className="w-full mx-auto flex-grow items-center">
+							{loading ? (
+								<LoadingState />
 							) : (
-								pinnedPosts.map((post) => (
-									<PinnedPostCard
-										key={post.postId}
-										post={post}
+								<>
+									<CreatePostSection
+										userSession={userSession}
 									/>
-								))
+
+									<div className="w-full p-2 mx-auto flex-grow mt-4">
+										{loading ? (
+											<LoadingState />
+										) : activeTab === "Latest" ? (
+											posts.length === 0 ? (
+												<p className="text-center mt-4 text-gray-500">
+													No posts yet. Come back
+													later.
+												</p>
+											) : (
+												posts.map((post) => (
+													<PostCard
+														key={post.postId}
+														post={post}
+													/>
+												))
+											)
+										) : pinnedPosts.length === 0 ? (
+											<p className="text-center mt-4 text-gray-500">
+												No pinned posts available.
+											</p>
+										) : (
+											pinnedPosts.map((post) => (
+												<PinnedPostCard
+													key={post.postId}
+													post={post}
+												/>
+											))
+										)}
+									</div>
+								</>
 							)}
-            </div>
-          </div>
-        </div>
-        <Footer />
-        <FloatingIcon />
-      </main>
-    </div>
-  );
+						</div>
+					</div>
+				</div>
+				<Footer />
+				<FloatingIcon />
+			</main>
+		</div>
+	);
 };
 
 export default dynamic(() => Promise.resolve(Home), { ssr: false });
