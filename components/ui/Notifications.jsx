@@ -13,59 +13,57 @@ export default function Notifications() {
 	const [count, setCount] = useState(0);
 
 	useEffect(() => {
-		if (userSession?.role === "student") {
-			const fetchStudentProfile = async () => {
-				try {
-					const response = await fetch(
-						`${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`,
-						{
-							method: "GET",
-							headers: {
-								"Content-Type": "application/json",
-								Authorization: `Bearer ${Cookies.get("token")}`,
-							},
+		const fetchProfile = async () => {
+			if (userSession && !user) {
+				if (userSession.role === "student") {
+					try {
+						const response = await fetch(
+							`${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`,
+							{
+								method: "GET",
+								headers: {
+									"Content-Type": "application/json",
+									Authorization: `Bearer ${Cookies.get("token")}`,
+								},
+							}
+						);
+
+						if (!response.ok) {
+							const errorMessage = await response.text();
+							console.error("Error fetching student profile:", errorMessage);
+							return;
 						}
-					);
-
-					if (!response.ok) {
-						const errorMessage = await response.text();
-						console.error("Error fetching student profile:", errorMessage);
-						return;
+						const data = await response.json();
+						setUser(data);
+					} catch (error) {
+						console.error("Error fetching student profile:", error);
 					}
-					const data = await response.json();
-					setUser(data);
-				} catch (error) {
-					console.error("Error fetching student profile:", error);
-				}
-
-				fetchStudentProfile();
-			};
-		}
-
-		if (userSession?.role === "counselor") {
-			const fetchCounselorProfile = async () => {
-				try {
-					const response = await fetch(
-						`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_ID}${userSession.id}`,
-						{
-							method: "GET",
-							headers: {
-								"Content-Type": "application/json",
-								Authorization: `Bearer ${Cookies.get("token")}`,
-							},
+				} else if (userSession.role === "counselor") {
+					try {
+						const response = await fetch(
+							`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_ID}${userSession.id}`,
+							{
+								method: "GET",
+								headers: {
+									"Content-Type": "application/json",
+									Authorization: `Bearer ${Cookies.get("token")}`,
+								},
+							}
+						);
+						if (!response.ok) {
+							throw new Error("Failed to fetch posts");
 						}
-					);
-					if (!response.ok) {
-						throw new Error("Failed to fetch posts");
+						const data = await response.json();
+						setUser(data);
+					} catch (error) {
+						console.error("Error fetching posts:", error);
 					}
-					const data = await response.json();
-					setUser(data);
-				} catch (error) {
-					console.error("Error fetching posts:", error);
 				}
-			};
+			}
+		};
 
-			fetchCounselorProfile();
+		if (userSession && !user) {
+			fetchProfile();
 		}
 	}, []);
 
@@ -100,6 +98,7 @@ export default function Notifications() {
 
 		fetchNotifications();
 		setCount((prevCount) => prevCount + 1);
+		console.log("It is fetching notifications.");
 	}, []);
 
 	console.log("User session: ", userSession);
@@ -130,10 +129,6 @@ export default function Notifications() {
 		const senderName = notification?.sender?.firstName + " " + notification?.sender?.lastName;
 		const date = notifDateFormatter(notification?.appointment?.appointmentDate);
 		const time = notifTimeFormatter(notification?.appointment?.appointmentStartTime);
-		const appointedStudent =
-			notification?.appointment?.student?.firstName +
-			" " +
-			notification?.appointment?.student?.lastName;
 
 		if (user?.role === "student") {
 			switch (type) {
@@ -151,13 +146,8 @@ export default function Notifications() {
 		if (user?.role === "counselor") {
 			switch (type) {
 				case "appointment":
-					if (notification?.sender?.role === "student") {
-						text = `Student ${senderName} has scheduled an appointment with you on ${date} at ${time}.`;
-						break;
-					} else if (notification?.sender?.id === userSession?.id) {
-						text = `You have scheduled an appointment for ${appointedStudent} on ${date} at ${time}.`;
-						break;
-					}
+					text = `Student ${senderName} has scheduled an appointment with you on ${date} at ${time}.`;
+					break;
 			}
 		}
 
