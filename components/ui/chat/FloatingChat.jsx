@@ -57,20 +57,31 @@ const ChatWidget = () => {
   };
 
   const fetchLoggedInUserDetails = async () => {
-    const response = await fetch(
-      `${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-      }
-    );
-
+    let apiEndpoint = "";
+  
+    // Check if the logged-in user is a student or a teacher
+    if (userSession.role === "student") {
+      apiEndpoint = `${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`;
+    } else if (userSession.role === "teacher") {
+      apiEndpoint = `${process.env.BASE_URL}${API_ENDPOINT.GET_TEACHER_BY_ID}${userSession.id}`;
+    }
+  
+    // Fetch user details from the appropriate endpoint
+    const response = await fetch(apiEndpoint, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("token")}`,
+      },
+    });
+  
+    // Parse the response data
     const data = await response.json();
+  
+    // Update the state with the fetched user details
     setLoggedInUser(data);
   };
+  
 
   const sendMessage = () => {
     if (stompClient && message.trim() !== "") {
@@ -206,7 +217,7 @@ const ChatWidget = () => {
               </div>
             </div>
           ) : (
-            <div className="relative flex items-center">
+            <div className="flex items-center">
               {/* WELLTALK LOGO DIRI */}
               <img
                 src="/images/loggoword.png"
