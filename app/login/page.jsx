@@ -217,7 +217,7 @@ const Login = () => {
 												/>
 												<div className="flex justify-end">
 													<div
-														className="text-maroon text-md font-Jaldi hover:text-green-800 cursor-pointer"
+														className="text-maroon text-md font-Jaldi hover:text-gold cursor-pointer"
 														onClick={(e) =>
 															setShowForgotPasswordModal(
 																true
