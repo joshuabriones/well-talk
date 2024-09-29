@@ -80,7 +80,7 @@ export function Navbar({ userType }) {
 					<img
 						src="/images/loggoword.png"
 						alt="WellTalk Logo"
-						className="w-16 h-15 lg:w-20 lg:h-18"
+						className="w-16 h-15 lg:w-16 lg:h-15"
 					/>
 					<h1 className="text-2xl sm:text-3xl font-bold font-Merriweather">
 						<span
