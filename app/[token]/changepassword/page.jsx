@@ -64,17 +64,26 @@ const ChangePassword = () => {
           minHeight: "100vh",
         }}
       >
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${bgChangePass.src})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center right",
-            backgroundAttachment: "fixed",
-            filter: "blur(5px)",
-            zIndex: -1,
-          }}
-        />
+       <div
+        className="absolute inset-0"
+        style={{
+          height: "100vh", 
+          position: "relative",
+          background: `radial-gradient(
+              circle at 5% 85%,
+              rgba(138, 37, 44, 0.7),
+              transparent 40%
+            ),
+            radial-gradient(
+              circle at 100% 10%,
+              rgba(244, 197, 34, 0.5),
+              transparent 40%
+            ),
+            #FFFFFF`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
 
         <ModalChangePassword token={token} />
       </div>
