@@ -360,10 +360,6 @@ const Appointment = () => {
 			if (response.ok) {
 				toast.success("Appointment created successfully");
 				const appointmentData = await response.json();
-				const appointmentId = response.headers.get("Appointment-Id");
-
-				console.log("Student ID: ", selectedStudentId);
-				console.log("Appointment data: ", appointmentData);
 
 				createNotification({
 					receiverId: selectedStudentId,

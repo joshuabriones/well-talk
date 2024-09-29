@@ -72,7 +72,7 @@ export default function Notifications() {
 			if (userSession) {
 				try {
 					const response = await fetch(
-						`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_BY_USERID}${userSession.id}`,
+						`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_STUDENTS}${userSession.id}`,
 						{
 							headers: {
 								Authorization: `Bearer ${Cookies.get("token")}`,
