@@ -171,7 +171,17 @@ const Appointment = () => {
 		setIsViewAppointment(true);
 	};
 
-	const timeSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
+	const timeSlots = [
+		"08:00",
+		"09:00",
+		"10:00",
+		"11:00",
+		"12:00",
+		"13:00",
+		"14:00",
+		"15:00",
+		"16:00",
+	];
 
 	// Helper function to check if a time slot is taken
 	const isTimeSlotTaken = (time) => {
@@ -249,13 +259,7 @@ const Appointment = () => {
 		setConfirmResponseModal(false);
 		setIsLoading(true);
 
-		const generateNotification = async (details) => {
-			const date = notifDateFormatter(details.appointmentDate);
-			const time = notifTimeFormatter(details.appointmentStartTime);
-
-			const notif_message = `An appointment scheduled for ${date} at ${time} has been created.`;
-			const notif_type = "appointment";
-
+		const createNotification = async (details) => {
 			try {
 				const response = await fetch(
 					`${process.env.BASE_URL}${API_ENDPOINT.CREATE_NOTIFICATION}${userSession.id}`,
@@ -266,8 +270,8 @@ const Appointment = () => {
 							Authorization: `Bearer ${Cookies.get("token")}`,
 						},
 						body: JSON.stringify({
-							message: notif_message,
-							type: notif_type,
+							receiverId: details.receiverId,
+							appointmentId: details.appointmentId,
 						}),
 					}
 				);
@@ -307,10 +311,14 @@ const Appointment = () => {
 
 			if (response.ok) {
 				toast.success("Appointment created successfully");
-				generateNotification({
-					senderId: userSession.id,
-					appointmentDate: appointmentDate,
-					appointmentStartTime: selectedTime,
+				const appointmentData = await response.json();
+				const appointmentId = response.headers.get("Appointment-Id");
+
+				console.log("Appointment Id: ", appointmentData.appointmentId);
+				console.log("Receiver Id: ", userSession.id);
+				createNotification({
+					receiverId: userSession.id,
+					appointmentId: appointmentData.appointmentId,
 				});
 			}
 
@@ -417,19 +425,21 @@ const Appointment = () => {
 				<div>
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
-								? "bg-maroon text-white"
-								: "border-2 border-maroon text-maroon"
-								}`}
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+								isAddAppointment
+									? "bg-maroon text-white"
+									: "border-2 border-maroon text-maroon"
+							}`}
 							onClick={handleAddAppointmentClick}
 						>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
-								? "bg-maroon text-white"
-								: "border-2 border-maroon text-maroon"
-								}`}
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+								isViewAppointment
+									? "bg-maroon text-white"
+									: "border-2 border-maroon text-maroon"
+							}`}
 							onClick={handleViewAppointmentClick}
 						>
 							View Appointments
@@ -481,9 +491,9 @@ const Appointment = () => {
 													<p className="truncate">
 														{appointment.appointmentPurpose.length > 50
 															? `${appointment.appointmentPurpose.substring(
-																0,
-																40
-															)}...`
+																	0,
+																	40
+															  )}...`
 															: appointment.appointmentPurpose}
 													</p>
 												</td>
@@ -493,15 +503,15 @@ const Appointment = () => {
 													>
 														{appointment &&
 															appointment.appointmentStatus ===
-															"Pending" &&
+																"Pending" &&
 															"🟡"}
 														{appointment &&
 															appointment.appointmentStatus ===
-															"Done" &&
+																"Done" &&
 															"🟢"}
 														{appointment &&
 															appointment.appointmentStatus ===
-															"Assigned" &&
+																"Assigned" &&
 															"🔵"}
 														<span className="ml-2 text-bold text-sm">
 															{appointment
@@ -550,8 +560,9 @@ const Appointment = () => {
 										].map((_, index) => (
 											<button
 												key={index}
-												className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
-													}`}
+												className={`join-item btn ${
+													currentPage === index + 1 ? "btn-active" : ""
+												}`}
 												onClick={() => setCurrentPage(index + 1)}
 											>
 												{index + 1}
@@ -606,12 +617,13 @@ const Appointment = () => {
 												key={index}
 												disabled={isTimeSlotTaken(time)}
 												onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-												className={`time-slot-button ${isTimeSlotTaken(time)
-													? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
-													: time === selectedTimeSlot
+												className={`time-slot-button ${
+													isTimeSlotTaken(time)
+														? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
+														: time === selectedTimeSlot
 														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
 														: "bg-maroon text-white hover:bg-maroon duration-300"
-													}  py-2 px-3 rounded-md`}
+												}  py-2 px-3 rounded-md`}
 											>
 												{timeFormatter(time)}
 											</button>
@@ -723,9 +735,9 @@ const Appointment = () => {
 					selectedID={selectedID}
 					appointments={appointments}
 
-				// TO BE ADDED
-				// handleRescedule={handleReschedule}
-				// handleUpdateStatus={handleUpdateStatus}
+					// TO BE ADDED
+					// handleRescedule={handleReschedule}
+					// handleUpdateStatus={handleUpdateStatus}
 				></StudentModalAppointmentInfo>
 			)}
 
