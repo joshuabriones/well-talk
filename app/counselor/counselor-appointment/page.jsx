@@ -50,9 +50,7 @@ const Appointment = () => {
 
 	const userSession = getUserSession();
 
-	const [appointmentDate, setAppointmentDate] = useState(
-		new Date().toISOString().split("T")[0]
-	);
+	const [appointmentDate, setAppointmentDate] = useState(new Date().toISOString().split("T")[0]);
 	const [selectedTime, setSelectedTime] = useState(""); // State to store the selected time
 	const [endTime, setEndTime] = useState(""); // State to store the end time
 	const [appointmentType, setAppointmentType] = useState(""); // State to store the selected appointment type
@@ -104,14 +102,11 @@ const Appointment = () => {
 	};
 
 	const fetchStudents = async () => {
-		const response = await fetch(
-			`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_STUDENTS}`,
-			{
-				headers: {
-					Authorization: `Bearer ${Cookies.get("token")}`,
-				},
-			}
-		);
+		const response = await fetch(`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_STUDENTS}`, {
+			headers: {
+				Authorization: `Bearer ${Cookies.get("token")}`,
+			},
+		});
 
 		if (!response.ok) {
 			console.error("Error fetching students");
@@ -200,10 +195,7 @@ const Appointment = () => {
 	// Calculate the index range of appointment to display for the current page
 	const indexOfLastInquiry = currentPage * AppointmentPerPage;
 	const indexOfFirstInquiry = indexOfLastInquiry - AppointmentPerPage;
-	const currentAppointments = appointments?.slice(
-		indexOfFirstInquiry,
-		indexOfLastInquiry
-	);
+	const currentAppointments = appointments?.slice(indexOfFirstInquiry, indexOfLastInquiry);
 
 	const handleAddAppointmentClick = () => {
 		setIsAddAppointment(true);
@@ -215,17 +207,7 @@ const Appointment = () => {
 		setIsViewAppointment(true);
 	};
 
-	const timeSlots = [
-		"08:00",
-		"09:00",
-		"10:00",
-		"11:00",
-		"12:00",
-		"1:00",
-		"2:00",
-		"3:00",
-		"4:00",
-	];
+	const timeSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "1:00", "2:00", "3:00", "4:00"];
 
 	// Helper function to check if a time slot is taken
 	const isTimeSlotTaken = (time) => {
@@ -288,6 +270,44 @@ const Appointment = () => {
 	const handleAppointmentSubmitConfirmed = async () => {
 		setConfirmResponseModal(false);
 		setIsLoading(true);
+
+		const generateNotification = async (details) => {
+			const date = notifDateFormatter(details.appointmentDate);
+			const time = notifTimeFormatter(details.appointmentStartTime);
+
+			const notif_message = `You have scheduled an appointment for Bomba Ding on at ${date} at ${time}.`;
+			const notif_type = "appointment";
+
+			try {
+				const response = await fetch(
+					`${process.env.BASE_URL}${API_ENDPOINT.CREATE_NOTIFICATION}${userSession.id}`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${Cookies.get("token")}`,
+						},
+						body: JSON.stringify({
+							message: notif_message,
+							type: notif_type,
+						}),
+					}
+				);
+
+				if (response.ok) {
+					toast.success("Notification created successfully");
+				} else {
+					// Handle non-200 responses here
+					const errorData = await response.json(); // Get error details
+					console.error("Error creating notification:", errorData);
+					toast.error("Failed to create notification: " + errorData.message);
+				}
+			} catch (error) {
+				console.error("Notification error: ", error);
+				toast.error("Failed to create notification due to an error.");
+			}
+		};
+
 		try {
 			const response = await fetch(
 				`${process.env.BASE_URL}${API_ENDPOINT.COUNSELOR_CREATE_APPOINTMENT}${userSession.id}?studentId=${selectedStudentId}`,
@@ -310,6 +330,11 @@ const Appointment = () => {
 
 			if (response.ok) {
 				toast.success("Appointment has been set successfully");
+				generateNotification({
+					senderId: userSession.id,
+					appointmentDate: appointmentDate,
+					appointmentStartTime: selectedTime,
+				});
 			} else {
 				console.error("Error setting appointment:", responseData);
 				toast.error("Failed to set appointment");
@@ -333,12 +358,25 @@ const Appointment = () => {
 		}
 	};
 
-
 	const formatDateCalendar = (date) => {
 		const year = date.getFullYear();
 		const month = String(date.getMonth() + 1).padStart(2, "0");
 		const day = String(date.getDate()).padStart(2, "0");
 		return `${year}-${month}-${day}`;
+	};
+
+	const notifDateFormatter = (dateInput) => {
+		const options = { year: "numeric", month: "long", day: "numeric" };
+		const date = new Date(dateInput);
+		return date.toLocaleDateString(undefined, options);
+	};
+
+	const notifTimeFormatter = (timeString) => {
+		const [time] = timeString.split(":");
+		const hour = Number(time);
+		const period = hour < 12 ? "AM" : "PM";
+		const formattedHour = hour % 12 || 12;
+		return `${formattedHour}:00 ${period}`;
 	};
 
 	return (
@@ -375,19 +413,23 @@ const Appointment = () => {
 				<div>
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
-								? "bg-maroon text-white"
-								: "bg-white border-2 border-maroon text-maroon"
-								}`}
-							onClick={handleAddAppointmentClick}>
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+								isAddAppointment
+									? "bg-maroon text-white"
+									: "bg-white border-2 border-maroon text-maroon"
+							}`}
+							onClick={handleAddAppointmentClick}
+						>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
-								? "bg-maroon text-white"
-								: "bg-white border-2 border-maroon text-maroon"
-								}`}
-							onClick={handleViewAppointmentClick}>
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+								isViewAppointment
+									? "bg-maroon text-white"
+									: "bg-white border-2 border-maroon text-maroon"
+							}`}
+							onClick={handleViewAppointmentClick}
+						>
 							View Appointments
 						</button>
 					</div>
@@ -408,181 +450,144 @@ const Appointment = () => {
 									</tr>
 								</thead>
 								<tbody>
-									{currentAppointments?.map(
-										(appointments) => (
-											<tr
-												key={appointments.appointmentId}
-												onClick={() =>
-													handleRowClick(
-														appointments.appointmentId
-													)
-												}
-												className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out">
-												<td className="text-center">
-													{appointments.appointmentId}
-												</td>
-												<td>
-													<div className="flex flex-row gap-x-3">
-														<div className="text-sm">
-															{formatDate(
-																appointments.appointmentDate
-															)}{" "}
+									{currentAppointments?.map((appointments) => (
+										<tr
+											key={appointments.appointmentId}
+											onClick={() =>
+												handleRowClick(appointments.appointmentId)
+											}
+											className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
+										>
+											<td className="text-center">
+												{appointments.appointmentId}
+											</td>
+											<td>
+												<div className="flex flex-row gap-x-3">
+													<div className="text-sm">
+														{formatDate(appointments.appointmentDate)}{" "}
+														{appointments.appointmentStartTime}
+													</div>
+												</div>
+											</td>
+											<td>
+												<div className="flex flex-row gap-x-3">
+													<div>{appointments.student?.idNumber}</div>
+												</div>
+											</td>
+											<td>
+												<div className="flex items-center gap-3">
+													<div className="avatar">
+														<div className="mask mask-squircle w-12 h-12">
+															<img
+																src={appointments.student?.image}
+																alt="Avatar Tailwind CSS Component"
+															/>
+														</div>
+													</div>
+													<div>
+														<div className="font-bold">
+															{appointments.student?.firstName}{" "}
+															{appointments.student?.lastName}
+														</div>
+														<div className="text-sm opacity-50">
 															{
-																appointments.appointmentStartTime
+																appointments.student
+																	?.institutionalEmail
 															}
 														</div>
 													</div>
-												</td>
-												<td>
-													<div className="flex flex-row gap-x-3">
-														<div>
-															{
-																appointments
-																	.student
-																	?.idNumber
-															}
-														</div>
-													</div>
-												</td>
-												<td>
-													<div className="flex items-center gap-3">
-														<div className="avatar">
-															<div className="mask mask-squircle w-12 h-12">
-																<img
-																	src={
-																		appointments
-																			.student
-																			?.image
-																	}
-																	alt="Avatar Tailwind CSS Component"
-																/>
-															</div>
-														</div>
-														<div>
-															<div className="font-bold">
-																{
-																	appointments
-																		.student
-																		?.firstName
-																}{" "}
-																{
-																	appointments
-																		.student
-																		?.lastName
-																}
-															</div>
-															<div className="text-sm opacity-50">
-																{
-																	appointments
-																		.student
-																		?.institutionalEmail
-																}
-															</div>
-														</div>
-													</div>
-												</td>
-												<td>
-													<p>
-														{appointments
-															?.appointmentPurpose
-															?.length > 50
-															? `${appointments?.appointmentPurpose?.substring(
+												</div>
+											</td>
+											<td>
+												<p>
+													{appointments?.appointmentPurpose?.length > 50
+														? `${appointments?.appointmentPurpose?.substring(
 																0,
 																40
-															)}...`
-															: appointments?.appointmentPurpose}
-													</p>
-												</td>
-												<td className="text-center flex justify-center">
-													<div
-														className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}>
-														{appointments &&
-															appointments.appointmentStatus ===
+														  )}...`
+														: appointments?.appointmentPurpose}
+												</p>
+											</td>
+											<td className="text-center flex justify-center">
+												<div
+													className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}
+												>
+													{appointments &&
+														appointments.appointmentStatus ===
 															"Pending" &&
-															"🟡"}
-														{appointments &&
-															appointments.appointmentStatus ===
-															"Done" &&
-															"🟢"}
-														{appointments &&
-															appointments.appointmentStatus ===
+														"🟡"}
+													{appointments &&
+														appointments.appointmentStatus === "Done" &&
+														"🟢"}
+													{appointments &&
+														appointments.appointmentStatus ===
 															"Assigned" &&
-															"🔵"}
-														<span className="ml-2 text-bold text-sm">
-															{appointments
-																? appointments.appointmentStatus
-																: ""}
-														</span>
-													</div>
-												</td>
+														"🔵"}
+													<span className="ml-2 text-bold text-sm">
+														{appointments
+															? appointments.appointmentStatus
+															: ""}
+													</span>
+												</div>
+											</td>
 
-												{/* Delete and Edit */}
-												<td>
-													<div className="flex lg:flex-row justify-center items-center lg:gap-x-5 xs:gap-2 xs:flex-col">
-														<button
-															className="btn btn-xs"
-															onClick={(e) => {
-																// Stop event propagation to prevent row hover effect
-																e.stopPropagation();
-																showDeleteModal(
-																	appointments.appointmentId
-																);
-															}}>
-															Delete
-														</button>
-														<button className="btn btn-xs text-green-700">
-															Edit
-														</button>
-													</div>
-												</td>
-											</tr>
-										)
-									)}
+											{/* Delete and Edit */}
+											<td>
+												<div className="flex lg:flex-row justify-center items-center lg:gap-x-5 xs:gap-2 xs:flex-col">
+													<button
+														className="btn btn-xs"
+														onClick={(e) => {
+															// Stop event propagation to prevent row hover effect
+															e.stopPropagation();
+															showDeleteModal(
+																appointments.appointmentId
+															);
+														}}
+													>
+														Delete
+													</button>
+													<button className="btn btn-xs text-green-700">
+														Edit
+													</button>
+												</div>
+											</td>
+										</tr>
+									))}
 								</tbody>
 							</table>
 
 							{/* Pagination controls */}
 							<div className="join pt-5">
 								<button
-									onClick={() =>
-										setCurrentPage(currentPage - 1)
-									}
+									onClick={() => setCurrentPage(currentPage - 1)}
 									disabled={currentPage === 1}
-									className="join-item btn w-28">
+									className="join-item btn w-28"
+								>
 									Previous
 								</button>
 
 								{appointments &&
 									[
 										...Array(
-											Math.ceil(
-												appointments.length /
-												AppointmentPerPage
-											)
+											Math.ceil(appointments.length / AppointmentPerPage)
 										),
 									].map((_, index) => (
 										<button
 											key={index}
-											className={`join-item btn ${currentPage === index + 1
-												? "btn-active"
-												: ""
-												}`}
-											onClick={() =>
-												setCurrentPage(index + 1)
-											}>
+											className={`join-item btn ${
+												currentPage === index + 1 ? "btn-active" : ""
+											}`}
+											onClick={() => setCurrentPage(index + 1)}
+										>
 											{index + 1}
 										</button>
 									))}
 
 								<button
-									onClick={() =>
-										setCurrentPage(currentPage + 1)
-									}
-									disabled={
-										AppointmentPerPage >
-										appointments?.length
-									}
-									className="join-item btn w-28">
+									onClick={() => setCurrentPage(currentPage + 1)}
+									disabled={AppointmentPerPage > appointments?.length}
+									className="join-item btn w-28"
+								>
 									Next
 								</button>
 							</div>
@@ -594,29 +599,16 @@ const Appointment = () => {
 									bordered
 									renderCell={renderCell}
 									onSelect={(date) => {
-										if (
-											date >=
-											new Date().setHours(0, 0, 0, 0)
-										) {
-											setAppointmentDate(
-												formatDateCalendar(date)
-											);
-											const formattedDate =
-												date.toLocaleDateString(
-													"en-US",
-													{
-														month: "long",
-														day: "numeric",
-													}
-												);
-											toast.success(
-												`Date selected: ${formattedDate}`
-											);
+										if (date >= new Date().setHours(0, 0, 0, 0)) {
+											setAppointmentDate(formatDateCalendar(date));
+											const formattedDate = date.toLocaleDateString("en-US", {
+												month: "long",
+												day: "numeric",
+											});
+											toast.success(`Date selected: ${formattedDate}`);
 										}
 									}}
-									disabledDate={(date) =>
-										date < new Date().setHours(0, 0, 0, 0)
-									}
+									disabledDate={(date) => date < new Date().setHours(0, 0, 0, 0)}
 								/>
 							</div>
 							{appointmentOnThatDate && (
@@ -625,37 +617,34 @@ const Appointment = () => {
 										Available Time Slots
 									</h2>
 									<p>
-										🛑 To set an appointment, you must first
-										select a valid date in the calendar,
-										then choose your desired time slot.
+										🛑 To set an appointment, you must first select a valid date
+										in the calendar, then choose your desired time slot.
 									</p>
 									<p>
-										🛑 Do note that you can only select a
-										time slot that has not been taken yet.
+										🛑 Do note that you can only select a time slot that has not
+										been taken yet.
 									</p>
 									<div className="flex flex-wrap gap-2 mt-8">
 										{timeSlots.map((time, index) => (
 											<button
 												key={index}
 												disabled={isTimeSlotTaken(time)}
-												onClick={() =>
-													handleTimeSlotClick(time)
-												} // Set the selected time on click
-												className={`time-slot-button ${isTimeSlotTaken(time)
-													? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
-													: time ===
-														selectedTimeSlot
+												onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
+												className={`time-slot-button ${
+													isTimeSlotTaken(time)
+														? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
+														: time === selectedTimeSlot
 														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
 														: "bg-maroon text-white hover:bg-primary-green-dark duration-300"
-													}  py-2 px-3 rounded-md`}>
+												}  py-2 px-3 rounded-md`}
+											>
 												{timeFormatter(time)}
 											</button>
 										))}
 									</div>
 									<hr />
 									<p className="mb-2">
-										👨🏻‍🎓 Select a student you wish to assign
-										an appointment
+										👨🏻‍🎓 Select a student you wish to assign an appointment
 									</p>
 									<div className="flex flex-row justify-between items-center space-x-4 pr-2 md:pr-3">
 										<div className="flex-grow">
@@ -665,10 +654,7 @@ const Appointment = () => {
 											/>
 										</div>
 										<div className="w-5/12 md:w-2/12">
-											<HollowButton
-												onClick={() =>
-													setOpenAddStudent(true)
-												}>
+											<HollowButton onClick={() => setOpenAddStudent(true)}>
 												Add Student
 											</HollowButton>
 										</div>
@@ -681,21 +667,17 @@ const Appointment = () => {
 													toast.success(
 														`Student selected: ${student.firstName} ${student.lastName}`
 													);
-													setSelectedStudentId(
-														student.id
-													);
-													setSelectedStudent(
-														student.id
-													); // Update the selected student
+													setSelectedStudentId(student.id);
+													setSelectedStudent(student.id); // Update the selected student
 												}}
-												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${selectedStudent ===
-													student.id
-													? "bg-white border-2 border-maroon text-maroon font-semibold"
-													: "text-white" // Apply a different style to the selected student
-													}`}
-												key={student.id}>
-												{student.idNumber} ⸺{" "}
-												{student.firstName}{" "}
+												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${
+													selectedStudent === student.id
+														? "bg-white border-2 border-maroon text-maroon font-semibold"
+														: "text-white" // Apply a different style to the selected student
+												}`}
+												key={student.id}
+											>
+												{student.idNumber} ⸺ {student.firstName}{" "}
 												{student.lastName}
 											</button>
 										))}
@@ -703,25 +685,19 @@ const Appointment = () => {
 									<hr />
 									<div className="mt-4">
 										<p>
-											🤗 Please state the type of
-											appointment and your purpose.
+											🤗 Please state the type of appointment and your
+											purpose.
 										</p>
 										<div className="w-full flex lg:flex-col gap-5 my-5 flex-col">
 											<TextInput
 												value={appointmentType}
-												onChange={(e) =>
-													setAppointmentType(
-														e.target.value
-													)
-												}
+												onChange={(e) => setAppointmentType(e.target.value)}
 												placeholder="Appointment Type"
 												label="Appointment Type"
 											/>
 											<TextAreaInput
 												value={purpose}
-												onChange={(e) =>
-													setPurpose(e.target.value)
-												}
+												onChange={(e) => setPurpose(e.target.value)}
 												placeholder="Purpose"
 												label="Purpose"
 												className="w-full mb-4 rounded-md "
@@ -738,17 +714,12 @@ const Appointment = () => {
 													DATE: {appointmentDate}
 												</div>
 												<div className="font-bold w-full md:w-auto">
-													TIME:{" "}
-													{timeFormatter(
-														selectedTime
-													)}
+													TIME: {timeFormatter(selectedTime)}
 												</div>
 											</div>
 											<div className="w-full md:w-2/12">
 												<FullButton
-													onClick={
-														handleAppointmentSubmit
-													}
+													onClick={handleAppointmentSubmit}
 													className="w-full"
 													disabled={
 														!selectedStudentId ||
@@ -757,10 +728,9 @@ const Appointment = () => {
 														!purpose ||
 														!appointmentType ||
 														isLoading
-													}>
-													{isLoading
-														? "Submitting..."
-														: "Submit"}
+													}
+												>
+													{isLoading ? "Submitting..." : "Submit"}
 												</FullButton>
 											</div>
 										</div>
@@ -768,8 +738,8 @@ const Appointment = () => {
 											<div className="flex gap-2 items-center mt-5">
 												<span className="loading loading-dots loading-lg"></span>
 												<span className="text-lg">
-													Processing your appointment,
-													please wait a moment...
+													Processing your appointment, please wait a
+													moment...
 												</span>
 											</div>
 										)}
@@ -787,7 +757,8 @@ const Appointment = () => {
 				<ModalDelete
 					setDeleteModal={setDeleteModal}
 					handleDelete={handleDelete}
-					prompt={"appointment"}></ModalDelete>
+					prompt={"appointment"}
+				></ModalDelete>
 			)}
 
 			{appointmentModal && (
@@ -798,15 +769,13 @@ const Appointment = () => {
 					setAppointments={setAppointments}
 					fetchAppointments={fetchAppointments}
 					role="counselor"
-				// TO BE ADDED
-				// handleRescedule={handleReschedule}
-				// handleUpdateStatus={handleUpdateStatus}
+					// TO BE ADDED
+					// handleRescedule={handleReschedule}
+					// handleUpdateStatus={handleUpdateStatus}
 				></ModalAppointmentInfo>
 			)}
 
-			{openAddStudent && (
-				<AddStudent setOpenAddStudent={setOpenAddStudent} />
-			)}
+			{openAddStudent && <AddStudent setOpenAddStudent={setOpenAddStudent} />}
 			{confirmResponseModal && (
 				<ModalConfirmResponseAppointment
 					setConfirmResponse={setConfirmResponseModal}
@@ -840,7 +809,8 @@ function SearchInput({ searchTerm, setSearchTerm }) {
 				strokeWidth="1.5"
 				aria-hidden="true"
 				aria-labelledby="title-9 description-9"
-				role="graphics-symbol">
+				role="graphics-symbol"
+			>
 				<title id="title-9">Search icon</title>
 				<desc id="description-9">Icon description here</desc>
 				<path
@@ -899,7 +869,8 @@ function renderCell(date) {
 								</p>
 							))}
 						</Popover>
-					}>
+					}
+				>
 					<a>{moreCount} more</a>
 				</Whisper>
 			</li>

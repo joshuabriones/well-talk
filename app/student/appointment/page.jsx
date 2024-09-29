@@ -338,10 +338,11 @@ const Appointment = () => {
 	};
 
 	const notifTimeFormatter = (timeString) => {
-		const hours = Number(timeString);
-		const period = hours < 12 ? "AM" : "PM";
-		const formattedHours = hours % 12 || 12;
-		return `${formattedHours} ${period}`;
+		const [time] = timeString.split(":");
+		const hour = Number(time);
+		const period = hour < 12 ? "AM" : "PM";
+		const formattedHour = hour % 12 || 12;
+		return `${formattedHour}:00 ${period}`;
 	};
 
 	return (
