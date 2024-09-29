@@ -46,6 +46,8 @@ const Appointment = () => {
 	const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 	const [showAddAppointmentModal, setShowAddAppointmentModal] = useState(false);
 
+	const [assignedCounselors, setAssignedCounselors] = useState([]);
+
 	// /* Client side - protection */
 	// if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
 	// 	return <Load route="login" />;
@@ -64,6 +66,26 @@ const Appointment = () => {
 			}
 		}
 	}, []);
+
+	const fetchAssignedCounselors = async () => {
+		const response = await fetch(
+			`${process.env.BASE_URL}${API_ENDPOINT.GET_ASSIGNED_COUNSELORS}${userSession.id}`,
+			{
+				headers: {
+					Authorization: `Bearer ${Cookies.get("token")}`,
+				},
+			}
+		);
+		const data = await response.json();
+		setAssignedCounselors(data);
+	};
+
+	useEffect(() => {
+		if (userSession) {
+			fetchAssignedCounselors();
+		}
+	}, []);
+
 
 	const fetchAppointments = async () => {
 		const response = await fetch(
@@ -87,19 +109,35 @@ const Appointment = () => {
 	}, [appointmentDate]);
 
 	const fetchAppointmentsOnThatDate = async () => {
-		const response = await fetch(
-			`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE}${appointmentDate}`,
-			{
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${Cookies.get("token")}`,
-				},
+		const appointments = [];
+		for (const counselor of assignedCounselors) {
+			const response = await fetch(
+				`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE_AND_COUNSELOR}${appointmentDate}&counselorId=${counselor.id}`,
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${Cookies.get("token")}`,
+					},
+				}
+			);
+			const data = await response.json();
+			console.log(`Appointments for counselor ${counselor.id}:`, data);
+			if (Array.isArray(data)) {
+				appointments.push(...data);
 			}
-		);
-		const data = await response.json();
-		console.log(data);
-		setAppointmentOnThatDate(data);
+		}
+		console.log("All appointments on that date:", appointments);
+		setAppointmentOnThatDate(appointments);
 	};
+
+
+	useEffect(() => {
+		if (assignedCounselors.length > 0) {
+			fetchAppointmentsOnThatDate();
+		}
+	}, [appointmentDate, assignedCounselors]);
+
+
 
 	const formatDate = (date) => {
 		const dateObject = new Date(date);

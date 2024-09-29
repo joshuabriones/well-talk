@@ -119,9 +119,9 @@ const Appointment = () => {
 		fetchAppointmentsOnThatDate();
 	}, [appointmentDate]);
 
-	const fetchAppointmentsOnThatDate = async () => {
+	const fetchAppointmentsOnThatDate = async (counselorId) => {
 		const response = await fetch(
-			`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE}${appointmentDate}`,
+			`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE_AND_COUNSELOR}${appointmentDate}&counselorId=${userSession.id}`,
 			{
 				headers: {
 					"Content-Type": "application/json",
@@ -130,8 +130,21 @@ const Appointment = () => {
 			}
 		);
 		const data = await response.json();
+		console.log("Appointments on that date: ", data);
 		setAppointmentOnThatDate(data);
 	};
+
+	useEffect(() => {
+		if (userSession && userSession.counselorId) {
+			fetchAppointmentsOnThatDate(userSession.counselorId);
+		}
+	}, [appointmentDate, userSession]);
+
+	useEffect(() => {
+		if (userSession && userSession.counselorId) {
+			fetchAppointmentsOnThatDate(userSession.counselorId);
+		}
+	}, [appointmentDate, userSession]);
 
 	const formatDate = (date) => {
 		const dateObject = new Date(date);
@@ -278,13 +291,13 @@ const Appointment = () => {
 	const handleTimeSlotClick = (time) => {
 		if (!isTimeSlotTaken(time)) {
 			setSelectedTime(time); // Update the selected time
-			setSelectedTimeSlot(time); // Update the selected time slot
+			setSelectedTimeSlot(time);
 			const duration = "1:00"; // Duration to add
-			setEndTime(addTime(selectedTime, duration));
+			const endTime = addTime(time, duration);
+			setEndTime(endTime);
 			toast.success(`Time slot selected: ${timeFormatter(time)}`);
 		}
 	};
-
 	const handleAppointmentSubmit = async () => {
 		// Open the confirm response modal
 		setConfirmResponseModal(true);
