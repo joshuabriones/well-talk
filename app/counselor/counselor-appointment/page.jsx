@@ -277,16 +277,22 @@ const Appointment = () => {
 
 	const convertTo24HourFormat = (time) => {
 		let [hours, minutes] = time.split(":").map(Number);
-		const period = time.includes("PM") ? "PM" : "AM";
 
-		if (period === "PM" && hours < 12) {
+		// If the time is 12:00, always treat it as PM
+		if (hours === 12) {
+			hours = 12; // Keep it as 12 for PM
+		} else if (time.includes("PM") && hours < 12) {
 			hours += 12;
-		} else if (period === "AM" && hours === 12) {
+		} else if (time.includes("AM") && hours === 12) {
 			hours = 0;
 		}
 
-		return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+		const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+		return formattedTime;
 	};
+
+
+
 
 	const handleTimeSlotClick = (time) => {
 		if (!isTimeSlotTaken(time)) {
@@ -387,11 +393,11 @@ const Appointment = () => {
 		let [hours, minutes] = time.split(":").map(Number);
 		let period = "AM";
 
-		if (hours >= 12) {
+		if (hours === 12) {
 			period = "PM";
-			if (hours > 12) {
-				hours -= 12;
-			}
+		} else if (hours > 12) {
+			period = "PM";
+			hours -= 12;
 		} else if (hours === 0) {
 			hours = 12;
 		}
@@ -401,13 +407,9 @@ const Appointment = () => {
 			minutes = 0;
 		}
 
-		// Ensure 1:00 to 4:00 are PM
-		if (hours >= 1 && hours <= 4) {
-			period = "PM";
-		}
-
 		return `${hours}:${minutes.toString().padStart(2, "0")} ${period}`;
 	}
+
 
 	const formatDateCalendar = (date) => {
 		const year = date.getFullYear();
@@ -464,21 +466,19 @@ const Appointment = () => {
 				<div>
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isAddAppointment
-									? "bg-maroon text-white"
-									: "bg-white border-2 border-maroon text-maroon"
-							}`}
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
+								? "bg-maroon text-white"
+								: "bg-white border-2 border-maroon text-maroon"
+								}`}
 							onClick={handleAddAppointmentClick}
 						>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isViewAppointment
-									? "bg-maroon text-white"
-									: "bg-white border-2 border-maroon text-maroon"
-							}`}
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
+								? "bg-maroon text-white"
+								: "bg-white border-2 border-maroon text-maroon"
+								}`}
 							onClick={handleViewAppointmentClick}
 						>
 							View Appointments
@@ -553,9 +553,9 @@ const Appointment = () => {
 												<p>
 													{appointments?.appointmentPurpose?.length > 50
 														? `${appointments?.appointmentPurpose?.substring(
-																0,
-																40
-														  )}...`
+															0,
+															40
+														)}...`
 														: appointments?.appointmentPurpose}
 												</p>
 											</td>
@@ -565,14 +565,14 @@ const Appointment = () => {
 												>
 													{appointments &&
 														appointments.appointmentStatus ===
-															"Pending" &&
+														"Pending" &&
 														"🟡"}
 													{appointments &&
 														appointments.appointmentStatus === "Done" &&
 														"🟢"}
 													{appointments &&
 														appointments.appointmentStatus ===
-															"Assigned" &&
+														"Assigned" &&
 														"🔵"}
 													<span className="ml-2 text-bold text-sm">
 														{appointments
@@ -625,9 +625,8 @@ const Appointment = () => {
 									].map((_, index) => (
 										<button
 											key={index}
-											className={`join-item btn ${
-												currentPage === index + 1 ? "btn-active" : ""
-											}`}
+											className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
+												}`}
 											onClick={() => setCurrentPage(index + 1)}
 										>
 											{index + 1}
@@ -681,13 +680,12 @@ const Appointment = () => {
 												key={index}
 												disabled={isTimeSlotTaken(time)}
 												onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-												className={`time-slot-button ${
-													isTimeSlotTaken(time)
-														? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
-														: time === selectedTimeSlot
+												className={`time-slot-button ${isTimeSlotTaken(time)
+													? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
+													: time === selectedTimeSlot
 														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
 														: "bg-maroon text-white hover:bg-primary-green-dark duration-300"
-												}  py-2 px-3 rounded-md`}
+													}  py-2 px-3 rounded-md`}
 											>
 												{timeFormatter(time)}
 											</button>
@@ -721,11 +719,10 @@ const Appointment = () => {
 													setSelectedStudentId(student.id);
 													setSelectedStudent(student.id); // Update the selected student
 												}}
-												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${
-													selectedStudent === student.id
-														? "bg-white border-2 border-maroon text-maroon font-semibold"
-														: "text-white" // Apply a different style to the selected student
-												}`}
+												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${selectedStudent === student.id
+													? "bg-white border-2 border-maroon text-maroon font-semibold"
+													: "text-white" // Apply a different style to the selected student
+													}`}
 												key={student.id}
 											>
 												{student.idNumber} ⸺ {student.firstName}{" "}
@@ -820,9 +817,9 @@ const Appointment = () => {
 					setAppointments={setAppointments}
 					fetchAppointments={fetchAppointments}
 					role="counselor"
-					// TO BE ADDED
-					// handleRescedule={handleReschedule}
-					// handleUpdateStatus={handleUpdateStatus}
+				// TO BE ADDED
+				// handleRescedule={handleReschedule}
+				// handleUpdateStatus={handleUpdateStatus}
 				></ModalAppointmentInfo>
 			)}
 
