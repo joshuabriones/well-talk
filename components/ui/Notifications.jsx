@@ -62,6 +62,26 @@ export default function Notifications() {
 					} catch (error) {
 						console.error("Error fetching posts:", error);
 					}
+				} else if (userSession.role === "teacher") {
+					try {
+						const response = await fetch(
+							`${process.env.BASE_URL}${API_ENDPOINT.GET_TEACHER_BY_ID}${userSession.id}`,
+							{
+								method: "GET",
+								headers: {
+									"Content-Type": "application/json",
+									Authorization: `Bearer ${Cookies.get("token")}`,
+								},
+							}
+						);
+						if (!response.ok) {
+							throw new Error("Failed to fetch posts");
+						}
+						const data = await response.json();
+						setUser(data);
+					} catch (error) {
+						console.error("Error fetching posts:", error);
+					}
 				}
 			}
 		};
