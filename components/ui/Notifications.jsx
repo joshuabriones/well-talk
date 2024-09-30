@@ -121,7 +121,7 @@ export default function Notifications() {
 				} else if (userSession.role === "counselor") {
 					try {
 						const response = await fetch(
-							`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_COUNSELORS}?senderId=${userSession.id}&receiverId=${userSession.id}`,
+							`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_COUNSELORS}${userSession.id}`,
 							{
 								headers: {
 									Authorization: `Bearer ${Cookies.get("token")}`,
