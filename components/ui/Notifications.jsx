@@ -142,6 +142,30 @@ export default function Notifications() {
 					} catch (error) {
 						console.error("Error fetching notifications:", error);
 					}
+				} else if (userSession.role === "teacher") {
+					try {
+						const response = await fetch(
+							`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_TEACHERS}${userSession.id}`,
+							{
+								headers: {
+									Authorization: `Bearer ${Cookies.get("token")}`,
+								},
+							}
+						);
+
+						if (!response.ok) {
+							console.error("Error fetching notifications");
+						}
+
+						const data = await response.json();
+						const sortedNotifications = data.sort(
+							(a, b) => new Date(b.date) - new Date(a.date)
+						);
+
+						setNotifications(sortedNotifications);
+					} catch (error) {
+						console.error("Error fetching notifications:", error);
+					}
 				}
 			}
 		};
@@ -203,6 +227,10 @@ export default function Notifications() {
 						break;
 					}
 			}
+		}
+
+		if (user?.role === "teacher") {
+			text = "Teacher notification";
 		}
 
 		return text;
@@ -270,7 +298,8 @@ export default function Notifications() {
 						{/* Avatar */}
 						<div className="w-1/6 md:w-2/12 flex justify-center items-center">
 							<img
-								src={notificationImg(notification)}
+								// src={notificationImg(notification)}
+								src={notification?.sender?.image}
 								alt="Avatar"
 								className="rounded-full h-10 w-10 md:h-12 md:w-12"
 							/>
