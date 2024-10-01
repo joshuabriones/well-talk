@@ -66,8 +66,6 @@ const Appointment = () => {
 		}
 	}, []);
 
-
-
 	const fetchAppointments = async () => {
 		const response = await fetch(
 			`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_STUDENTID}${userSession.id}`,
@@ -85,7 +83,7 @@ const Appointment = () => {
 		setAppointments(data);
 
 		// Extract counselor IDs from the appointments
-		const counselorIds = data.map(appointment => appointment.counselor.id);
+		const counselorIds = data.map((appointment) => appointment.counselor.id);
 		setCounselorIds(counselorIds);
 	};
 
@@ -114,9 +112,6 @@ const Appointment = () => {
 		console.log("All appointments on that date:", appointments);
 		setAppointmentOnThatDate(appointments);
 	};
-
-
-
 
 	const formatDate = (date) => {
 		const dateObject = new Date(date);
@@ -255,7 +250,9 @@ const Appointment = () => {
 			hours = 0;
 		}
 
-		const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+		const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes
+			.toString()
+			.padStart(2, "0")}`;
 		return formattedTime;
 	};
 
@@ -291,7 +288,7 @@ const Appointment = () => {
 						},
 						body: JSON.stringify({
 							receiverId: details.receiverId,
-							appointmentId: details.appointmentId,
+							serviceId: details.appointmentId,
 						}),
 					}
 				);
@@ -442,19 +439,21 @@ const Appointment = () => {
 				<div>
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
-								? "bg-maroon text-white"
-								: "border-2 border-maroon text-maroon"
-								}`}
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+								isAddAppointment
+									? "bg-maroon text-white"
+									: "border-2 border-maroon text-maroon"
+							}`}
 							onClick={handleAddAppointmentClick}
 						>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
-								? "bg-maroon text-white"
-								: "border-2 border-maroon text-maroon"
-								}`}
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+								isViewAppointment
+									? "bg-maroon text-white"
+									: "border-2 border-maroon text-maroon"
+							}`}
 							onClick={handleViewAppointmentClick}
 						>
 							View Appointments
@@ -506,9 +505,9 @@ const Appointment = () => {
 													<p className="truncate">
 														{appointment.appointmentPurpose.length > 50
 															? `${appointment.appointmentPurpose.substring(
-																0,
-																40
-															)}...`
+																	0,
+																	40
+															  )}...`
 															: appointment.appointmentPurpose}
 													</p>
 												</td>
@@ -518,15 +517,15 @@ const Appointment = () => {
 													>
 														{appointment &&
 															appointment.appointmentStatus ===
-															"Pending" &&
+																"Pending" &&
 															"🟡"}
 														{appointment &&
 															appointment.appointmentStatus ===
-															"Done" &&
+																"Done" &&
 															"🟢"}
 														{appointment &&
 															appointment.appointmentStatus ===
-															"Assigned" &&
+																"Assigned" &&
 															"🔵"}
 														<span className="ml-2 text-bold text-sm">
 															{appointment
@@ -575,8 +574,9 @@ const Appointment = () => {
 										].map((_, index) => (
 											<button
 												key={index}
-												className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
-													}`}
+												className={`join-item btn ${
+													currentPage === index + 1 ? "btn-active" : ""
+												}`}
 												onClick={() => setCurrentPage(index + 1)}
 											>
 												{index + 1}
@@ -631,12 +631,13 @@ const Appointment = () => {
 												key={index}
 												disabled={isTimeSlotTaken(time)}
 												onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-												className={`time-slot-button ${isTimeSlotTaken(time)
-													? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
-													: time === selectedTimeSlot
+												className={`time-slot-button ${
+													isTimeSlotTaken(time)
+														? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
+														: time === selectedTimeSlot
 														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
 														: "bg-maroon text-white hover:bg-maroon duration-300"
-													}  py-2 px-3 rounded-md`}
+												}  py-2 px-3 rounded-md`}
 											>
 												{timeFormatter(time)}
 											</button>
@@ -748,9 +749,9 @@ const Appointment = () => {
 					selectedID={selectedID}
 					appointments={appointments}
 
-				// TO BE ADDED
-				// handleRescedule={handleReschedule}
-				// handleUpdateStatus={handleUpdateStatus}
+					// TO BE ADDED
+					// handleRescedule={handleReschedule}
+					// handleUpdateStatus={handleUpdateStatus}
 				></StudentModalAppointmentInfo>
 			)}
 
