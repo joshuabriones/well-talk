@@ -65,7 +65,13 @@ const UsersPage = () => {
         {loading ? (
           <div>Loading...</div>
         ) : (
-          <UsersTable users={users} handleDeleteUser={handleDeleteUser} />
+          <>
+            {users.length > 0 ? (
+              <UsersTable users={users} handleDeleteUser={handleDeleteUser} />
+            ) : (
+              <div className="text-navgray">No users found</div>
+            )}
+          </>
         )}
       </div>
     </div>

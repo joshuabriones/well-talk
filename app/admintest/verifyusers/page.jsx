@@ -90,11 +90,17 @@ const VerifyUserPage = () => {
         {loading ? (
           <div>Loading...</div>
         ) : (
-          <AccountTable
-            users={users}
-            handleAcceptUser={handleAcceptUser}
-            handleDeleteUser={handleDeleteUser}
-          />
+          <>
+            {users.length > 0 ? (
+              <AccountTable
+                users={users}
+                handleDeleteUser={handleDeleteUser}
+                handleAcceptUser={handleAcceptUser}
+              />
+            ) : (
+              <div className="text-navgray">No users found</div>
+            )}
+          </>
         )}
       </div>
     </div>
