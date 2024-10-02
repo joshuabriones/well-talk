@@ -16,7 +16,7 @@ function ProfileMenu() {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    if (isMounted && userSession) {
+    if (userSession) {
       // Ensure this only runs on the client
       const fetchUserData = async () => {
         let endpoint;
@@ -69,9 +69,9 @@ function ProfileMenu() {
     }
   };
 
-  if (!isMounted) {
-    return null; // Prevent rendering on the server to avoid hydration errors
-  }
+  // if (!isMounted) {
+  //   return null; // Prevent rendering on the server to avoid hydration errors
+  // }
 
   const profileMenuItems = [
     {
