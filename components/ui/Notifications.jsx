@@ -62,6 +62,26 @@ export default function Notifications() {
 					} catch (error) {
 						console.error("Error fetching posts:", error);
 					}
+				} else if (userSession.role === "teacher") {
+					try {
+						const response = await fetch(
+							`${process.env.BASE_URL}${API_ENDPOINT.GET_TEACHER_BY_ID}${userSession.id}`,
+							{
+								method: "GET",
+								headers: {
+									"Content-Type": "application/json",
+									Authorization: `Bearer ${Cookies.get("token")}`,
+								},
+							}
+						);
+						if (!response.ok) {
+							throw new Error("Failed to fetch posts");
+						}
+						const data = await response.json();
+						setUser(data);
+					} catch (error) {
+						console.error("Error fetching posts:", error);
+					}
 				}
 			}
 		};
@@ -101,7 +121,31 @@ export default function Notifications() {
 				} else if (userSession.role === "counselor") {
 					try {
 						const response = await fetch(
-							`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_COUNSELORS}?senderId=${userSession.id}&receiverId=${userSession.id}`,
+							`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_COUNSELORS}${userSession.id}`,
+							{
+								headers: {
+									Authorization: `Bearer ${Cookies.get("token")}`,
+								},
+							}
+						);
+
+						if (!response.ok) {
+							console.error("Error fetching notifications");
+						}
+
+						const data = await response.json();
+						const sortedNotifications = data.sort(
+							(a, b) => new Date(b.date) - new Date(a.date)
+						);
+
+						setNotifications(sortedNotifications);
+					} catch (error) {
+						console.error("Error fetching notifications:", error);
+					}
+				} else if (userSession.role === "teacher") {
+					try {
+						const response = await fetch(
+							`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_TEACHERS}${userSession.id}`,
 							{
 								headers: {
 									Authorization: `Bearer ${Cookies.get("token")}`,
@@ -185,6 +229,10 @@ export default function Notifications() {
 			}
 		}
 
+		if (user?.role === "teacher") {
+			text = "Teacher notification";
+		}
+
 		return text;
 	};
 
@@ -250,7 +298,8 @@ export default function Notifications() {
 						{/* Avatar */}
 						<div className="w-1/6 md:w-2/12 flex justify-center items-center">
 							<img
-								src={notificationImg(notification)}
+								// src={notificationImg(notification)}
+								src={notification?.sender?.image}
 								alt="Avatar"
 								className="rounded-full h-10 w-10 md:h-12 md:w-12"
 							/>

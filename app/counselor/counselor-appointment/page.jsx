@@ -234,9 +234,10 @@ const Appointment = () => {
 
 	// Helper function to check if a time slot is taken
 	const isTimeSlotTaken = (time) => {
-		return appointmentOnThatDate.some(
+		return appointmentOnThatDate?.some(
 			(appointment) => appointment.appointmentStartTime === time
 		);
+		// return null;
 	};
 
 	const addTime = (startTime, duration) => {
@@ -277,15 +278,20 @@ const Appointment = () => {
 
 	const convertTo24HourFormat = (time) => {
 		let [hours, minutes] = time.split(":").map(Number);
-		const period = time.includes("PM") ? "PM" : "AM";
 
-		if (period === "PM" && hours < 12) {
+		// If the time is 12:00, always treat it as PM
+		if (hours === 12) {
+			hours = 12; // Keep it as 12 for PM
+		} else if (time.includes("PM") && hours < 12) {
 			hours += 12;
-		} else if (period === "AM" && hours === 12) {
+		} else if (time.includes("AM") && hours === 12) {
 			hours = 0;
 		}
 
-		return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+		const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes
+			.toString()
+			.padStart(2, "0")}`;
+		return formattedTime;
 	};
 
 	const handleTimeSlotClick = (time) => {
@@ -319,7 +325,7 @@ const Appointment = () => {
 						},
 						body: JSON.stringify({
 							receiverId: details.receiverId,
-							appointmentId: details.appointmentId,
+							serviceId: details.appointmentId,
 						}),
 					}
 				);
@@ -387,11 +393,11 @@ const Appointment = () => {
 		let [hours, minutes] = time.split(":").map(Number);
 		let period = "AM";
 
-		if (hours >= 12) {
+		if (hours === 12) {
 			period = "PM";
-			if (hours > 12) {
-				hours -= 12;
-			}
+		} else if (hours > 12) {
+			period = "PM";
+			hours -= 12;
 		} else if (hours === 0) {
 			hours = 12;
 		}
@@ -399,11 +405,6 @@ const Appointment = () => {
 		// Handle cases where minutes might be missing
 		if (isNaN(minutes)) {
 			minutes = 0;
-		}
-
-		// Ensure 1:00 to 4:00 are PM
-		if (hours >= 1 && hours <= 4) {
-			period = "PM";
 		}
 
 		return `${hours}:${minutes.toString().padStart(2, "0")} ${period}`;

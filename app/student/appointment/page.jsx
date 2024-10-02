@@ -46,8 +46,7 @@ const Appointment = () => {
 	const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 	const [showAddAppointmentModal, setShowAddAppointmentModal] = useState(false);
 
-	const [assignedCounselors, setAssignedCounselors] = useState([]);
-
+	const [counselorIds, setCounselorIds] = useState([]);
 	// /* Client side - protection */
 	// if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
 	// 	return <Load route="login" />;
@@ -67,26 +66,6 @@ const Appointment = () => {
 		}
 	}, []);
 
-	const fetchAssignedCounselors = async () => {
-		const response = await fetch(
-			`${process.env.BASE_URL}${API_ENDPOINT.GET_ASSIGNED_COUNSELORS}${userSession.id}`,
-			{
-				headers: {
-					Authorization: `Bearer ${Cookies.get("token")}`,
-				},
-			}
-		);
-		const data = await response.json();
-		setAssignedCounselors(data);
-	};
-
-	useEffect(() => {
-		if (userSession) {
-			fetchAssignedCounselors();
-		}
-	}, []);
-
-
 	const fetchAppointments = async () => {
 		const response = await fetch(
 			`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_STUDENTID}${userSession.id}`,
@@ -102,17 +81,21 @@ const Appointment = () => {
 		}
 		const data = await response.json();
 		setAppointments(data);
+
+		// Extract counselor IDs from the appointments
+		const counselorIds = data.map((appointment) => appointment.counselor.id);
+		setCounselorIds(counselorIds);
 	};
 
 	useEffect(() => {
 		fetchAppointmentsOnThatDate();
-	}, [appointmentDate]);
+	}, [appointmentDate, counselorIds]);
 
 	const fetchAppointmentsOnThatDate = async () => {
 		const appointments = [];
-		for (const counselor of assignedCounselors) {
+		for (const counselorId of counselorIds) {
 			const response = await fetch(
-				`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE_AND_COUNSELOR}${appointmentDate}&counselorId=${counselor.id}`,
+				`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE_AND_COUNSELOR}${appointmentDate}&counselorId=${counselorId}`,
 				{
 					headers: {
 						"Content-Type": "application/json",
@@ -121,7 +104,7 @@ const Appointment = () => {
 				}
 			);
 			const data = await response.json();
-			console.log(`Appointments for counselor ${counselor.id}:`, data);
+			console.log(`Appointments for counselor ${counselorId}:`, data);
 			if (Array.isArray(data)) {
 				appointments.push(...data);
 			}
@@ -129,15 +112,6 @@ const Appointment = () => {
 		console.log("All appointments on that date:", appointments);
 		setAppointmentOnThatDate(appointments);
 	};
-
-
-	useEffect(() => {
-		if (assignedCounselors.length > 0) {
-			fetchAppointmentsOnThatDate();
-		}
-	}, [appointmentDate, assignedCounselors]);
-
-
 
 	const formatDate = (date) => {
 		const dateObject = new Date(date);
@@ -266,15 +240,20 @@ const Appointment = () => {
 
 	const convertTo24HourFormat = (time) => {
 		let [hours, minutes] = time.split(":").map(Number);
-		const period = time.includes("PM") ? "PM" : "AM";
 
-		if (period === "PM" && hours < 12) {
+		// If the time is 12:00, always treat it as PM
+		if (hours === 12) {
+			hours = 12; // Keep it as 12 for PM
+		} else if (time.includes("PM") && hours < 12) {
 			hours += 12;
-		} else if (period === "AM" && hours === 12) {
+		} else if (time.includes("AM") && hours === 12) {
 			hours = 0;
 		}
 
-		return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+		const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes
+			.toString()
+			.padStart(2, "0")}`;
+		return formattedTime;
 	};
 
 	const handleTimeSlotClick = (time) => {
@@ -309,7 +288,7 @@ const Appointment = () => {
 						},
 						body: JSON.stringify({
 							receiverId: details.receiverId,
-							appointmentId: details.appointmentId,
+							serviceId: details.appointmentId,
 						}),
 					}
 				);
