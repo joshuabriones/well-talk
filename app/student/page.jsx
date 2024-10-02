@@ -97,7 +97,7 @@ function Home() {
               <div className="flex w-full justify-center">
                 <button
                   onClick={() => handleTabClick("Latest")}
-                  className={`w-44 sm:w-full py-3 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
+                  className={`w-44 sm:w-full py-1 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
                     activeTab === "Latest"
                       ? "bg-gold text-gray"
                       : "text-white hover:text-gold"
@@ -107,7 +107,7 @@ function Home() {
                 </button>
                 <button
                   onClick={() => handleTabClick("Pinned")}
-                  className={`w-44 sm:w-full py-3 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
+                  className={`w-44 sm:w-full py-1 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
                     activeTab === "Pinned"
                       ? "bg-gold text-gray"
                       : "text-white hover:text-gold"
