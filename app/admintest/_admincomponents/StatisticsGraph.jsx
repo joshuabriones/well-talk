@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { API_ENDPOINT } from "@/lib/api";
 
-export function LineGraph({ userSession }) {
+const StatisticsGraph = () => {
   const [appointments, setAppointments] = useState([]);
 
   const fetchAppointments = async () => {
@@ -24,6 +24,8 @@ export function LineGraph({ userSession }) {
   useEffect(() => {
     fetchAppointments();
   }, []);
+
+  console.log(appointments);
 
   const processData = () => {
     // Initialize data object
@@ -51,28 +53,9 @@ export function LineGraph({ userSession }) {
   };
 
   const chartData = processData();
-  console.log(chartData);
 
   const dataFormatter = (number) => number.toString();
-
   return (
-    // <div className="mt-7 rounded-2xl bg-white p-8 shadow-2xl w-full col-span-2">
-    //   <h3 className="text-lg font-bold text-tremor-content-strong">
-    //     Appointments Over Time
-    //   </h3>
-    //   <LineChart
-    //     className="h-96 w-full"
-    //     data={chartData}
-    //     index="date"
-    //     valueFormatter={dataFormatter}
-    //     categories={["Assigned", "Done", "Pending"]}
-    //     colors={["indigo", "red", "yellow", "green"]}
-    //     yAxisWidth={60}
-    //     showAnimation={true}
-    //     curveType="monotone"
-    //     onValueChange={(v) => console.log(v)}
-    //   />
-    // </div>
     <div className="col-span-2 bg-bgDark2 p-7 rounded-3xl shadow-md">
       <h2 className="text-xl font-medium mb-4">Appointments Over Time</h2>
       <LineChart
@@ -89,4 +72,6 @@ export function LineGraph({ userSession }) {
       />
     </div>
   );
-}
+};
+
+export default StatisticsGraph;

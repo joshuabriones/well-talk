@@ -15,7 +15,7 @@ const countUsersPerRole = (userData) => {
 const dataFormatter = (number) =>
   Intl.NumberFormat("us").format(number).toString();
 
-export const BarGraph = ({ userSession }) => {
+export const TotalUsersGraph = ({ userSession }) => {
   const [users, setUsers] = useState([]);
 
   let userCounts = {};
@@ -27,8 +27,6 @@ export const BarGraph = ({ userSession }) => {
     name: role.charAt(0).toUpperCase() + role.slice(1), // Capitalize role name
     "Number of users ": count,
   }));
-
-  console.log("User Counts: ", userCounts);
 
   const fetchUsers = async () => {
     const response = await fetch(
@@ -51,8 +49,9 @@ export const BarGraph = ({ userSession }) => {
 
   return (
     <div className="col-span-2 bg-bgDark2 p-7 rounded-3xl shadow-md">
-      <h2 className="text-xl font-medium mb-4">Total Users</h2>
+      <h2 className="text-xl font-bold mb-4">Total Users</h2>
       <BarChart
+        className="h-80 w-full bg-bgDark2"
         data={chartdata}
         index="name"
         categories={["Number of users "]}
@@ -61,7 +60,6 @@ export const BarGraph = ({ userSession }) => {
         onValueChange={(v) => console.log(v)}
         showAnimation={true}
         layout="horizontal"
-        className="bg-black"
       />
     </div>
   );

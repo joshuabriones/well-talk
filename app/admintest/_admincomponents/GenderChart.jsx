@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { API_ENDPOINT } from "@/lib/api";
 
-export const PieGraph = () => {
+export const GenderChart = () => {
   const [programsData, setProgramsData] = useState([]);
 
   const fetchUsers = async () => {
@@ -52,12 +52,20 @@ export const PieGraph = () => {
         valueFormatter={dataFormatter}
         onValueChange={(v) => console.log(v)}
         showAnimation={true}
-        colors={["blue", "cyan", "indigo", "violet", "fuchsia", "pink-400"]}
-        className="h-56 w-full"
+        colors={["blue", "yello", "red"]}
+        className="h-20 w-full"
       />
-      <p>Male</p>
-      <p>Female</p>
-      <p>Others</p>
+      <div className="flex items-center justify-between mt-5">
+        <p className="text-xs ">
+          <span className="inline-block h-2 w-2 mr-1 bg-[#3979EC]"></span>Male
+        </p>
+        <p className="text-xs ">
+          <span className="inline-block h-2 w-2 mr-1 bg-[#E2AA35]"></span>Female
+        </p>
+        <p className="text-xs ">
+          <span className="inline-block h-2 w-2 mr-1 bg-[#DF4A41]"></span>Others
+        </p>
+      </div>
     </div>
   );
 };
