@@ -1,44 +1,32 @@
 "use client";
+import Header from "./_admincomponents/Header";
+import StatsOverview from "./_admincomponents/StatsOverview";
+import StatisticsGraph from "./_admincomponents/StatisticsGraph";
+import NewUsersTab from "./_admincomponents/NewUsersTab";
+import AppointmentsCount from "./_admincomponents/AppointmentsCount";
+import { GenderChart } from "./_admincomponents/GenderChart";
+import { TotalUsersGraph } from "./_admincomponents/TotalUsersGraph";
 
-import { useState } from "react";
-
-import SideNav from "@/components/admin_components/SideNav";
-import Box from "@mui/material/Box";
-import { DrawerHeader } from "@/components/admin_components/SideNav";
-import Dashboard from "@/components/admin_components/pages/Dashboard";
-import Referrals from "@/components/admin_components/pages/Referrals";
-import Users from "@/components/admin_components/pages/Users";
-import Appointments from "@/components/admin_components/pages/Appointments";
-import Load from "@/components/Load";
-import Cookies from "js-cookie";
-import { getUserSession } from "@/lib/helperFunctions";
-
-const AdminDashboard = () => {
-  const userSession = getUserSession();
-  const [page, setPage] = useState("Dashboard");
-
-  // if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
-  //   return <Load route="login" />;
-  // }
-
-  // if (userSession && userSession.role !== "admin")
-  //   return <Load route={userSession.role} />;
-
+export default function Page() {
   return (
-    <div className="w-full min-h-screen flex bg-white">
-      <SideNav setPage={setPage} />
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, p: 3, backgroundColor: "white" }}
-      >
-        <DrawerHeader />
-        {page === "Dashboard" && <Dashboard userSession={userSession} />}
-        {page === "Appointments" && <Appointments />}
-        {page === "Users" && <Users />}
-        {page === "Referrals" && <Referrals />}
-      </Box>
+    <div className="flex-1 flex min-h-screen text-white">
+      <div className="w-full flex flex-col gap-10">
+        <Header title="Dashboard" />
+        <div>
+          <StatsOverview />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <StatisticsGraph />
+            <NewUsersTab />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <TotalUsersGraph />
+            <div className="flex flex-col gap-3">
+              <AppointmentsCount />
+              <GenderChart />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default AdminDashboard;
+}

@@ -22,7 +22,7 @@ const Sidebar = () => {
     },
     {
       name: "Appointments",
-      href: "/admin/appointments",
+      href: "/admin/appointmentrecords",
       icon: <AppointmentIcon />,
     },
     {
