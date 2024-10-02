@@ -1,9 +1,8 @@
 import { useState } from "react";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
+const UsersTable = ({ users, handleDeleteUser }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState("all");
 
@@ -25,15 +24,6 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
     );
     if (isConfirmed) {
       handleDeleteUser(userId);
-    }
-  };
-
-  const handleAccept = (userId) => {
-    const isConfirmed = window.confirm(
-      `Are you sure you want to accept this user?`
-    );
-    if (isConfirmed) {
-      handleAcceptUser(userId);
     }
   };
 
@@ -98,7 +88,11 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
             </tr>
             {currentUsers.map((user) => (
               <tr>
-                <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-bgDark2 stroke-slate-500 text-navgray ">
+                <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-bgDark2 stroke-slate-500 text-navgray py-4">
+                  <img
+                    src={user.image}
+                    className="inline w-10 h-10 mr-2 rounded-full"
+                  />
                   {user.firstName} {user.lastName}
                 </td>
                 <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-bgDark2 stroke-slate-500 text-navgray ">
@@ -117,15 +111,6 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
                     title="Delete"
                   >
                     <DeleteIcon sx={{ color: "#fecaca", stroke: "#f87171" }} />
-                  </button>
-                  <button
-                    onClick={() => handleAccept(user.id)}
-                    className="hover:bg-green-400 p-2 rounded-md"
-                    title="Accept"
-                  >
-                    <CheckCircleIcon
-                      sx={{ color: "#dcfce7", stroke: "#4ade80" }}
-                    />
                   </button>
                 </td>
               </tr>
@@ -190,7 +175,7 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
   );
 };
 
-export default AccountTable;
+export default UsersTable;
 
 function SearchBar({ searchTerm, setSearchTerm }) {
   return (
