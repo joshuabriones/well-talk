@@ -52,7 +52,7 @@ export const GenderChart = () => {
         valueFormatter={dataFormatter}
         onValueChange={(v) => console.log(v)}
         showAnimation={true}
-        colors={["blue", "yello", "red"]}
+        colors={["blue", "yellow", "red"]}
         className="h-20 w-full"
       />
       <div className="flex items-center justify-between mt-5">
