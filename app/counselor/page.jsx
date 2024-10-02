@@ -11,149 +11,146 @@ import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import PinnedPost from "@/components/ui/PinnedPost";
 
 const Home = () => {
-	const [selectedButton, setSelectedButton] = useState("featured");
-	const [posts, setPosts] = useState([]);
-	const [showFilterPostModal, setShowFilterModal] = useState(false);
-	const [sortPostBy, setSortPostBy] = useState("Latest");
-	const [loading, setLoading] = useState(true);
-	const userSession = getUserSession();
-	const router = useRouter();
-	const [activeTab, setActiveTab] = useState("Latest"); // Set default tab to 'Latest'
+  const [selectedButton, setSelectedButton] = useState("featured");
+  const [posts, setPosts] = useState([]);
+  const [showFilterPostModal, setShowFilterModal] = useState(false);
+  const [sortPostBy, setSortPostBy] = useState("Latest");
+  const [loading, setLoading] = useState(true);
+  const userSession = getUserSession();
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("Latest"); // Set default tab to 'Latest'
 
-	const handleTabClick = (tab) => {
-		setActiveTab(tab);
-	};
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
 
-	const fetchPosts = async () => {
-		try {
-			const response = await fetch(
-				`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_POSTS}`,
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${Cookies.get("token")}`,
-					},
-				}
-			);
-			if (!response.ok) {
-				throw new Error("Failed to fetch posts");
-			}
-			const data = await response.json();
-			setPosts(data);
-			setLoading(false);
-		} catch (error) {
-			console.error("Error fetching posts:", error);
-			setLoading(false);
-		}
-	};
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_POSTS}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch posts");
+      }
+      const data = await response.json();
+      setPosts(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      setLoading(false);
+    }
+  };
 
-	useEffect(() => {
-		fetchPosts();
-	}, []);
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
-	// Filter pinned posts
-	const pinnedPosts = posts.filter((post) => post.isPinned);
+  // Filter pinned posts
+  const pinnedPosts = posts.filter((post) => post.isPinned);
 
-	return (
-		<div>
-			<main className="min-h-screen">
-				<Navbar userType="counselor" />
+  return (
+    <div>
+      <main className="min-h-screen">
+        <Navbar userType="counselor" />
 
-				<div
-					className="pattern-overlay pattern-left absolute -z-10"
-					style={{ transform: "scaleY(-1)", top: "-50px" }}>
-					<img
-						src="/images/landing/lleft.png"
-						alt="pattern"
-					/>
-				</div>
-				<div
-					className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
-					style={{ transform: "scaleY(-1)", top: "-15px" }}>
-					<img
-						src="/images/landing/lright.png"
-						alt="pattern"
-						className="w-full h-full object-contain"
-					/>
-				</div>
+        <div
+          className="pattern-overlay pattern-left absolute -z-10"
+          style={{ transform: "scaleY(-1)", top: "-50px" }}
+        >
+          <img src="/images/landing/lleft.png" alt="pattern" />
+        </div>
+        <div
+          className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+          style={{ transform: "scaleY(-1)", top: "-15px" }}
+        >
+          <img
+            src="/images/landing/lright.png"
+            alt="pattern"
+            className="w-full h-full object-contain"
+          />
+        </div>
 
-				{/* Posts Section */}
-				<div className="flex flex-col md:flex-row py-28 px-4 md:px-12">
-					<div className="md:block max-w-screen-xl mx-auto sm:px-12 lg:px-14 w-full flex-grow-2 justify-center items-center">
-						<div className="w-full bg-maroon border-2 rounded-full z-10 flex items-center justify-center sticky top-0 mb-8">
-							<div className="flex w-full justify-center">
-								<button
-									onClick={() => handleTabClick("Latest")}
-									className={`w-44 sm:w-full py-3 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
-										activeTab === "Latest"
-											? "bg-gold text-gray"
-											: "text-white hover:text-gold"
-									}`}>
-									Latest
-								</button>
-								<button
-									onClick={() => handleTabClick("Pinned")}
-									className={`w-44 sm:w-full py-3 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
-										activeTab === "Pinned"
-											? "bg-gold text-gray"
-											: "text-white hover:text-gold"
-									}`}>
-									Pinned
-								</button>
-							</div>
-						</div>
-						<div className="w-full mx-auto flex-grow items-center">
-							{loading ? (
-								<LoadingState />
-							) : (
-								<>
-									<CreatePostSection
-										userSession={userSession}
-									/>
+        {/* Posts Section */}
+        <div className="flex flex-col md:flex-row py-28 px-4 md:px-12">
+          <div className="md:block max-w-screen-xl mx-auto sm:px-12 lg:px-14 w-full flex-grow-2 justify-center items-center">
+            <div className="w-full bg-maroon border-2 rounded-full z-10 flex items-center justify-center sticky top-0 mb-8">
+              <div className="flex w-full justify-center">
+                <button
+                  onClick={() => handleTabClick("Latest")}
+                  className={`w-44 sm:w-full py-3 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
+                    activeTab === "Latest"
+                      ? "bg-gold text-gray"
+                      : "text-white hover:text-gold"
+                  }`}
+                >
+                  Latest
+                </button>
+                <button
+                  onClick={() => handleTabClick("Pinned")}
+                  className={`w-44 sm:w-full py-3 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
+                    activeTab === "Pinned"
+                      ? "bg-gold text-gray"
+                      : "text-white hover:text-gold"
+                  }`}
+                >
+                  Pinned
+                </button>
+              </div>
+            </div>
+            <div className="w-full mx-auto flex-grow items-center">
+              {loading ? (
+                <LoadingState />
+              ) : (
+                <>
+                  <CreatePostSection userSession={userSession} />
 
-									<div className="w-full p-2 mx-auto flex-grow mt-4">
-										{loading ? (
-											<LoadingState />
-										) : activeTab === "Latest" ? (
-											posts.length === 0 ? (
-												<p className="text-center mt-4 text-gray-500">
-													No posts yet. Come back
-													later.
-												</p>
-											) : (
-												posts.map((post) => (
-													<PostCard
-														key={post.postId}
-														post={post}
-													/>
-												))
-											)
-										) : pinnedPosts.length === 0 ? (
-											<p className="text-center mt-4 text-gray-500">
-												No pinned posts available.
-											</p>
-										) : (
-											pinnedPosts.map((post) => (
-												<PinnedPostCard
-													key={post.postId}
-													post={post}
-												/>
-											))
-										)}
-									</div>
-								</>
-							)}
-						</div>
-					</div>
-				</div>
-				<Footer />
-				<FloatingIcon />
-			</main>
-		</div>
-	);
+                  <div className="w-full p-2 mx-auto flex-grow mt-4">
+                    {loading ? (
+                      <LoadingState />
+                    ) : activeTab === "Latest" ? (
+                      posts.length === 0 ? (
+                        <p className="text-center mt-4 text-gray-500">
+                          No posts yet. Come back later.
+                        </p>
+                      ) : (
+                        posts.map((post) => (
+                          <PostCard key={post.postId} post={post} />
+                        ))
+                      )
+                    ) : pinnedPosts.length === 0 ? (
+                      <p className="text-center mt-4 text-gray-500">
+                        No pinned posts available.
+                      </p>
+                    ) : (
+                      pinnedPosts.map((post) => (
+                        <PinnedPost
+                          key={post.postId}
+                          post={post}
+                          userSession={userSession}
+                        />
+                      ))
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+        <Footer />
+        <FloatingIcon />
+      </main>
+    </div>
+  );
 };
 
 export default dynamic(() => Promise.resolve(Home), { ssr: false });

@@ -4,10 +4,10 @@ import { FaThumbtack } from "react-icons/fa"; // For the pin icon
 import React, { useState } from "react";
 
 const PinnedPost = ({ post, userSession }) => {
-  console.log("usersessuin", userSession);
   const [openActions, setOpenActions] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  console.log(userSession);
 
   const isTeacherOrStudent =
     userSession.role === "teacher" || userSession.role === "student";
