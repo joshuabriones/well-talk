@@ -14,7 +14,7 @@ export default function Chat() {
 
   // Connect to WebSocket when the component mounts
   useEffect(() => {
-    const socket = new SockJS("http://localhost:8080/websocket");
+    const socket = new SockJS(`${process.env.BASE_URL}/websocket`);
     stompClient = Stomp.over(socket);
     stompClient.connect({}, onConnected, onError);
 

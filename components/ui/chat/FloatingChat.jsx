@@ -58,14 +58,14 @@ const ChatWidget = () => {
 
   const fetchLoggedInUserDetails = async () => {
     let apiEndpoint = "";
-  
+
     // Check if the logged-in user is a student or a teacher
     if (userSession.role === "student") {
       apiEndpoint = `${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${userSession.id}`;
     } else if (userSession.role === "teacher") {
       apiEndpoint = `${process.env.BASE_URL}${API_ENDPOINT.GET_TEACHER_BY_ID}${userSession.id}`;
     }
-  
+
     // Fetch user details from the appropriate endpoint
     const response = await fetch(apiEndpoint, {
       method: "GET",
@@ -74,14 +74,13 @@ const ChatWidget = () => {
         Authorization: `Bearer ${Cookies.get("token")}`,
       },
     });
-  
+
     // Parse the response data
     const data = await response.json();
-  
+
     // Update the state with the fetched user details
     setLoggedInUser(data);
   };
-  
 
   const sendMessage = () => {
     if (stompClient && message.trim() !== "") {
@@ -98,7 +97,7 @@ const ChatWidget = () => {
   useEffect(() => {
     fetchLoggedInUserDetails();
 
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(`${process.env.BASE_URL}/ws`);
     const client = Stomp.over(socket);
 
     client.connect({}, () => {
@@ -140,7 +139,7 @@ const ChatWidget = () => {
       const fetchMessages = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8080/api/messages?senderId=${loggedInUser.id}&receiverId=${selectedPerson.id}`,
+            `${process.env.BASE_URL}/api/messages?senderId=${loggedInUser.id}&receiverId=${selectedPerson.id}`,
             {
               headers: {
                 Authorization: `Bearer ${Cookies.get("token")}`,

@@ -13,7 +13,7 @@ export default function Chat() {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    const socket = new SockJS("http://localhost:8080/websocket");
+    const socket = new SockJS(`${process.env.BASE_URL}/websocket`);
     stompClient = Stomp.over(socket);
 
     console.log("Connecting to WebSocket..."); // Debug log

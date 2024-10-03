@@ -64,7 +64,7 @@ export default function Chat() {
     fetchUsers();
     setLoggedUser(userSession); // Get currently logged-in user
 
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(`${process.env.BASE_URL}/ws`);
     const client = Stomp.over(socket);
 
     client.connect({}, () => {
@@ -110,7 +110,7 @@ export default function Chat() {
       const fetchMessages = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8080/api/messages?senderId=${loggedUser.id}&receiverId=${selectedUser.id}`,
+            `${process.env.BASE_URL}/api/messages?senderId=${loggedUser.id}&receiverId=${selectedUser.id}`,
             {
               headers: {
                 Authorization: `Bearer ${Cookies.get("token")}`,

@@ -8,7 +8,7 @@ export default function WebSocketNotification() {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    const socket = new SockJS("http://localhost:8080/ws"); // Connect to your WebSocket endpoint
+    const socket = new SockJS(`${process.env.BASE_URL}/ws`); // Connect to your WebSocket endpoint
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
