@@ -5,8 +5,8 @@ import Toggle from "@/components/ui/toggle/Toggle";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import "@/styles/globals.css";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
+// import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+// import { CKEditor } from "@ckeditor/ckeditor5-react";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
@@ -17,8 +17,18 @@ import parse from "html-react-parser";
 // import "@/css/toggle.css";
 import JournalModal from "./_modal/JournalModal";
 
+const CKEditor = dynamic(
+  () => import("@ckeditor/ckeditor5-react").then((mod) => mod.CKEditor),
+  { ssr: false }
+);
+const ClassicEditor = dynamic(
+  () => import("@ckeditor/ckeditor5-build-classic"),
+  { ssr: false }
+);
+
 const StudentJournal = () => {
-  const userSession = getUserSession();
+  const userSession = typeof window !== "undefined" ? getUserSession() : null;
+
   const [title, setTitle] = useState("");
   const [entry, setEntry] = useState("");
   const [editTitle, setEditTitle] = useState("");

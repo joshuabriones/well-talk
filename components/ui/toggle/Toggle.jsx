@@ -14,7 +14,7 @@ const Toggle = ({ isPublic, setIsPublic }) => {
         checked={isPublic}
         onChange={handlePubJournal}
       />
-      <label className="dark_mode_label" for="darkmode-toggle"></label>
+      <label className="dark_mode_label" htmlFor="darkmode-toggle"></label>
     </div>
   );
 };

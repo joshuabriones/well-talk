@@ -1,3 +1,5 @@
+"use client";
+
 const JournalModal = ({
   title,
   entry,
@@ -28,9 +30,8 @@ const JournalModal = ({
             ></div>
           </div>
         </div>
-        
+
         <div className="p-5">
-          
           <input
             type="text"
             placeholder="Journal title..."
@@ -52,8 +53,10 @@ const JournalModal = ({
             >
               Cancel
             </button>
-            <button className="w-full bg-maroon border-2 font-Merriweather border-gray text-sm text-white font-semibold rounded-3xl px-4 py-3 hover:scale-95 transition-transform duration-300"
-             onClick={handleSaveEntry}>
+            <button
+              className="w-full bg-maroon border-2 font-Merriweather border-gray text-sm text-white font-semibold rounded-3xl px-4 py-3 hover:scale-95 transition-transform duration-300"
+              onClick={handleSaveEntry}
+            >
               Save
             </button>
           </div>
