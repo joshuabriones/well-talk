@@ -24,7 +24,7 @@ const Hero = () => {
 						transition={{ duration: 0.8 }}
 						className="py-40 px-16 xl:px-32 text-left md:text-center lg:text-center">
 						<img
-							className={`object-contain mb-0 md:mb-6 lg:mb-6 rounded max-h-28 mb-4 sm:max-h-32 md:max-h-40 lg:max-h-48 xl:max-h-56 w-auto md:mx-auto lg:mx-auto`}
+							className={`object-contain mb-0 md:mb-6 lg:mb-6 rounded max-h-28 mb-4 sm:max-h-32 md:max-h-40 lg:max-h-48 xl:max-h-56 w-auto mx-auto`}
 							src="/images/landing/cit.png"
 							alt="WellTalk Logo"
 						/>

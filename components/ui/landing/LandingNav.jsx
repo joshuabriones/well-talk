@@ -80,7 +80,7 @@ export function Navbar({ userType }) {
 					<img
 						src="/images/loggoword.png"
 						alt="WellTalk Logo"
-						className="w-16 h-15 lg:w-16 lg:h-15"
+						className="w-13 h-12 lg:w-16 lg:h-15"
 					/>
 					<h1 className="text-2xl sm:text-3xl font-bold font-Merriweather">
 						<span
@@ -106,7 +106,7 @@ export function Navbar({ userType }) {
 				</div>
 				<button
 					onClick={() => setIsNavOpen((prev) => !prev)}
-					className="ml-auto mr-8 lg:hidden p-2 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-maroon transition duration-300"
+					className="ml-auto mr-8 lg:hidden p-2 rounded focus:outline-none focus:ring-2 flex justify-end focus:ring-offset-2 focus:ring-maroon transition duration-300"
 					aria-label="Toggle navigation menu">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"

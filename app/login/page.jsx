@@ -194,7 +194,7 @@ const Login = () => {
 												</div>
 											)}
 
-											<div className="flex flex-col gap-y-3 pb-8">
+											<div className="flex flex-col gap-y-4 pb-8">
 												<TextInput
 													label="Email Address"
 													value={email}
