@@ -73,6 +73,16 @@ const Login = () => {
 			if (result.ok) {
 				const data = await result.json();
 				Cookies.set("token", data.token, { secure: true, httpOnly: true, sameSite: 'Strict' });
+				const user = parseJwt(data.token);
+				const userData = {
+					id: user.id,
+					email: user.sub,
+					image: user.image,
+					role: user.role,
+					isVerified: user.isVerified,
+				};
+				Cookies.set("user", JSON.stringify(userData), { expires: 7, secure: true, sameSite: 'Strict' });
+
 				setIsLoading(true);
 			} else {
 				alert("Invalid email or password. Try again.");
