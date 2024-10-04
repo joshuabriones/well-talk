@@ -13,7 +13,7 @@ const JournalModal = ({
       className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-30 z-50"
       role="dialog"
     >
-      <div className="relative w-4/12 mx-auto bg-white rounded-lg shadow-lg border-2 border-gray-200">
+      <div className="relative w-11/12 sm:w-8/12 md:w-6/12 lg:w-5/12 xl:w-4/12 mx-auto bg-white rounded-lg shadow-lg border-2 border-gray-200">
         <div className="flex justify-between items-center bg-maroon p-4 border-b-2 rounded-t-lg">
           <div className="flex items-center space-x-2">
             <div

@@ -594,7 +594,7 @@ const Appointment = () => {
 							</div>
 						</div>
 					) : (
-						<div className="flex w-full py-10 px-16 gap-12 justify-center md:flex-row flex-col">
+						<div className="flex w-full py-10 px-8 gap-12 justify-center md:flex-row flex-col">
 							<div className="flex-1">
 								<Calendar
 									bordered
