@@ -1,7 +1,7 @@
 import { useState } from "react";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
-import sendResponse from "@/public/images/icons/sendResponse.png";
+import sendResponse from "@/public/images/icons/delivered.png";
 
 const ModalConfirmResponseAppointment = ({
   response,
@@ -50,10 +50,13 @@ const ModalConfirmResponseAppointment = ({
             className="w-28 h-28 flex justify-center mx-auto"
           />
           <h3 className="text-xl font-bold font-Merriweather py-6">
-            Do you confirm to submit the Appointment?
+            Are you sure you want to schedule your appointment?
           </h3>
+          <p className="text-sm sm:text-base text-gray-600">
+            You may check your scheduled appointment for more information at the View Appointments tab.
+          </p>
 
-          <div className="flex flex-row gap-x-4 py-2 px-12">
+          <div className="flex flex-col sm:flex-row justify-center gap-y-4 sm:gap-x-4 py-4 sm:py-6 px-6 sm:px-12">
             <HollowButton onClick={() => setConfirmResponse(false)}>
               Cancel
             </HollowButton>
