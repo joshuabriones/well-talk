@@ -235,7 +235,7 @@ export default function Notifications() {
 			switch (type) {
 				case "referral":
 					if (notification?.sender?.id === user?.id) {
-						text = `You have referred student ${receiverName} (${notification?.receiver?.id}) for an appointment with reason: ${notification?.referral?.reason}.`;
+						text = `You have referred student ${receiverName} (${notification?.receiver?.id}) for an appointment for reason: ${notification?.referral?.reason}.`;
 					}
 					break;
 			}
