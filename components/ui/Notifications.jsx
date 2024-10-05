@@ -236,34 +236,6 @@ export default function Notifications() {
 		return text;
 	};
 
-	const notificationImg = (notification) => {
-		let img = "";
-		const type = notification?.type;
-
-		if (user?.role === "student") {
-			switch (type) {
-				case "appointment":
-					if (notification?.sender?.id === notification?.receiver?.id) {
-						img = notification?.receiver?.image;
-					} else {
-						img = notification?.sender?.image;
-					}
-					break;
-			}
-		} else if (user?.role === "counselor") {
-			switch (type) {
-				case "appointment":
-					if (notification?.sender?.id === user?.id) {
-						img = notification?.sender?.image;
-					} else if (notification?.receiver?.id === user?.id) {
-						img = notification?.sender?.image;
-					}
-					break;
-			}
-		}
-		return img;
-	};
-
 	const notifDateFormatter = (dateInput) => {
 		const options = { year: "numeric", month: "long", day: "numeric" };
 		const date = new Date(dateInput);
@@ -298,7 +270,6 @@ export default function Notifications() {
 						{/* Avatar */}
 						<div className="w-1/6 md:w-2/12 flex justify-center items-center">
 							<img
-								// src={notificationImg(notification)}
 								src={notification?.sender?.image}
 								alt="Avatar"
 								className="rounded-full h-10 w-10 md:h-12 md:w-12"
