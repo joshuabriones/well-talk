@@ -39,9 +39,48 @@ const ChatWidget = () => {
     setSelectedPerson(null);
   };
 
+  // const fetchCounselors = async () => {
+  //   const response = await fetch(
+  //     `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_COUNSELORS}`,
+  //     {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${Cookies.get("token")}`,
+  //       },
+  //     }
+  //   );
+  //   const data = await response.json();
+  //   setCounselors(
+  //     data.filter((counselor) => counselor.college === loggedInUser?.college)
+  //   );
+  // };
+
   const fetchCounselors = async () => {
-    const response = await fetch(
-      `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_COUNSELORS}`,
+    let apiEndpoint = "";
+  
+    // Determine the appropriate endpoint based on the user role
+    if (userSession.role === "student") {
+      apiEndpoint = `${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_STUDENT_ID}${userSession.id}`;
+    } else if (userSession.role === "teacher") {
+      apiEndpoint = `${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_TEACHER_ID}${userSession.id}`;
+    }
+  
+    // Fetch counselors based on the user role
+    const response = await fetch(apiEndpoint, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("token")}`,
+      },
+    });
+  
+    const data = await response.json();
+    setCounselors(data);
+  
+    // Fetch additional counselors based on receiver ID if there are messages
+    const receiverResponse = await fetch(
+      `${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_RECEIVER_ID}${userSession.id}`,
       {
         method: "GET",
         headers: {
@@ -50,10 +89,17 @@ const ChatWidget = () => {
         },
       }
     );
-    const data = await response.json();
-    setCounselors(
-      data.filter((counselor) => counselor.college === loggedInUser?.college)
-    );
+  
+    if (receiverResponse.ok) {
+      const receiverData = await receiverResponse.json();
+      setCounselors((prevCounselors) => [
+        ...prevCounselors,
+        ...receiverData.filter(
+          (counselor) =>
+            !prevCounselors.some((prevCounselor) => prevCounselor.id === counselor.id)
+        ),
+      ]);
+    }
   };
 
   const fetchLoggedInUserDetails = async () => {
