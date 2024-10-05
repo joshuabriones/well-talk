@@ -89,7 +89,7 @@ const AddReferral = ({ teacherId, onOpen }) => {
 
 			handleClose();
 			const data = await response.json();
-			console.log("Referral: ", data.referralId);
+			console.log("Referral: ", data);
 			console.log("Student ID: ", idNumber);
 
 			createNotification({

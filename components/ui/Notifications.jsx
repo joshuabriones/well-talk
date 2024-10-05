@@ -13,9 +13,6 @@ export default function Notifications() {
 	const [notifications, setNotifications] = useState([]);
 	const [count, setCount] = useState(0);
 
-	console.log("User Session:", userSession);
-	console.log("User:", user);
-
 	useEffect(() => {
 		const fetchProfile = async () => {
 			if (userSession && !user) {
@@ -206,12 +203,17 @@ export default function Notifications() {
 		if (user?.role === "student") {
 			switch (type) {
 				case "appointment":
-					if (notification?.sender?.id === notification?.receiver?.id) {
+					if (notification?.sender?.id === user?.id) {
 						text = `You have scheduled an appointment for ${date} at ${time}.`;
-					} else {
+					} else if (notification?.receiver?.id === user?.id) {
 						text = `Counselor ${senderName} has scheduled an appointment with you on ${date} at ${time}.`;
 					}
 
+					break;
+				case "referral":
+					if (notification?.receiver?.id === user?.id) {
+						text = `Prof. ${senderName} has referred you for an appointment for reason: ${notification?.referral?.reason}.`;
+					}
 					break;
 			}
 		}
@@ -230,7 +232,13 @@ export default function Notifications() {
 		}
 
 		if (user?.role === "teacher") {
-			text = "Teacher notification";
+			switch (type) {
+				case "referral":
+					if (notification?.sender?.id === user?.id) {
+						text = `You have referred student ${receiverName} (${notification?.receiver?.id}) for an appointment with reason: ${notification?.referral?.reason}.`;
+					}
+					break;
+			}
 		}
 
 		return text;
@@ -243,8 +251,17 @@ export default function Notifications() {
 	};
 
 	const notifTimeFormatter = (timeString) => {
+		if (!timeString || typeof timeString !== "string") {
+			return "";
+		}
+
 		const [time] = timeString.split(":");
 		const hour = Number(time);
+
+		if (isNaN(hour)) {
+			return "";
+		}
+
 		const period = hour < 12 ? "AM" : "PM";
 		const formattedHour = hour % 12 || 12;
 		return `${formattedHour}:00 ${period}`;
