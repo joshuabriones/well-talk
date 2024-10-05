@@ -2,6 +2,7 @@
 
 import TextInput from "@/components/ui/inputs/TextInput";
 import { API_ENDPOINT } from "@/lib/api";
+import { getUserSession } from "@/lib/helperFunctions";
 import { collegeOptions, programOptions } from "@/lib/inputOptions";
 import Cookies from "js-cookie";
 import { useState } from "react";
@@ -10,6 +11,8 @@ import FullButton from "../../buttons/FullButton";
 import HollowButton from "../../buttons/HollowButton";
 
 const AddReferral = ({ teacherId, onOpen }) => {
+	const userSession = getUserSession();
+
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
@@ -19,10 +22,42 @@ const AddReferral = ({ teacherId, onOpen }) => {
 	const [program, setProgram] = useState("");
 	const [reason, setReason] = useState("");
 
-	console.log(teacherId, firstName, lastName, email, idNumber, year, reason, college, program);
+	// console.log(teacherId, firstName, lastName, email, idNumber, year, reason, college, program);
 	const handleClose = () => {
 		onOpen(false);
 	};
+
+	const createNotification = async (details) => {
+		try {
+			const response = await fetch(
+				`${process.env.BASE_URL}${API_ENDPOINT.CREATE_REFERRAL_NOTIFICATION_TEACHER_AND_STUDENT}${userSession.id}`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${Cookies.get("token")}`,
+					},
+					body: JSON.stringify({
+						receiverId: details.studentId,
+						serviceId: details.referralId,
+					}),
+				}
+			);
+
+			if (response.ok) {
+				toast.success("Notification created successfully");
+			} else {
+				// Handle non-200 responses here
+				const errorData = await response.json(); // Get error details
+				console.error("Error creating notification:", errorData);
+				toast.error("Failed to create notification: " + errorData.message);
+			}
+		} catch (error) {
+			console.error("Notification error: ", error);
+			toast.error("Failed to create notification due to an error.");
+		}
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
@@ -54,8 +89,15 @@ const AddReferral = ({ teacherId, onOpen }) => {
 
 			handleClose();
 			const data = await response.json();
+			console.log("Referral: ", data.referralId);
+			console.log("Student ID: ", idNumber);
+
+			createNotification({
+				studentId: idNumber,
+				referralId: data.referralId,
+			});
+
 			toast.success("Referral created successfully");
-			console.log("Referral created successfully:", data);
 		} catch (error) {
 			console.error("Error creating referral:", error);
 		}
