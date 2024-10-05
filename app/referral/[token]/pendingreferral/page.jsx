@@ -18,11 +18,12 @@ const PendingReferral = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [title, setTitle] = useState();
   const [message, setMessage] = useState();
+  const [confirmAction, setConfirmAction] = useState();
+  const [accept, setAccept] = useState();
 
   useEffect(() => {
     if (pathname && searchParams) {
       const tokenFromPath = pathname.split("/")[2];
-      console.log(tokenFromPath);
       handleTokenValidation(tokenFromPath);
     }
   }, [pathname, searchParams]);
@@ -40,6 +41,7 @@ const PendingReferral = () => {
       );
 
       if (response.status === 200) {
+        setToken(tokenFromPath);
         setIsTokenValid(true);
       } else {
         setIsTokenValid(false);
@@ -62,22 +64,52 @@ const PendingReferral = () => {
   const handleConfirm = async () => {
     setTitle("Accept Referral");
     setMessage("Are you sure you want to accept referral?");
+    setAccept(true);
     setShowConfirm(true);
   };
 
   const handleDecline = async () => {
     setTitle("Decline Referral");
     setMessage("Are you sure you want to decline referral?");
+    setAccept(false);
     setShowConfirm(true);
   };
 
-  //   const acceptReferral = async () = {
-  // 	try {
+  const confirmedAccept = async () => {
+    console.log("token", token);
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.ACCEPT_REFERRAL}${token}`,
+        {
+          method: "PUT",
+        }
+      );
 
-  // 	} catch (error) {
+      const data = await response.json();
+      console.log(data);
+      router.push("/login");
+    } catch (error) {
+      console.error("Error accepting referral", error);
+    }
+  };
 
-  // 	}
-  //   }
+  const confirmedDecline = async () => {
+    console.log("aewhdbfe");
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.DECLINE_REFERRAL}${token}`,
+        {
+          method: "PUT",
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+      router.push("/login");
+    } catch (error) {
+      console.error("Error declining referral", error);
+    }
+  };
 
   if (isTokenValid) {
     return (
@@ -109,6 +141,7 @@ const PendingReferral = () => {
             title={title}
             message={message}
             onCancel={() => setShowConfirm(false)}
+            onConfirm={accept ? confirmedAccept : confirmedDecline}
           />
         )}
       </div>
