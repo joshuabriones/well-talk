@@ -114,7 +114,7 @@ export default function JournalPage({ params }) {
 				</div>
 
 				<div className="flex flex-col md:flex-row gap-5 mt-10 w-full">
-					<div className="flex-1 p-4">
+					<div className="flex-1 p-4 border-b-2 md:border-none lg:border-none">
 						<h2 className="text-2xl font-semibold">
 							Shared Journal
 						</h2>
