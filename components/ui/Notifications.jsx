@@ -11,9 +11,7 @@ export default function Notifications() {
 
 	const [user, setUser] = useState(null);
 	const [notifications, setNotifications] = useState([]);
-	const [count, setCount] = useState(0);
-
-	console.log("notifications:", notifications);
+	// console.log("notifications:", notifications);
 
 	useEffect(() => {
 		const fetchProfile = async () => {
@@ -120,8 +118,6 @@ export default function Notifications() {
 		};
 
 		fetchNotifications();
-		setCount((prevCount) => prevCount + 1);
-		console.log("It is fetching notifications.");
 	}, []);
 
 	const notifDateFormatter = (dateInput) => {
@@ -147,9 +143,30 @@ export default function Notifications() {
 		return `${formattedHour}:00 ${period}`;
 	};
 
-	const renderNotification = (notification) => {
-		let textColor = "";
+	const handleNotifClick = async (notification) => {
+		console.log("Notification clicked: ", notification);
 
+		try {
+			const response = await fetch(
+				`${process.env.BASE_URL}${API_ENDPOINT.MARK_AS_READ}${notification.notificationId}`,
+				{
+					method: "PUT",
+					headers: {
+						Authorization: `Bearer ${Cookies.get("token")}`,
+						"Content-Type": "application/json",
+					},
+				}
+			);
+
+			if (!response.ok) {
+				console.error("Error: ", error);
+			}
+		} catch (error) {
+			console.error("Error marking notiication as read:", error);
+		}
+	};
+
+	const renderNotification = (notification) => {
 		const dateFormatter = (dateString) => {
 			const givenDate = new Date(dateString);
 			const now = new Date();
@@ -169,17 +186,14 @@ export default function Notifications() {
 			}
 		};
 
-		if (notification?.sender?.id === user?.id) {
-			textColor = notification.senderRead ? "text-zinc-600" : "text-zinc-700 font-medium";
-		} else if (notification?.receiver?.id === user?.id) {
-			textColor = notification.receiverRead ? "text-zinc-600" : "text-zinc-700 font-medium";
-		} else {
-			textColor = "text-zinc-600 font-medium";
-		}
+		const readStyle =
+			notification?.receiver?.id === user?.id && notification.read
+				? "text-zinc-500"
+				: "text-zinc-700 font-medium";
 
 		return (
 			<div>
-				<div className={textColor}>{generateNotification(notification)}</div>
+				<div className={readStyle}>{generateNotification(notification)}</div>
 
 				<div className="text-xs text-zinc-400 italic mt-1">
 					{dateFormatter(notification?.date)}
@@ -246,8 +260,6 @@ export default function Notifications() {
 		return text;
 	};
 
-	const handleNotificationOnClick = async (notification) => {};
-
 	return (
 		<div className="bg-white absolute z-10 w-full max-w-lg md:max-w-xl h-[50vh] top-16 right-0 md:right-44 md:top-14 rounded-lg drop-shadow-2xl flex flex-col">
 			{/* Header */}
@@ -264,8 +276,9 @@ export default function Notifications() {
 					<div
 						className={`${
 							notification?.read ? "" : null
-						} flex flex-row px-3 py-4 md:px-5 md:py-5 group hover:bg-zinc-100`}
+						} flex flex-row px-3 py-4 md:px-5 md:py-5 group hover:bg-zinc-100 cursor-pointer transition duration-300 ease-in-out`}
 						key={key}
+						onClick={() => handleNotifClick(notification)}
 					>
 						{/* Avatar */}
 						<div className="w-1/6 md:w-2/12 flex justify-center items-center">
