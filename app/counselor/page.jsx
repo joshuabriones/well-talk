@@ -81,13 +81,17 @@ const Home = () => {
         </div>
 
         {/* Posts Section */}
+       
         <div className="flex flex-col md:flex-row py-28 px-4 md:px-12">
-          <div className="md:block max-w-screen-xl mx-auto sm:px-12 lg:px-14 w-full flex-grow-2 justify-center items-center">
-            <div className="w-full bg-maroon border-2 rounded-full z-10 flex items-center justify-center sticky top-0 mb-8">
+          {/* Posts Section */}
+          <div className="md:block max-w-screen-xl md:max-w-5xl mx-auto sm:px-12 lg:px-14 w-full flex-grow-2 justify-center items-center">
+            <div
+              className={`bg-maroon border-2 rounded-lg z-10 flex justify-center mx-5 ml-5 md:ml-7 lg:ml-7 sticky md:static top-18`}
+            >
               <div className="flex w-full justify-center">
                 <button
                   onClick={() => handleTabClick("Latest")}
-                  className={`w-44 sm:w-full py-2 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
+                  className={`w-full sm:w-full py-1 text-lg font-semibold font-Merriweather rounded-l-lg transition-colors duration-300 ${
                     activeTab === "Latest"
                       ? "bg-gold text-gray"
                       : "text-white hover:text-gold"
@@ -97,7 +101,7 @@ const Home = () => {
                 </button>
                 <button
                   onClick={() => handleTabClick("Pinned")}
-                  className={`w-44 sm:w-full py-2 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
+                  className={`w-full sm:w-full py-1 text-lg font-semibold font-Merriweather rounded-r-lg transition-colors duration-300 ${
                     activeTab === "Pinned"
                       ? "bg-gold text-gray"
                       : "text-white hover:text-gold"
@@ -107,14 +111,17 @@ const Home = () => {
                 </button>
               </div>
             </div>
+
             <div className="w-full mx-auto flex-grow items-center">
               {loading ? (
                 <LoadingState />
               ) : (
                 <>
+                <div className="w-11/12 ml-6 md:ml-12 lg:ml-12">
                   <CreatePostSection userSession={userSession} />
+                  </div>
 
-                  <div className="w-full p-2 mx-auto flex-grow mt-4">
+                  <div className="w-full p-2 px-4 mx-auto flex-grow mt-4">
                     {loading ? (
                       <LoadingState />
                     ) : activeTab === "Latest" ? (
@@ -145,7 +152,7 @@ const Home = () => {
               )}
             </div>
           </div>
-        </div>
+          </div>
         <Footer />
         <FloatingIcon />
       </main>

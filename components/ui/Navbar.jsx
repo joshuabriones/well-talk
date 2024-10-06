@@ -88,7 +88,7 @@ function ProfileMenu() {
     <div>
       <button
         onClick={() => setIsMenuOpen((prev) => !prev)}
-        className="flex items-center gap-2 rounded-full py-3 pr-2 mr-6  md:mr-20 pl-0.5 lg:ml-auto"
+        className="flex items-center gap-2 rounded-full py-3  mr-4  md:mr-20 pl-0.5 lg:ml-auto"
       >
         <img
           src={userData?.image}
@@ -216,15 +216,17 @@ export function Navbar({ userType }) {
   }, []);
 
   const navbarStyles = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.9)" : "transparent",
-    backdropFilter: isScrolled ? "blur(10px)" : "none", // Add backdrop-filter for blurriness
-    zIndex: 50,
-    transition: "background-color 0.3s ease, backdrop-filter 0.3s ease", // Transition for backdrop-filter
-  };
+		position: "fixed",
+		top: 0,
+		left: 0,
+		width: "100%",
+		backgroundColor: isScrolled
+			? "rgba(255, 255, 255, 0.95)"
+			: "transparent",
+		boxShadow: isScrolled ? "0 4px 12px rgba(0, 0, 0, 0.1)" : "none",
+		zIndex: 50,
+		transition: "background-color 0.3s ease, box-shadow 0.3s ease",
+	};
 
   return (
     <nav
@@ -297,7 +299,7 @@ export function Navbar({ userType }) {
         >
           <motion.img
             src="/images/bellll.png"
-            className="w-9 h-9 md:w-9 md:h-9 rounded-2xl cursor-pointer"
+            className="w-9 h-9 md:w-9 md:h-9 rounded-2xl cursor-pointer mx-4"
             alt="notiffs"
             initial={{ scale: 1 }}
             whileHover={{ scale: 1.1 }}
