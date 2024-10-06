@@ -13,6 +13,8 @@ export default function Notifications() {
 	const [notifications, setNotifications] = useState([]);
 	const [count, setCount] = useState(0);
 
+	console.log("notifications:", notifications);
+
 	useEffect(() => {
 		const fetchProfile = async () => {
 			if (userSession && !user) {
@@ -91,78 +93,28 @@ export default function Notifications() {
 	useEffect(() => {
 		const fetchNotifications = async () => {
 			if (userSession) {
-				if (userSession.role === "student") {
-					try {
-						const response = await fetch(
-							`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_STUDENTS}${userSession.id}`,
-							{
-								headers: {
-									Authorization: `Bearer ${Cookies.get("token")}`,
-								},
-							}
-						);
-
-						if (!response.ok) {
-							console.error("Error fetching student notifications", error);
+				try {
+					const response = await fetch(
+						`${process.env.BASE_URL}${API_ENDPOINT.GET_NOTIFICATIONS_BY_RECEIVER}${userSession.id}`,
+						{
+							headers: {
+								Authorization: `Bearer ${Cookies.get("token")}`,
+							},
 						}
+					);
 
-						const data = await response.json();
-						const sortedNotifications = data.sort(
-							(a, b) => new Date(b.date) - new Date(a.date)
-						);
-
-						setNotifications(sortedNotifications);
-					} catch (error) {
-						console.error("Error fetching notifications:", error);
+					if (!response.ok) {
+						console.error("Error fetching student notifications", error);
 					}
-				} else if (userSession.role === "counselor") {
-					try {
-						const response = await fetch(
-							`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_COUNSELORS}${userSession.id}`,
-							{
-								headers: {
-									Authorization: `Bearer ${Cookies.get("token")}`,
-								},
-							}
-						);
 
-						if (!response.ok) {
-							console.error("Error fetching notifications");
-						}
+					const data = await response.json();
+					const sortedNotifications = data.sort(
+						(a, b) => new Date(b.date) - new Date(a.date)
+					);
 
-						const data = await response.json();
-						const sortedNotifications = data.sort(
-							(a, b) => new Date(b.date) - new Date(a.date)
-						);
-
-						setNotifications(sortedNotifications);
-					} catch (error) {
-						console.error("Error fetching notifications:", error);
-					}
-				} else if (userSession.role === "teacher") {
-					try {
-						const response = await fetch(
-							`${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_NOTIFICATIONS_FOR_TEACHERS}${userSession.id}`,
-							{
-								headers: {
-									Authorization: `Bearer ${Cookies.get("token")}`,
-								},
-							}
-						);
-
-						if (!response.ok) {
-							console.error("Error fetching notifications");
-						}
-
-						const data = await response.json();
-						const sortedNotifications = data.sort(
-							(a, b) => new Date(b.date) - new Date(a.date)
-						);
-
-						setNotifications(sortedNotifications);
-					} catch (error) {
-						console.error("Error fetching notifications:", error);
-					}
+					setNotifications(sortedNotifications);
+				} catch (error) {
+					console.error("Error fetching notifications:", error);
 				}
 			}
 		};
@@ -171,78 +123,6 @@ export default function Notifications() {
 		setCount((prevCount) => prevCount + 1);
 		console.log("It is fetching notifications.");
 	}, []);
-
-	const dateFormatter = (dateString) => {
-		const givenDate = new Date(dateString);
-		const now = new Date();
-
-		const diffInMs = now - givenDate;
-
-		const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-		const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-		const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-		if (diffInMinutes < 60) {
-			return `${diffInMinutes} minute${diffInMinutes !== 1 ? "s" : ""} ago`;
-		} else if (diffInHours < 24) {
-			return `${diffInHours} hour${diffInHours !== 1 ? "s" : ""} ago`;
-		} else {
-			return `${diffInDays} day${diffInDays !== 1 ? "s" : ""} ago`;
-		}
-	};
-
-	const generateNotification = (notification) => {
-		let text = "";
-		const type = notification?.type;
-		const senderName = notification?.sender?.firstName + " " + notification?.sender?.lastName;
-		const receiverName =
-			notification?.receiver?.firstName + " " + notification?.receiver?.lastName;
-		const date = notifDateFormatter(notification?.appointment?.appointmentDate);
-		const time = notifTimeFormatter(notification?.appointment?.appointmentStartTime);
-
-		if (user?.role === "student") {
-			switch (type) {
-				case "appointment":
-					if (notification?.sender?.id === user?.id) {
-						text = `You have scheduled an appointment for ${date} at ${time}.`;
-					} else if (notification?.receiver?.id === user?.id) {
-						text = `Counselor ${senderName} has scheduled an appointment with you on ${date} at ${time}.`;
-					}
-
-					break;
-				case "referral":
-					if (notification?.receiver?.id === user?.id) {
-						text = `Prof. ${senderName} has referred you for an appointment for reason: ${notification?.referral?.reason}.`;
-					}
-					break;
-			}
-		}
-
-		if (user?.role === "counselor") {
-			switch (type) {
-				case "appointment":
-					if (notification?.sender?.id === user?.id) {
-						text = `You have scheduled an appointment with ${receiverName} on ${date} at ${time}.`;
-						break;
-					} else if (notification?.receiver?.id === user?.id) {
-						text = `${senderName} have scheduled an appointment with you on ${date} at ${time}.`;
-						break;
-					}
-			}
-		}
-
-		if (user?.role === "teacher") {
-			switch (type) {
-				case "referral":
-					if (notification?.sender?.id === user?.id) {
-						text = `You have referred student ${receiverName} (${notification?.receiver?.id}) for an appointment for reason: ${notification?.referral?.reason}.`;
-					}
-					break;
-			}
-		}
-
-		return text;
-	};
 
 	const notifDateFormatter = (dateInput) => {
 		const options = { year: "numeric", month: "long", day: "numeric" };
@@ -267,6 +147,107 @@ export default function Notifications() {
 		return `${formattedHour}:00 ${period}`;
 	};
 
+	const renderNotification = (notification) => {
+		let textColor = "";
+
+		const dateFormatter = (dateString) => {
+			const givenDate = new Date(dateString);
+			const now = new Date();
+
+			const diffInMs = now - givenDate;
+
+			const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+			const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+			const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+			if (diffInMinutes < 60) {
+				return `${diffInMinutes} minute${diffInMinutes !== 1 ? "s" : ""} ago`;
+			} else if (diffInHours < 24) {
+				return `${diffInHours} hour${diffInHours !== 1 ? "s" : ""} ago`;
+			} else {
+				return `${diffInDays} day${diffInDays !== 1 ? "s" : ""} ago`;
+			}
+		};
+
+		if (notification?.sender?.id === user?.id) {
+			textColor = notification.senderRead ? "text-zinc-600" : "text-zinc-700 font-medium";
+		} else if (notification?.receiver?.id === user?.id) {
+			textColor = notification.receiverRead ? "text-zinc-600" : "text-zinc-700 font-medium";
+		} else {
+			textColor = "text-zinc-600 font-medium";
+		}
+
+		return (
+			<div>
+				<div className={textColor}>{generateNotification(notification)}</div>
+
+				<div className="text-xs text-zinc-400 italic mt-1">
+					{dateFormatter(notification?.date)}
+				</div>
+			</div>
+		);
+	};
+
+	const generateNotification = (notification) => {
+		let text = "";
+		const type = notification?.type;
+		const senderName = notification?.sender?.firstName + " " + notification?.sender?.lastName;
+		const receiverName =
+			notification?.receiver?.firstName + " " + notification?.receiver?.lastName;
+		const date = notifDateFormatter(notification?.appointment?.appointmentDate);
+		const time = notifTimeFormatter(notification?.appointment?.appointmentStartTime);
+
+		if (user?.role === "student") {
+			switch (type) {
+				case "appointment":
+					if (
+						notification?.sender?.id === user?.id &&
+						notification?.receiver?.id === user?.id
+					) {
+						text = `You have scheduled an appointment for ${date} at ${time}.`;
+					} else if (notification?.receiver?.id === user?.id) {
+						text = `Counselor ${senderName} has scheduled an appointment with you on ${date} at ${time}.`;
+					}
+					break;
+				case "referral":
+					if (notification?.receiver?.id === user?.id) {
+						text = `Prof. ${senderName} has referred you for an appointment for reason: ${notification?.referral?.reason}.`;
+					}
+					break;
+			}
+		}
+
+		if (user?.role === "counselor") {
+			switch (type) {
+				case "appointment":
+					if (
+						notification?.sender?.id === user?.id &&
+						notification?.receiver?.id === user?.id
+					) {
+						text = `You have scheduled an appointment with ${notification?.appointment?.student?.firstName} ${notification?.appointment?.student?.lastName} on ${date} at ${time}.`;
+						break;
+					} else if (notification?.receiver?.id === user?.id) {
+						text = `${senderName} have scheduled an appointment with you on ${date} at ${time}.`;
+						break;
+					}
+			}
+		}
+
+		if (user?.role === "teacher") {
+			switch (type) {
+				case "referral":
+					if (notification?.sender?.id === user?.id) {
+						text = `You have referred student ${receiverName} (${notification?.receiver?.id}) for an appointment for reason: ${notification?.referral?.reason}.`;
+					}
+					break;
+			}
+		}
+
+		return text;
+	};
+
+	const handleNotificationOnClick = async (notification) => {};
+
 	return (
 		<div className="bg-white absolute z-10 w-full max-w-lg md:max-w-xl h-[50vh] top-16 right-0 md:right-44 md:top-14 rounded-lg drop-shadow-2xl flex flex-col">
 			{/* Header */}
@@ -281,7 +262,9 @@ export default function Notifications() {
 			<div className="flex flex-grow flex-col overflow-y-auto">
 				{notifications?.map((notification, key) => (
 					<div
-						className="flex flex-row px-3 py-4 md:px-5 md:py-5 group hover:bg-zinc-100 "
+						className={`${
+							notification?.read ? "" : null
+						} flex flex-row px-3 py-4 md:px-5 md:py-5 group hover:bg-zinc-100`}
 						key={key}
 					>
 						{/* Avatar */}
@@ -294,11 +277,8 @@ export default function Notifications() {
 						</div>
 
 						{/* Notification Text */}
-						<div className="w-4/6 md:w-9/12 md:pl-4 flex flex-col justify-center text-xs md:text-sm text-gray-700">
-							<div>{generateNotification(notification)}</div>
-							<div className="text-xs text-zinc-400 italic mt-1">
-								{dateFormatter(notification?.date)}
-							</div>
+						<div className="w-4/6 md:w-9/12 md:pl-4 flex flex-col justify-center text-xs md:text-sm">
+							{renderNotification(notification)}
 						</div>
 
 						{/* Action Icon */}

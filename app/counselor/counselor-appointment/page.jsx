@@ -368,7 +368,14 @@ const Appointment = () => {
 				const appointmentData = await response.json();
 
 				createNotification({
+					// counselor to student
 					receiverId: selectedStudentId,
+					appointmentId: appointmentData.appointmentId,
+				});
+
+				createNotification({
+					// counselor to himself
+					receiverId: userSession.id,
 					appointmentId: appointmentData.appointmentId,
 				});
 			}

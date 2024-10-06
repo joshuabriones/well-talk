@@ -389,6 +389,13 @@ const Appointment = () => {
 				toast.success("Appointment created successfully");
 				const appointmentData = await response.json();
 
+				// for student himself
+				createNotification({
+					receiverId: userSession.id,
+					appointmentId: appointmentData.appointmentId,
+				});
+
+				// for counselor
 				createNotification({
 					receiverId: appointmentData.counselor.id,
 					appointmentId: appointmentData.appointmentId,
