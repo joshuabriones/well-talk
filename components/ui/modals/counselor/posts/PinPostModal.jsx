@@ -1,6 +1,7 @@
 import { useState } from "react";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import FullButton from "@/components/ui/buttons/FullButton";
+import iconPin from "@/public/images/icons/pin.png";
 
 const PinPostModal = ({ setOpenPinModal, handlePin }) => {
   const [isChecked, setIsChecked] = useState(true);
@@ -11,34 +12,38 @@ const PinPostModal = ({ setOpenPinModal, handlePin }) => {
 
   return (
     <>
-      <input
-        type="checkbox"
-        id="pin_modal"
-        className="modal-toggle"
-        checked={isChecked}
-        onChange={toggleChecked}
-      />
-      <div className="modal" role="dialog">
-        <div className="modal-box p-9 text-center">
-          <h3 className="text-xl font-bold font-Merriweather py-6">
-            Do you confirm to pin this post?
-          </h3>
+      {isChecked && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-25 backdrop-blur-sm"
+          role="dialog"
+        >
+          <div className="modal-box relative p-10 border-2 text-center bg-white rounded-2xl shadow-lg">
+          <img
+							src={iconPin.src}
+							alt="Pin post"
+							className="w-20 h-20 sm:w-28 sm:h-28 mx-auto"
+						/>
+            <h3 className="text-xl font-bold font-Merriweather py-6">
+              Do you want to pin this post?
+            </h3>
 
-          <div className="flex flex-row gap-x-4 py-2 px-12">
-            <HollowButton onClick={() => setOpenPinModal(false)}>
-              Cancel
-            </HollowButton>
-            <FullButton onClick={handlePin}>Confirm</FullButton>
+            <div className="flex flex-row gap-x-4 py-2 px-12">
+              <HollowButton onClick={() => setOpenPinModal(false)}>
+                Cancel
+              </HollowButton>
+              <FullButton onClick={handlePin}>Confirm</FullButton>
+            </div>
+
+            {/* Close button overlay */}
+            <button
+              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none"
+              onClick={() => setOpenPinModal(false)}
+            >
+              &times;
+            </button>
           </div>
         </div>
-        <label
-          className="modal-backdrop"
-          htmlFor="pin_modal"
-          onClick={() => setOpenPinModal(false)}
-        >
-          Close
-        </label>
-      </div>
+      )}
     </>
   );
 };
