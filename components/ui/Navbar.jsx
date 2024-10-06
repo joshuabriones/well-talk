@@ -216,15 +216,17 @@ export function Navbar({ userType }) {
   }, []);
 
   const navbarStyles = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.9)" : "transparent",
-    backdropFilter: isScrolled ? "blur(10px)" : "none", // Add backdrop-filter for blurriness
-    zIndex: 50,
-    transition: "background-color 0.3s ease, backdrop-filter 0.3s ease", // Transition for backdrop-filter
-  };
+		position: "fixed",
+		top: 0,
+		left: 0,
+		width: "100%",
+		backgroundColor: isScrolled
+			? "rgba(255, 255, 255, 0.95)"
+			: "transparent",
+		boxShadow: isScrolled ? "0 4px 12px rgba(0, 0, 0, 0.1)" : "none",
+		zIndex: 50,
+		transition: "background-color 0.3s ease, box-shadow 0.3s ease",
+	};
 
   return (
     <nav

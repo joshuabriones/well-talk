@@ -126,7 +126,7 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 	};
 
 	return (
-		<div className="border-b">
+		<div className="mt-6">
 			<div className="flex items-center">
 				<img
 					src={userData?.image}
@@ -144,7 +144,7 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 				<textarea
 					value={postContent}
 					placeholder="What's happening?"
-					className="resize-none mt-3 pb-3 w-full h-28 bg-white focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-primary-green rounded-xl p-2"
+					className="resize-none mt-3 pb-3 w-full h-28 bg-white focus:outline-none focus:ring-2 focus:ring-maroon focus:border-maroon rounded-xl p-2"
 					onChange={handlePostContentChange}></textarea>
 				<div className="max-w-xl max-h-100 rounded-md relative">
 					{image && (
