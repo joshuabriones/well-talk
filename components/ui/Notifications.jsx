@@ -1,13 +1,17 @@
 "use client";
 
+import GlobalContext from "@/context/GlobalContext";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import { error } from "jquery";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 
 export default function Notifications() {
+	const router = useRouter();
 	const userSession = getUserSession();
+	const { setShowNotifications } = useContext(GlobalContext);
 
 	const [user, setUser] = useState(null);
 	const [notifications, setNotifications] = useState([]);
@@ -146,27 +150,42 @@ export default function Notifications() {
 	const handleNotifClick = async (notification) => {
 		console.log("Notification clicked: ", notification);
 
-		try {
-			const response = await fetch(
-				`${process.env.BASE_URL}${API_ENDPOINT.MARK_AS_READ}${notification.notificationId}`,
-				{
-					method: "PUT",
-					headers: {
-						Authorization: `Bearer ${Cookies.get("token")}`,
-						"Content-Type": "application/json",
-					},
-				}
-			);
+		if (!notification?.read) {
+			try {
+				const response = await fetch(
+					`${process.env.BASE_URL}${API_ENDPOINT.MARK_AS_READ}${notification.notificationId}`,
+					{
+						method: "PUT",
+						headers: {
+							Authorization: `Bearer ${Cookies.get("token")}`,
+							"Content-Type": "application/json",
+						},
+					}
+				);
 
-			if (!response.ok) {
-				console.error("Error: ", error);
+				if (!response.ok) {
+					console.error("Error: ", error);
+				}
+			} catch (error) {
+				console.error("Error marking notiication as read:", error);
 			}
-		} catch (error) {
-			console.error("Error marking notiication as read:", error);
 		}
+
+		switch (notification?.type) {
+			case "appointment":
+				if (user?.role === "student") {
+					router.push(`/student/appointment`);
+				}
+				if (user?.role === "counselor") {
+					router.push(`/counselor/counselor-appointment`);
+				}
+				break;
+		}
+
+		setShowNotifications(false);
 	};
 
-	const renderNotification = (notification) => {
+	const renderNotifText = (notification) => {
 		const dateFormatter = (dateString) => {
 			const givenDate = new Date(dateString);
 			const now = new Date();
@@ -189,7 +208,7 @@ export default function Notifications() {
 		const readStyle =
 			notification?.receiver?.id === user?.id && notification.read
 				? "text-zinc-500"
-				: "text-zinc-700 font-medium";
+				: "text-zinc-700 font-semibold";
 
 		return (
 			<div>
@@ -265,9 +284,6 @@ export default function Notifications() {
 			{/* Header */}
 			<div className="flex justify-between text-sm border-b border-slate-200 p-3 md:p-5">
 				<div className="font-semibold">{user?.firstName}'s Notifications</div>
-				<div className="text-blue-600 cursor-pointer text-xs md:text-sm">
-					Mark All as Read
-				</div>
 			</div>
 
 			{/* Notification List */}
@@ -291,7 +307,7 @@ export default function Notifications() {
 
 						{/* Notification Text */}
 						<div className="w-4/6 md:w-9/12 md:pl-4 flex flex-col justify-center text-xs md:text-sm">
-							{renderNotification(notification)}
+							{renderNotifText(notification)}
 						</div>
 
 						{/* Action Icon */}
