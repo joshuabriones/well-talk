@@ -1,9 +1,9 @@
 "use client";
-import { default as Load, default as LoadingState } from "@/components/Load";
-import Card from "@/components/ui/Card";
+import { default as LoadingState } from "@/components/Load";
 import Footer from "@/components/ui/Footer";
 import { Navbar } from "@/components/ui/Navbar";
 import PostCard from "@/components/ui/PostsCard";
+import FloatingIcon from "@/components/ui/emergency/FloatingIcon";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
@@ -13,7 +13,9 @@ import { useEffect, useState } from "react";
 import PinnedPost from "@/components/ui/PinnedPost";
 
 function Home() {
+  const [selectedButton, setSelectedButton] = useState("featured");
   const [posts, setPosts] = useState([]);
+  const [showFilterPostModal, setShowFilterModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const userSession = getUserSession();
@@ -51,51 +53,23 @@ function Home() {
       setLoading(false);
     }
   };
-
   /* Handling unauthenticated users */
   // if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
-  // 	return <Load route="login" />;
+  //   return <Load route="login" />;
   // }
 
-  // if (userSession && userSession.role !== "teacher") {
-  // 	return <Load route={userSession.role} />;
+  // if (userSession && userSession.role !== "student") {
+  //   return <Load route={userSession.role} />;
   // }
 
   useEffect(() => {
     fetchPosts();
   }, []);
-
-  console.log(userSession);
-
   return (
     <div>
       <main className="min-h-screen">
         <Navbar userType="teacher" />
 
-        <div className="md:hidden bg-maroon border-2 rounded-full z-10 flex justify-center sticky top-20 mx-6">
-          <div className="flex w-full">
-            <button
-              onClick={() => handleTabClick("Latest")}
-              className={`w-full py-3 text-base font-semibold font-Merriweather rounded-l-full transition-colors duration-300 ${
-                activeTab === "Latest"
-                  ? "bg-gold text-gray"
-                  : "text-white hover:text-gold"
-              }`}
-            >
-              Latest
-            </button>
-            <button
-              onClick={() => handleTabClick("Pinned")}
-              className={`w-full py-3 text-base font-semibold font-Merriweather rounded-r-full transition-colors duration-300 ${
-                activeTab === "Pinned"
-                  ? "bg-gold text-gray"
-                  : "text-white hover:text-gold"
-              }`}
-            >
-              Pinned
-            </button>
-          </div>
-        </div>
         <div
           className="pattern-overlay pattern-left absolute -z-10"
           style={{ transform: "scaleY(-1)", top: "-50px" }}
@@ -116,12 +90,14 @@ function Home() {
         {/* Posts */}
         <div className="flex flex-col md:flex-row py-28 px-4 md:px-12">
           {/* Posts Section */}
-          <div className="hidden md:block max-w-screen-xl mx-auto sm:px-12 lg:px-14 w-full flex-grow-2 justify-center items-center">
-            <div className="w-full bg-maroon border-2 rounded-full z-10 flex items-center justify-center top-0">
+          <div className="md:block max-w-screen-xl md:max-w-5xl mx-auto sm:px-12 lg:px-14 w-full flex-grow-2 justify-center items-center">
+            <div
+              className={`bg-maroon border-2 rounded-lg z-10 flex justify-center mx-5 ml-5 md:ml-7 lg:ml-7 sticky md:static top-18`}
+            >
               <div className="flex w-full justify-center">
                 <button
                   onClick={() => handleTabClick("Latest")}
-                  className={`w-44 sm:w-full py-1 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
+                  className={`w-full sm:w-full py-1 text-lg font-semibold font-Merriweather rounded-l-lg transition-colors duration-300 ${
                     activeTab === "Latest"
                       ? "bg-gold text-gray"
                       : "text-white hover:text-gold"
@@ -131,7 +107,7 @@ function Home() {
                 </button>
                 <button
                   onClick={() => handleTabClick("Pinned")}
-                  className={`w-44 sm:w-full py-1 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 ${
+                  className={`w-full sm:w-full py-1 text-lg font-semibold font-Merriweather rounded-r-lg transition-colors duration-300 ${
                     activeTab === "Pinned"
                       ? "bg-gold text-gray"
                       : "text-white hover:text-gold"
@@ -159,7 +135,7 @@ function Home() {
 						</div>*/}
 
             {/* Conditional Rendering of Posts */}
-            <div className="w-full p-2 mx-auto flex-grow mt-4">
+            <div className="w-full p-2 px-4 mx-auto flex-grow mt-4">
               {loading ? (
                 <LoadingState />
               ) : activeTab === "Latest" ? (
@@ -208,8 +184,8 @@ function Home() {
       </main>
 
       <Footer />
+      <FloatingIcon />
     </div>
   );
 }
-
 export default dynamic(() => Promise.resolve(Home), { ssr: false });

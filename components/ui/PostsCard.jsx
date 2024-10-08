@@ -10,8 +10,6 @@ import toast from "react-hot-toast";
 import { BsFillImageFill } from "react-icons/bs";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { v4 } from "uuid";
-import FullButton from "./buttons/FullButton";
-import HollowButton from "./buttons/HollowButton";
 import PinPostModal from "./modals/counselor/posts/PinPostModal";
 
 const PostCard = ({ post, fetchPosts }) => {
@@ -27,20 +25,14 @@ const PostCard = ({ post, fetchPosts }) => {
 
 	const formatDate = () => {
 		const dateObject = new Date(post?.postDate);
-		// Extract date components
 		const options = { year: "numeric", month: "long", day: "numeric" };
 		return dateObject.toLocaleDateString("en-US", options);
 	};
 
 	const formatTime = () => {
-		// Assuming postTime is in the format "HH:MM:SS"
 		const [hours, minutes] = post.postTime.split(":");
-
-		// Convert hours to 12-hour format and set AM/PM
 		const ampm = hours >= 12 ? "PM" : "AM";
-		const formattedHours = (hours % 12 || 12).toString().padStart(2, "0"); // Convert "00" to "12"
-
-		// Format the date and time strings
+		const formattedHours = (hours % 12 || 12).toString().padStart(2, "0");
 		return `${formattedHours}:${minutes} ${ampm}`;
 	};
 
@@ -49,13 +41,11 @@ const PostCard = ({ post, fetchPosts }) => {
 
 	const handlePin = async () => {
 		try {
-			// Assuming you have a pinPost function to call your API
-			await pinPost(post.postId); // This is a placeholder function to pin the post
-			setOpenPinModal(false); // Close the modal after pinning
-			fetchPosts(); // Refresh the posts after pinning
+			await pinPost(post.postId);
+			setOpenPinModal(false);
+			fetchPosts();
 		} catch (error) {
 			console.error("Error pinning post:", error);
-			// Handle error (e.g., show a notification)
 		}
 	};
 
@@ -247,7 +237,6 @@ function EditPostModal({
 
 	const removeImage = () => {
 		URL.revokeObjectURL(image);
-
 		setImage("");
 		setSelectedFile(null);
 	};
@@ -290,7 +279,7 @@ function EditPostModal({
 			setSelectedFile(null);
 			setImage(null);
 			fetchPosts();
-			setOpenEditModal(false);
+			setOpenEditModal(false); // Change this line
 			setOpenActions(false);
 			toast.success("Post updated successfully");
 		} catch (error) {
@@ -299,67 +288,78 @@ function EditPostModal({
 	};
 
 	return (
-		<div className="w-full h-full bg-black bg-opacity-50 fixed top-0 left-0 z-50">
-			<div className="w-4/12 h-[auto] px-4 font-Merriweather bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl shadow-xl">
-				<h2 className="text-center font-semibold text-xl py-3 border-b border-gray-300">
-					Edit Post
-				</h2>
-				<div className="w-full px-4 py-3">
-					<textarea
-						value={postContent}
-						placeholder="What's happening?"
-						className="resize-none mt-3 pb-3 w-full h-28 bg-white focus:outline-none rounded-xl p-2"
-						onChange={handlePostContentChange}></textarea>
-					<div className="max-w-xl max-h-100  rounded-md relative">
-						{image && (
-							<>
-								<img
-									src={image}
-									alt="Uploaded Content"
-									className="object-cover max-w-full max-h-32 rounded-md my-2 cursor-pointer"
-								/>
-								<button
-									onClick={removeImage}
-									className="absolute top-0 left-[-2] bg-red-500 text-white rounded-full "
-									style={{
-										marginTop: "-5px",
-										marginRight: "-5px",
-									}}>
-									<XCircleIcon className="h-5 w-5" />
-								</button>
-							</>
-						)}
+		<div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex items-center justify-center z-50">
+			<div className="bg-white rounded-2xl border-2 shadow-lg w-11/12 sm:w-9/12 md:w-7/12 lg:w-5/12 xl:w-4/12">
+				{/* MacOS Window Title Bar */}
+				<div className="flex justify-between items-center bg-maroon p-4 border-b-2 rounded-t-lg">
+					<div className="flex items-center space-x-2">
+						<div className="w-4 h-4 border-2 bg-yellow-400 rounded-full cursor-pointer"></div>
+						<div className="w-4 h-4 border-2 bg-green-400 rounded-full cursor-pointer"></div>
+						<div
+							className="w-4 h-4 border-2 bg-red-400 rounded-full cursor-pointer"
+							onClick={() => setShowModal(false)}></div>
 					</div>
 				</div>
+				<div className="p-6">
+					<div className="p-4">
+						<textarea
+							value={postContent}
+							placeholder="What's happening?"
+							className="resize-none mt-3 w-full h-28 bg-white focus:outline-none focus:ring-2 focus:ring-maroon focus:border-maroon rounded-xl p-2"
+							onChange={handlePostContentChange}></textarea>
+						<div className="max-w-full max-h-100 rounded-md relative">
+							{image && (
+								<>
+									<img
+										src={image}
+										alt="Uploaded Content"
+										className="object-cover max-w-full max-h-32 rounded-md my-2 cursor-pointer"
+									/>
+									<button
+										onClick={removeImage}
+										className="absolute top-0 left-[-2] bg-red-500 text-white rounded-full "
+										style={{
+											marginTop: "-5px",
+											marginRight: "-5px",
+										}}>
+										<XCircleIcon className="h-5 w-5" />
+									</button>
+								</>
+							)}
+						</div>
+					</div>
 
-				<div className="flex justify-between items-center mt-4 mb-4 px-4">
-					<label className="flex items-center font-Jaldi">
-						<input
-							className="hidden"
-							type="file"
-							onChange={handleFileSelection}
-							x
-							accept="image/*"
-						/>
-						<BsFillImageFill className="text-2xl cursor-pointer mr-2 mt-1" />
-					</label>
-					<div className="flex gap-2 w-7/12">
-						<HollowButton
-							onClick={() => setOpenEditModal((prev) => !prev)}
-							className="bg-white border-[1px] border-black text-black px-4 py-2 rounded-md font-semibold">
-							Cancel
-						</HollowButton>
-						<FullButton
-							onClick={handleUpdatePost}
-							className="bg-green-500 px-4 py-2 rounded-md font-semibold">
-							Update Post
-						</FullButton>
+					<div className="flex flex-row sm:flex-row justify-between items-center mb-4 px-4">
+						<label className="flex items-center font-Jaldi">
+							<input
+								className="hidden"
+								type="file"
+								onChange={handleFileSelection}
+								accept="image/*"
+							/>
+							<BsFillImageFill className="text-2xl text-maroon cursor-pointer mr-2 mt-1" />
+						</label>
+						<div className="flex gap-2 w-full sm:w-auto">
+							<button
+								onClick={() =>
+									setOpenEditModal((prev) => !prev)
+								}
+								className="w-full sm:w-auto bg-white border-2 border-maroon text-sm text-maroon font-semibold rounded-3xl px-4 py-3 hover:scale-95 transition-transform duration-300">
+								Cancel
+							</button>
+							<button
+								onClick={handleUpdatePost}
+								className="w-full sm:w-auto bg-maroon border-2 border-maroon text-sm text-white font-semibold rounded-3xl px-4 py-3 hover:scale-95 transition-transform duration-300">
+								Update Post
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	);
 }
+
 {
 	/* <div className="flex justify-between pt-8">
           <div className="flex">
