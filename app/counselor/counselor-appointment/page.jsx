@@ -442,6 +442,22 @@ const Appointment = () => {
 		<div className="min-h-screen w-full">
 			{/* navigation bar */}
 			<Navbar userType="counselor" />
+			<div
+          className="pattern-overlay pattern-left absolute -z-10"
+          style={{ transform: "scaleY(-1)", top: "-50px" }}
+        >
+          <img src="/images/landing/lleft.png" alt="pattern" />
+        </div>
+        <div
+          className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+          style={{ transform: "scaleY(-1)", top: "-15px" }}
+        >
+          <img
+            src="/images/landing/lright.png"
+            alt="pattern"
+            className="w-full h-full object-contain"
+          />
+        </div>
 
 			{/* header */}
 			{/*<div className="w-full h-[45vh] md:h-[55vh] relative">
@@ -493,7 +509,7 @@ const Appointment = () => {
 						</button>
 					</div>
 					{appointments && isViewAppointment ? (
-						<div className="overflow-x-auto max-w-full lg:px-10 xs:px-1 flex flex-col items-center mt-10">
+						<div className="overflow-x-auto max-w-full lg:px-28 xs:px-1 flex flex-col items-center mt-10">
 							<table className="table bg-gray-100">
 								{/* head */}
 								<thead className="bg-gray-200">
@@ -652,7 +668,7 @@ const Appointment = () => {
 							</div>
 						</div>
 					) : (
-						<div className="flex w-full py-10 px-8 gap-10 justify-center md:flex-row flex-col">
+						<div className="flex w-full py-10 px-8 md:px-28 lg:px-28 gap-10 justify-center md:flex-row flex-col">
 							<div className="flex-1 flex flex-col gap-2">
 								<Calendar
 									bordered

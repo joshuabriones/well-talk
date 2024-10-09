@@ -208,6 +208,22 @@ export default function Chat() {
   return (
     <div className="min-h-screen">
   <Navbar userType="counselor" />
+  <div
+          className="pattern-overlay pattern-left absolute -z-10"
+          style={{ transform: "scaleY(-1)", top: "-50px" }}
+        >
+          <img src="/images/landing/lleft.png" alt="pattern" />
+        </div>
+        <div
+          className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+          style={{ transform: "scaleY(-1)", top: "-15px" }}
+        >
+          <img
+            src="/images/landing/lright.png"
+            alt="pattern"
+            className="w-full h-full object-contain"
+          />
+        </div>
   <section className="h-screen flex flex-col md:flex-row items-center justify-center pt-[90px] pb-10 px-4 md:px-10 lg:px-36 gap-x-4">
     {/* Chat List */}
     <section className="w-full md:w-1/3 h-full px-4 py-6 flex flex-col gap-y-3 rounded-lg border bg-white">
