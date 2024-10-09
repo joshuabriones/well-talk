@@ -356,6 +356,7 @@ const Referral = () => {
         <AddReferral
           teacherId={userSession.id}
           onOpen={setAddReferral}
+          fetchReferrals={fetchReferrals}
         ></AddReferral>
       )}
     </div>
