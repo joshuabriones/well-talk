@@ -42,7 +42,7 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <div className="flex justify-between mb-5">
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <select

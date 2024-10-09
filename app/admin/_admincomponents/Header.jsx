@@ -4,7 +4,7 @@ const Header = ({ title }) => {
   const userSession = getUserSession();
 
   return (
-    <header className="bg-gray-800 p-4 flex justify-between items-center">
+    <header className="bg-gray-800 p-4 flex justify-between items-center md:mt-0 xs:mt-10">
       <h1 className="text-2xl text-white font-medium">{title}</h1>
       <div className="flex items-center">
         <img

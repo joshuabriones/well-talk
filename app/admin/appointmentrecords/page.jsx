@@ -81,11 +81,11 @@ const AppointmentRecords = () => {
       {isLoading ? (
         <p>Loading...</p>
       ) : (
-        <div className="grid grid-cols-3 gap-6 mt-6 overflow-scroll">
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1 gap-6 mt-6 overflow-scroll">
           {appointmentsPerCounselor.map((counselor) => (
             <div
               key={counselor.counselorName}
-              className="bg-bgDark2 p-5 relative rounded-3xl shadow-md flex flex-col items-center gap-5"
+              className="w-full min-w-[240px] bg-bgDark2 p-5 relative rounded-3xl shadow-md flex flex-col items-center gap-5"
             >
               <img
                 src={counselor.image}
@@ -93,10 +93,10 @@ const AppointmentRecords = () => {
                 className="w-20 h-20 rounded-full"
               />
               <div>
-                <h3 className="text-2xl font-medium text-white text-center">
+                <h3 className="sm:text-2xl font-medium text-white text-center text-xl">
                   {counselor.counselorName}{" "}
                 </h3>
-                <p className="text-lg text-navgray mt-2">
+                <p className="sm:text-lg text-navgray mt-2 text-base">
                   {counselor.appointmentCount} appointments 🗓
                 </p>
               </div>

@@ -27,7 +27,7 @@ const NewUsersTab = () => {
   }, []);
 
   return (
-    <div className="bg-bgDark2 p-5 rounded-3xl shadow-md">
+    <div className="bg-bgDark2 p-5 rounded-3xl shadow-md  ">
       <h2 className="text-xl font-medium mb-5">New Users</h2>
       <div className="flex flex-col gap-8">
         {newUsers.map((user) => (

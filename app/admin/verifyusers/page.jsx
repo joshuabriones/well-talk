@@ -84,9 +84,9 @@ const VerifyUserPage = () => {
   }, []);
 
   return (
-    <div className="flex-1 min-h-screen">
+    <div className="flex-1 min-h-screen ">
       <Header title="Verify User Accounts" />
-      <div className="flex justify-center items-center mt-10">
+      <div className="flex justify-center items-center mt-10 overflow-x-hidden">
         {loading ? (
           <div>Loading...</div>
         ) : (

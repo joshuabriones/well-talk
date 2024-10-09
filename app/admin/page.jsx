@@ -14,13 +14,13 @@ export default function Page() {
         <Header title="Dashboard" />
         <div>
           <StatsOverview />
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-x-6 md:gap-x-0 gap-y-6 mt-6">
             <StatisticsGraph />
             <NewUsersTab />
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-x-6 md:gap-x-0 gap-y-6 mt-6">
             <TotalUsersGraph />
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col lg:gap-3 xs:gap-6">
               <AppointmentsCount />
               <GenderChart />
             </div>
