@@ -50,17 +50,17 @@ const ClientJournal = () => {
       </h1>
 
       <section className="w-3/4 mt-10 mx-auto divide-y font-Jaldi divide-slate-200 rounded border border-slate-200 bg-white">
-        <div class="relative">
+        <div className="relative">
           <input
             type="text"
             placeholder="Search users..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            class="relative w-full h-12 px-4 transition-all mb-10 border rounded-xl text-slate-500 autofill:bg-white"
+            className="relative w-full h-12 px-4 transition-all mb-10 border rounded-xl text-slate-500 autofill:bg-white"
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="absolute w-6 h-6 cursor-pointer top-3 right-4 stroke-slate-400 peer-disabled:cursor-not-allowed"
+            className="absolute w-6 h-6 cursor-pointer top-3 right-4 stroke-slate-400 peer-disabled:cursor-not-allowed"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
