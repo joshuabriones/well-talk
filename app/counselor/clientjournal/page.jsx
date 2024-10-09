@@ -45,22 +45,36 @@ const ClientJournal = () => {
   return (
     <div className="w-full pt-32 px-10 h-screen">
       <Navbar userType="counselor" />
-      <h1 className="text-3xl lg:ml-20 md:ml-6 font-Merriweather">
+      <div
+          className="pattern-overlay pattern-left absolute -z-10"
+          style={{ transform: "scaleY(-1)", top: "-50px" }}
+        >
+          <img src="/images/landing/lleft.png" alt="pattern" />
+        </div>
+        <div
+          className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+          style={{ transform: "scaleY(-1)", top: "-15px" }}
+        >
+          <img
+            src="/images/landing/lright.png"
+            alt="pattern"
+            className="w-full h-full object-contain"
+          />
+        </div>
+      <h1 className="text-3xl lg:ml-56 md:ml-6 font-Merriweather">
         Client Journal
       </h1>
-
-      <section className="w-3/4 mt-10 mx-auto divide-y font-Jaldi divide-slate-200 rounded border border-slate-200 bg-white">
-        <div className="relative">
+<div className="relative w-3/4 mx-auto mt-10">
           <input
             type="text"
             placeholder="Search users..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="relative w-full h-12 px-4 transition-all mb-10 border rounded-xl text-slate-500 autofill:bg-white"
+            className="relative w-full h-12 px-4 transition-all mb-10 border-2 rounded-xl text-slate-500 autofill:bg-white focus:outline-none"
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="absolute w-6 h-6 cursor-pointer top-3 right-4 stroke-slate-400 peer-disabled:cursor-not-allowed"
+            className="absolute w-6 h-6 cursor-pointer top-3 right-4 stroke-maroon peer-disabled:cursor-not-allowed"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -78,6 +92,8 @@ const ClientJournal = () => {
             />
           </svg>
         </div>
+      <section className="w-3/4 mx-auto divide-y font-Jaldi divide-slate-200 rounded border-2 border-slate-200 bg-white">
+        
         {filteredUsers.map((student, i) => {
           return (
             <details key={student.id} className="group p-4">

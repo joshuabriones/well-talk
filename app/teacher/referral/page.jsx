@@ -316,11 +316,11 @@ const Referral = () => {
         desc="Unlock student potential! Teachers, utilize this referral portal to recommend students who could thrive with counseling support. Your insight fuels our commitment to student well-being and success."
       />
 
-      <div className="flex flex-col">
-        <div className="overflow-x-auto px-56 py-10">
-          <TableTitle addReferral={setAddReferral} />
+      <div className="flex flex-col px-4 sm:px-10 md:px-20 lg:px-56 py-10">
+        <TableTitle addReferral={setAddReferral} />
 
-          <table className="table bg-gray-100">
+        <div className="overflow-x-auto">
+          <table className="table w-full bg-gray-100">
             <TableHeaders handleSort={handleSort} />
             <TableBody
               currentList={currentList}
@@ -328,20 +328,20 @@ const Referral = () => {
               showDeleteModal={showDeleteModal}
             />
           </table>
-
-          <PaginationControls
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            list={referrals}
-          />
         </div>
+
+        <PaginationControls
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          list={referrals}
+        />
       </div>
 
       {deleteModal && (
         <ModalDelete
           setDeleteModal={setDeleteModal}
           handleDelete={handleDelete}
-        ></ModalDelete>
+        />
       )}
 
       {referralModal && (
@@ -349,7 +349,7 @@ const Referral = () => {
           setReferralModal={setReferralModal}
           selectedID={selectedID}
           referrals={referrals}
-        ></ReferralInfo>
+        />
       )}
 
       {addReferral && (
@@ -357,7 +357,7 @@ const Referral = () => {
           teacherId={userSession.id}
           onOpen={setAddReferral}
           fetchReferrals={fetchReferrals}
-        ></AddReferral>
+        />
       )}
     </div>
   );

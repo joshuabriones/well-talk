@@ -79,15 +79,15 @@ export default function JournalPage({ params }) {
 
 				Cookies.set("token", data.token);
 				setIsModalOpen(false);
-				setShowInvalidPassword(false); 
-				setPassword(""); 
+				setShowInvalidPassword(false);
+				setPassword("");
 			} else {
 				setShowInvalidPassword(true);
-				setPassword(""); 
+				setPassword("");
 			}
 		} catch (error) {
 			console.error("Error verifying password:", error);
-			setShowInvalidPassword(true); 
+			setShowInvalidPassword(true);
 		}
 	};
 
@@ -99,6 +99,23 @@ export default function JournalPage({ params }) {
 	return (
 		<div className="w-full pt-32 px-4 md:px-10">
 			<Navbar userType="counselor" />
+
+			<div
+          className="pattern-overlay pattern-left absolute -z-10"
+          style={{ transform: "scaleY(-1)", top: "-50px" }}
+        >
+          <img src="/images/landing/lleft.png" alt="pattern" />
+        </div>
+        <div
+          className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+          style={{ transform: "scaleY(-1)", top: "-15px" }}
+        >
+          <img
+            src="/images/landing/lright.png"
+            alt="pattern"
+            className="w-full h-full object-contain"
+          />
+        </div>
 			<div className="max-w-7xl mx-auto font-Jaldi">
 				<PasswordModal
 					isOpen={isModalOpen}
@@ -138,7 +155,7 @@ export default function JournalPage({ params }) {
 					</div>
 
 					<div className="flex flex-col md:flex-row gap-5 mt-10 w-full">
-						<div className="flex-1 p-4 border-b-2 md:border-none lg:border-none">
+						<div className="flex-1 p-4 rounded-2xl border-b-2 md:border lg:border shadow-xl">
 							<h2 className="text-2xl font-semibold">
 								Shared Journal
 							</h2>
@@ -184,7 +201,8 @@ export default function JournalPage({ params }) {
 								</p>
 							)}
 						</div>
-						<div className="flex-1 p-4">
+
+						<div className="flex-1 p-4 rounded-2xl border-b-2 md:border lg:border shadow-xl">
 							<h2 className="text-2xl font-semibold">
 								Your Notes
 							</h2>
