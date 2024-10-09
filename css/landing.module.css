@@ -73,3 +73,24 @@
 	animation: typing 4s steps(40, end) 1s 1 normal both;
   }
   
+  .spinner {
+	display: inline-block;
+	width: 60px; /* Size of the spinner */
+	height: 60px; /* Size of the spinner */
+	border-radius: 50%;
+	background: transparent;
+	border: 8px solid rgba(255, 255, 255, 0.3); /* Light color for background */
+	border-top: 8px solid #3498db; /* Color for the top border */
+	animation: spin 1s linear infinite, pulse 0.5s ease-in-out infinite;
+  }
+  
+  @keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+  }
+  
+  @keyframes pulse {
+	0%, 100% { transform: scale(1); }
+	50% { transform: scale(1.1); }
+  }
+  

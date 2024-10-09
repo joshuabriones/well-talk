@@ -25,7 +25,7 @@ const TableTitle = ({ addReferral }) => {
     <div className="flex flex-row justify-between items-center mb-3">
       <h1 className="font-Merriweather text-lg ">Referral Records</h1>
       <button
-        className="w-36 font-Merriweather text-sm px-6 py-2 border border-black rounded-lg hover:bg-[#6B9080] hover:text-white hover:border-white transition duration-300 ease-in-out"
+        className="w-36 font-Merriweather text-sm px-6 py-2 border-2 border-maroon text-maroon rounded-lg hover:bg-maroon hover:text-white hover:border-white transition duration-300 ease-in-out"
         onClick={addReferral}
       >
         Add Referral
