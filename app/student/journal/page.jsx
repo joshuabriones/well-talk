@@ -414,7 +414,10 @@ const StudentJournal = () => {
                       />
                     </div>
                   ) : (
-                    <div className="text-lg font-light text-gray">
+                    <div
+                      className="text-lg font-light text-gray"
+                      style={{ whiteSpace: "pre-wrap" }}
+                    >
                       {parse(highlightEntry?.entry || "")}
                     </div>
                   )}
