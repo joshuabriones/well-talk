@@ -5,26 +5,12 @@ import Toggle from "@/components/ui/toggle/Toggle";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import "@/styles/globals.css";
-// import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-// import { CKEditor } from "@ckeditor/ckeditor5-react";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-// import ReactHtmlParser from 'react-html-parser';
-import parse from "html-react-parser";
-// import PublicizedToggle from "@/components/ui/toggle/PublicizedToggle";
-// import "@/css/toggle.css";
-import JournalModal from "./_modal/JournalModal";
 
-const CKEditor = dynamic(
-  () => import("@ckeditor/ckeditor5-react").then((mod) => mod.CKEditor),
-  { ssr: false }
-);
-const ClassicEditor = dynamic(
-  () => import("@ckeditor/ckeditor5-build-classic"),
-  { ssr: false }
-);
+import JournalModal from "./_modal/JournalModal";
 
 const StudentJournal = () => {
   const userSession = typeof window !== "undefined" ? getUserSession() : null;
@@ -86,8 +72,6 @@ const StudentJournal = () => {
   useEffect(() => {
     setIsPublic(highlightEntry?.isPublic);
   }, [highlightEntry]);
-
-  console.log("isPublic: ", isPublic);
 
   const handleSaveEntry = async (e) => {
     e.preventDefault();
@@ -229,7 +213,7 @@ const StudentJournal = () => {
     return formattedTime;
   };
 
-  console.log("isPublic: ", isPublic);
+  console.log(highlightEntry);
 
   return (
     <div className="min-h-screen">
@@ -389,7 +373,7 @@ const StudentJournal = () => {
                   {isEditing ? (
                     <input
                       type="text"
-                      className="text-4xl text-maroon w-full bg-white border"
+                      className="md:text-4xl xs:text-2xl text-maroon w-full bg-white border"
                       value={editTitle}
                       onChange={(e) => setEditTitle(e.target.value)}
                     />
@@ -403,14 +387,14 @@ const StudentJournal = () => {
                 {/* Entry Section */}
                 <div className="flex-grow mb-5">
                   {isEditing ? (
-                    <div className="ckeditor-custom">
-                      <CKEditor
-                        editor={ClassicEditor}
-                        data={editEntry}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          setEditEntry(data);
-                        }}
+                    <div className="">
+                      <textarea
+                        type="text"
+                        className="text-lg text-maroon w-full h-full bg-white border"
+                        value={editEntry}
+                        onChange={(e) => setEditEntry(e.target.value)}
+                        rows="8"
+                        style={{ whiteSpace: "pre-wrap" }}
                       />
                     </div>
                   ) : (
@@ -418,7 +402,7 @@ const StudentJournal = () => {
                       className="text-lg font-light text-gray"
                       style={{ whiteSpace: "pre-wrap" }}
                     >
-                      {parse(highlightEntry?.entry || "")}
+                      {highlightEntry?.entry}
                     </div>
                   )}
                 </div>
@@ -454,4 +438,5 @@ const StudentJournal = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(StudentJournal), { ssr: false });
+export default StudentJournal;
+// export default dynamic(() => Promise.resolve(StudentJournal), { ssr: false });
