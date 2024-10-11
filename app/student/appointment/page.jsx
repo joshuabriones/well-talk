@@ -558,7 +558,7 @@ const Appointment = () => {
 					{isViewAppointment ? (
 						<div className="w-full flex flex-col text-center">
 							{/* table*/}
-							<div className="overflow-x-auto max-w-full lg:px-10 xs:px-1 flex flex-col items-center mt-10">
+							<div className="overflow-x-auto max-w-full py-10 px-8 md:px-28 lg:px-28 xs:px-1 flex flex-col items-center mt-10">
 								<table className="table bg-gray-100">
 									{/* head */}
 									<thead className="bg-gray-200">
@@ -734,7 +734,7 @@ const Appointment = () => {
 							</div>
 						</div>
 					) : (
-						<div className="flex w-full py-10 px-8 gap-12 justify-center md:flex-row flex-col">
+						<div className="flex w-full py-10 px-8 md:px-28 lg:px-28 gap-12 justify-center md:flex-row flex-col">
 							<div className="flex-1">
 								<Calendar
 									bordered

@@ -14,7 +14,7 @@ function TextAreaInput({ value, onChange, placeholder = "Enter your message", la
           placeholder={placeholder}
           required
         />
-        <span className={`pointer-events-none absolute start-2.5 bg-white p-1 -translate-y-1/2 text-xs transition-all ${value ? 'top-0 text-xs' : 'peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs'}`}>
+        <span className={`pointer-events-none absolute top-8 start-2.5 bg-white p-1 -translate-y-1/2 text-xs transition-all ${value ? 'top-0 text-xs' : 'peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs'}`}>
           {label}
         </span>
       </label>

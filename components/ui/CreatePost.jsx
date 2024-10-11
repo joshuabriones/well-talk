@@ -19,6 +19,8 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 	const [characterCount, setCharacterCount] = useState(0);
 	const [userData, setUserData] = useState(null);
 
+	const MAX_CHARACTERS = 5000;
+
 	const fetchUserData = async () => {
 		if (userSession.role === "counselor") {
 			const response = await fetch(
@@ -106,7 +108,7 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 		setCharacterCount(postContent.length);
 	}, [postContent]);
 
-	const remainingCharacters = 280 - characterCount;
+	const remainingCharacters = MAX_CHARACTERS - characterCount;
 	const getColor = () => {
 		if (remainingCharacters <= 20 && remainingCharacters > 5) {
 			return "#FFD700"; // Yellow
@@ -119,7 +121,7 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 
 	const handlePostContentChange = (e) => {
 		const value = e.target.value;
-		if (value.length <= 280) {
+		if (value.length <= MAX_CHARACTERS) {
 			setPostContent(value);
 			setCharacterCount(value.length);
 		}
@@ -181,10 +183,10 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 
 				<div className="disabled:cursor-not-allowed pt-3 flex justify-end gap-4 w-40">
 					<div className="flex flex-row justify-center items-center relative w-12">
-						{characterCount <= 289 && (
+						{characterCount <= MAX_CHARACTERS && (
 							<CircularProgressbar
 								value={characterCount}
-								maxValue={280}
+								maxValue={MAX_CHARACTERS}
 								text={
 									remainingCharacters <= 20
 										? `${remainingCharacters}`
@@ -197,19 +199,19 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 									textSize: "40px",
 								})}
 								className={`custom-progress-bar ${
-									characterCount > 289 ? "hidden" : ""
+									characterCount > MAX_CHARACTERS ? "hidden" : ""
 								}`}
 							/>
 						)}
 
-						{characterCount > 289 && (
+						{characterCount > MAX_CHARACTERS && (
 							<div
 								className="custom-progress-text"
 								style={{
 									fontSize: "13px",
 									color: "red",
 									transition: "opacity 0.5s ease-out",
-									opacity: characterCount > 289 ? 1 : 0,
+									opacity: characterCount > MAX_CHARACTERS ? 1 : 0,
 								}}>
 								{remainingCharacters}
 							</div>
@@ -218,11 +220,11 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 					<button
 						className={`w-full py-2 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 
         ${
-			!postContent.trim() || characterCount > 280
+			!postContent.trim() || characterCount > MAX_CHARACTERS
 				? "bg-maroon text-white cursor-not-allowed border-silver border-2"
 				: "bg-gold text-gray hover:bg-gold-dark border-2"
 		}`}
-						disabled={!postContent.trim() || characterCount > 280}
+						disabled={!postContent.trim() || characterCount > MAX_CHARACTERS}
 						onClick={postHandler}>
 						Post
 					</button>
