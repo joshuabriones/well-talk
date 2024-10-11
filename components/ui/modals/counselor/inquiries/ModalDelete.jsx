@@ -14,7 +14,7 @@ const ModalDelete = ({ setDeleteModal, handleDelete, prompt, description }) => {
 		<>
 			{isChecked && (
 				<div
-					className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-25 backdrop-blur-sm"
+					className="fixed inset-0 flex items-center justify-center z-50 bg-white bg-opacity-25 backdrop-blur-sm"
 					role="dialog">
 					<div className="modal-box relative p-6 sm:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white rounded-2xl shadow-lg">
 						<img
