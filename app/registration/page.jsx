@@ -116,10 +116,18 @@ const Registration = () => {
 
     let extraInfoValidation;
 
+    let formattedBirthdate;
+
+    if (birthdate instanceof Date) {
+      formattedBirthdate = birthdate.toISOString().split("T")[0]; // Convert Date to 'YYYY-MM-DD'
+    } else {
+      formattedBirthdate = birthdate; // It's already a string, so use it directly
+    }
+
     /* zod validation */
     if (role === "student") {
       const studentData = {
-        birthdate,
+        birthdate: formattedBirthdate,
         contactNumber,
         permanentAddress,
         year,
@@ -134,7 +142,7 @@ const Registration = () => {
     if (!extraInfoValidation?.success || !result.success) {
       setErrors({
         ...extraInfoValidation?.error?.format(),
-        ...result.error.format(),
+        ...result?.error?.format(),
       });
       clearErrors();
       return;
