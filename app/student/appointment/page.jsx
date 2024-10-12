@@ -531,8 +531,8 @@ const Appointment = () => {
           <div className="w-full pt-24 flex items-center gap-3 justify-center">
             <button
               className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
-                  ? "bg-maroon text-white"
-                  : "border-2 border-maroon text-maroon"
+                ? "bg-maroon text-white"
+                : "border-2 border-maroon text-maroon"
                 }`}
               onClick={handleAddAppointmentClick}
             >
@@ -540,8 +540,8 @@ const Appointment = () => {
             </button>
             <button
               className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
-                  ? "bg-maroon text-white"
-                  : "border-2 border-maroon text-maroon"
+                ? "bg-maroon text-white"
+                : "border-2 border-maroon text-maroon"
                 }`}
               onClick={handleViewAppointmentClick}
             >
@@ -556,7 +556,7 @@ const Appointment = () => {
                 <table className="table bg-gray-100">
                   {/* head */}
                   <thead className="bg-gray-200">
-                    <tr className="font-bold text-center">
+                    <tr className="font-bold text-center border-b border-yellow-500">
                       <th className="py-2">Date</th>
                       <th className="py-2">Time</th>
                       <th className="py-2">Appointment Type</th>
@@ -574,8 +574,11 @@ const Appointment = () => {
                         onClick={() =>
                           handleRowClick(appointment.appointmentId)
                         }
-                        className="cursor-pointer hover:bg-silver transition duration-300 ease-in-out"
+                        className={` border-yellow-500 border border-b-2 
+                          hover:border-b-4 hover:border-lightMaroon cursor-pointer 
+                          transition duration-300 ease-in-out`}
                       >
+
                         <td>
                           <div className="text-center py-2">
                             {formatDate(appointment.appointmentDate)}
@@ -606,27 +609,27 @@ const Appointment = () => {
 
                         </td>
                         <td className="h-full">
-                          <div className = "flex justify-center items-center">
-                          <div
-                            className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}
-                          >
-                            {appointment &&
-                              appointment.appointmentStatus === "Pending" &&
-                              "🟡"}
-                            {appointment &&
-                              appointment.appointmentStatus === "Done" &&
-                              "🟢"}
-                            {appointment &&
-                              appointment.appointmentStatus === "Assigned" &&
-                              "🔵"}
-                            {appointment &&
-                              appointment.appointmentStatus === "Cancelled" &&
-                              "🔴"}{" "}
-                            {/* Added red dot for Cancelled */}
-                            <span className="ml-2 text-bold text-sm">
-                              {appointment ? appointment.appointmentStatus : ""}
-                            </span>
-                          </div>
+                          <div className="flex justify-center items-center">
+                            <div
+                              className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}
+                            >
+                              {appointment &&
+                                appointment.appointmentStatus === "Pending" &&
+                                "🟡"}
+                              {appointment &&
+                                appointment.appointmentStatus === "Done" &&
+                                "🟢"}
+                              {appointment &&
+                                appointment.appointmentStatus === "Assigned" &&
+                                "🔵"}
+                              {appointment &&
+                                appointment.appointmentStatus === "Cancelled" &&
+                                "🔴"}{" "}
+                              {/* Added red dot for Cancelled */}
+                              <span className="ml-2 text-bold text-sm">
+                                {appointment ? appointment.appointmentStatus : ""}
+                              </span>
+                            </div>
                           </div>
                         </td>
 
@@ -735,10 +738,10 @@ const Appointment = () => {
                         disabled={isTimeSlotTaken(time)}
                         onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
                         className={`time-slot-button ${isTimeSlotTaken(time)
-                            ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
-                            : time === selectedTimeSlot
-                              ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-                              : "bg-maroon text-white hover:bg-maroon duration-300"
+                          ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
+                          : time === selectedTimeSlot
+                            ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+                            : "bg-maroon text-white hover:bg-maroon duration-300"
                           }  py-2 px-3 rounded-md`}
                       >
                         {timeFormatter(time)}

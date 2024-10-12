@@ -441,28 +441,28 @@ const Appointment = () => {
 
 	const handlePurposeChange = (e) => {
 		setPurpose(e.target.value);
-	  };
+	};
 
 	return (
 		<div className="min-h-screen w-full">
 			{/* navigation bar */}
 			<Navbar userType="counselor" />
 			<div
-          className="pattern-overlay pattern-left absolute -z-10"
-          style={{ transform: "scaleY(-1)", top: "-50px" }}
-        >
-          <img src="/images/landing/lleft.png" alt="pattern" />
-        </div>
-        <div
-          className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
-          style={{ transform: "scaleY(-1)", top: "-15px" }}
-        >
-          <img
-            src="/images/landing/lright.png"
-            alt="pattern"
-            className="w-full h-full object-contain"
-          />
-        </div>
+				className="pattern-overlay pattern-left absolute -z-10"
+				style={{ transform: "scaleY(-1)", top: "-50px" }}
+			>
+				<img src="/images/landing/lleft.png" alt="pattern" />
+			</div>
+			<div
+				className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
+				style={{ transform: "scaleY(-1)", top: "-15px" }}
+			>
+				<img
+					src="/images/landing/lright.png"
+					alt="pattern"
+					className="w-full h-full object-contain"
+				/>
+			</div>
 
 			{/* header */}
 			{/*<div className="w-full h-[45vh] md:h-[55vh] relative">
@@ -493,21 +493,19 @@ const Appointment = () => {
 				<div>
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isAddAppointment
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
 									? "bg-maroon text-white"
 									: "bg-white border-2 border-maroon text-maroon"
-							}`}
+								}`}
 							onClick={handleAddAppointmentClick}
 						>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isViewAppointment
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
 									? "bg-maroon text-white"
 									: "bg-white border-2 border-maroon text-maroon"
-							}`}
+								}`}
 							onClick={handleViewAppointmentClick}
 						>
 							View Appointments
@@ -518,7 +516,7 @@ const Appointment = () => {
 							<table className="table bg-gray-100">
 								{/* head */}
 								<thead className="bg-gray-200">
-									<tr className="font-bold text-center">
+			                    <tr className="font-bold text-center border-b border-yellow-500">
 										{/* <th className="text-center p-5">ID</th> */}
 										<th>Date and Time</th>
 										<th className="p-5">ID Number</th>
@@ -537,25 +535,27 @@ const Appointment = () => {
 											onClick={() =>
 												handleRowClick(appointments.appointmentId)
 											}
-											className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
-										>
+											className={` border-yellow-500 border border-b-2 
+												hover:border-b-4 hover:border-lightMaroon cursor-pointer 
+												transition duration-300 ease-in-out`}
+											>
 											{/* <td className="text-center">
 												{appointments.appointmentId}
 											</td> */}
-											<td className = "text-center">
+											<td className="text-center">
 												{/* <div className="flex flex-row gap-x-2"> */}
-													<div className="text-sm p-5">
-														{formatDate(appointments.appointmentDate)}{" "}
-														{appointments.appointmentStartTime}
-													</div>
+												<div className="text-sm p-5">
+													{formatDate(appointments.appointmentDate)}{" "}
+													{appointments.appointmentStartTime}
+												</div>
 												{/* </div> */}
 											</td>
-											<td className = "text-center">
+											<td className="text-center">
 												{/* <div className="flex flex-row gap-x-3"> */}
-													<div>{appointments.student?.idNumber}</div>
+												<div>{appointments.student?.idNumber}</div>
 												{/* </div> */}
 											</td>
-											<td className = "h-full">
+											<td className="h-full">
 												<div className="flex items-center justify-center gap-3">
 													<div className="avatar">
 														<div className="mask mask-squircle w-12 h-12">
@@ -579,48 +579,48 @@ const Appointment = () => {
 													</div>
 												</div>
 											</td>
-											<td className = "text-center">
+											<td className="text-center">
 												<p>
 													{appointments?.appointmentPurpose?.length > 50
 														? `${appointments?.appointmentPurpose?.substring(
-																0,
-																40
-														  )}...`
+															0,
+															40
+														)}...`
 														: appointments?.appointmentPurpose}
 												</p>
 											</td>
-											<td className = "text-center">
+											<td className="text-center">
 												<p>
 													{appointments?.appointmentNotes?.length > 50
 														? `${appointments?.appointmentNotes?.substring(
-																0,
-																40
-														  )}...`
+															0,
+															40
+														)}...`
 														: appointments?.appointmentNotes || "No notes"}
 												</p>
 											</td>
 											<td className="h-full">
-												<div className = "flex items-center justify-center">
-												<div
-													className={`w-28 h-6 rounded-lg border border-black text-center`}
-												>
-													{appointments &&
-														appointments.appointmentStatus ===
+												<div className="flex items-center justify-center">
+													<div
+														className={`w-28 h-6 rounded-lg border border-black text-center`}
+													>
+														{appointments &&
+															appointments.appointmentStatus ===
 															"Pending" &&
-														"🟡"}
-													{appointments &&
-														appointments.appointmentStatus === "Done" &&
-														"🟢"}
-													{appointments &&
-														appointments.appointmentStatus ===
+															"🟡"}
+														{appointments &&
+															appointments.appointmentStatus === "Done" &&
+															"🟢"}
+														{appointments &&
+															appointments.appointmentStatus ===
 															"Assigned" &&
-														"🔵"}
-													<span className="ml-2 text-bold text-sm">
-														{appointments
-															? appointments.appointmentStatus
-															: ""}
-													</span>
-												</div>
+															"🔵"}
+														<span className="ml-2 text-bold text-sm">
+															{appointments
+																? appointments.appointmentStatus
+																: ""}
+														</span>
+													</div>
 												</div>
 											</td>
 
@@ -667,9 +667,8 @@ const Appointment = () => {
 									].map((_, index) => (
 										<button
 											key={index}
-											className={`join-item btn ${
-												currentPage === index + 1 ? "btn-active" : ""
-											}`}
+											className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
+												}`}
 											onClick={() => setCurrentPage(index + 1)}
 										>
 											{index + 1}
@@ -723,13 +722,12 @@ const Appointment = () => {
 												key={index}
 												disabled={isTimeSlotTaken(time)}
 												onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-												className={`time-slot-button ${
-													isTimeSlotTaken(time)
+												className={`time-slot-button ${isTimeSlotTaken(time)
 														? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
 														: time === selectedTimeSlot
-														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-														: "bg-maroon text-white hover:bg-primary-green-dark duration-300"
-												}  py-2 px-3 rounded-md`}
+															? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+															: "bg-maroon text-white hover:bg-primary-green-dark duration-300"
+													}  py-2 px-3 rounded-md`}
 											>
 												{timeFormatter(time)}
 											</button>
@@ -763,11 +761,10 @@ const Appointment = () => {
 													setSelectedStudentId(student.id);
 													setSelectedStudent(student.id); // Update the selected student
 												}}
-												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${
-													selectedStudent === student.id
+												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${selectedStudent === student.id
 														? "bg-white border-2 border-maroon text-maroon font-semibold"
 														: "text-white" // Apply a different style to the selected student
-												}`}
+													}`}
 												key={student.id}
 											>
 												{student.idNumber} ⸺ {student.firstName}{" "}
@@ -795,7 +792,7 @@ const Appointment = () => {
 												label="Purpose"
 												className="w-full mb-4 rounded-md h-full"
 												id="purpose"
-												
+
 											/>
 										</div>
 										<hr />
@@ -863,9 +860,9 @@ const Appointment = () => {
 					setAppointments={setAppointments}
 					fetchAppointments={fetchAppointments}
 					role="counselor"
-					// TO BE ADDED
-					// handleRescedule={handleReschedule}
-					// handleUpdateStatus={handleUpdateStatus}
+				// TO BE ADDED
+				// handleRescedule={handleReschedule}
+				// handleUpdateStatus={handleUpdateStatus}
 				></ModalAppointmentInfo>
 			)}
 
