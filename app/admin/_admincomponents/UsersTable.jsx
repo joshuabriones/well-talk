@@ -1,10 +1,13 @@
 import { useState } from "react";
 
 import DeleteIcon from "@mui/icons-material/Delete";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import ReassignModal from "./ReassignModal";
 
 const UsersTable = ({ users, handleDeleteUser }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState("all");
+  const [isEditing, setIsEditing] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
@@ -50,14 +53,14 @@ const UsersTable = ({ users, handleDeleteUser }) => {
       </div>
       <div class="w-full overflow-x-auto">
         <table
-          class="w-full text-left rounded w-overflow-x-auto "
+          class="w-full text-left rounded w-overflow-x-auto"
           cellspacing="0"
         >
-          <tbody>
-            <tr>
+          <tbody className="">
+            <tr className="">
               <th
                 scope="col"
-                class="h-12 px-6 text-sm font-medium stroke-slate-700 text-white rounded-tl-3xl bg-lightMaroon"
+                class="h-12 px-6 text-sm font-medium stroke-slate-700 text-white rounded-tl-3xl bg-lightMaroon "
               >
                 Name
               </th>
@@ -87,7 +90,7 @@ const UsersTable = ({ users, handleDeleteUser }) => {
               </th>
             </tr>
             {currentUsers.map((user) => (
-              <tr>
+              <tr className="border-b-2 border-maroon">
                 <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-bgDark2 stroke-slate-500 text-navgray py-4">
                   <img
                     src={user.image}
@@ -112,7 +115,25 @@ const UsersTable = ({ users, handleDeleteUser }) => {
                   >
                     <DeleteIcon sx={{ color: "#fecaca", stroke: "#f87171" }} />
                   </button>
+                  {user.role === "counselor" && (
+                    <button
+                      onClick={() => setIsEditing((prev) => !prev)}
+                      className="hover:bg-green-400 p-2 rounded-md"
+                      title="Edit"
+                    >
+                      <BorderColorIcon
+                        sx={{ color: "#bbf7d0", stroke: "#4ade80" }}
+                      />
+                    </button>
+                  )}
                 </td>
+                {isEditing && (
+                  <ReassignModal
+                    isEditing={isEditing}
+                    setIsEditing={setIsEditing}
+                    user={user}
+                  />
+                )}
               </tr>
             ))}
           </tbody>
@@ -126,7 +147,9 @@ const UsersTable = ({ users, handleDeleteUser }) => {
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={`${
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                  currentPage === 1
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:text-slate-400"
                 } mr-2`}
               >
                 Prev{" "}
@@ -162,7 +185,7 @@ const UsersTable = ({ users, handleDeleteUser }) => {
                 className={`${
                   currentPage === Math.ceil(filteredUsers.length / usersPerPage)
                     ? "opacity-50 cursor-not-allowed"
-                    : ""
+                    : "hover:text-slate-400"
                 } ml-2`}
               >
                 Next

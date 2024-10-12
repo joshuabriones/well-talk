@@ -41,25 +41,53 @@ const AppointmentRecords = () => {
         try {
           const updatedAppointments = await Promise.all(
             counselors.map(async (counselor) => {
-              const response = await fetch(
-                `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_COUNSELORID}${counselor.id}`, // Use counselor's id
-                {
-                  method: "GET",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${Cookies.get("token")}`,
-                  },
+              try {
+                const response = await fetch(
+                  `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_COUNSELORID}${counselor.id}`, // Use counselor's id
+                  {
+                    method: "GET",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${Cookies.get("token")}`,
+                    },
+                  }
+                );
+
+                if (!response.ok) {
+                  if (response.status === 404) {
+                    // If no appointments found (404 error), return 0 appointments for that counselor
+                    return {
+                      counselorName: `${counselor.firstName} ${counselor.lastName}`,
+                      appointmentCount: 0,
+                      image: counselor.image,
+                      college: counselor.college,
+                    };
+                  } else {
+                    throw new Error("Error fetching appointments");
+                  }
                 }
-              );
 
-              const appointments = await response.json();
+                const appointments = await response.json();
 
-              return {
-                counselorName: `${counselor.firstName} ${counselor.lastName}`,
-                appointmentCount: appointments.length,
-                image: counselor.image,
-                college: counselor.college,
-              };
+                return {
+                  counselorName: `${counselor.firstName} ${counselor.lastName}`,
+                  appointmentCount: appointments.length,
+                  image: counselor.image,
+                  college: counselor.college,
+                };
+              } catch (error) {
+                console.error(
+                  `Error fetching appointments for counselor ${counselor.id}:`,
+                  error
+                );
+                // In case of error, return counselor info with 0 appointments
+                return {
+                  counselorName: `${counselor.firstName} ${counselor.lastName}`,
+                  appointmentCount: 0,
+                  image: counselor.image,
+                  college: counselor.college,
+                };
+              }
             })
           );
 
@@ -74,6 +102,8 @@ const AppointmentRecords = () => {
       fetchAppointmentsPerCounselor();
     }
   }, [counselors]);
+
+  console.log(appointmentsPerCounselor);
 
   return (
     <div className="min-h-screen w-full">
