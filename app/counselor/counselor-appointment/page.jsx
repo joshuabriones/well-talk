@@ -555,8 +555,8 @@ const Appointment = () => {
 													<div>{appointments.student?.idNumber}</div>
 												{/* </div> */}
 											</td>
-											<td className = "flex items-center justify-center gap-3">
-												{/* <div className="flex items-center gap-3"> */}
+											<td className = "h-full">
+												<div className="flex items-center justify-center gap-3">
 													<div className="avatar">
 														<div className="mask mask-squircle w-12 h-12">
 															<img
@@ -577,7 +577,7 @@ const Appointment = () => {
 															}
 														</div>
 													</div>
-												{/* </div> */}
+												</div>
 											</td>
 											<td className = "text-center">
 												<p>
@@ -596,12 +596,13 @@ const Appointment = () => {
 																0,
 																40
 														  )}...`
-														: appointments?.appointmentNotes}
+														: appointments?.appointmentNotes || "No notes"}
 												</p>
 											</td>
-											<td className="flex justify-center mb-6">
+											<td className="h-full">
+												<div className = "flex items-center justify-center">
 												<div
-													className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}
+													className={`w-28 h-6 rounded-lg border border-black text-center`}
 												>
 													{appointments &&
 														appointments.appointmentStatus ===
@@ -619,6 +620,7 @@ const Appointment = () => {
 															? appointments.appointmentStatus
 															: ""}
 													</span>
+												</div>
 												</div>
 											</td>
 
