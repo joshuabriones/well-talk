@@ -63,8 +63,8 @@ const Registration = () => {
     useState(false);
   const [isEmptyError, setIsEmptyError] = useState(false);
   const [isMismatchError, setIsMismatchError] = useState(false);
-  
-  const modalRef = useRef(null); 
+
+  const modalRef = useRef(null);
 
   const openModal = () => {
     if (modalRef.current) {
@@ -145,6 +145,8 @@ const Registration = () => {
       extraInfoValidation = counselorSchema.safeParse({
         assignedYear,
       });
+    } else if (role === "teacher") {
+      extraInfoValidation = { success: true };
     }
 
     if (!extraInfoValidation?.success || !result.success) {
@@ -991,7 +993,7 @@ const Registration = () => {
                         <a
                           href="#"
                           className="hover:underline text-maroon"
-                          onClick = {openModal}
+                          onClick={openModal}
                         >
                           terms and conditions
                         </a>
