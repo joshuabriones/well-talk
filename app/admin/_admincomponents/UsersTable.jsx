@@ -43,7 +43,7 @@ const UsersTable = ({ users, handleDeleteUser }) => {
           onChange={(e) => {
             setSelectedRole(e.target.value);
           }}
-          className="w-1/7 rounded-3xl text-navgray bg-bgDark2"
+          className="w-1/7 rounded-3xl text-navlight dark:text-navgray bg-white dark:bg-bgDark2"
         >
           <option value="all">All</option>
           <option value="counselor">Counselor</option>
@@ -90,24 +90,24 @@ const UsersTable = ({ users, handleDeleteUser }) => {
               </th>
             </tr>
             {currentUsers.map((user) => (
-              <tr className="border-b-2 border-maroon">
-                <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-bgDark2 stroke-slate-500 text-navgray py-4">
+              <tr className="border-b-2 border-lightMaroon">
+                <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-white dark:bg-bgDark2 stroke-slate-500 text-navgray py-4">
                   <img
                     src={user.image}
                     className="inline w-10 h-10 mr-2 rounded-full"
                   />
                   {user.firstName} {user.lastName}
                 </td>
-                <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-bgDark2 stroke-slate-500 text-navgray ">
+                <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-white dark:bg-bgDark2 stroke-slate-500 text-navgray ">
                   {user.idNumber}
                 </td>
-                <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-bgDark2 stroke-slate-500 text-navgray ">
+                <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-white dark:bg-bgDark2 stroke-slate-500 text-navgray ">
                   {user.institutionalEmail}
                 </td>
-                <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-bgDark2 stroke-slate-500 text-navgray ">
+                <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-white dark:bg-bgDark2 stroke-slate-500 text-navgray ">
                   {user.role}
                 </td>
-                <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-bgDark2 stroke-slate-500  ">
+                <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-white dark:bg-bgDark2 stroke-slate-500  ">
                   <button
                     onClick={() => handleDelete(user.id)}
                     className="hover:bg-red-400 p-2 rounded-md"
@@ -140,7 +140,7 @@ const UsersTable = ({ users, handleDeleteUser }) => {
         </table>
 
         <nav role="navigation" aria-label="Pagination Navigation">
-          <ul className="mt-4 flex list-none items-center justify-center text-sm text-slate-700 md:gap-1">
+          <ul className="mt-4 flex list-none items-center justify-center text-sm text-white dark:text-slate-700 md:gap-1">
             {/* Previous Button */}
             <li>
               <button
@@ -208,7 +208,7 @@ function SearchBar({ searchTerm, setSearchTerm }) {
         placeholder="Search users..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        class="relative w-full h-12 px-4 transition-all border rounded-3xl text-navgray autofill:bg-bgDark2 bg-bgDark2"
+        class="relative w-full h-12 px-4 transition-all border rounded-3xl text-navlight dark:text-navgray autofill:bg-white bg-white dark:autofill:bg-bgDark2 dark:bg-bgDark2"
       />
       <svg
         xmlns="http://www.w3.org/2000/svg"

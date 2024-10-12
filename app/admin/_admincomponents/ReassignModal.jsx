@@ -78,7 +78,7 @@ const ReassignModal = ({ isEditing, setIsEditing, user }) => {
 
   return (
     <div className="font-Merriweather fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-bgDark1 rounded-2xl flex flex-col border-2 border-maroon lg:gap-6 xs:gap-4 p-16 md:w-1/2 xs:w-4/5 h-2/3 relative">
+      <div className="bg-white dark:bg-bgDark1 rounded-2xl flex flex-col border-2 border-lightMaroon lg:gap-6 xs:gap-4 p-16 md:w-1/2 xs:w-4/5 h-2/3 relative">
         <div>
           <h1 className="font-bold text-gold text-2xl mb-1">
             Reassign Counselor 🔄

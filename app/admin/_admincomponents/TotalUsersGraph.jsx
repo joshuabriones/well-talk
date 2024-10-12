@@ -48,10 +48,12 @@ export const TotalUsersGraph = ({ userSession }) => {
   }, []);
 
   return (
-    <div className="col-span-2 bg-bgDark2 p-7 rounded-3xl shadow-md">
-      <h2 className="text-xl font-bold mb-4">Total Users</h2>
+    <div className="col-span-2 bg-white dark:bg-bgDark2 p-7 rounded-3xl shadow-md">
+      <h2 className="text-xl font-medium mb-4 text-textDark dark:text-white">
+        Total Users
+      </h2>
       <BarChart
-        className="h-80 w-full bg-bgDark2"
+        className="h-80 w-full bg-white dark:bg-bgDark2"
         data={chartdata}
         index="name"
         categories={["Number of users "]}

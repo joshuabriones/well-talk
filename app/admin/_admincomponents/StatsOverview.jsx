@@ -173,7 +173,7 @@ const StatsOverview = () => {
           {loadingData.map((stat) => (
             <div
               key={stat?.title}
-              className="bg-bgDark2 p-5 rounded-3xl shadow-md flex gap-5"
+              className="bg-white dark:bg-bgDark2 p-5 rounded-3xl shadow-md flex gap-5"
             >
               <div
                 className={`${stat?.color} p-3 rounded-3xl flex items-center justify-center`}
@@ -185,8 +185,10 @@ const StatsOverview = () => {
                 />
               </div>
               <div className="">
-                <h3 className="text-base font-medium">{stat?.title || " "}</h3>
-                <p className="text-3xl text-navgray mt-2">
+                <h3 className="text-base font-medium text-slate-700 dark:text-navgray">
+                  {stat?.title || " "}
+                </h3>
+                <p className="text-3xl text-navlight dark:text-navgray mt-2">
                   {stat?.value || 0}{" "}
                   {stat?.value > 0 && (
                     <span>
@@ -207,7 +209,7 @@ const StatsOverview = () => {
           {stats.map((stat) => (
             <div
               key={stat?.title}
-              className="bg-bgDark2 p-5 rounded-3xl shadow-md flex gap-5"
+              className="bg-white dark:bg-bgDark2 p-5 rounded-3xl shadow-md flex gap-5"
             >
               <div
                 className={`${stat?.color} p-3 rounded-3xl flex items-center justify-center`}
@@ -219,8 +221,10 @@ const StatsOverview = () => {
                 />
               </div>
               <div className="">
-                <h3 className="text-base font-medium">{stat?.title || " "}</h3>
-                <p className="text-3xl text-navgray mt-2">
+                <h3 className="text-base font-medium text-slate-700 dark:text-navgray">
+                  {stat?.title || " "}
+                </h3>
+                <p className="text-3xl text-navlight dark:text-navgray mt-2">
                   {stat?.value || 0}{" "}
                   {stat?.value > 0 && (
                     <span>

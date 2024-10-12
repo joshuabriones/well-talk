@@ -56,10 +56,12 @@ const StatisticsGraph = () => {
 
   const dataFormatter = (number) => number.toString();
   return (
-    <div className="col-span-2 bg-bgDark2 p-7 rounded-3xl shadow-md">
-      <h2 className="text-xl font-medium mb-4">Appointments Over Time</h2>
+    <div className="col-span-2 bg-white dark:bg-bgDark2 p-7 rounded-3xl shadow-md">
+      <h2 className="text-xl font-medium mb-4 text-textDark dark:text-white">
+        Appointments Over Time
+      </h2>
       <LineChart
-        className="h-72 w-full bg-bgDark2"
+        className="h-72 w-full bg-white dark:bg-bgDark2"
         data={chartData}
         index="date"
         valueFormatter={dataFormatter}

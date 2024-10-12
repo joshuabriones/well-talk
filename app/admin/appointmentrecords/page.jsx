@@ -118,7 +118,7 @@ const AppointmentRecords = () => {
         onChange={(e) => {
           setSelectedCollege(e.target.value);
         }}
-        className="w-1/7 rounded-3xl text-navgray bg-bgDark2 mt-2"
+        className="w-1/7 rounded-3xl text-navlight dark:text-navgray bg-white dark:bg-bgDark2 mt-2"
       >
         <option value="all">All</option>
         {collegeOptions.map((option) => (
@@ -134,7 +134,7 @@ const AppointmentRecords = () => {
           {filteredCounselors.map((counselor) => (
             <div
               key={counselor.counselorName}
-              className="w-full min-w-[240px] bg-bgDark2 p-5 relative rounded-3xl shadow-md flex flex-col items-center gap-5"
+              className="w-full min-w-[240px] bg-white dark:bg-bgDark2 p-5 relative rounded-3xl shadow-md flex flex-col items-center gap-5"
             >
               <img
                 src={counselor.image}
@@ -142,14 +142,14 @@ const AppointmentRecords = () => {
                 className="w-20 h-20 rounded-full"
               />
               <div>
-                <h3 className="sm:text-2xl font-medium text-white text-center text-xl">
+                <h3 className="sm:text-2xl font-medium text-textDark dark:text-white text-center text-xl">
                   {counselor.counselorName}{" "}
                 </h3>
-                <p className="sm:text-lg text-navgray mt-2 text-base">
+                <p className="sm:text-lg text-navlight dark:text-navgray mt-2 text-base">
                   {counselor.appointmentCount} appointments 🗓
                 </p>
               </div>
-              <p className="text-xs text-gold absolute top-6 right-6">
+              <p className="text-xs text-lightMaroon py-1 px-2 bg-gold rounded-full absolute top-6 right-6">
                 {counselor.college}
               </p>
             </div>
