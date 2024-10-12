@@ -84,6 +84,7 @@ const Appointment = () => {
 		}
 		const data = await response.json();
 		setAppointments(data);
+		console.log(data);
 
 		// Extract counselor IDs from the appointments
 		const counselorIds = data.map(
@@ -191,13 +192,13 @@ const Appointment = () => {
 		// Logic for getting appointmentId dynamically
 		const appointmentId = appointment ? appointment.appointmentId : null;
 		if (appointmentId) {
-		  setRescheduleModal(true);
-		  return appointmentId;
+			setRescheduleModal(true);
+			return appointmentId;
 		} else {
-		  console.error('No appointment ID found');
+			console.error('No appointment ID found');
 		}
-	  };
-	  
+	};
+
 
 	// handle reschedule // TO BE ADDED AFTER CALENDAR IMPLEMENTATION
 	// const handleReschedule = () => {
@@ -536,20 +537,18 @@ const Appointment = () => {
 				<div>
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isAddAppointment
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
 									? "bg-maroon text-white"
 									: "border-2 border-maroon text-maroon"
-							}`}
+								}`}
 							onClick={handleAddAppointmentClick}>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isViewAppointment
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
 									? "bg-maroon text-white"
 									: "border-2 border-maroon text-maroon"
-							}`}
+								}`}
 							onClick={handleViewAppointmentClick}>
 							View Appointments
 						</button>
@@ -563,13 +562,14 @@ const Appointment = () => {
 									{/* head */}
 									<thead className="bg-gray-200">
 										<tr className="font-bold text-center">
-											<th className="py-2">ID</th>
+
 											<th className="py-2">Date</th>
 											<th className="py-2">Time</th>
 											<th className="py-2">
 												Appointment Type
 											</th>
 											<th className="py-2">Reason</th>
+											<th className="">Feedback</th>
 											<th className="py-2">Status</th>
 											{/* Delete and Edit*/}
 											<th className="no-hover-highlight"></th>
@@ -588,11 +588,6 @@ const Appointment = () => {
 														)
 													}
 													className="cursor-pointer hover:bg-silver transition duration-300 ease-in-out">
-													<td className="text-center py-2">
-														{
-															appointment.appointmentId
-														}
-													</td>
 													<td>
 														<div className="text-center py-2">
 															{formatDate(
@@ -616,30 +611,40 @@ const Appointment = () => {
 																.appointmentPurpose
 																.length > 50
 																? `${appointment.appointmentPurpose.substring(
-																		0,
-																		40
-																  )}...`
+																	0,
+																	40
+																)}...`
 																: appointment.appointmentPurpose}
 														</p>
 													</td>
-													<td className="text-center flex justify-center">
+													<td className="text-center">
+														<p>
+															{appointment?.appointmentNotes?.length > 50
+																? `${appointment?.appointmentNotes?.substring(
+																	0,
+																	40
+																)}...`
+																: appointment?.appointmentNotes}
+														</p>
+													</td>
+													<td className="flex justify-center mt-2">
 														<div
 															className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}>
 															{appointment &&
 																appointment.appointmentStatus ===
-																	"Pending" &&
+																"Pending" &&
 																"🟡"}
 															{appointment &&
 																appointment.appointmentStatus ===
-																	"Done" &&
+																"Done" &&
 																"🟢"}
 															{appointment &&
 																appointment.appointmentStatus ===
-																	"Assigned" &&
+																"Assigned" &&
 																"🔵"}
 															{appointment &&
 																appointment.appointmentStatus ===
-																	"Cancelled" &&
+																"Cancelled" &&
 																"🔴"}{" "}
 															{/* Added red dot for Cancelled */}
 															<span className="ml-2 text-bold text-sm">
@@ -654,7 +659,7 @@ const Appointment = () => {
 													<td>
 														<div className="text-center py-2 flex">
 															<button
-																className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2" 
+																className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
 																onClick={(
 																	e
 																) => {
@@ -701,17 +706,16 @@ const Appointment = () => {
 											...Array(
 												Math.ceil(
 													appointments.length /
-														AppointmentPerPage
+													AppointmentPerPage
 												)
 											),
 										].map((_, index) => (
 											<button
 												key={index}
-												className={`join-item btn ${
-													currentPage === index + 1
+												className={`join-item btn ${currentPage === index + 1
 														? "btn-active"
 														: ""
-												}`}
+													}`}
 												onClick={() =>
 													setCurrentPage(index + 1)
 												}>
@@ -787,14 +791,13 @@ const Appointment = () => {
 												onClick={() =>
 													handleTimeSlotClick(time)
 												} // Set the selected time on click
-												className={`time-slot-button ${
-													isTimeSlotTaken(time)
+												className={`time-slot-button ${isTimeSlotTaken(time)
 														? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
 														: time ===
-														  selectedTimeSlot
-														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-														: "bg-maroon text-white hover:bg-maroon duration-300"
-												}  py-2 px-3 rounded-md`}>
+															selectedTimeSlot
+															? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+															: "bg-maroon text-white hover:bg-maroon duration-300"
+													}  py-2 px-3 rounded-md`}>
 												{timeFormatter(time)}
 											</button>
 										))}
@@ -972,7 +975,7 @@ const Appointment = () => {
 			{rescheduleModal && (
 				<ModalReschedule
 					setRescheduleModal={setRescheduleModal}
-					handleReschedule = {handleReschedule}
+					handleReschedule={handleReschedule}
 				/>
 			)}
 
@@ -988,9 +991,9 @@ const Appointment = () => {
 					selectedID={selectedID}
 					appointments={appointments}
 
-					// TO BE ADDED
-					// handleRescedule={handleReschedule}
-					// handleUpdateStatus={handleUpdateStatus}
+				// TO BE ADDED
+				// handleRescedule={handleReschedule}
+				// handleUpdateStatus={handleUpdateStatus}
 				></StudentModalAppointmentInfo>
 			)}
 
