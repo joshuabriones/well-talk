@@ -88,7 +88,10 @@ const VerifyUserPage = () => {
       <Header title="Verify User Accounts" />
       <div className="flex justify-center items-center mt-10 overflow-x-hidden">
         {loading ? (
-          <div>Loading...</div>
+          <div className="text-navgray flex items-center justify-center gap-3">
+            Loading
+            <span className="loading loading-dots loading-lg"></span>
+          </div>
         ) : (
           <>
             {users.length > 0 ? (

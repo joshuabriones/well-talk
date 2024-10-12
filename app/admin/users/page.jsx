@@ -63,7 +63,10 @@ const UsersPage = () => {
       <Header title="Active Users" />
       <div className="flex justify-center items-center mt-10">
         {loading ? (
-          <div>Loading...</div>
+          <div className="text-navgray flex items-center justify-center gap-3">
+            Loading
+            <span className="loading loading-dots loading-lg"></span>
+          </div>
         ) : (
           <>
             {users.length > 0 ? (
