@@ -16,8 +16,8 @@ export default function Notifications() {
 	const [user, setUser] = useState(null);
 	const [notifications, setNotifications] = useState([]);
 	const [notificationToDelete, setNotificationToDelete] = useState(null);
-	console.log("notifications:", notifications);
-	console.log("User Session Id: ", userSession.id);
+	// console.log("notifications:", notifications);
+	// console.log("User Session Id: ", userSession.id);
 
 	useEffect(() => {
 		const fetchProfile = async () => {
