@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { v4 } from "uuid"; // Make sure this is configured correctly
 import styles from "../../../css/landing.module.css";
+import { default as LoadingState } from "@/components/Load";
 
 export default function StudentProfile() {
 	const userSession = getUserSession();
@@ -238,7 +239,7 @@ export default function StudentProfile() {
 	};
 
 	if (loading) {
-		return <Loading />;
+		return <LoadingState />;
 	}
 
 	console.log("Student Profile:", studentProfile);
