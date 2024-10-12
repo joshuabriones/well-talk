@@ -438,6 +438,11 @@ const Appointment = () => {
 		return `${formattedHour}:00 ${period}`;
 	};
 
+
+	const handlePurposeChange = (e) => {
+		setPurpose(e.target.value);
+	  };
+
 	return (
 		<div className="min-h-screen w-full">
 			{/* navigation bar */}
@@ -514,12 +519,13 @@ const Appointment = () => {
 								{/* head */}
 								<thead className="bg-gray-200">
 									<tr className="font-bold text-center">
-										<th className="text-center p-5">ID</th>
+										{/* <th className="text-center p-5">ID</th> */}
 										<th>Date and Time</th>
 										<th className="p-5">ID Number</th>
 										<th>Student</th>
 										<th className="">Reason</th>
-										<th className="text-center">Status</th>
+										<th className="">Feedback</th>
+										<th className="">Status</th>
 										{/* Delete and Edit*/}
 										<th className="no-hover-highlight"></th>
 									</tr>
@@ -533,24 +539,24 @@ const Appointment = () => {
 											}
 											className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
 										>
-											<td className="text-center">
+											{/* <td className="text-center">
 												{appointments.appointmentId}
-											</td>
-											<td>
-												<div className="flex flex-row gap-x-3">
-													<div className="text-sm">
+											</td> */}
+											<td className = "text-center">
+												{/* <div className="flex flex-row gap-x-2"> */}
+													<div className="text-sm p-5">
 														{formatDate(appointments.appointmentDate)}{" "}
 														{appointments.appointmentStartTime}
 													</div>
-												</div>
+												{/* </div> */}
 											</td>
-											<td>
-												<div className="flex flex-row gap-x-3">
+											<td className = "text-center">
+												{/* <div className="flex flex-row gap-x-3"> */}
 													<div>{appointments.student?.idNumber}</div>
-												</div>
+												{/* </div> */}
 											</td>
-											<td>
-												<div className="flex items-center gap-3">
+											<td className = "flex items-center justify-center gap-3">
+												{/* <div className="flex items-center gap-3"> */}
 													<div className="avatar">
 														<div className="mask mask-squircle w-12 h-12">
 															<img
@@ -571,9 +577,9 @@ const Appointment = () => {
 															}
 														</div>
 													</div>
-												</div>
+												{/* </div> */}
 											</td>
-											<td>
+											<td className = "text-center">
 												<p>
 													{appointments?.appointmentPurpose?.length > 50
 														? `${appointments?.appointmentPurpose?.substring(
@@ -583,7 +589,17 @@ const Appointment = () => {
 														: appointments?.appointmentPurpose}
 												</p>
 											</td>
-											<td className="text-center flex justify-center">
+											<td className = "text-center">
+												<p>
+													{appointments?.appointmentNotes?.length > 50
+														? `${appointments?.appointmentNotes?.substring(
+																0,
+																40
+														  )}...`
+														: appointments?.appointmentNotes}
+												</p>
+											</td>
+											<td className="flex justify-center mb-6">
 												<div
 													className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}
 												>
@@ -772,11 +788,12 @@ const Appointment = () => {
 											/>
 											<TextAreaInput
 												value={purpose}
-												onChange={(e) => setPurpose(e.target.value)}
+												onChange={handlePurposeChange}
 												placeholder="Purpose"
 												label="Purpose"
-												className="w-full mb-4 rounded-md "
-												id={purpose}
+												className="w-full mb-4 rounded-md h-full"
+												id="purpose"
+												
 											/>
 										</div>
 										<hr />

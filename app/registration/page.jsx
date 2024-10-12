@@ -10,6 +10,7 @@ import ModalRegistrationSuccessful from "@/components/ui/modals/ModalRegistratio
 import ModalTermsUnchecked from "@/components/ui/modals/ModalTermsUnchecked";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
+import { useRef } from "react";
 import {
   collegeOptions,
   genderOptions,
@@ -63,6 +64,13 @@ const Registration = () => {
   const [isEmptyError, setIsEmptyError] = useState(false);
   const [isMismatchError, setIsMismatchError] = useState(false);
 
+  const modalRef = useRef(null);
+
+  const openModal = () => {
+    if (modalRef.current) {
+      modalRef.current.showModal(); // Open modal when link is clicked
+    }
+  };
   // handling route protection
   const userSession = getUserSession();
   if (userSession && userSession.role) return <Load route={userSession.role} />;
@@ -137,6 +145,8 @@ const Registration = () => {
       extraInfoValidation = counselorSchema.safeParse({
         assignedYear,
       });
+    } else if (role === "teacher") {
+      extraInfoValidation = { success: true };
     }
 
     if (!extraInfoValidation?.success || !result.success) {
@@ -518,7 +528,7 @@ const Registration = () => {
                       <div className="flex flex-col w-full">
                         <label
                           htmlFor="gender"
-                          className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                          className="relative block rounded-md bg-white border border-gray-400 p-2 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
                         >
                           <select
                             value={gender}
@@ -750,15 +760,32 @@ const Registration = () => {
                               </p>
                             )}
                           </div>
-                          <div className="flex flex-col w-full">
-                            <TextInput
+                          <div className="relative flex flex-col w-full">
+                            <select
                               value={year}
                               onChange={(e) => setYear(e.target.value)}
-                              placeholder="Year"
-                              label="Year"
-                              type="text"
                               id="year"
-                            />
+                              className="peer border-black relative block rounded-md bg-white border border-gray-400 p-3 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+                            >
+                              <option value=""></option>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                            </select>
+
+                            <span
+                              className={`pointer-events-none absolute start-2.5 bg-white -translate-y-1/2 p-1 transition-all 
+      peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
+      peer-focus:top-0 dark:bg-black`}
+                              style={{
+                                fontSize: "11px",
+                              }}
+                            >
+                              Year
+                            </span>
+
                             {errors.year && (
                               <p className="text-red-500 text-sm font-Jaldi font-semibold">
                                 {errors.year._errors[0]}
@@ -954,16 +981,19 @@ const Registration = () => {
                         checked={termsAccepted}
                         onChange={handleTermsChange}
                         disabled={!role}
-                        onClick={() =>
-                          document.getElementById("my_modal_3").showModal()
-                        }
+                        onClick={() => {
+                          if (!termsAccepted) {
+                            document.getElementById("my_modal_3").showModal();
+                          }
+                        }}
                         className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
                       />
                       <label className="text-sm font-bold text-gray-700">
                         I accept the{" "}
                         <a
-                          href="/terms"
+                          href="#"
                           className="hover:underline text-maroon"
+                          onClick={openModal}
                         >
                           terms and conditions
                         </a>
@@ -999,7 +1029,7 @@ const Registration = () => {
             </div>
 
             {/* Terms and Condition Modal */}
-            <dialog id="my_modal_3" className="modal">
+            <dialog id="my_modal_3" className="modal" ref={modalRef}>
               <div className="modal-box overflow-scroll">
                 <form method="dialog">
                   {/* if there is a button in form, it will close the modal */}

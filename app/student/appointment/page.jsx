@@ -9,6 +9,7 @@ import StudentModalAppointmentInfo from "@/components/ui/modals/counselor/appoin
 import StudentAddAppointment from "@/components/ui/modals/counselor/appointments/StudentAddAppointment";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import ModalConfirmResponseAppointment from "@/components/ui/modals/student/appointments/ModalConfirmedResponseAppointment";
+import ModalReschedule from "@/components/ui/modals/student/appointments/ModalReschedule";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import "@/styles/counselor.css";
@@ -32,9 +33,12 @@ const Appointment = () => {
 	const [appointmentModal, setAppointmentModal] = useState(null);
 	const [isAddAppointment, setIsAddAppointment] = useState(true);
 	const [isViewAppointment, setIsViewAppointment] = useState(false);
+	const [rescheduleModal, setRescheduleModal] = useState(false);
 
 	const [appointments, setAppointments] = useState([]);
-	const [appointmentDate, setAppointmentDate] = useState(new Date().toISOString().split("T")[0]);
+	const [appointmentDate, setAppointmentDate] = useState(
+		new Date().toISOString().split("T")[0]
+	);
 
 	const [confirmResponseModal, setConfirmResponseModal] = useState(false);
 
@@ -45,7 +49,8 @@ const Appointment = () => {
 	const [purpose, setPurpose] = useState(""); // State to store the purpose of the appointment
 	const [appointmentOnThatDate, setAppointmentOnThatDate] = useState([]);
 	const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
-	const [showAddAppointmentModal, setShowAddAppointmentModal] = useState(false);
+	const [showAddAppointmentModal, setShowAddAppointmentModal] =
+		useState(false);
 
 	const [counselorIds, setCounselorIds] = useState([]);
 	const [studentData, setStudentData] = useState({});
@@ -79,9 +84,12 @@ const Appointment = () => {
 		}
 		const data = await response.json();
 		setAppointments(data);
+		console.log(data);
 
 		// Extract counselor IDs from the appointments
-		const counselorIds = data.map((appointment) => appointment.counselor.id);
+		const counselorIds = data.map(
+			(appointment) => appointment.counselor.id
+		);
 		setCounselorIds(counselorIds);
 	};
 
@@ -174,6 +182,24 @@ const Appointment = () => {
 		}
 	};
 
+	const showRescheduleModal = (id) => {
+		// Set the appointment ID for rescheduling (if necessary) and open the modal
+		setSelectedID(id); // If you need the appointment ID
+		setRescheduleModal(true); // Open the modal
+	};
+
+	const handleReschedule = () => {
+		// Logic for getting appointmentId dynamically
+		const appointmentId = appointment ? appointment.appointmentId : null;
+		if (appointmentId) {
+			setRescheduleModal(true);
+			return appointmentId;
+		} else {
+			console.error('No appointment ID found');
+		}
+	};
+
+
 	// handle reschedule // TO BE ADDED AFTER CALENDAR IMPLEMENTATION
 	// const handleReschedule = () => {
 	// 	// Find
@@ -184,7 +210,10 @@ const Appointment = () => {
 	// Calculate the index range of appointment to display for the current page
 	const indexOfLastInquiry = currentPage * AppointmentPerPage;
 	const indexOfFirstInquiry = indexOfLastInquiry - AppointmentPerPage;
-	const currentAppointments = appointments?.slice(indexOfFirstInquiry, indexOfLastInquiry);
+	const currentAppointments = appointments?.slice(
+		indexOfFirstInquiry,
+		indexOfLastInquiry
+	);
 
 	const handleAddAppointmentClick = () => {
 		setIsAddAppointment(true);
@@ -358,7 +387,9 @@ const Appointment = () => {
 				} else {
 					const errorData = await response.json();
 					console.error("Error creating notification:", errorData);
-					toast.error("Failed to create notification: " + errorData.message);
+					toast.error(
+						"Failed to create notification: " + errorData.message
+					);
 				}
 			} catch (error) {
 				console.error("Notification error: ", error);
@@ -377,7 +408,8 @@ const Appointment = () => {
 					},
 					body: JSON.stringify({
 						appointmentDate: appointmentDate,
-						appointmentStartTime: convertTo24HourFormat(selectedTime),
+						appointmentStartTime:
+							convertTo24HourFormat(selectedTime),
 						appointmentEndTime: convertTo24HourFormat(endTime),
 						appointmentType: appointmentType,
 						appointmentPurpose: purpose,
@@ -505,23 +537,19 @@ const Appointment = () => {
 				<div>
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isAddAppointment
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
 									? "bg-maroon text-white"
 									: "border-2 border-maroon text-maroon"
-							}`}
-							onClick={handleAddAppointmentClick}
-						>
+								}`}
+							onClick={handleAddAppointmentClick}>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isViewAppointment
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
 									? "bg-maroon text-white"
 									: "border-2 border-maroon text-maroon"
-							}`}
-							onClick={handleViewAppointmentClick}
-						>
+								}`}
+							onClick={handleViewAppointmentClick}>
 							View Appointments
 						</button>
 					</div>
@@ -529,153 +557,216 @@ const Appointment = () => {
 					{isViewAppointment ? (
 						<div className="w-full flex flex-col text-center">
 							{/* table*/}
-							<div className="overflow-x-auto max-w-full lg:px-10 xs:px-1 flex flex-col items-center mt-10">
+							<div className="overflow-x-auto max-w-full py-10 px-8 md:px-28 lg:px-28 xs:px-1 flex flex-col items-center mt-10">
 								<table className="table bg-gray-100">
 									{/* head */}
 									<thead className="bg-gray-200">
 										<tr className="font-bold text-center">
-											<th className="py-2">ID</th>
+
 											<th className="py-2">Date</th>
 											<th className="py-2">Time</th>
-											<th className="py-2">Appointment Type</th>
+											<th className="py-2">
+												Appointment Type
+											</th>
 											<th className="py-2">Reason</th>
+											<th className="">Feedback</th>
 											<th className="py-2">Status</th>
 											{/* Delete and Edit*/}
 											<th className="no-hover-highlight"></th>
 										</tr>
 									</thead>
 									<tbody>
-										{currentAppointments?.map((appointment) => (
-											<tr
-												key={appointment.appointmentId}
-												onClick={() =>
-													handleRowClick(appointment.appointmentId)
-												}
-												className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
-											>
-												<td className="text-center py-2">
-													{appointment.appointmentId}
-												</td>
-												<td>
-													<div className="text-center py-2">
-														{formatDate(appointment.appointmentDate)}
-													</div>
-												</td>
-												<td className="text-center py-2">
-													{appointment.appointmentStartTime}
-												</td>
-												<td className="text-center py-2">
-													{appointment.appointmentType}
-												</td>
-												<td className="text-center py-2">
-													<p className="truncate">
-														{appointment.appointmentPurpose.length > 50
-															? `${appointment.appointmentPurpose.substring(
+										{currentAppointments?.map(
+											(appointment) => (
+												<tr
+													key={
+														appointment.appointmentId
+													}
+													onClick={() =>
+														handleRowClick(
+															appointment.appointmentId
+														)
+													}
+													className="cursor-pointer hover:bg-silver transition duration-300 ease-in-out">
+													<td>
+														<div className="text-center py-2">
+															{formatDate(
+																appointment.appointmentDate
+															)}
+														</div>
+													</td>
+													<td className="text-center py-2">
+														{
+															appointment.appointmentStartTime
+														}
+													</td>
+													<td className="text-center py-2">
+														{
+															appointment.appointmentType
+														}
+													</td>
+													<td className="text-center py-2">
+														<p className="truncate">
+															{appointment
+																.appointmentPurpose
+																.length > 50
+																? `${appointment.appointmentPurpose.substring(
 																	0,
 																	40
-															  )}...`
-															: appointment.appointmentPurpose}
-													</p>
-												</td>
-												<td className="text-center flex justify-center">
-													<div
-														className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}
-													>
-														{appointment &&
-															appointment.appointmentStatus ===
+																)}...`
+																: appointment.appointmentPurpose}
+														</p>
+													</td>
+													<td className="text-center">
+														<p>
+															{appointment?.appointmentNotes?.length > 50
+																? `${appointment?.appointmentNotes?.substring(
+																	0,
+																	40
+																)}...`
+																: appointment?.appointmentNotes}
+														</p>
+													</td>
+													<td className="flex justify-center mt-2">
+														<div
+															className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}>
+															{appointment &&
+																appointment.appointmentStatus ===
 																"Pending" &&
-															"🟡"}
-														{appointment &&
-															appointment.appointmentStatus ===
+																"🟡"}
+															{appointment &&
+																appointment.appointmentStatus ===
 																"Done" &&
-															"🟢"}
-														{appointment &&
-															appointment.appointmentStatus ===
+																"🟢"}
+															{appointment &&
+																appointment.appointmentStatus ===
 																"Assigned" &&
-															"🔵"}
-														<span className="ml-2 text-bold text-sm">
-															{appointment
-																? appointment.appointmentStatus
-																: ""}
-														</span>
-													</div>
-												</td>
-												{/* Delete and Edit */}
-												<td>
-													<div className="text-center py-2">
-														<button
-															className="btn btn-xs"
-															onClick={(e) => {
-																e.stopPropagation();
-																showDeleteModal(
-																	appointment.appointmentId
-																);
-															}}
-														>
-															Delete
-														</button>
-														{/* <button className="btn btn-xs text-green-700">Edit</button> */}
-													</div>
-												</td>
-											</tr>
-										))}
+																"🔵"}
+															{appointment &&
+																appointment.appointmentStatus ===
+																"Cancelled" &&
+																"🔴"}{" "}
+															{/* Added red dot for Cancelled */}
+															<span className="ml-2 text-bold text-sm">
+																{appointment
+																	? appointment.appointmentStatus
+																	: ""}
+															</span>
+														</div>
+													</td>
+
+													{/* Delete and Edit */}
+													<td>
+														<div className="text-center py-2 flex">
+															<button
+																className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
+																onClick={(
+																	e
+																) => {
+																	e.stopPropagation();
+																	showDeleteModal(
+																		appointment.appointmentId
+																	);
+																}}>
+																Delete
+															</button>
+															<button
+																className="btn btn-xs text-gray hover:text-gray hover:bg-gold"
+																onClick={(
+																	e
+																) => {
+																	e.stopPropagation();
+																	showRescheduleModal(
+																		appointment.appointmentId
+																	);
+																}}>
+																Reschedule
+															</button>
+														</div>
+													</td>
+												</tr>
+											)
+										)}
 									</tbody>
 								</table>
 
 								{/* Pagination controls */}
 								<div className="join pt-5">
 									<button
-										onClick={() => setCurrentPage(currentPage - 1)}
+										onClick={() =>
+											setCurrentPage(currentPage - 1)
+										}
 										disabled={currentPage === 1}
-										className="join-item btn w-28"
-									>
+										className="join-item btn w-28">
 										Previous
 									</button>
 
 									{appointments &&
 										[
 											...Array(
-												Math.ceil(appointments.length / AppointmentPerPage)
+												Math.ceil(
+													appointments.length /
+													AppointmentPerPage
+												)
 											),
 										].map((_, index) => (
 											<button
 												key={index}
-												className={`join-item btn ${
-													currentPage === index + 1 ? "btn-active" : ""
-												}`}
-												onClick={() => setCurrentPage(index + 1)}
-											>
+												className={`join-item btn ${currentPage === index + 1
+														? "btn-active"
+														: ""
+													}`}
+												onClick={() =>
+													setCurrentPage(index + 1)
+												}>
 												{index + 1}
 											</button>
 										))}
 
 									<button
-										onClick={() => setCurrentPage(currentPage + 1)}
-										disabled={AppointmentPerPage > appointments?.length}
-										className="join-item btn w-28"
-									>
+										onClick={() =>
+											setCurrentPage(currentPage + 1)
+										}
+										disabled={
+											AppointmentPerPage >
+											appointments?.length
+										}
+										className="join-item btn w-28">
 										Next
 									</button>
 								</div>
 							</div>
 						</div>
 					) : (
-						<div className="flex w-full py-10 px-8 gap-12 justify-center md:flex-row flex-col">
+						<div className="flex w-full py-10 px-8 md:px-28 lg:px-28 gap-12 justify-center md:flex-row flex-col">
 							<div className="flex-1">
 								<Calendar
 									bordered
 									renderCell={renderCell}
 									onSelect={(date) => {
-										if (date >= new Date().setHours(0, 0, 0, 0)) {
-											setAppointmentDate(formatDateCalendar(date));
-											const formattedDate = date.toLocaleDateString("en-US", {
-												month: "long",
-												day: "numeric",
-											});
-											toast.success(`Date selected: ${formattedDate}`);
+										if (
+											date >=
+											new Date().setHours(0, 0, 0, 0)
+										) {
+											setAppointmentDate(
+												formatDateCalendar(date)
+											);
+											const formattedDate =
+												date.toLocaleDateString(
+													"en-US",
+													{
+														month: "long",
+														day: "numeric",
+													}
+												);
+											toast.success(
+												`Date selected: ${formattedDate}`
+											);
 										}
 									}}
-									disabledDate={(date) => date < new Date().setHours(0, 0, 0, 0)}
+									disabledDate={(date) =>
+										date < new Date().setHours(0, 0, 0, 0)
+									}
 								/>
 							</div>
 							{appointmentOnThatDate && (
@@ -684,27 +775,29 @@ const Appointment = () => {
 										Available Time Slots
 									</h2>
 									<p>
-										🛑 To set an appointment, you must first select a valid date
-										in the calendar, then choose your desired time slot.
+										🛑 To set an appointment, you must first
+										select a valid date in the calendar,
+										then choose your desired time slot.
 									</p>
 									<p>
-										🛑 Do note that you can only select a time slot that has not
-										been taken yet.
+										🛑 Do note that you can only select a
+										time slot that has not been taken yet.
 									</p>
 									<div className="flex flex-wrap gap-2 mt-8">
 										{timeSlots.map((time, index) => (
 											<button
 												key={index}
 												disabled={isTimeSlotTaken(time)}
-												onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-												className={`time-slot-button ${
-													isTimeSlotTaken(time)
+												onClick={() =>
+													handleTimeSlotClick(time)
+												} // Set the selected time on click
+												className={`time-slot-button ${isTimeSlotTaken(time)
 														? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
-														: time === selectedTimeSlot
-														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-														: "bg-maroon text-white hover:bg-maroon duration-300"
-												}  py-2 px-3 rounded-md`}
-											>
+														: time ===
+															selectedTimeSlot
+															? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+															: "bg-maroon text-white hover:bg-maroon duration-300"
+													}  py-2 px-3 rounded-md`}>
 												{timeFormatter(time)}
 											</button>
 										))}
@@ -712,8 +805,8 @@ const Appointment = () => {
 									<hr />
 									<div className="mt-4">
 										<p>
-											🤗 Please state the type of appointment and your
-											purpose.
+											🤗 Please state the type of
+											appointment and your purpose.
 										</p>
 										<div className="w-full flex lg:flex-col gap-5 my-5 flex-col">
 											{/* <TextInput
@@ -733,9 +826,10 @@ const Appointment = () => {
 													value={appointmentType}
 													label="Appointment Type"
 													onChange={(e) =>
-														setAppointmentType(e.target.value)
-													}
-												>
+														setAppointmentType(
+															e.target.value
+														)
+													}>
 													<MenuItem value="Academic Counseling">
 														Academic Counseling
 													</MenuItem>
@@ -748,13 +842,17 @@ const Appointment = () => {
 													<MenuItem value="Wellness Check">
 														Wellness Check
 													</MenuItem>
-													<MenuItem value="Others">Others</MenuItem>
+													<MenuItem value="Others">
+														Others
+													</MenuItem>
 												</Select>
 											</FormControl>
 
 											<TextAreaInput
 												value={purpose}
-												onChange={(e) => setPurpose(e.target.value)}
+												onChange={(e) =>
+													setPurpose(e.target.value)
+												}
 												placeholder="Purpose"
 												label="Purpose"
 												className="w-full mb-4 rounded-md "
@@ -765,24 +863,38 @@ const Appointment = () => {
 										<div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-5 rounded-xl px-4 py-2 font-Merriweather gap-4 md:gap-6">
 											<div className="flex flex-col md:flex-row justify-between items-start md:items-center border-2 border-black  rounded-xl md:rounded-full px-4 py-2 font-Merriweather gap-4 md:gap-0 w-full h-auto md:h-[56px]">
 												<div className="font-bold w-full md:w-auto">
-													DATE: {finalDateFormatter(appointmentDate)}
+													DATE:{" "}
+													{finalDateFormatter(
+														appointmentDate
+													)}
 												</div>
 												<div className="font-bold w-full md:w-auto">
-													TIME: {timeFormatter(selectedTime)}
+													TIME:{" "}
+													{timeFormatter(
+														selectedTime
+													)}
 												</div>
 											</div>
 											<div className="w-full md:w-2/12">
 												<FullButton
-													disabled={!selectedTime || isLoading}
-													onClick={handleAppointmentSubmit}
-													className="w-full"
-												>
-													{isLoading ? "Submitting..." : "Submit"}
+													disabled={
+														!selectedTime ||
+														isLoading
+													}
+													onClick={
+														handleAppointmentSubmit
+													}
+													className="w-full">
+													{isLoading
+														? "Submitting..."
+														: "Submit"}
 												</FullButton>
 											</div>
 										</div>
 
-										<dialog id="parentInfoModal" className="modal">
+										<dialog
+											id="parentInfoModal"
+											className="modal">
 											<div className="modal-box overflow-scroll">
 												<form method="dialog">
 													<button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
@@ -791,17 +903,22 @@ const Appointment = () => {
 												</form>
 												<div className="flex flex-col gap-4 items-center justify-center">
 													<h1 className="text-lg font-bold">
-														Parent/Guardian Information
+														Parent/Guardian
+														Information
 													</h1>
 													<p>
-														To proceed, please fill this information
-														first to proceed.
+														To proceed, please fill
+														this information first
+														to proceed.
 													</p>
 													<div className="flex flex-col gap-2 w-full">
 														<TextInput
 															value={guardianName}
 															onChange={(e) =>
-																setGuardianName(e.target.value)
+																setGuardianName(
+																	e.target
+																		.value
+																)
 															}
 															placeholder="Jane Doe"
 															label="Parent/Guardian Name"
@@ -809,18 +926,24 @@ const Appointment = () => {
 														/>
 
 														<TextInput
-															value={guardianContact}
+															value={
+																guardianContact
+															}
 															onChange={(e) =>
-																setGuardianContact(e.target.value)
+																setGuardianContact(
+																	e.target
+																		.value
+																)
 															}
 															placeholder="09123456789"
 															label="Parent/Guardian Contact Number"
 															id="parent-guardian-contact"
 														/>
 														<button
-															onClick={handleParentInfoSubmit}
-															className="mt-2 w-full bg-maroon border-2 font-Merriweather text-sm text-white font-semibold rounded-3xl px-4 py-3 hover:scale-95 transition-transform duration-300"
-														>
+															onClick={
+																handleParentInfoSubmit
+															}
+															className="mt-2 w-full bg-maroon border-2 font-Merriweather text-sm text-white font-semibold rounded-3xl px-4 py-3 hover:scale-95 transition-transform duration-300">
 															Submit
 														</button>
 													</div>
@@ -832,8 +955,8 @@ const Appointment = () => {
 											<div className="flex gap-2 items-center mt-5">
 												<span className="loading loading-dots loading-lg"></span>
 												<span className="text-lg">
-													Processing your appointment, please wait a
-													moment...
+													Processing your appointment,
+													please wait a moment...
 												</span>
 											</div>
 										)}
@@ -848,11 +971,18 @@ const Appointment = () => {
 			)}
 
 			{/* modals */}
+			{/* Reschedule Modal */}
+			{rescheduleModal && (
+				<ModalReschedule
+					setRescheduleModal={setRescheduleModal}
+					handleReschedule={handleReschedule}
+				/>
+			)}
+
 			{deleteModal && (
 				<ModalDelete
 					setDeleteModal={setDeleteModal}
-					handleDelete={handleDelete}
-				></ModalDelete>
+					handleDelete={handleDelete}></ModalDelete>
 			)}
 
 			{appointmentModal && (
@@ -861,14 +991,16 @@ const Appointment = () => {
 					selectedID={selectedID}
 					appointments={appointments}
 
-					// TO BE ADDED
-					// handleRescedule={handleReschedule}
-					// handleUpdateStatus={handleUpdateStatus}
+				// TO BE ADDED
+				// handleRescedule={handleReschedule}
+				// handleUpdateStatus={handleUpdateStatus}
 				></StudentModalAppointmentInfo>
 			)}
 
 			{showAddAppointmentModal && (
-				<StudentAddAppointment setShowAddAppointmentModal={setShowAddAppointmentModal} />
+				<StudentAddAppointment
+					setShowAddAppointmentModal={setShowAddAppointmentModal}
+				/>
 			)}
 			{confirmResponseModal && (
 				<ModalConfirmResponseAppointment
@@ -930,8 +1062,7 @@ function renderCell(date) {
 								</p>
 							))}
 						</Popover>
-					}
-				>
+					}>
 					<a>{moreCount} more</a>
 				</Whisper>
 			</li>

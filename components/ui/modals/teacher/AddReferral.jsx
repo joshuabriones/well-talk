@@ -30,39 +30,6 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 		onOpen(false);
 	};
 
-	const createNotification = async (details) => {
-		try {
-			const response = await fetch(
-				`${process.env.BASE_URL}${API_ENDPOINT.CREATE_REFERRAL_NOTIFICATION_TEACHER_AND_STUDENT}${userSession.id}`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${Cookies.get("token")}`,
-					},
-					body: JSON.stringify({
-						//receiverId: details.studentId, // remove nako cause lahi ni sya na id dapat
-						serviceId: details.referralId,
-					}),
-				}
-			);
-
-			if (response.ok) {
-				toast.success("Notification created successfully");
-			} else {
-				// Handle non-200 responses here
-				const errorData = await response.json(); // Get error details
-				console.error("Error creating notification:", errorData);
-				toast.error(
-					"Failed to create notification: " + errorData.message
-				);
-			}
-		} catch (error) {
-			console.error("Notification error: ", error);
-			toast.error("Failed to create notification due to an error.");
-		}
-	};
-
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setIsLoading(true);
@@ -118,11 +85,6 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 			console.log("Referral: ", data);
 			console.log("Student ID: ", idNumber);
 
-			createNotification({
-				studentId: idNumber,
-				referralId: data.referralId,
-			});
-
 			toast.success("Referral created successfully");
 		} catch (error) {
 			console.error("Error creating referral:", error);
@@ -134,7 +96,8 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 			{/* Modal Wrapper */}
 			<div
 				className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-25 z-50 backdrop-blur"
-				role="dialog">
+				role="dialog"
+			>
 				{/* Modal Content */}
 				<div className="relative w-full max-w-2xl mx-auto bg-white rounded-lg shadow-lg border-2 border-gray-200">
 					{/* Header */}
@@ -156,8 +119,8 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 										Add Referral
 									</h3>
 									<p className="text-lg font-Jaldi">
-										You can refer a student to a counselor
-										by submitting this form.
+										You can refer a student to a counselor by submitting this
+										form.
 									</p>
 								</section>
 
@@ -166,9 +129,7 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 										<div className="flex flex-col gap-y-4 md:flex-row md:gap-x-4">
 											<TextInput
 												value={firstName}
-												onChange={(e) =>
-													setFirstName(e.target.value)
-												}
+												onChange={(e) => setFirstName(e.target.value)}
 												placeholder="First Name"
 												label="First Name"
 												type="text"
@@ -182,9 +143,7 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 											)}
 											<TextInput
 												value={lastName}
-												onChange={(e) =>
-													setLastName(e.target.value)
-												}
+												onChange={(e) => setLastName(e.target.value)}
 												placeholder="Last Name"
 												label="Last Name"
 												type="text"
@@ -202,11 +161,7 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 											<div className="flex-1">
 												<TextInput
 													value={idNumber}
-													onChange={(e) =>
-														setIdNumber(
-															e.target.value
-														)
-													}
+													onChange={(e) => setIdNumber(e.target.value)}
 													placeholder="ID Number"
 													label="ID Number"
 													type="text"
@@ -221,9 +176,7 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 											<div className="flex-1">
 												<TextInput
 													value={year}
-													onChange={(e) =>
-														setYear(e.target.value)
-													}
+													onChange={(e) => setYear(e.target.value)}
 													placeholder="Year"
 													label="Year"
 													type="text"
@@ -241,31 +194,22 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 											<div className="flex-1">
 												<label
 													htmlFor="college"
-													className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full">
+													className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+												>
 													<select
 														value={college}
-														onChange={(e) =>
-															setCollege(
-																e.target.value
-															)
-														}
+														onChange={(e) => setCollege(e.target.value)}
 														className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
-														required>
-														{collegeOptions.map(
-															(option) => (
-																<option
-																	key={
-																		option.value
-																	}
-																	value={
-																		option.value
-																	}>
-																	{
-																		option.label
-																	}
-																</option>
-															)
-														)}
+														required
+													>
+														{collegeOptions.map((option) => (
+															<option
+																key={option.value}
+																value={option.value}
+															>
+																{option.label}
+															</option>
+														))}
 													</select>
 													<span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
 														College
@@ -280,26 +224,19 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 											<div className="flex-1">
 												<label
 													htmlFor="program"
-													className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full">
+													className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
+												>
 													<select
 														value={program}
-														onChange={(e) =>
-															setProgram(
-																e.target.value
-															)
-														}
+														onChange={(e) => setProgram(e.target.value)}
 														className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
-														required>
-														{programOptions[
-															college
-														]?.map((option) => (
+														required
+													>
+														{programOptions[college]?.map((option) => (
 															<option
-																key={
-																	option.value
-																}
-																value={
-																	option.value
-																}>
+																key={option.value}
+																value={option.value}
+															>
 																{option.label}
 															</option>
 														))}
@@ -319,9 +256,7 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 										<div className="">
 											<TextInput
 												value={email}
-												onChange={(e) =>
-													setEmail(e.target.value)
-												}
+												onChange={(e) => setEmail(e.target.value)}
 												placeholder="Email"
 												label="Email"
 												type="text"
@@ -337,9 +272,7 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 										<div className="">
 											<TextInput
 												value={reason}
-												onChange={(e) =>
-													setReason(e.target.value)
-												}
+												onChange={(e) => setReason(e.target.value)}
 												placeholder="Reason"
 												label="Reason"
 												type="text"
@@ -357,9 +290,7 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 											<HollowButton onClick={handleClose}>
 												Cancel
 											</HollowButton>
-											<FullButton type="submit">
-												Refer Student
-											</FullButton>
+											<FullButton type="submit">Refer Student</FullButton>
 										</div>
 									</div>
 								</form>
@@ -367,9 +298,7 @@ const AddReferral = ({ teacherId, onOpen, fetchReferrals }) => {
 						) : (
 							<div className="flex flex-col justify-center items-center h-40 mb-12">
 								<LoadingState />
-								<p className="text-2xl font-Jaldi">
-									Creating Referral...
-								</p>
+								<p className="text-2xl font-Jaldi">Creating Referral...</p>
 							</div>
 						)}
 					</div>

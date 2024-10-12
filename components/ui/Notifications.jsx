@@ -15,7 +15,8 @@ export default function Notifications() {
 
 	const [user, setUser] = useState(null);
 	const [notifications, setNotifications] = useState([]);
-	// console.log("notifications:", notifications);
+	console.log("notifications:", notifications);
+	console.log("User Session Id: ", userSession.id);
 
 	useEffect(() => {
 		const fetchProfile = async () => {
@@ -263,13 +264,23 @@ export default function Notifications() {
 						text = `${senderName} have scheduled an appointment with you on ${date} at ${time}.`;
 						break;
 					}
+				case "referral":
+					if (
+						notification?.receiver?.id === user?.id &&
+						notification?.sender?.role == "teacher"
+					) {
+						text = `Prof. ${senderName} has referred student: ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} for an appointment.`;
+					}
 			}
 		}
 
 		if (user?.role === "teacher") {
 			switch (type) {
 				case "referral":
-					if (notification?.sender?.id === user?.id) {
+					if (
+						notification?.sender?.id === user?.id &&
+						notification?.receiver?.id === user?.id
+					) {
 						text = `You have referred student ${receiverName} (${notification?.receiver?.id}) for an appointment for reason: ${notification?.referral?.reason}.`;
 					}
 					break;
