@@ -108,7 +108,7 @@ export const Content = () => {
 									))}
 								</div>
 
-								<div className="flex items-center justify-center -mx-4 -my-14 mb-3 lg:pl-8">
+								<div className="flex items-center justify-center -mx-4 -my-14 md:-my-0 lg:-my-0 mb-3 lg:pl-8">
 									<div className="flex flex-col items-end px-3">
 										<img
 											className={`object-cover mb-6 rounded shadow-lg h-28 sm:h-48 xl:h-56 ${styles.floating}`}

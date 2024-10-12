@@ -7,12 +7,13 @@ import { useState, useEffect } from "react";
 import "@/styles/counselor.css";
 
 // modals
-import { Navbar } from "@/components/ui/landing/LandingNav";
+import { Navbar } from "@/components/ui/Navbar";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import ModalReferralInfo from "@/components/ui/modals/counselor/referrals/ModalReferralInfo";
 import { API_ENDPOINT } from "@/lib/api";
 import Cookies from "js-cookie";
 import { getUserSession } from "@/lib/helperFunctions";
+import Header from "@/components/Header";
 
 export default function Referral() {
   const ReferralsPerPage = 10;
@@ -76,29 +77,16 @@ export default function Referral() {
 
   return (
     <div className="min-h-screen w-full">
-      {/* navigation bar */}
+      {/* Navigation bar */}
       <Navbar userType="counselor" />
-
-      {/* header */}
-      <div className="w-full h-[55vh] relative">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-40"
-          style={{ backgroundImage: `url(${hdrReferrals.src})` }}
-        ></div>
-        <div className="relative z-10 flex items-center justify-center h-full">
-          <div className="flex flex-col text-left px-44 py-10 gap-y-4">
-            <h1 className="font-Merriweather text-8xl">Referrals</h1>
-            <p className="w-1/2 font-Jaldi text-xl">
-              Manage sessions effortlessly and provide tailored guidance and
-              support to students.
-            </p>
-          </div>
-        </div>
-      </div>
-
+      <Header
+        image={hdrReferrals.src}
+        desc="Manage sessions effortlessly and provide tailored guidance and support to students."
+      />
+  
       <div className="flex flex-col text-center">
-        <div className="overflow-x-auto px-56 py-10">
-          <table className="table bg-gray-100">
+        <div className="overflow-x-auto px-4 sm:px-10 lg:px-20 xl:px-56 py-10">
+          <table className="table bg-gray-100 w-full">
             <thead>
               <tr className="bg-gray-200 font-bold">
                 <th>Date and Time</th>
@@ -151,7 +139,7 @@ export default function Referral() {
               ))}
             </tbody>
           </table>
-
+  
           {/* Pagination */}
           <div className="join pt-5">
             <button
@@ -186,15 +174,15 @@ export default function Referral() {
           </div>
         </div>
       </div>
-
-      {/* modals */}
+  
+      {/* Modals */}
       {deleteModal && (
         <ModalDelete
           setDeleteModal={setDeleteModal}
           handleDelete={handleDelete}
         />
       )}
-
+  
       {referralModal && (
         <ModalReferralInfo
           setReferralModal={setReferralModal}
@@ -204,6 +192,7 @@ export default function Referral() {
       )}
     </div>
   );
+  
 }
 
 function getBadgeClass(status) {

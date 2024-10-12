@@ -155,6 +155,7 @@ function NavList({ userType }) {
 					label: "Appointments",
 					route: "/counselor/counselor-appointment",
 				},
+				{ label: "Referrals", route: "/counselor/counselor-referral" },
 				{ label: "Journal", route: "/counselor/clientjournal" },
 				{ label: "Chat", route: "/counselor/chat" },
 			];

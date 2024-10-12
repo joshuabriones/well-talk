@@ -153,12 +153,6 @@ const Appointment = () => {
 	};
 
 	const handleDelete = async () => {
-		// Find
-		const selected = appointments.find(
-			(appointment) => appointment.appointmentId === selectedID
-		);
-
-		// CORS ISSUE - TO BE FIXED
 		try {
 			const response = await fetch(
 				`${process.env.BASE_URL}${API_ENDPOINT.DELETE_APPOINTMENT}${selectedID}`,
@@ -169,35 +163,39 @@ const Appointment = () => {
 					},
 				}
 			);
+
 			if (!response.ok) {
 				throw new Error("Failed to delete appointment");
-			} else {
-				toast.success("Appointment deleted successfully");
-				fetchAppointments();
-				setDeleteModal(false);
-				setSelectedID(null);
 			}
+
+			toast.success("Appointment deleted successfully");
+			fetchAppointments();
 		} catch (err) {
 			console.log(err);
+			toast.error("Error deleting appointment");
+		} finally {
+			setDeleteModal(false);
+			setSelectedID(null);
 		}
 	};
 
+	
+
 	const showRescheduleModal = (id) => {
-		// Set the appointment ID for rescheduling (if necessary) and open the modal
-		setSelectedID(id); // If you need the appointment ID
-		setRescheduleModal(true); // Open the modal
+		setSelectedID(id); 
+		setRescheduleModal(true);
 	};
 
 	const handleReschedule = () => {
-		// Logic for getting appointmentId dynamically
-		const appointmentId = appointment ? appointment.appointmentId : null;
+		const appointmentId = selectedID; 
 		if (appointmentId) {
+			console.log("Reschedule appointment with ID:", appointmentId);
 			setRescheduleModal(true);
-			return appointmentId;
 		} else {
 			console.error('No appointment ID found');
 		}
 	};
+	
 
 
 	// handle reschedule // TO BE ADDED AFTER CALENDAR IMPLEMENTATION
@@ -991,9 +989,10 @@ const Appointment = () => {
 					selectedID={selectedID}
 					appointments={appointments}
 
-				// TO BE ADDED
-				// handleRescedule={handleReschedule}
-				// handleUpdateStatus={handleUpdateStatus}
+
+				handleReschedule={handleReschedule}
+				handleDelete={showDeleteModal}
+				//handleUpdateStatus={handleUpdateStatus}
 				></StudentModalAppointmentInfo>
 			)}
 

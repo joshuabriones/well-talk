@@ -80,23 +80,17 @@ export function Navbar({ userType }) {
 					<img
 						src="/images/loggoword.png"
 						alt="WellTalk Logo"
-						className="w-13 h-12 lg:w-16 lg:h-15"
+						className="w-13 h-12 lg:w-13 lg:h-12"
 					/>
-					<h1 className="text-2xl sm:text-3xl font-bold font-Merriweather">
+					<h1 className="text-xl sm:text-3xl font-bold font-Merriweather">
 						<span
 							className="text-maroon"
-							style={{
-								textShadow:
-									"-0.25px -0.25px 0 #000, 0.25px -0.25px 0 #000, -0.25px 0.25px 0 #000, 0.25px 0.25px 0 #000",
-							}}>
+							>
 							Well
 						</span>
 						<span
 							className="text-gold"
-							style={{
-								textShadow:
-									"-0.25px -0.25px 0 #000, 0.25px -0.25px 0 #000, -0.25px 0.25px 0 #000, 0.25px 0.25px 0 #000",
-							}}>
+							>
 							Talk
 						</span>
 					</h1>

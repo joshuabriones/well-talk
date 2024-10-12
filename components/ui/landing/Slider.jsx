@@ -83,7 +83,7 @@ const LandingSlider = () => {
 			<div
 				className={`my-12 max-w-5xl mx-auto border-2 rounded-xl ${styles.floating}`}>
 				<div className="gallery fixed-size border-gray-400 rounded-xl bg-gray-100 shadow-lg">
-					<div className="window-bar border-b-2 bg-gray-800 text-gray px-4 py-4 flex justify-between items-center rounded-t-xl">
+					<div className="window-bar border-b-2 text-gray px-4 py-4 flex justify-between items-center rounded-t-xl">
 						<div className="window-title font-bold"></div>
 						<div className="window-controls flex space-x-2">
 							<div className="w-4 h-4 border-2 bg-yellow-400 rounded-full"></div>
@@ -104,7 +104,7 @@ const LandingSlider = () => {
 									variants={variants}
 									transition={{ duration: 0.5 }}>
 									<img
-										className="w-full max-h-[350px] h-auto md:max-h-full rounded-2xl md:h-full object-cover p-4"
+										className="w-full max-h-[360px] h-auto md:max-h-full rounded-2xl md:h-full object-cover p-4"
 										src={frames[currentIndex].imageUrl}
 										alt={frames[currentIndex].title}
 									/>
@@ -119,7 +119,7 @@ const LandingSlider = () => {
 
 							{frames && frames.length > 0 && (
 								<div className="description-container w-full md:w-1/2 p-4 md:p-6 flex flex-col justify-between">
-									<div className="top flex rounded-t-xl select-none mb-4 md:mb-0 lg:mb-0">
+									<div className="top flex rounded-t-xl select-none mb-4 lg:mb-0">
 										<div className="buttons ml-2 text-silver bg-maroon rounded-md">
 											<svg
 												onClick={handlePrev}
@@ -154,15 +154,15 @@ const LandingSlider = () => {
 										</div>
 									</div>
 									<div>
-										<div className="head text-lg md:text-2xl font-bold md:-mt-32 mb-4 md:mb-6 font-Merriweather">
+										<div className="head text-lg lg:text-2xl font-bold lg:-mt-32 mb-4 lg:mb-6 font-Merriweather">
 											{frames[currentIndex].title}
 										</div>
-										<div className="long-text text-base md:text-lg mr-6">
+										<div className="long-text text-base lg:text-lg mr-6">
 											{frames[currentIndex].description}
 										</div>
 									</div>
 									<div className="flex justify-end mt-8">
-										<button className="bg-maroon hover:bg-gray-300 text-silver text-sm md:text-base font-medium rounded-md py-2 px-4">
+										<button className="bg-maroon hover:bg-gray-300 text-silver text-sm lg:text-base font-medium rounded-md py-2 px-4">
 											View Profile
 										</button>
 									</div>
