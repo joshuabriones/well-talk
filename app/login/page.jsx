@@ -111,7 +111,6 @@ const Login = () => {
         Cookies.set("token", data.token);
         setIsLoading(true);
       } else {
-        alert("Invalid email or password. Try again.");
         setShowInvalidCredentials(true);
         setTimeout(() => {
           setShowInvalidCredentials(false);
@@ -222,7 +221,7 @@ const Login = () => {
                       onSubmit={handleLogin}
                     >
                       {showInvalidCredentials && (
-                        <div className="text-red-500 font-bold text-base pt-2 pb-1.5">
+                        <div className="text-red-500 font-bold text-xs pb-2">
                           Invalid email or password. Try Again.
                         </div>
                       )}
