@@ -190,7 +190,7 @@ const ModalAppointmentInfo = ({
 								<div className="flex  justify-center gap-x-4 gap-y-4 mt-3 px-10">
 									<div className="flex gap-2 w-full">
 										<button
-											className="w-full bg-white border-2 border-maroon font-Merriweather border-gray text-sm text-maroon font-semibold rounded-3xl px-3 py-2 hover:scale-95 transition-transform duration-300"
+											className="w-full bg-white border-2 border-gray font-Merriweather border-gray text-sm text-gray font-semibold rounded-3xl px-3 py-2 hover:scale-95 transition-transform duration-300"
 											onClick={(e) => {
 												e.stopPropagation();
 												handleDelete(
@@ -202,7 +202,7 @@ const ModalAppointmentInfo = ({
 										</button>
 
 										<button
-											className="w-full bg-maroon border-2 border-maroon text-sm font-Merriweather text-white font-semibold rounded-3xl px-3 py-2 hover:scale-95 transition-transform duration-300"
+											className="w-full bg-gray border-2 border-gray text-sm font-Merriweather text-white font-semibold rounded-3xl px-3 py-2 hover:scale-95 transition-transform duration-300"
 											onClick={(e) => {
 												e.stopPropagation();
 												handleReschedule();
