@@ -57,6 +57,9 @@ const Appointment = () => {
   const [guardianName, setGuardianName] = useState("");
   const [guardianContact, setGuardianContact] = useState("");
 
+  const [selectedStatus, setSelectedStatus] = useState("Pending");
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     if (userSession) {
       try {
@@ -498,6 +501,31 @@ const Appointment = () => {
     return `${formattedHour}:00 ${period}`;
   };
 
+  const handleStatusChange = (e) => {
+    setSelectedStatus(e.target.value);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredAppointments = currentAppointments?.filter((appointment) => {
+    const formattedDate = formatDate(appointment.appointmentDate);
+
+    const matchesStatus =
+      selectedStatus === "All" || appointment.appointmentStatus === selectedStatus;
+
+    const matchesSearch =
+      formattedDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      appointment.appointmentDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      appointment.appointmentStartTime.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      appointment.appointmentType.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      appointment.appointmentPurpose.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      appointment.appointmentNotes?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesStatus && matchesSearch;
+  });
+
   return (
     <div className="min-h-screen w-full">
       <Navbar userType="student" />
@@ -550,13 +578,45 @@ const Appointment = () => {
           </div>
 
           {isViewAppointment ? (
-            <div className="w-full flex flex-col text-center">
+            <div className="w-full flex flex-col">
               {/* table*/}
-              <div className="overflow-x-auto max-w-full py-10 px-8 md:px-28 lg:px-28 xs:px-1 flex flex-col items-center mt-10">
+
+              <div className="overflow-x-auto max-w-full py-10 px-8 md:px-28 lg:px-28 xs:px-1 flex flex-col items-center">
+                <div className="flex gap-5 py-4 w-full">
+                  <div className="flex items-center">
+                    <label htmlFor="status-filter" className="mr-2">
+                      Status:
+                    </label>
+                    <select
+                      id="status-filter"
+                      value={selectedStatus}
+                      onChange={handleStatusChange}
+                      className="border rounded pr-[26px]"
+                    >
+                      <option value="Pending">Pending 🟡</option>
+                      <option value="Done">Done 🟢</option>
+                      <option value="Cancelled">Cancelled 🔴</option>
+                    </select>
+                  </div>
+
+                  <div className="flex items-center">
+                    <label htmlFor="search-filter" className="mr-1">
+                      Search:
+                    </label>
+                    <input
+                      id="search-filter"
+                      type="text"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                      placeholder="Search appointments..."
+                      className="border rounded pr-2 max-w-md text-sm"
+                    />
+                  </div>
+                </div>
                 <table className="table bg-gray-100">
                   {/* head */}
                   <thead className="bg-gray-200">
-                    <tr className="font-bold text-center border-b border-yellow-500">
+                    <tr className="font-bold text-center border-b-2 border-yellow-500">
                       <th className="py-2">Date</th>
                       <th className="py-2">Time</th>
                       <th className="py-2">Appointment Type</th>
@@ -568,14 +628,15 @@ const Appointment = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {currentAppointments?.map((appointment) => (
+                    {filteredAppointments?.map((appointment) => (
                       <tr
                         key={appointment.appointmentId}
                         onClick={() =>
                           handleRowClick(appointment.appointmentId)
                         }
-                        className={` border-yellow-500 border border-b-2 
-                          hover:border-b-4 hover:border-lightMaroon cursor-pointer 
+                        className={`border-yellow-500 border-b-2 border-x-2
+                          hover:border-b-4 hover:border-x-4
+                          hover:border-lightMaroon cursor-pointer 
                           transition duration-300 ease-in-out`}
                       >
 
