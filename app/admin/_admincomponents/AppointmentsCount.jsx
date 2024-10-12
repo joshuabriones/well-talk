@@ -53,8 +53,10 @@ const AppointmentsCount = () => {
   );
 
   return (
-    <div className="bg-bgDark2 p-5 rounded-3xl shadow-md">
-      <h2 className="text-xl font-medium mb-5">Total Appointments</h2>
+    <div className="bg-white dark:bg-bgDark2 p-5 rounded-3xl shadow-md">
+      <h2 className="text-xl font-medium mb-5 text-textDark dark:text-white">
+        Total Appointments
+      </h2>
       <BarChart
         className="h-36"
         data={chartdata}

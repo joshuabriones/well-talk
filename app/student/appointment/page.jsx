@@ -49,7 +49,8 @@ const Appointment = () => {
   const [purpose, setPurpose] = useState(""); // State to store the purpose of the appointment
   const [appointmentOnThatDate, setAppointmentOnThatDate] = useState([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
-  const [showAddAppointmentModal, setShowAddAppointmentModal] = useState(false);
+  const [showAddAppointmentModal, setShowAddAppointmentModal] =
+    useState(false);
 
   const [counselorIds, setCounselorIds] = useState([]);
   const [studentData, setStudentData] = useState({});
@@ -89,7 +90,9 @@ const Appointment = () => {
     console.log(data);
 
     // Extract counselor IDs from the appointments
-    const counselorIds = data.map((appointment) => appointment.counselor.id);
+    const counselorIds = data.map(
+      (appointment) => appointment.counselor.id
+    );
     setCounselorIds(counselorIds);
   };
 
@@ -153,12 +156,6 @@ const Appointment = () => {
   };
 
   const handleDelete = async () => {
-    // Find
-    const selected = appointments.find(
-      (appointment) => appointment.appointmentId === selectedID
-    );
-
-    // CORS ISSUE - TO BE FIXED
     try {
       const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.DELETE_APPOINTMENT}${selectedID}`,
@@ -169,35 +166,40 @@ const Appointment = () => {
           },
         }
       );
+
       if (!response.ok) {
         throw new Error("Failed to delete appointment");
-      } else {
-        toast.success("Appointment deleted successfully");
-        fetchAppointments();
-        setDeleteModal(false);
-        setSelectedID(null);
       }
+
+      toast.success("Appointment deleted successfully");
+      fetchAppointments();
     } catch (err) {
       console.log(err);
+      toast.error("Error deleting appointment");
+    } finally {
+      setDeleteModal(false);
+      setSelectedID(null);
     }
   };
 
+
+
   const showRescheduleModal = (id) => {
-    // Set the appointment ID for rescheduling (if necessary) and open the modal
-    setSelectedID(id); // If you need the appointment ID
-    setRescheduleModal(true); // Open the modal
+    setSelectedID(id);
+    setRescheduleModal(true);
   };
 
   const handleReschedule = () => {
-    // Logic for getting appointmentId dynamically
-    const appointmentId = appointment ? appointment.appointmentId : null;
+    const appointmentId = selectedID;
     if (appointmentId) {
+      console.log("Reschedule appointment with ID:", appointmentId);
       setRescheduleModal(true);
-      return appointmentId;
     } else {
-      console.error("No appointment ID found");
+      console.error('No appointment ID found');
     }
   };
+
+
 
   // handle reschedule // TO BE ADDED AFTER CALENDAR IMPLEMENTATION
   // const handleReschedule = () => {
@@ -229,9 +231,11 @@ const Appointment = () => {
     "09:00",
     "10:00",
     "11:00",
-    "13:30",
-    "14:30",
-    "15:30",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
   ];
 
   // Helper function to check if a time slot is taken
@@ -349,9 +353,7 @@ const Appointment = () => {
       );
 
       if (response.ok) {
-        fetchStudentById(userSession.id);
         toast.success("Student profile updated successfully");
-        setConfirmResponseModal(true);
         document.getElementById("parentInfoModal").close();
       }
     } catch (error) {
@@ -386,7 +388,9 @@ const Appointment = () => {
         } else {
           const errorData = await response.json();
           console.error("Error creating notification:", errorData);
-          toast.error("Failed to create notification: " + errorData.message);
+          toast.error(
+            "Failed to create notification: " + errorData.message
+          );
         }
       } catch (error) {
         console.error("Notification error: ", error);
@@ -405,7 +409,8 @@ const Appointment = () => {
           },
           body: JSON.stringify({
             appointmentDate: appointmentDate,
-            appointmentStartTime: convertTo24HourFormat(selectedTime),
+            appointmentStartTime:
+              convertTo24HourFormat(selectedTime),
             appointmentEndTime: convertTo24HourFormat(endTime),
             appointmentType: appointmentType,
             appointmentPurpose: purpose,
@@ -562,8 +567,7 @@ const Appointment = () => {
                 ? "bg-maroon text-white"
                 : "border-2 border-maroon text-maroon"
                 }`}
-              onClick={handleAddAppointmentClick}
-            >
+              onClick={handleAddAppointmentClick}>
               Set Appointment
             </button>
             <button
@@ -571,8 +575,7 @@ const Appointment = () => {
                 ? "bg-maroon text-white"
                 : "border-2 border-maroon text-maroon"
                 }`}
-              onClick={handleViewAppointmentClick}
-            >
+              onClick={handleViewAppointmentClick}>
               View Appointments
             </button>
           </div>
@@ -699,60 +702,78 @@ const Appointment = () => {
                           <div className="text-center py-2 flex">
                             <button
                               className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
-                              onClick={(e) => {
+                              onClick={(
+                                e
+                              ) => {
                                 e.stopPropagation();
-                                showDeleteModal(appointment.appointmentId);
-                              }}
-                            >
+                                showDeleteModal(
+                                  appointment.appointmentId
+                                );
+                              }}>
                               Delete
                             </button>
                             <button
                               className="btn btn-xs text-gray hover:text-gray hover:bg-gold"
-                              onClick={(e) => {
+                              onClick={(
+                                e
+                              ) => {
                                 e.stopPropagation();
-                                showRescheduleModal(appointment.appointmentId);
-                              }}
-                            >
+                                showRescheduleModal(
+                                  appointment.appointmentId
+                                );
+                              }}>
                               Reschedule
                             </button>
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    )
+                    )}
                   </tbody>
                 </table>
 
                 {/* Pagination controls */}
                 <div className="join pt-5">
                   <button
-                    onClick={() => setCurrentPage(currentPage - 1)}
+                    onClick={() =>
+                      setCurrentPage(currentPage - 1)
+                    }
                     disabled={currentPage === 1}
-                    className="join-item btn w-28"
-                  >
+                    className="join-item btn w-28">
                     Previous
                   </button>
 
                   {appointments &&
                     [
                       ...Array(
-                        Math.ceil(appointments.length / AppointmentPerPage)
+                        Math.ceil(
+                          appointments.length /
+                          AppointmentPerPage
+                        )
                       ),
                     ].map((_, index) => (
                       <button
                         key={index}
-                        className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
+                        className={`join-item btn ${currentPage === index + 1
+                          ? "btn-active"
+                          : ""
                           }`}
-                        onClick={() => setCurrentPage(index + 1)}
-                      >
+                        onClick={() =>
+                          setCurrentPage(index + 1)
+                        }>
                         {index + 1}
                       </button>
                     ))}
 
                   <button
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    disabled={AppointmentPerPage > appointments?.length}
-                    className="join-item btn w-28"
-                  >
+                    onClick={() =>
+                      setCurrentPage(currentPage + 1)
+                    }
+                    disabled={
+                      AppointmentPerPage >
+                      appointments?.length
+                    }
+                    className="join-item btn w-28">
                     Next
                   </button>
                 </div>
@@ -765,13 +786,24 @@ const Appointment = () => {
                   bordered
                   renderCell={renderCell}
                   onSelect={(date) => {
-                    if (date >= new Date().setHours(0, 0, 0, 0)) {
-                      setAppointmentDate(formatDateCalendar(date));
-                      const formattedDate = date.toLocaleDateString("en-US", {
-                        month: "long",
-                        day: "numeric",
-                      });
-                      toast.success(`Date selected: ${formattedDate}`);
+                    if (
+                      date >=
+                      new Date().setHours(0, 0, 0, 0)
+                    ) {
+                      setAppointmentDate(
+                        formatDateCalendar(date)
+                      );
+                      const formattedDate =
+                        date.toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "long",
+                            day: "numeric",
+                          }
+                        );
+                      toast.success(
+                        `Date selected: ${formattedDate}`
+                      );
                     }
                   }}
                   disabledDate={(date) =>
@@ -785,26 +817,29 @@ const Appointment = () => {
                     Available Time Slots
                   </h2>
                   <p>
-                    🛑 To set an appointment, you must first select a valid date
-                    in the calendar, then choose your desired time slot.
+                    🛑 To set an appointment, you must first
+                    select a valid date in the calendar,
+                    then choose your desired time slot.
                   </p>
                   <p>
-                    🛑 Do note that you can only select a time slot that has not
-                    been taken yet.
+                    🛑 Do note that you can only select a
+                    time slot that has not been taken yet.
                   </p>
                   <div className="flex flex-wrap gap-2 mt-8">
                     {timeSlots.map((time, index) => (
                       <button
                         key={index}
                         disabled={isTimeSlotTaken(time)}
-                        onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
+                        onClick={() =>
+                          handleTimeSlotClick(time)
+                        } // Set the selected time on click
                         className={`time-slot-button ${isTimeSlotTaken(time)
                           ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
-                          : time === selectedTimeSlot
+                          : time ===
+                            selectedTimeSlot
                             ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
                             : "bg-maroon text-white hover:bg-maroon duration-300"
-                          }  py-2 px-3 rounded-md`}
-                      >
+                          }  py-2 px-3 rounded-md`}>
                         {timeFormatter(time)}
                       </button>
                     ))}
@@ -812,7 +847,8 @@ const Appointment = () => {
                   <hr />
                   <div className="mt-4">
                     <p>
-                      🤗 Please state the type of appointment and your purpose.
+                      🤗 Please state the type of
+                      appointment and your purpose.
                     </p>
                     <div className="w-full flex lg:flex-col gap-5 my-5 flex-col">
                       {/* <TextInput
@@ -831,8 +867,11 @@ const Appointment = () => {
                           id="appointment-type-select"
                           value={appointmentType}
                           label="Appointment Type"
-                          onChange={(e) => setAppointmentType(e.target.value)}
-                        >
+                          onChange={(e) =>
+                            setAppointmentType(
+                              e.target.value
+                            )
+                          }>
                           <MenuItem value="Academic Counseling">
                             Academic Counseling
                           </MenuItem>
@@ -845,13 +884,17 @@ const Appointment = () => {
                           <MenuItem value="Wellness Check">
                             Wellness Check
                           </MenuItem>
-                          <MenuItem value="Others">Others</MenuItem>
+                          <MenuItem value="Others">
+                            Others
+                          </MenuItem>
                         </Select>
                       </FormControl>
 
                       <TextAreaInput
                         value={purpose}
-                        onChange={(e) => setPurpose(e.target.value)}
+                        onChange={(e) =>
+                          setPurpose(e.target.value)
+                        }
                         placeholder="Purpose"
                         label="Purpose"
                         className="w-full mb-4 rounded-md "
@@ -862,24 +905,38 @@ const Appointment = () => {
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-5 rounded-xl px-4 py-2 font-Merriweather gap-4 md:gap-6">
                       <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-2 border-black  rounded-xl md:rounded-full px-4 py-2 font-Merriweather gap-4 md:gap-0 w-full h-auto md:h-[56px]">
                         <div className="font-bold w-full md:w-auto">
-                          DATE: {finalDateFormatter(appointmentDate)}
+                          DATE:{" "}
+                          {finalDateFormatter(
+                            appointmentDate
+                          )}
                         </div>
                         <div className="font-bold w-full md:w-auto">
-                          TIME: {timeFormatter(selectedTime)}
+                          TIME:{" "}
+                          {timeFormatter(
+                            selectedTime
+                          )}
                         </div>
                       </div>
                       <div className="w-full md:w-2/12">
                         <FullButton
-                          disabled={!selectedTime || isLoading}
-                          onClick={handleAppointmentSubmit}
-                          className="w-full"
-                        >
-                          {isLoading ? "Submitting..." : "Submit"}
+                          disabled={
+                            !selectedTime ||
+                            isLoading
+                          }
+                          onClick={
+                            handleAppointmentSubmit
+                          }
+                          className="w-full">
+                          {isLoading
+                            ? "Submitting..."
+                            : "Submit"}
                         </FullButton>
                       </div>
                     </div>
 
-                    <dialog id="parentInfoModal" className="modal">
+                    <dialog
+                      id="parentInfoModal"
+                      className="modal">
                       <div className="modal-box overflow-scroll">
                         <form method="dialog">
                           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
@@ -888,34 +945,47 @@ const Appointment = () => {
                         </form>
                         <div className="flex flex-col gap-4 items-center justify-center">
                           <h1 className="text-lg font-bold">
-                            Parent/Guardian Information
+                            Parent/Guardian
+                            Information
                           </h1>
                           <p>
-                            To proceed, please fill this information first to
-                            proceed.
+                            To proceed, please fill
+                            this information first
+                            to proceed.
                           </p>
                           <div className="flex flex-col gap-2 w-full">
                             <TextInput
                               value={guardianName}
-                              onChange={(e) => setGuardianName(e.target.value)}
+                              onChange={(e) =>
+                                setGuardianName(
+                                  e.target
+                                    .value
+                                )
+                              }
                               placeholder="Jane Doe"
                               label="Parent/Guardian Name"
                               id="parent-guardian-name"
                             />
 
                             <TextInput
-                              value={guardianContact}
+                              value={
+                                guardianContact
+                              }
                               onChange={(e) =>
-                                setGuardianContact(e.target.value)
+                                setGuardianContact(
+                                  e.target
+                                    .value
+                                )
                               }
                               placeholder="09123456789"
                               label="Parent/Guardian Contact Number"
                               id="parent-guardian-contact"
                             />
                             <button
-                              onClick={handleParentInfoSubmit}
-                              className="mt-2 w-full bg-maroon border-2 font-Merriweather text-sm text-white font-semibold rounded-3xl px-4 py-3 hover:scale-95 transition-transform duration-300"
-                            >
+                              onClick={
+                                handleParentInfoSubmit
+                              }
+                              className="mt-2 w-full bg-maroon border-2 font-Merriweather text-sm text-white font-semibold rounded-3xl px-4 py-3 hover:scale-95 transition-transform duration-300">
                               Submit
                             </button>
                           </div>
@@ -927,7 +997,8 @@ const Appointment = () => {
                       <div className="flex gap-2 items-center mt-5">
                         <span className="loading loading-dots loading-lg"></span>
                         <span className="text-lg">
-                          Processing your appointment, please wait a moment...
+                          Processing your appointment,
+                          please wait a moment...
                         </span>
                       </div>
                     )}
@@ -953,8 +1024,7 @@ const Appointment = () => {
       {deleteModal && (
         <ModalDelete
           setDeleteModal={setDeleteModal}
-          handleDelete={handleDelete}
-        ></ModalDelete>
+          handleDelete={handleDelete}></ModalDelete>
       )}
 
       {appointmentModal && (
@@ -963,9 +1033,10 @@ const Appointment = () => {
           selectedID={selectedID}
           appointments={appointments}
 
-        // TO BE ADDED
-        // handleRescedule={handleReschedule}
-        // handleUpdateStatus={handleUpdateStatus}
+
+          handleReschedule={handleReschedule}
+          handleDelete={showDeleteModal}
+        //handleUpdateStatus={handleUpdateStatus}
         ></StudentModalAppointmentInfo>
       )}
 
@@ -1034,8 +1105,7 @@ function renderCell(date) {
                 </p>
               ))}
             </Popover>
-          }
-        >
+          }>
           <a>{moreCount} more</a>
         </Whisper>
       </li>

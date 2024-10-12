@@ -51,8 +51,11 @@ module.exports = {
         silver: "#DFDEDE",
         bgDark1: "#151D32",
         bgDark2: "#292F45",
+        bgLight1: "#FFF4EA",
         lightMaroon: "#B24045",
         navgray: "#9199AD",
+        textDark: "#050F24",
+        navlight: "#6F757E",
         gray: "#474647",
         tremor: {
           brand: {
