@@ -97,7 +97,7 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
               </th>
             </tr>
             {currentUsers.map((user) => (
-              <tr>
+              <tr className="border-b-2 border-maroon">
                 <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-bgDark2 stroke-slate-500 text-navgray ">
                   {user.firstName} {user.lastName}
                 </td>
@@ -141,7 +141,9 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={`${
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                  currentPage === 1
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:text-slate-400"
                 } mr-2`}
               >
                 Prev{" "}
@@ -177,7 +179,7 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
                 className={`${
                   currentPage === Math.ceil(filteredUsers.length / usersPerPage)
                     ? "opacity-50 cursor-not-allowed"
-                    : ""
+                    : "hover:text-slate-400"
                 } ml-2`}
               >
                 Next
