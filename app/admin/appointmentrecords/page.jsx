@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { API_ENDPOINT } from "@/lib/api";
 import Cookies from "js-cookie";
+import { collegeOptions } from "@/lib/inputOptions";
 
 import Header from "../_admincomponents/Header";
 
@@ -10,6 +11,7 @@ const AppointmentRecords = () => {
   const [appointmentsPerCounselor, setAppointmentsPerCounselor] = useState([]);
   const [counselors, setCounselors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedCollege, setSelectedCollege] = useState("all");
 
   useEffect(() => {
     const fetchAllCounselors = async () => {
@@ -103,16 +105,33 @@ const AppointmentRecords = () => {
     }
   }, [counselors]);
 
-  console.log(appointmentsPerCounselor);
+  const filteredCounselors = appointmentsPerCounselor.filter(
+    (counselor) =>
+      selectedCollege === "all" || counselor.college === selectedCollege
+  );
 
   return (
     <div className="min-h-screen w-full">
       <Header title="Counselor Appointment Records" />
+      <select
+        value={selectedCollege}
+        onChange={(e) => {
+          setSelectedCollege(e.target.value);
+        }}
+        className="w-1/7 rounded-3xl text-navgray bg-bgDark2 mt-2"
+      >
+        <option value="all">All</option>
+        {collegeOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.value}
+          </option>
+        ))}
+      </select>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1 gap-6 mt-6 overflow-scroll">
-          {appointmentsPerCounselor.map((counselor) => (
+          {filteredCounselors.map((counselor) => (
             <div
               key={counselor.counselorName}
               className="w-full min-w-[240px] bg-bgDark2 p-5 relative rounded-3xl shadow-md flex flex-col items-center gap-5"
