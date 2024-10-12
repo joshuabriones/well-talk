@@ -35,7 +35,7 @@ const Sidebar = () => {
   ];
   return (
     <>
-      <div className="w-1/5 min-w-56 bg-bgDark2 h-auto md:flex xs:hidden flex-col justify-between py-10 px-5 rounded-[20px] shadow-sm ">
+      <div className="w-1/5 min-w-56 bg-white dark:bg-bgDark2 h-auto md:flex xs:hidden flex-col justify-between py-10 px-5 rounded-[20px] shadow-sm ">
         <div>
           <div className="flex flex-row gap-1 items-center justify-center">
             <img
@@ -43,7 +43,7 @@ const Sidebar = () => {
               alt="WellTalk Logo"
               className="w-10 h-10" // Hidden on mobile, shown on md and larger
             />
-            <h1 className="text-2xl font-bold font-Merriweather lg:text-3xl">
+            <h1 className="text-xl font-bold font-Merriweather lg:text-2xl">
               <span
                 className="text-lightMaroon"
                 style={{
@@ -64,8 +64,8 @@ const Sidebar = () => {
               </span>
             </h1>
           </div>
-          <nav className="mt-12">
-            <ul className="flex flex-col gap-4 text-base text-navgray">
+          <nav className="lg:mt-12 md:mt-8">
+            <ul className="flex flex-col lg:gap-4 md:gap-3 text-base text-navlight dark:text-navgray">
               {navLinks.map((link) => (
                 <li>
                   <Link
@@ -82,7 +82,7 @@ const Sidebar = () => {
         </div>
         <button
           onClick={() => logout()}
-          className="text-lightMaroon font-bold flex items-center gap-2 p-3 hover:bg-bgDark1 rounded-lg transition-all duration-300"
+          className="text-lightMaroon font-bold flex items-center gap-2 p-3 hover:bg-gold dark:hover:bg-bgDark1 rounded-lg transition-all duration-300"
         >
           <LogoutIcon color="#B24045" />
           Logout
@@ -105,7 +105,7 @@ const Sidebar = () => {
             stroke="currentColor"
             className={`h-8 w-8 text-blue-gray-900 transform transition-transform duration-300 ease-in-out ${
               isNavOpen ? "rotate-90" : "rotate-0"
-            }`}
+            } text-white dark:text-black`}
           >
             <path
               strokeLinecap="round"
@@ -116,10 +116,10 @@ const Sidebar = () => {
         </button>
 
         {isNavOpen && (
-          <div className="absolute bg-bgDark2 p-4 top-16 rounded-lg z-10">
+          <div className="absolute bg-white dark:bg-bgDark2 p-4 top-16 rounded-lg z-10">
             <ul className="flex flex-col gap-2 text-base text-navgray">
               {navLinks.map((link) => (
-                <li>
+                <li key={link.href}>
                   <Link
                     href={link.href}
                     className="p-3 group hover:bg-lightMaroon hover:text-white transition-all duration-300 ease-in-out flex items-center gap-2 rounded-lg"
@@ -129,9 +129,10 @@ const Sidebar = () => {
                   </Link>
                 </li>
               ))}
+
               <button
                 onClick={() => logout()}
-                className="text-lightMaroon font-bold flex items-center gap-2 p-3 hover:bg-bgDark1 rounded-lg transition-all duration-300"
+                className="text-lightMaroon font-bold flex items-center gap-2 p-3 hover:bg-bgLight1 dark:hover:bg-bgDark1 rounded-lg transition-all duration-300"
               >
                 <LogoutIcon color="#B24045" />
                 Logout

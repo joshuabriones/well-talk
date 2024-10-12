@@ -44,8 +44,10 @@ export const GenderChart = () => {
   const dataFormatter = (number) => number.toString();
 
   return (
-    <div className="bg-bgDark2 p-5 rounded-3xl shadow-md">
-      <h3 className="text-xl font-medium mb-5">Student Details</h3>
+    <div className="bg-white dark:bg-bgDark2 p-5 rounded-3xl shadow-md">
+      <h3 className="text-xl font-medium mb-5 text-textDark dark:text-white">
+        Student Details
+      </h3>
       <DonutChart
         data={programsData}
         variant="donut"
@@ -55,7 +57,7 @@ export const GenderChart = () => {
         colors={["blue", "yellow", "red"]}
         className="h-20 w-full"
       />
-      <div className="flex items-center justify-between mt-5">
+      <div className="flex items-center justify-between mt-5 text-navlight dark:text-white">
         <p className="text-xs ">
           <span className="inline-block h-2 w-2 mr-1 bg-[#3979EC]"></span>Male
         </p>
