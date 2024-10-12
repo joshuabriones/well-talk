@@ -33,7 +33,7 @@ const Hero = () => {
 							initial={{ opacity: 0, y: -100 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ delay: 0.2, duration: 0.6 }}
-							className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-Merriweather pb-2">
+							className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-Merriweather pb-0 md:pb-2 lg:md:pb-2">
 							{" "}
 							Supporting{" "}
 							<span className="bg-gradient-to-t from-maroon to-foreground text-transparent bg-clip-text border-1">
@@ -44,7 +44,7 @@ const Hero = () => {
 							initial={{ opacity: 0, y: -100 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ delay: 0.4, duration: 0.6 }}
-							className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl sm:mt-2 font-Merriweather">
+							className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-Merriweather">
 							One Conversation at a Time.
 						</motion.h2>
 						<motion.p

@@ -7,6 +7,7 @@ import Hero from "@/components/ui/landing/Hero";
 import { Navbar } from "@/components/ui/landing/LandingNav";
 import LandingSlider from "@/components/ui/landing/Slider";
 import { Content } from "@/components/ui/landing/Steps";
+import styles from "./../css/landing.module.css";
 
 export default function Landing() {
 	return (
@@ -21,26 +22,26 @@ export default function Landing() {
 					<Content />
 				</ScrollAnimationWrapper>
 				<div>
-					<div className="flex flex-col-reverse w-10/12 lg:w-9/12 sm:w-full md:flex-row mx-auto items-center">
-						<div className="w-full md:w-3/5 lg:w-7/12">
+					<div className="flex flex-col-reverse w-10/12 md:w-9/12 lg:w-9/12 sm:w-full lg:flex-row mx-auto items-center">
+						<div className="w-full lg:w-7/12">
 							<div className="w-full">
 								<LandingSlider />
 							</div>
 						</div>
-						<div className="w-full md:w-2/5 lg:w-5/12 text-left md:text-center lg:text-center md:text-right mt-8 md:mt-0">
+						<div className="w-full lg:w-5/12 text-left lg:text-right mt-8 md:mt-0">
 							<ScrollAnimationWrapper animationType="fadeInFromRight">
-								<div className="mt-8 md:mt-0 sm:mt-0">
-									<h2 className="text-3xl sm:text-5xl lg:text-6xl font-Merriweather">
-										Discover Our <br /> Dedicated <br />
+								<div className="mt-4 md:mt-0 sm:mt-0">
+									<h2 className="text-3xl md:text-3xl lg:text-6xl font-Merriweather">
+										Meet Our <br /> Dedicated <br />
 										Counselors
 									</h2>
-									<p className="mt-4">
+									<p className="mt-4 w-full md:w-9/12 lg:w-9/12 text-justify lg:ml-36">
 										Meet the compassionate individuals who
-										form the backbone of <br /> our
+										form the backbone of our
 										counseling team. Each counselor brings a
-										wealth of expertise <br /> and empathy,
+										wealth of expertise and empathy,
 										ready to guide you through life's
-										challenges with <br /> understanding and
+										challenges with understanding and
 										support.
 									</p>
 								</div>
@@ -56,9 +57,8 @@ export default function Landing() {
 								<h4 className="font-Merriweather text-gray-50 text-2xl md:text-3xl font-semibold sm:text-4xl">
 									Have any additional questions?
 								</h4>
-								<p className="font-Jaldi text-gray-50 mt-4">
-									Lorem, ipsum dolor sit amet consectetur
-									adipisicing elit. Aut, odio fuga!
+								<p className="font-Jaldi text-gray-50 mt-4 lg:w-10/12 lg:ml-16">
+								Create an account today to easily raise your concerns and get the support you need from the guidance office.
 								</p>
 								<button className="hover:bg-opacity-90 text-gray font-bold border border-gray-50 py-3 px-6 rounded-full transition mt-4 mb-0 bg-gold">
 									Get in touch
