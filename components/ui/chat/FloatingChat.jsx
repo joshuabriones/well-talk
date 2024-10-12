@@ -74,8 +74,22 @@ const ChatWidget = () => {
 			},
 		});
 
-		const data = await response.json();
-		setCounselors(data);
+		try {
+			if (!response.ok) {
+			  throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+		  
+			const data = await response.json();
+
+			if (data) {
+			  setCounselors(data);
+			} else {
+			  console.warn("No data returned from the server.");
+			}
+		  
+		  } catch (error) {
+			console.error("Error fetching counselors:", error);
+		  }
 
 		// Fetch additional counselors based on receiver ID if there are messages
 		const receiverResponse = await fetch(
@@ -122,10 +136,8 @@ const ChatWidget = () => {
 			},
 		});
 
-		// Parse the response data
-		const data = await response.json();
-
-		// Update the state with the fetched user details
+		const text = await response.text();
+		const data = text ? JSON.parse(text) : {};
 		setLoggedInUser(data);
 	};
 
