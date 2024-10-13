@@ -64,6 +64,10 @@ const Registration = () => {
 	const [isMismatchError, setIsMismatchError] = useState(false);
 	const [showTerms, setShowTerms] = useState(false);
 
+	const [emailStatus, setEmailStatus] = useState('');
+	const [idNumberStatus, setIdNumberStatus] = useState('');
+
+
 	const modalRef = useRef(null);
 
 	const handleCloseModal = () => {
@@ -167,6 +171,70 @@ const Registration = () => {
 
 		if (termsAccepted === false) {
 			setShowTermsNotAccepted(true);
+			return;
+		}
+
+		// check email
+		let emailExists = false;
+		try {
+			const emailResponse = await fetch(
+				`${process.env.BASE_URL}${API_ENDPOINT.CHECK_EMAIL}`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						email: email,
+					}),
+				}
+			);
+
+			const emailData = await emailResponse.text();
+
+			if (emailResponse.ok && emailData === "Email exists.") {
+				setErrors({ email: "This email already exists. Please use a different email." });
+				clearErrors();
+				emailExists = true;
+			}
+		} catch (error) {
+			console.error("Error checking email:", error);
+			setErrors({ email: "Error occurred while checking email." });
+			clearErrors();
+			return;
+		}
+
+		// Check ID number existence
+		let idExists = false;
+		try {
+			const idResponse = await fetch(
+				`${process.env.BASE_URL}${API_ENDPOINT.CHECK_IDNUMBER}`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						idNumber: idno,
+					}),
+				}
+			);
+
+			const idData = await idResponse.text();
+
+			if (idResponse.ok && idData === "ID number exists.") {
+				setErrors({ idno: "This ID number already exists. Please use a different ID number." });
+				clearErrors();
+				idExists = true;
+			}
+		} catch (error) {
+			console.error("Error checking ID number:", error);
+			setErrors({ idno: "Error occurred while checking ID number." });
+			clearErrors();
+			return;
+		}
+
+		if (emailExists || idExists) {
 			return;
 		}
 
@@ -344,6 +412,87 @@ const Registration = () => {
 		router.push("/login");
 	};
 
+
+	const handleEmailChange = async (e) => {
+		const enteredEmail = e.target.value;
+		setEmail(enteredEmail);
+
+		if (enteredEmail) {
+			try {
+				const response = await fetch(
+					`${process.env.BASE_URL}${API_ENDPOINT.CHECK_EMAIL}`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							email: enteredEmail, // Send only the email in the body
+						}),
+					}
+				);
+
+
+				const data = await response.text();
+
+				if (response.ok) {
+
+					if (data === "Email exists.") {
+						setEmailStatus("Email exists.");
+					} else {
+						setEmailStatus("Email does not exist.");
+					}
+				} else {
+					setEmailStatus(data || "Error occurred while checking email.");
+				}
+			} catch (error) {
+				console.error("Error checking email:", error);
+				setEmailStatus("Error occurred while checking email.");
+			}
+		} else {
+			setEmailStatus('');
+		}
+	};
+
+	const handleIdNumberChange = async (e) => {
+		const enteredIdNo = e.target.value;
+		setIdNo(enteredIdNo);
+
+		if (enteredIdNo) {
+			try {
+				const response = await fetch(
+					`${process.env.BASE_URL}${API_ENDPOINT.CHECK_IDNUMBER}`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							idNumber: enteredIdNo,
+						}),
+					}
+				);
+
+				const data = await response.text();
+
+				if (response.ok) {
+					if (data === "ID number exists.") {
+						setIdNumberStatus("ID number exists.");
+					} else {
+						setIdNumberStatus("ID number does not exist.");
+					}
+				} else {
+					setIdNumberStatus(data || "Error occurred while checking ID number.");
+				}
+			} catch (error) {
+				console.error("Error checking ID number:", error);
+				setIdNumberStatus("Error occurred while checking ID number.");
+			}
+		} else {
+			setIdNumberStatus('');
+		}
+	};
+
 	return (
 		<section className="p-3 lg:py-16 text-zinc-900 dark:text-white flex justify-center lg:mr-16 items-center py-28 h-full lg:h-screen">
 			<div className="block lg:hidden">
@@ -476,14 +625,13 @@ const Registration = () => {
 											<div className="flex flex-col w-full">
 												<TextInput
 													value={email}
-													onChange={(e) =>
-														setEmail(e.target.value)
-													}
+													onChange={handleEmailChange}
 													placeholder="Institutional Email"
 													label="Institutional Email"
 													type="email"
 													id="email"
 												/>
+												<p className = "text-xs">{emailStatus}</p>
 												{errors.idno && (
 													<p className="text-red-500 text-sm font-Jaldi font-semibold">
 														{
@@ -496,15 +644,14 @@ const Registration = () => {
 											<div className="flex flex-col w-full">
 												<TextInput
 													value={idno}
-													onChange={(e) =>
-														setIdNo(e.target.value)
-													}
+													onChange={handleIdNumberChange}
 													placeholder="ID Number"
 													label="ID Number"
 													type="text"
 													id="idno"
 												/>
-												{errors.idno && (
+												<p className = "text-xs">{idNumberStatus}</p>
+												{errors.idno && errors.idno._errors && errors.idno._errors.length > 0 && (
 													<p className="text-red-500 text-sm font-Jaldi font-semibold">
 														{errors.idno._errors[0]}
 													</p>
@@ -1021,7 +1168,7 @@ const Registration = () => {
 																}
 																options={
 																	programOptions[
-																		college
+																	college
 																	]
 																}
 																onChange={
@@ -1112,7 +1259,7 @@ const Registration = () => {
 															}
 															options={
 																programOptions[
-																	college
+																college
 																]
 															}
 															onChange={

@@ -29,8 +29,52 @@ const Login = () => {
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
+  const [emailStatus, setEmailStatus] = useState('');
   /* HANDLING UNAUTHENTICATED USERS */
   // if (userSession && userSession.role) return <Load route={userSession.role} />;
+
+
+  const handleEmailChange = async (e) => {
+    const enteredEmail = e.target.value;
+    setEmail(enteredEmail);
+
+    if (enteredEmail) {
+      try {
+        const response = await fetch(
+          `${process.env.BASE_URL}${API_ENDPOINT.CHECK_EMAIL}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: enteredEmail, // Send only the email in the body
+            }),
+          }
+        );
+
+
+        const data = await response.text();
+
+        if (response.ok) {
+
+          if (data === "Email exists.") {
+            setEmailStatus("Email exists.");
+          } else {
+            setEmailStatus("Email does not exist.");
+          }
+        } else {
+          setEmailStatus(data || "Error occurred while checking email.");
+        }
+      } catch (error) {
+        console.error("Error checking email:", error);
+        setEmailStatus("Error occurred while checking email.");
+      }
+    } else {
+      setEmailStatus('');
+    }
+  };
+
 
   useEffect(() => {
     if (isLoading) {
@@ -189,12 +233,12 @@ const Login = () => {
                           Invalid email or password. Try Again.
                         </div>
                       )}
-
+                      <p className = "text-xs pb-4">{emailStatus}</p>
                       <div className="flex flex-col gap-y-4 pb-8">
                         <TextInput
                           label="Email Address"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={handleEmailChange}
                           type="email"
                           className="w-full"
                         />
