@@ -87,14 +87,14 @@ export default function Referral() {
       <div className="flex flex-col text-center">
         <div className="overflow-x-auto px-4 sm:px-10 lg:px-20 xl:px-56 py-10">
           <table className="table bg-gray-100 w-full">
-            <thead>
-              <tr className="bg-gray-200 font-bold">
-                <th>Date and Time</th>
-                <th className="p-5">ID Number</th>
-                <th>Referred Student</th>
-                <th>Reason</th>
-                <th className="text-center">Status</th>
-                <th></th>
+          <thead className="bg-silver px-2 border-b-2 border-maroon rounded-t-2xl">
+          <tr className="font-bold text-center py-4 rounded-t-2xl">
+          <th className="py-4">Date and Time</th>
+          <th className="py-4">ID Number</th>
+                 <th className="py-4">Referred Student</th>
+                 <th className="py-4">Reason</th>
+                 <th className="py-4">Status</th>
+                 <th className="py-4">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -102,7 +102,9 @@ export default function Referral() {
                 <tr
                   key={referrals.id}
                   onClick={() => handleRowClick(referrals.referralId)}
-                  className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
+                  className={`border-slate-100 border-b-2
+                    hover:bg-slate-100 cursor-pointer 
+                    transition duration-300 ease-in-out`}
                 >
                   <td>{referrals.date}</td>
                   <td>{referrals.studentIdNumber}</td>
