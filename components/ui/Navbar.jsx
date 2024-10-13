@@ -191,8 +191,8 @@ function NavList({ userType }) {
 }
 
 export function Navbar({ userType }) {
-	const { showNotifications, setShowNotifications } =
-		useContext(GlobalContext);
+	const { showNotifications, setShowNotifications, unreadCount, setUnreadCount } = useContext(GlobalContext);
+
 	const router = useRouter();
 
 	const [isNavOpen, setIsNavOpen] = useState(false);
@@ -309,19 +309,20 @@ export function Navbar({ userType }) {
 					/>
 				</div>
 				<div
-					className="ml-44 md:ml-0 lg:ml-0 md:mr-6 lg:mr-6 hover:animate-bell flex justify-end items-end"
-					onClick={() => {
-						setShowNotifications(!showNotifications);
-					}}>
+					className="relative ml-44 md:ml-0 lg:ml-0 md:mr-2 lg:mr-2 hover:animate-bell flex justify-end items-end"
+					onClick={() => setShowNotifications(!showNotifications)}>
 					<motion.img
 						src="/images/bellll.png"
-						className="w-9 h-9 md:w-9 md:h-9 rounded-2xl cursor-pointer mx-4"
+						className="w-9 h-9 md:w-9 md:h-9 rounded-2xl cursor-pointer mx-4 relative"
 						alt="notiffs"
 						initial={{ scale: 1 }}
 						whileHover={{ scale: 1.1 }}
 						whileTap={{ scale: 0.9 }}
 						transition={{ type: "spring", stiffness: 300 }}
 					/>
+					{unreadCount > 0 && (
+						<span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs px-1 z-10">{unreadCount}</span>
+					)}
 				</div>
 
 				{userType !== "landing" && <ProfileMenu />}
