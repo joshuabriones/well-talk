@@ -17,6 +17,7 @@ export default function Notifications() {
 	const [user, setUser] = useState(null);
 	const [notifications, setNotifications] = useState([]);
 	const [notificationToDelete, setNotificationToDelete] = useState(null);
+
 	console.log("notifications:", notifications);
 	// console.log("User Session Id: ", userSession.id);
 
@@ -130,6 +131,32 @@ export default function Notifications() {
 		fetchNotifications();
 	}, []);
 
+	const fetchReferralToken = async (id) => {
+		if (userSession) {
+			try {
+				const response = await fetch(
+					`${process.env.BASE_URL}${API_ENDPOINT.GET_REFERRAL_TOKEN}${id}`,
+					{
+						headers: {
+							Authorization: `Bearer ${Cookies.get("token")}`,
+						},
+					}
+				);
+
+				if (!response.ok) {
+					console.error(`Error fetching referral token: ${response.statusText}`);
+					return;
+				}
+
+				const data = await response.text();
+				return data;
+			} catch (error) {
+				console.error("Error fetching referral token: ", error);
+				return null;
+			}
+		}
+	};
+
 	const notifDateFormatter = (dateInput) => {
 		const options = { year: "numeric", month: "long", day: "numeric" };
 		const date = new Date(dateInput);
@@ -186,9 +213,18 @@ export default function Notifications() {
 					router.push(`/counselor/counselor-appointment`);
 				}
 				break;
-		}
 
-		// setShowNotifications(false);
+			case "referral":
+				const token = await fetchReferralToken(notification?.referral?.referralId);
+
+				if (token) {
+					router.push(`/referral/${token}/pendingreferral`);
+					setShowNotifications(false);
+				} else {
+					console.error("Failed to retrieve referral token");
+				}
+				break;
+		}
 	};
 
 	const renderNotifText = (notification) => {
@@ -280,6 +316,9 @@ export default function Notifications() {
 				case "referral_accepted":
 					text = `You have accepted the referral for appointment. Please set an appointment with your counselor.`;
 					break;
+				case "referral_declined":
+					text = `You have declined the referral for appointment.`;
+					break;
 				case "post":
 					if (notification?.receiver?.id === user?.id) {
 						text = (
@@ -344,7 +383,10 @@ export default function Notifications() {
 						);
 					}
 				case "referral_accepted":
-					text = `Student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} have accepted the your referral for appointment.`;
+					text = `Student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} has accepted the referral for appointment.`;
+					break;
+				case "referral_declined":
+					text = `Student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} has declined the referral for appointment.`;
 					break;
 			}
 		}
@@ -374,7 +416,10 @@ export default function Notifications() {
 					}
 					break;
 				case "referral_accepted":
-					text = `Student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} have accepted the your referral for appointment.`;
+					text = `Student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} has accepted your referral for appointment.`;
+					break;
+				case "referral_declined":
+					text = `Student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} has declined your referral for appointment.`;
 					break;
 			}
 		}
@@ -428,7 +473,7 @@ export default function Notifications() {
 			{/* Notifications*/}
 			<div className="flex flex-grow flex-col overflow-y-auto">
 				{notifications?.map((notification, key) => (
-					<div className="relative">
+					<div className="relative" onClick={() => handleNotifClick(notification)}>
 						<div
 							className={` absolute z-10 ${
 								notificationToDelete === notification?.notificationId
@@ -488,7 +533,6 @@ export default function Notifications() {
 									: "hover:bg-zinc-100 transition duration-300 ease-in-out"
 							}`}
 							key={key}
-							onClick={() => handleNotifClick(notification)}
 						>
 							<div className="w-1/6 md:w-2/12 flex justify-center items-center">
 								<img
