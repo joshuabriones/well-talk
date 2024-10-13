@@ -813,7 +813,7 @@ const Appointment = () => {
                     🛑 Do note that you can only select a time slot that has not
                     been taken yet.
                   </p>
-                  <div className="flex flex-wrap gap-2 mt-8">
+                  <div className="flex flex-wrap gap-2 my-6">
                     {timeSlots.map((time, index) => (
                       <button
                         key={index}
@@ -844,7 +844,29 @@ const Appointment = () => {
 												label="Appointment Type"
 											/> */}
 
-                      <FormControl fullWidth>
+                      <FormControl
+                        fullWidth
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": {
+                              borderColor: "black",
+                            },
+                            "&:hover fieldset": {
+                              borderColor: "default",
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "black",
+                            },
+                          },
+                          "& .MuiInputLabel-root": {
+                            color: "inherit", // Keep the label color unchanged
+                            "&.Mui-focused": {
+                              color: "inherit", // Prevent label color change on focus
+                            },
+                            fontSize: "0.75 rem",
+                          },
+                        }}
+                      >
                         <InputLabel id="appointment-type">
                           Appointment Type
                         </InputLabel>
@@ -877,7 +899,7 @@ const Appointment = () => {
                         onChange={(e) => setPurpose(e.target.value)}
                         placeholder="Purpose"
                         label="Purpose"
-                        className="w-full mb-4 rounded-md "
+                        className="w-full text-md mb-6 rounded-md "
                         id={purpose}
                       />
                     </div>

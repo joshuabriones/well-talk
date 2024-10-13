@@ -12,6 +12,7 @@ export default function Notifications() {
 	const router = useRouter();
 	const userSession = getUserSession();
 	const { setShowNotifications } = useContext(GlobalContext);
+	const [unreadCount, updateUnreadCount] = useState(0);
 
 	const [user, setUser] = useState(null);
 	const [notifications, setNotifications] = useState([]);
@@ -30,14 +31,19 @@ export default function Notifications() {
 								method: "GET",
 								headers: {
 									"Content-Type": "application/json",
-									Authorization: `Bearer ${Cookies.get("token")}`,
+									Authorization: `Bearer ${Cookies.get(
+										"token"
+									)}`,
 								},
 							}
 						);
 
 						if (!response.ok) {
 							const errorMessage = await response.text();
-							console.error("Error fetching student profile:", errorMessage);
+							console.error(
+								"Error fetching student profile:",
+								errorMessage
+							);
 							return;
 						}
 						const data = await response.json();
@@ -53,7 +59,9 @@ export default function Notifications() {
 								method: "GET",
 								headers: {
 									"Content-Type": "application/json",
-									Authorization: `Bearer ${Cookies.get("token")}`,
+									Authorization: `Bearer ${Cookies.get(
+										"token"
+									)}`,
 								},
 							}
 						);
@@ -73,7 +81,9 @@ export default function Notifications() {
 								method: "GET",
 								headers: {
 									"Content-Type": "application/json",
-									Authorization: `Bearer ${Cookies.get("token")}`,
+									Authorization: `Bearer ${Cookies.get(
+										"token"
+									)}`,
 								},
 							}
 						);
@@ -116,6 +126,11 @@ export default function Notifications() {
 				);
 
 				setNotifications(sortedNotifications);
+
+				const count = sortedNotifications.filter(
+					(noti) => !noti.read
+				).length;
+				updateUnreadCount(count);
 			} catch (error) {
 				console.error("Error fetching notifications:", error);
 			}
@@ -199,7 +214,9 @@ export default function Notifications() {
 			const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
 			if (diffInMinutes < 60) {
-				return `${diffInMinutes} minute${diffInMinutes !== 1 ? "s" : ""} ago`;
+				return `${diffInMinutes} minute${
+					diffInMinutes !== 1 ? "s" : ""
+				} ago`;
 			} else if (diffInHours < 24) {
 				return `${diffInHours} hour${diffInHours !== 1 ? "s" : ""} ago`;
 			} else {
@@ -213,12 +230,19 @@ export default function Notifications() {
 				: "text-zinc-700 font-semibold";
 
 		return (
-			<div>
-				<div className={readStyle}>{generateNotification(notification)}</div>
+			<div className="flex flex-row">
+				<div className="flex flex-col">
+					<div className={readStyle}>
+						{generateNotification(notification)}
+					</div>
 
-				<div className="text-xs text-zinc-400 italic mt-1">
-					{dateFormatter(notification?.date)}
+					<div className="text-xs text-zinc-400 italic mt-1">
+						{dateFormatter(notification?.date)}
+					</div>
 				</div>
+				{!notification.read && (
+					<span className="w-3 h-2 mt-1 bg-maroon rounded-full"></span>
+				)}
 			</div>
 		);
 	};
@@ -226,11 +250,20 @@ export default function Notifications() {
 	const generateNotification = (notification) => {
 		let text = "";
 		const type = notification?.type;
-		const senderName = notification?.sender?.firstName + " " + notification?.sender?.lastName;
+		const senderName =
+			notification?.sender?.firstName +
+			" " +
+			notification?.sender?.lastName;
 		const receiverName =
-			notification?.receiver?.firstName + " " + notification?.receiver?.lastName;
-		const date = notifDateFormatter(notification?.appointment?.appointmentDate);
-		const time = notifTimeFormatter(notification?.appointment?.appointmentStartTime);
+			notification?.receiver?.firstName +
+			" " +
+			notification?.receiver?.lastName;
+		const date = notifDateFormatter(
+			notification?.appointment?.appointmentDate
+		);
+		const time = notifTimeFormatter(
+			notification?.appointment?.appointmentStartTime
+		);
 
 		if (user?.role === "student") {
 			switch (type) {
@@ -239,23 +272,40 @@ export default function Notifications() {
 						notification?.sender?.id === user?.id &&
 						notification?.receiver?.id === user?.id
 					) {
-						text = `You have scheduled an appointment for ${date} at ${time}.`;
+						text = (
+							<span>
+								You have scheduled an appointment for <span className="font-bold">{date}</span> at <span className="font-bold">{time}</span>.
+							</span>
+						);
 					} else if (notification?.receiver?.id === user?.id) {
-						text = `Counselor ${senderName} has scheduled an appointment with you on ${date} at ${time}.`;
+						text = (
+							<span>
+								Counselor <span className="font-bold">{senderName}</span> has scheduled an appointment with you on <span className="font-bold">{date}</span> at <span className="font-bold">{time}</span>.
+							</span>
+						);
 					}
 					break;
 				case "referral":
 					if (notification?.receiver?.id === user?.id) {
-						text = `Prof. ${senderName} has referred you for an appointment for reason: ${notification?.referral?.reason}.`;
+						text = (
+							<span>
+								Prof. <span className="font-bold">{senderName}</span> has referred you for an appointment for reason: <span className="font-bold">{notification?.referral?.reason}</span>.
+							</span>
+						);
 					}
 					break;
 				case "post":
 					if (notification?.receiver?.id === user?.id) {
-						text = `Counselor ${senderName} has posted a new announcement.`;
+						text = (
+							<span>
+								Counselor <span className="font-bold">{senderName}</span> has posted a new announcement.
+							</span>
+						);
 					}
 					break;
 			}
 		}
+		
 
 		if (user?.role === "counselor") {
 			switch (type) {
@@ -264,22 +314,35 @@ export default function Notifications() {
 						notification?.sender?.id === user?.id &&
 						notification?.receiver?.id === user?.id
 					) {
-						text = `You have scheduled an appointment with ${notification?.appointment?.student?.firstName} ${notification?.appointment?.student?.lastName} on ${date} at ${time}.`;
+						text = (
+							<span>
+								You have scheduled an appointment with <span className="font-bold">{notification?.appointment?.student?.firstName} {notification?.appointment?.student?.lastName}</span> on <span className="font-bold">{date}</span> at <span className="font-bold">{time}</span>.
+							</span>
+						);
 						break;
 					} else if (notification?.receiver?.id === user?.id) {
-						text = `${senderName} have scheduled an appointment with you on ${date} at ${time}.`;
+						text = (
+							<span>
+								<span className="font-bold">{senderName}</span> has scheduled an appointment with you on <span className="font-bold">{date}</span> at <span className="font-bold">{time}</span>.
+							</span>
+						);
 						break;
 					}
 				case "referral":
 					if (
 						notification?.receiver?.id === user?.id &&
-						notification?.sender?.role == "teacher"
+						notification?.sender?.role === "teacher"
 					) {
-						text = `Prof. ${senderName} has referred student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} (${notification?.referral?.studentId}) for an appointment.`;
+						text = (
+							<span>
+								Prof. <span className="font-bold">{senderName}</span> has referred student <span className="font-bold">{notification?.referral?.studentFirstName} {notification?.referral?.studentLastName}</span> (<span className="font-bold">{notification?.referral?.studentId}</span>) for an appointment.
+							</span>
+						);
 					}
+					break;
 			}
 		}
-
+		
 		if (user?.role === "teacher") {
 			switch (type) {
 				case "referral":
@@ -287,11 +350,16 @@ export default function Notifications() {
 						notification?.sender?.id === user?.id &&
 						notification?.receiver?.id === user?.id
 					) {
-						text = `You have referred student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} (${notification?.referral?.studentId}) for an appointment for reason: ${notification?.referral?.reason}.`;
+						text = (
+							<span>
+								You have referred student <span className="font-bold">{notification?.referral?.studentFirstName} {notification?.referral?.studentLastName}</span> (<span className="font-bold">{notification?.referral?.studentId}</span>) for an appointment for reason: <span className="font-bold">{notification?.referral?.reason}</span>.
+							</span>
+						);
 					}
 					break;
 			}
 		}
+		
 
 		return text;
 	};
@@ -317,7 +385,10 @@ export default function Notifications() {
 			);
 
 			if (!response.ok) {
-				console.error("Error deleting notification", response.statusText);
+				console.error(
+					"Error deleting notification",
+					response.statusText
+				);
 				return;
 			}
 
@@ -331,7 +402,14 @@ export default function Notifications() {
 	return (
 		<div className="bg-white absolute z-10 w-full max-w-lg md:max-w-xl h-[50vh] top-16 right-0 md:right-44 md:top-14 rounded-lg drop-shadow-2xl flex flex-col">
 			<div className="flex justify-between text-sm border-b border-slate-200 p-3 md:p-5">
-				<div className="font-semibold">{user?.firstName}'s Notifications</div>
+				<div className="font-semibold">
+					{user?.firstName}'s Notifications
+				</div>
+				{unreadCount > 0 && (
+					<span className="bg-maroon text-white text-xs rounded-full p-2">
+						{unreadCount} New
+					</span>
+				)}
 			</div>
 
 			{/* Notifications*/}
@@ -340,23 +418,21 @@ export default function Notifications() {
 					<div className="relative">
 						<div
 							className={` absolute z-10 ${
-								notificationToDelete === notification?.notificationId
+								notificationToDelete ===
+								notification?.notificationId
 									? "visible bg-zinc-50 w-full h-full flex items-center justify-center gap-x-2"
 									: "invisible"
-							} `}
-						>
+							} `}>
 							<button
 								className="bg-zinc-200 hover:bg-zinc-300 h-7 w-7 rounded-full flex items-center justify-center"
-								onClick={() => handleCancelDelete()}
-							>
+								onClick={() => handleCancelDelete()}>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
 									strokeWidth={1.5}
 									stroke="currentColor"
-									className="size-4"
-								>
+									className="size-4">
 									<path
 										strokeLinecap="round"
 										strokeLinejoin="round"
@@ -367,8 +443,7 @@ export default function Notifications() {
 
 							<button
 								className="bg-zinc-200 hover:bg-zinc-300 h-8 w-fit rounded-full px-4 py-1 text-xs flex items-center justify-center"
-								onClick={() => handleDeleteNotification()}
-							>
+								onClick={() => handleDeleteNotification()}>
 								<div className="pr-1">Delete Notification?</div>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -376,8 +451,7 @@ export default function Notifications() {
 									viewBox="0 0 24 24"
 									strokeWidth={1.5}
 									stroke="currentColor"
-									className="size-3.5"
-								>
+									className="size-3.5">
 									<path
 										strokeLinecap="round"
 										strokeLinejoin="round"
@@ -392,13 +466,13 @@ export default function Notifications() {
 								notification?.read ? "" : null
 							} flex flex-row px-3 py-4 md:px-5 md:py-5 group  
 							${
-								notificationToDelete === notification?.notificationId
+								notificationToDelete ===
+								notification?.notificationId
 									? ""
 									: "hover:bg-zinc-100 transition duration-300 ease-in-out"
 							}`}
 							key={key}
-							onClick={() => handleNotifClick(notification)}
-						>
+							onClick={() => handleNotifClick(notification)}>
 							<div className="w-1/6 md:w-2/12 flex justify-center items-center">
 								<img
 									src={notification?.sender?.image}
@@ -413,16 +487,16 @@ export default function Notifications() {
 
 							<div
 								className="w-1/6 md:w-1/12 flex items-center justify-end invisible group-hover:visible"
-								onClick={() => handleShowConfirmDelete(notification)}
-							>
+								onClick={() =>
+									handleShowConfirmDelete(notification)
+								}>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
 									strokeWidth={1.5}
 									stroke="currentColor"
-									className="w-5 h-5 md:w-6 md:h-6 rounded-full p-1 hover:bg-zinc-200 text-zinc-300 hover:text-zinc-500 transition duration-300 ease-in-out"
-								>
+									className="w-5 h-5 md:w-6 md:h-6 rounded-full p-1 hover:bg-zinc-200 text-zinc-300 hover:text-zinc-500 transition duration-300 ease-in-out">
 									<path
 										strokeLinecap="round"
 										strokeLinejoin="round"

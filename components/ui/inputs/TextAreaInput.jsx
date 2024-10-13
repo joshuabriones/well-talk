@@ -10,7 +10,7 @@ function TextAreaInput({ value, onChange, placeholder = "Enter your message", la
           id={id}
           value={value}
           onChange={onChange}
-          className="peer border-none bg-white placeholder-transparent focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full h-32 resize-none"
+          className="peer border-none bg-white text-md placeholder-transparent focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full h-32 resize-none"
           placeholder={placeholder}
           required
         />
