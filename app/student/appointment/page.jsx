@@ -60,6 +60,17 @@ const Appointment = () => {
   const [selectedStatus, setSelectedStatus] = useState("Pending");
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [queryParams, setQueryParams] = useState({});
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const typeRoute = params.get("typeRoute");
+    const purposeRoute = params.get("purposeRoute");
+
+    setAppointmentType(typeRoute);
+    setPurpose(purposeRoute);
+  }, []);
+
   useEffect(() => {
     if (userSession) {
       try {
@@ -564,19 +575,21 @@ const Appointment = () => {
         <div>
           <div className="w-full pt-24 flex items-center gap-3 justify-center">
             <button
-              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
+              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+                isAddAppointment
                   ? "bg-maroon text-white"
                   : "border-2 border-maroon text-maroon"
-                }`}
+              }`}
               onClick={handleAddAppointmentClick}
             >
               Set Appointment
             </button>
             <button
-              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
+              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+                isViewAppointment
                   ? "bg-maroon text-white"
                   : "border-2 border-maroon text-maroon"
-                }`}
+              }`}
               onClick={handleViewAppointmentClick}
             >
               View Appointments
@@ -657,9 +670,9 @@ const Appointment = () => {
                           <p className="truncate">
                             {appointment.appointmentPurpose.length > 50
                               ? `${appointment.appointmentPurpose.substring(
-                                0,
-                                40
-                              )}...`
+                                  0,
+                                  40
+                                )}...`
                               : appointment.appointmentPurpose}
                           </p>
                         </td>
@@ -667,11 +680,11 @@ const Appointment = () => {
                           <p>
                             {appointment?.appointmentNotes?.length > 50
                               ? `${appointment?.appointmentNotes?.substring(
-                                0,
-                                40
-                              )}...`
+                                  0,
+                                  40
+                                )}...`
                               : appointment?.appointmentNotes ||
-                              "No feedback yet"}
+                                "No feedback yet"}
                           </p>
                         </td>
                         <td className="h-full">
@@ -747,8 +760,9 @@ const Appointment = () => {
                     ].map((_, index) => (
                       <button
                         key={index}
-                        className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
-                          }`}
+                        className={`join-item btn ${
+                          currentPage === index + 1 ? "btn-active" : ""
+                        }`}
                         onClick={() => setCurrentPage(index + 1)}
                       >
                         {index + 1}
@@ -805,12 +819,13 @@ const Appointment = () => {
                         key={index}
                         disabled={isTimeSlotTaken(time)}
                         onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-                        className={`time-slot-button ${isTimeSlotTaken(time)
+                        className={`time-slot-button ${
+                          isTimeSlotTaken(time)
                             ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
                             : time === selectedTimeSlot
-                              ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-                              : "bg-maroon text-white hover:bg-maroon duration-300"
-                          }  py-2 px-3 rounded-md`}
+                            ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+                            : "bg-maroon text-white hover:bg-maroon duration-300"
+                        }  py-2 px-3 rounded-md`}
                       >
                         {timeFormatter(time)}
                       </button>
@@ -972,7 +987,7 @@ const Appointment = () => {
           appointments={appointments}
           handleReschedule={handleReschedule}
           handleDelete={showDeleteModal}
-        //handleUpdateStatus={handleUpdateStatus}
+          //handleUpdateStatus={handleUpdateStatus}
         ></StudentModalAppointmentInfo>
       )}
 
