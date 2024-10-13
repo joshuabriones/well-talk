@@ -60,3 +60,8 @@
 
 /* Grey Scrollbar */
 /* Add similar styles for other scrollbar variations as needed */
+textarea:focus {
+    outline: none; /* Remove the default outline */
+    border-color: maroon; /* Change border color on focus */
+}
+  

@@ -1,4 +1,3 @@
-import FullButton from "@/components/ui/buttons/FullButton";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import "@/styles/counselor.css";
@@ -20,9 +19,15 @@ const ModalAppointmentInfo = ({
 	const [additionalNotes, setAdditionalNotes] = useState("");
 	const userSession = getUserSession();
 	const [isLoading, setIsLoading] = useState(false);
+	const [selectedEmoji, setSelectedEmoji] = useState(null);
 
-  const handleOverlayClick = () => {
+	const handleOverlayClick = () => {
 		handleModalClose();
+	};
+
+	const handleEmojiClick = (emoji) => {
+		setSelectedEmoji(emoji);
+		console.log("Emoji clicked:", emoji);
 	};
 
 	useEffect(() => {
@@ -89,7 +94,7 @@ const ModalAppointmentInfo = ({
 				<div
 					className="fixed inset-0 flex items-center justify-center w-full bg-white bg-opacity-25 z-50 backdrop-blur"
 					role="dialog"
-          onClick={handleOverlayClick}>
+					onClick={handleOverlayClick}>
 					<div className="bg-white dark:bg-slate-800 shadow-xl border w-4/5 md:max-w-lg lg:max-w-lg border-gray border-2 rounded-xl relative">
 						<section className="text-center items-center md:gap-4 mb-8 justify-center w-full">
 							<div className="w-full flex justify-center avatar absolute -top-16 md:-top-24">
@@ -213,14 +218,15 @@ const ModalAppointmentInfo = ({
 									</div>
 								</div>
 							) : userSession.role === "counselor" ? (
-								<div className="flex gap-x-4 gap-y-4 mt-3 px-10">
-									<FullButton
-										onClick={() => {
+								<div className="flex gap-x-4 px-8 mx-auto">
+									<button
+										className="w-full bg-gray border-2 border-gray text-sm font-Merriweather text-white font-semibold rounded-3xl px-3 py-2 hover:scale-95 transition-transform duration-300"
+										onClick={(e) => {
+											e.stopPropagation();
 											setOpenModal(true);
-											handleModalClose();
 										}}>
-										Update Status
-									</FullButton>
+										Provide Feedback
+									</button>
 								</div>
 							) : null}
 						</section>
@@ -230,53 +236,91 @@ const ModalAppointmentInfo = ({
 
 			{openModal && (
 				<div
-					className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur"
-					role="dialog">
-					<div className="bg-white dark:bg-slate-950 rounded-2xl flex flex-col lg:gap-6 xs:gap-4 p-16 md:w-1/2 xs:w-4/5 h-2/3 relative">
-						<span className="absolute -top-4 left-1/2 transform -translate-x-1/2 lg:text-4xl md:text-3xl xs:text-2xl">
-							⭐️ ⭐️ ⭐️ ⭐️ ⭐️
-						</span>
-
-						<div>
-							<h1 className="font-bold text-slate-700 text-2xl mb-1">
-								Give feedback
-							</h1>
-							<p className="text-slate-500 md:text-base xs:text-sm font-Jaldi">
-								Share your invaluable feedback and provide any
-								additional notes you deem necessary.
-							</p>
+					className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-25 z-50"
+					role="dialog"
+					onClick={handleOverlayClick}>
+					<div
+						className="relative w-11/12 max-w-2xl mx-auto bg-white rounded-lg shadow-lg border-2 border-gray-200"
+						onClick={(e) => e.stopPropagation()}>
+						<div className="flex justify-between items-center bg-maroon p-4 border-b-2">
+							<div className="flex items-center space-x-2 ml-4">
+								<div className="w-4 h-4 border-2 bg-yellow-400 rounded-full cursor-pointer"></div>
+								<div className="w-4 h-4 border-2 bg-green-400 rounded-full cursor-pointer"></div>
+								<div className="w-4 h-4 border-2 bg-red-400 rounded-full cursor-pointer"></div>
+							</div>
 						</div>
 
-						<div className="flex flex-col gap-6 overflow-y-scroll">
-							<textarea
-								className="textarea textarea-lg textarea-accent lg:text-lg md:text-base xs:text-xs"
-								placeholder="Share your feedback here..."
-								value={notes}
-								onChange={(e) =>
-									setNotes(e.target.value)
-								}></textarea>
-							<textarea
-								className="textarea textarea-lg textarea-accent lg:text-lg md:text-base xs:text-xs"
-								placeholder="Additional notes..."
-								value={additionalNotes}
-								onChange={(e) =>
-									setAdditionalNotes(e.target.value)
-								}
-								rows="8"></textarea>
+						<div className="px-4 py-4 md:px-8 md:py-6">
+							<div className="flex flex-col gap-y-2 py-3">
+								<h1 className="font-bold text-slate-700 text-xl md:text-2xl mb-1">
+									Give feedback
+								</h1>
+								<p className="text-slate-500 text-sm md:text-base font-Jaldi">
+									Share your invaluable feedback and provide
+									any additional notes you deem necessary.
+								</p>
+
+								<div className="flex justify-center mt-3 flex-wrap">
+									{["😊", "😐", "😢", "😄", "😠"].map(
+										(emoji, index) => (
+											<button
+												key={emoji}
+												className={`py-2 rounded-xl text-4xl focus:outline-none 
+											${selectedEmoji === emoji ? "bg-yellow-200" : ""}
+											hover:bg-yellow-300 transition-colors duration-200 animate-bounce mx-1`}
+												onClick={() =>
+													handleEmojiClick(emoji)
+												}>
+												{emoji}
+											</button>
+										)
+									)}
+								</div>
+
+								<p className="text-center text-slate-500 text-sm md:text-base font-Jaldi">
+									How did you feel about this appointment
+									session?
+								</p>
+
+								<div className="flex flex-col gap-4 overflow-y-scroll">
+									<textarea
+										className="border-2 rounded-xl lg:text-md md:text-base xs:text-xs focus:border-maroon w-full"
+										placeholder="Share your feedback here..."
+										value={notes}
+										onChange={(e) =>
+											setNotes(e.target.value)
+										}></textarea>
+									<textarea
+										className="border-2 rounded-xl lg:text-md md:text-base xs:text-xs focus:border-maroon w-full"
+										placeholder="Additional notes..."
+										value={additionalNotes}
+										onChange={(e) =>
+											setAdditionalNotes(e.target.value)
+										}
+										rows="8"></textarea>
+								</div>
+
+								<div className="flex justify-center mt-4">
+									<div className="w-full">
+										<button
+											className="w-full bg-gray border-2 border-gray text-sm font-Merriweather text-white font-semibold rounded-3xl px-3 py-2 hover:scale-95 transition-transform duration-300"
+											onClick={handleDone}>
+											{isLoading ? (
+												<span className="flex gap-2 items-center justify-center">
+													Submitting{" "}
+													<img
+														src="/images/loading.svg"
+														alt="loading"
+													/>
+												</span>
+											) : (
+												"Submit"
+											)}
+										</button>
+									</div>
+								</div>
+							</div>
 						</div>
-						<FullButton onClick={handleDone}>
-							{isLoading ? (
-								<span className="flex gap-2 items-center justify-center">
-									Submitting{" "}
-									<img
-										src="/images/loading.svg"
-										alt="loading"
-									/>
-								</span>
-							) : (
-								"Submit"
-							)}
-						</FullButton>
 					</div>
 				</div>
 			)}

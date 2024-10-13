@@ -202,14 +202,13 @@ const Appointment = () => {
 		}
 	};
 
-	const filteredStudents = students.filter((student) =>
-		(student?.firstName + " " + student?.lastName)
-			.toLowerCase()
-			.includes(searchTerm.toLowerCase()) ||
-		student?.idNumber.toLowerCase().includes(searchTerm.toLowerCase())
+	const filteredStudents = students.filter(
+		(student) =>
+			(student?.firstName + " " + student?.lastName)
+				.toLowerCase()
+				.includes(searchTerm.toLowerCase()) ||
+			student?.idNumber.toLowerCase().includes(searchTerm.toLowerCase())
 	);
-
-
 
 	// handle reschedule // TO BE ADDED AFTER CALENDAR IMPLEMENTATION
 	// const handleReschedule = () => {
@@ -350,7 +349,9 @@ const Appointment = () => {
 					// Handle non-200 responses here
 					const errorData = await response.json(); // Get error details
 					console.error("Error creating notification:", errorData);
-					toast.error("Failed to create notification: " + errorData.message);
+					toast.error(
+						"Failed to create notification: " + errorData.message
+					);
 				}
 			} catch (error) {
 				console.error("Notification error: ", error);
@@ -369,7 +370,8 @@ const Appointment = () => {
 					},
 					body: JSON.stringify({
 						appointmentDate: appointmentDate,
-						appointmentStartTime: convertTo24HourFormat(selectedTime),
+						appointmentStartTime:
+							convertTo24HourFormat(selectedTime),
 						appointmentEndTime: convertTo24HourFormat(endTime),
 						appointmentType: appointmentType,
 						appointmentPurpose: purpose,
@@ -459,7 +461,7 @@ const Appointment = () => {
 
 		return formattedDate;
 	};
-	
+
 	const handlePurposeChange = (e) => {
 		setPurpose(e.target.value);
 	};
@@ -499,7 +501,11 @@ const Appointment = () => {
 			appointment.student?.idNumber
 				.toLowerCase()
 				.includes(searchQuery.toLowerCase()) ||
-			(appointment.student?.firstName + " " + appointment.student?.lastName)
+			(
+				appointment.student?.firstName +
+				" " +
+				appointment.student?.lastName
+			)
 				.toLowerCase()
 				.includes(searchQuery.toLowerCase()) ||
 			appointment.student?.institutionalEmail
@@ -509,7 +515,9 @@ const Appointment = () => {
 		return matchesStatus && matchesSearch;
 	});
 
-	const selectedStudentData = students.find((student) => student.id === selectedStudentId);
+	const selectedStudentData = students.find(
+		(student) => student.id === selectedStudentId
+	);
 
 	return (
 		<div className="min-h-screen w-full">
@@ -517,14 +525,15 @@ const Appointment = () => {
 			<Navbar userType="counselor" />
 			<div
 				className="pattern-overlay pattern-left absolute -z-10"
-				style={{ transform: "scaleY(-1)", top: "-50px" }}
-			>
-				<img src="/images/landing/lleft.png" alt="pattern" />
+				style={{ transform: "scaleY(-1)", top: "-50px" }}>
+				<img
+					src="/images/landing/lleft.png"
+					alt="pattern"
+				/>
 			</div>
 			<div
 				className="pattern-overlay pattern-right absolute bottom-0 right-0 -z-10"
-				style={{ transform: "scaleY(-1)", top: "-15px" }}
-			>
+				style={{ transform: "scaleY(-1)", top: "-15px" }}>
 				<img
 					src="/images/landing/lright.png"
 					alt="pattern"
@@ -561,21 +570,21 @@ const Appointment = () => {
 				<div>
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
-								? "bg-maroon text-white"
-								: "bg-white border-2 border-maroon text-maroon"
-								}`}
-							onClick={handleAddAppointmentClick}
-						>
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+								isAddAppointment
+									? "bg-maroon text-white"
+									: "bg-white border-2 border-maroon text-maroon"
+							}`}
+							onClick={handleAddAppointmentClick}>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
-								? "bg-maroon text-white"
-								: "bg-white border-2 border-maroon text-maroon"
-								}`}
-							onClick={handleViewAppointmentClick}
-						>
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+								isViewAppointment
+									? "bg-maroon text-white"
+									: "bg-white border-2 border-maroon text-maroon"
+							}`}
+							onClick={handleViewAppointmentClick}>
 							View Appointments
 						</button>
 					</div>
@@ -583,7 +592,9 @@ const Appointment = () => {
 						<div className="overflow-x-auto max-w-full lg:px-28 xs:px-1 flex flex-col items-center">
 							<div className="flex gap-5 py-4 w-full">
 								<div className="flex items-center">
-									<label htmlFor="search-filter" className="mr-2">
+									<label
+										htmlFor="search-filter"
+										className="mr-2">
 										Search:
 									</label>
 									<input
@@ -596,18 +607,23 @@ const Appointment = () => {
 									/>
 								</div>
 								<div className="flex items-center">
-									<label htmlFor="status-filter" className="mr-2">
+									<label
+										htmlFor="status-filter"
+										className="mr-2">
 										Status:
 									</label>
 									<select
 										id="status-filter"
 										value={selectedStatus}
 										onChange={handleStatusChange}
-										className="border rounded pr-[26px]"
-									>
-										<option value="Pending">Pending 🟡</option>
+										className="border rounded pr-[26px]">
+										<option value="Pending">
+											Pending 🟡
+										</option>
 										<option value="Done">Done 🟢</option>
-										<option value="Cancelled">Cancelled 🔴</option>
+										<option value="Cancelled">
+											Cancelled 🔴
+										</option>
 									</select>
 								</div>
 							</div>
@@ -626,148 +642,197 @@ const Appointment = () => {
 									</tr>
 								</thead>
 								<tbody>
-									{filteredAppointments?.map((appointments) => (
-										<tr
-											key={appointments.appointmentId}
-											onClick={() => handleRowClick(appointments.appointmentId)}
-											className={`border-slate-100 border-b-2
+									{filteredAppointments?.map(
+										(appointments) => (
+											<tr
+												key={appointments.appointmentId}
+												onClick={() =>
+													handleRowClick(
+														appointments.appointmentId
+													)
+												}
+												className={`border-slate-100 border-b-2
 												hover:bg-slate-100 cursor-pointer 
-												transition duration-300 ease-in-out`}
-										>
-											{/* <td className="text-center">
+												transition duration-300 ease-in-out`}>
+												{/* <td className="text-center">
 												{appointments.appointmentId}
 											</td> */}
-											<td className="text-center py-2">
-												{/* <div className="flex flex-row gap-x-2"> */}
-												<div className="text-sm py-2">
-													{formatDate(appointments.appointmentDate)}{" "}
-													{appointments.appointmentStartTime}
-												</div>
-												{/* </div> */}
-											</td>
-											<td className="text-center py-2">
-												{/* <div className="flex flex-row gap-x-3"> */}
-												<div>{appointments.student?.idNumber}</div>
-												{/* </div> */}
-											</td>
-											<td className="h-full">
-												<div className="flex items-center justify-center gap-3">
-													<div className="avatar">
-														<div className="mask mask-squircle w-12 h-12">
-															<img
-																src={appointments.student?.image}
-																alt="Avatar Tailwind CSS Component"
-															/>
-														</div>
+												<td className="text-center py-2">
+													{/* <div className="flex flex-row gap-x-2"> */}
+													<div className="text-sm py-2">
+														{formatDate(
+															appointments.appointmentDate
+														)}{" "}
+														{
+															appointments.appointmentStartTime
+														}
 													</div>
+													{/* </div> */}
+												</td>
+												<td className="text-center py-2">
+													{/* <div className="flex flex-row gap-x-3"> */}
 													<div>
-														<div className="font-bold">
-															{appointments.student?.firstName}{" "}
-															{appointments.student?.lastName}
+														{
+															appointments.student
+																?.idNumber
+														}
+													</div>
+													{/* </div> */}
+												</td>
+												<td className="h-full">
+													<div className="flex items-center justify-center gap-3">
+														<div className="avatar">
+															<div className="mask mask-squircle w-12 h-12">
+																<img
+																	src={
+																		appointments
+																			.student
+																			?.image
+																	}
+																	alt="Avatar Tailwind CSS Component"
+																/>
+															</div>
 														</div>
-														<div className="text-sm opacity-50">
-															{appointments.student?.institutionalEmail}
+														<div>
+															<div className="font-bold">
+																{
+																	appointments
+																		.student
+																		?.firstName
+																}{" "}
+																{
+																	appointments
+																		.student
+																		?.lastName
+																}
+															</div>
+															<div className="text-sm opacity-50">
+																{
+																	appointments
+																		.student
+																		?.institutionalEmail
+																}
+															</div>
 														</div>
 													</div>
-												</div>
-											</td>
-											<td className="text-center">
-												<p>
-													{appointments?.appointmentPurpose?.length > 50
-														? `${appointments?.appointmentPurpose?.substring(
-															0,
-															40
-														)}...`
-														: appointments?.appointmentPurpose}
-												</p>
-											</td>
-											<td className="text-center">
-												<p>
-													{appointments?.appointmentNotes?.length > 50
-														? `${appointments?.appointmentNotes?.substring(
-															0,
-															40
-														)}...`
-														: appointments?.appointmentNotes || "No notes"}
-												</p>
-											</td>
-											<td className="h-full">
-												<div className="flex items-center justify-center">
-													<div
-														className={`w-28 h-6 rounded-lg border border-black text-center`}
-													>
-														{appointments &&
-															appointments.appointmentStatus === "Pending" &&
-															"🟡"}
-														{appointments &&
-															appointments.appointmentStatus === "Done" &&
-															"🟢"}
-														{appointments &&
-															appointments.appointmentStatus === "Assigned" &&
-															"🔵"}
-														<span className="ml-2 text-bold text-sm">
-															{appointments
-																? appointments.appointmentStatus
-																: ""}
-														</span>
+												</td>
+												<td className="text-center">
+													<p>
+														{appointments
+															?.appointmentPurpose
+															?.length > 50
+															? `${appointments?.appointmentPurpose?.substring(
+																	0,
+																	40
+															  )}...`
+															: appointments?.appointmentPurpose}
+													</p>
+												</td>
+												<td className="text-center">
+													<p>
+														{appointments
+															?.appointmentNotes
+															?.length > 50
+															? `${appointments?.appointmentNotes?.substring(
+																	0,
+																	40
+															  )}...`
+															: appointments?.appointmentNotes ||
+															  "No notes"}
+													</p>
+												</td>
+												<td className="h-full">
+													<div className="flex items-center justify-center">
+														<div
+															className={`w-28 h-6 rounded-lg border border-black text-center`}>
+															{appointments &&
+																appointments.appointmentStatus ===
+																	"Pending" &&
+																"🟡"}
+															{appointments &&
+																appointments.appointmentStatus ===
+																	"Done" &&
+																"🟢"}
+															{appointments &&
+																appointments.appointmentStatus ===
+																	"Assigned" &&
+																"🔵"}
+															<span className="ml-2 text-bold text-sm">
+																{appointments
+																	? appointments.appointmentStatus
+																	: ""}
+															</span>
+														</div>
 													</div>
-												</div>
-											</td>
+												</td>
 
-											{/* Delete and Edit */}
-											<td>
-												<div className="flex lg:flex-row justify-center items-center lg:gap-x-5 xs:gap-2 xs:flex-col">
-													<button
-														className="btn btn-xs"
-														onClick={(e) => {
-															// Stop event propagation to prevent row hover effect
-															e.stopPropagation();
-															showDeleteModal(appointments.appointmentId);
-														}}
-													>
-														Delete
-													</button>
-													<button className="btn btn-xs text-green-700">
-														Edit
-													</button>
-												</div>
-											</td>
-										</tr>
-									))}
+												{/* Delete and Edit */}
+												<td>
+													<div className="flex lg:flex-row justify-center items-center lg:gap-x-5 xs:gap-2 xs:flex-col">
+														<button
+															className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
+															onClick={(e) => {
+																e.stopPropagation();
+																showDeleteModal(
+																	appointments.appointmentId
+																);
+															}}>
+															Delete
+														</button>
+														<button className="btn btn-xs text-green-700">
+															Edit
+														</button>
+													</div>
+												</td>
+											</tr>
+										)
+									)}
 								</tbody>
 							</table>
 
 							{/* Pagination controls */}
 							<div className="join pt-5">
 								<button
-									onClick={() => setCurrentPage(currentPage - 1)}
+									onClick={() =>
+										setCurrentPage(currentPage - 1)
+									}
 									disabled={currentPage === 1}
-									className="join-item btn w-28"
-								>
+									className="join-item btn w-28">
 									Previous
 								</button>
 
 								{appointments &&
 									[
 										...Array(
-											Math.ceil(appointments.length / AppointmentPerPage)
+											Math.ceil(
+												appointments.length /
+													AppointmentPerPage
+											)
 										),
 									].map((_, index) => (
 										<button
 											key={index}
-											className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
-												}`}
-											onClick={() => setCurrentPage(index + 1)}
-										>
+											className={`join-item btn ${
+												currentPage === index + 1
+													? "btn-active"
+													: ""
+											}`}
+											onClick={() =>
+												setCurrentPage(index + 1)
+											}>
 											{index + 1}
 										</button>
 									))}
 
 								<button
-									onClick={() => setCurrentPage(currentPage + 1)}
-									disabled={AppointmentPerPage > appointments?.length}
-									className="join-item btn w-28"
-								>
+									onClick={() =>
+										setCurrentPage(currentPage + 1)
+									}
+									disabled={
+										AppointmentPerPage >
+										appointments?.length
+									}
+									className="join-item btn w-28">
 									Next
 								</button>
 							</div>
@@ -779,13 +844,24 @@ const Appointment = () => {
 									bordered
 									renderCell={renderCell}
 									onSelect={(date) => {
-										if (date >= new Date().setHours(0, 0, 0, 0)) {
-											setAppointmentDate(formatDateCalendar(date));
-											const formattedDate = date.toLocaleDateString("en-US", {
-												month: "long",
-												day: "numeric",
-											});
-											toast.success(`Date selected: ${formattedDate}`);
+										if (
+											date >=
+											new Date().setHours(0, 0, 0, 0)
+										) {
+											setAppointmentDate(
+												formatDateCalendar(date)
+											);
+											const formattedDate =
+												date.toLocaleDateString(
+													"en-US",
+													{
+														month: "long",
+														day: "numeric",
+													}
+												);
+											toast.success(
+												`Date selected: ${formattedDate}`
+											);
 										}
 									}}
 									disabledDate={(date) =>
@@ -799,33 +875,38 @@ const Appointment = () => {
 										Available Time Slots
 									</h2>
 									<p>
-										🛑 To set an appointment, you must first select a valid date
-										in the calendar, then choose your desired time slot.
+										🛑 To set an appointment, you must first
+										select a valid date in the calendar,
+										then choose your desired time slot.
 									</p>
 									<p>
-										🛑 Do note that you can only select a time slot that has not
-										been taken yet.
+										🛑 Do note that you can only select a
+										time slot that has not been taken yet.
 									</p>
 									<div className="flex flex-wrap gap-2 mt-8">
 										{timeSlots.map((time, index) => (
 											<button
 												key={index}
 												disabled={isTimeSlotTaken(time)}
-												onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-												className={`time-slot-button ${isTimeSlotTaken(time)
-													? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
-													: time === selectedTimeSlot
+												onClick={() =>
+													handleTimeSlotClick(time)
+												} // Set the selected time on click
+												className={`time-slot-button ${
+													isTimeSlotTaken(time)
+														? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
+														: time ===
+														  selectedTimeSlot
 														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
 														: "bg-maroon text-white hover:bg-primary-green-dark duration-300"
-													}  py-2 px-3 rounded-md`}
-											>
+												}  py-2 px-3 rounded-md`}>
 												{timeFormatter(time)}
 											</button>
 										))}
 									</div>
 									<hr />
 									<p className="mb-2">
-										👨🏻‍🎓 Select a student you wish to assign an appointment
+										👨🏻‍🎓 Select a student you wish to assign
+										an appointment
 									</p>
 									<div className="flex flex-row justify-between items-center space-x-4 pr-2 md:pr-3">
 										<div className="flex-grow">
@@ -835,7 +916,10 @@ const Appointment = () => {
 											/>
 										</div>
 										<div className="w-5/12 md:w-2/12">
-											<HollowButton onClick={() => setOpenAddStudent(true)}>
+											<HollowButton
+												onClick={() =>
+													setOpenAddStudent(true)
+												}>
 												Add Student
 											</HollowButton>
 										</div>
@@ -847,18 +931,23 @@ const Appointment = () => {
 												onClick={() => {
 													toast.success(
 														`Student selected: ${student.firstName} ${student.lastName}`
-
 													);
-													setSelectedStudentId(student.id);
-													setSelectedStudent(student.id); // Update the selected student
+													setSelectedStudentId(
+														student.id
+													);
+													setSelectedStudent(
+														student.id
+													); // Update the selected student
 												}}
-												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${selectedStudent === student.id
-													? "bg-white border-2 border-maroon text-maroon font-semibold"
-													: "text-white" // Apply a different style to the selected student
-													}`}
-												key={student.id}
-											>
-												{student.idNumber} ⸺ {student.firstName}{" "}
+												className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${
+													selectedStudent ===
+													student.id
+														? "bg-white border-2 border-maroon text-maroon font-semibold"
+														: "text-white" // Apply a different style to the selected student
+												}`}
+												key={student.id}>
+												{student.idNumber} ⸺{" "}
+												{student.firstName}{" "}
 												{student.lastName}
 											</button>
 										))}
@@ -866,12 +955,17 @@ const Appointment = () => {
 									<hr />
 									<div className="mt-4">
 										<p>
-											🤗 Please state the type of appointment and your purpose.
+											🤗 Please state the type of
+											appointment and your purpose.
 										</p>
 										<div className="w-full flex lg:flex-col gap-5 my-5 flex-col">
 											<TextInput
 												value={appointmentType}
-												onChange={(e) => setAppointmentType(e.target.value)}
+												onChange={(e) =>
+													setAppointmentType(
+														e.target.value
+													)
+												}
 												placeholder="Appointment Type"
 												label="Appointment Type"
 											/>
@@ -888,18 +982,29 @@ const Appointment = () => {
 										<div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-5 rounded-xl px-4 py-2 font-Merriweather gap-4 md:gap-6">
 											<div className="flex flex-col md:flex-row justify-between items-start md:items-center border-2 border-black  rounded-xl md:rounded-full px-4 py-2 font-Merriweather gap-4 md:gap-0 w-full h-auto md:h-[56px]">
 												<div className="font-bold w-full md:w-auto">
-													STUDENT: {selectedStudentData ? `${selectedStudentData.firstName} ${selectedStudentData.lastName}` : " "}
+													STUDENT:{" "}
+													{selectedStudentData
+														? `${selectedStudentData.firstName} ${selectedStudentData.lastName}`
+														: " "}
 												</div>
 												<div className="font-bold w-full md:w-auto">
-													DATE:  {finalDateFormatter(appointmentDate)}
+													DATE:{" "}
+													{finalDateFormatter(
+														appointmentDate
+													)}
 												</div>
 												<div className="font-bold w-full md:w-auto">
-													TIME: {timeFormatter(selectedTime)}
+													TIME:{" "}
+													{timeFormatter(
+														selectedTime
+													)}
 												</div>
 											</div>
 											<div className="w-full md:w-2/12">
 												<FullButton
-													onClick={handleAppointmentSubmit}
+													onClick={
+														handleAppointmentSubmit
+													}
 													className="w-full"
 													disabled={
 														!selectedStudentId ||
@@ -908,9 +1013,10 @@ const Appointment = () => {
 														!purpose ||
 														!appointmentType ||
 														isLoading
-													}
-												>
-													{isLoading ? "Submitting..." : "Submit"}
+													}>
+													{isLoading
+														? "Submitting..."
+														: "Submit"}
 												</FullButton>
 											</div>
 										</div>
@@ -918,7 +1024,8 @@ const Appointment = () => {
 											<div className="flex gap-2 items-center mt-5">
 												<span className="loading loading-dots loading-lg"></span>
 												<span className="text-lg">
-													Processing your appointment, please wait a moment...
+													Processing your appointment,
+													please wait a moment...
 												</span>
 											</div>
 										)}
@@ -936,8 +1043,7 @@ const Appointment = () => {
 				<ModalDelete
 					setDeleteModal={setDeleteModal}
 					handleDelete={handleDelete}
-					prompt={"appointment"}
-				></ModalDelete>
+					prompt={"appointment"}></ModalDelete>
 			)}
 
 			{appointmentModal && (
@@ -948,13 +1054,15 @@ const Appointment = () => {
 					setAppointments={setAppointments}
 					fetchAppointments={fetchAppointments}
 					role="counselor"
-				// TO BE ADDED
-				// handleRescedule={handleReschedule}
-				// handleUpdateStatus={handleUpdateStatus}
+					// TO BE ADDED
+					// handleRescedule={handleReschedule}
+					// handleUpdateStatus={handleUpdateStatus}
 				></ModalAppointmentInfo>
 			)}
 
-			{openAddStudent && <AddStudent setOpenAddStudent={setOpenAddStudent} />}
+			{openAddStudent && (
+				<AddStudent setOpenAddStudent={setOpenAddStudent} />
+			)}
 			{confirmResponseModal && (
 				<ModalConfirmResponseAppointment
 					setConfirmResponse={setConfirmResponseModal}
@@ -988,8 +1096,7 @@ function SearchInput({ searchTerm, setSearchTerm }) {
 				strokeWidth="1.5"
 				aria-hidden="true"
 				aria-labelledby="title-9 description-9"
-				role="graphics-symbol"
-			>
+				role="graphics-symbol">
 				<title id="title-9">Search icon</title>
 				<desc id="description-9">Icon description here</desc>
 				<path
@@ -1048,8 +1155,7 @@ function renderCell(date) {
 								</p>
 							))}
 						</Popover>
-					}
-				>
+					}>
 					<a>{moreCount} more</a>
 				</Whisper>
 			</li>

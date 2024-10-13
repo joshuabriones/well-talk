@@ -30,6 +30,14 @@ module.exports = {
       },
       animation: {
         bell: "ring 0.5s ease-in-out",
+        bounce: 'bounce 1s infinite',
+      },
+      transitionDelay: {
+        '75': '75ms',
+        '150': '150ms',
+        '225': '225ms',
+        '300': '300ms',
+        '375': '375ms',
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
