@@ -32,32 +32,6 @@ const Login = () => {
   /* HANDLING UNAUTHENTICATED USERS */
   // if (userSession && userSession.role) return <Load route={userSession.role} />;
 
-  const checkIfAcceptedReferralIsPending = async (email) => {
-    try {
-      const referred = await fetch(
-        `${process.env.BASE_URL}${API_ENDPOINT.CHECK_REFERRAL_PRESENT}${email}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
-        }
-      );
-
-      const referrData = await referred.json();
-      setReferredData(referrData);
-      if (referredData) {
-        setIsReferralPending(true);
-      }
-    } catch (error) {
-      console.error(
-        "Error checking if accepted referral is pending.",
-        error.message
-      );
-    }
-  };
-
   useEffect(() => {
     if (isLoading) {
       const token = Cookies.get("token");
@@ -73,17 +47,7 @@ const Login = () => {
       };
       Cookies.set("user", JSON.stringify(userData));
 
-      if (user) {
-        checkIfAcceptedReferralIsPending(user.sub);
-        console.log(referredData);
-
-        console.log("esfd", isReferralPending);
-        if (referredData) {
-          router.push(`/${user.role}/appointment`);
-        } else {
-          router.push(`/${user.role}`);
-        }
-      }
+      router.push(`/${user.role}`);
     }
   }, [isLoading]);
 

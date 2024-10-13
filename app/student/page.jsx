@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PinnedPost from "@/components/ui/PinnedPost";
+import FullButton from "@/components/ui/buttons/FullButton";
 
 function Home() {
   const [selectedButton, setSelectedButton] = useState("featured");
@@ -21,12 +22,16 @@ function Home() {
   const userSession = getUserSession();
   const [activeTab, setActiveTab] = useState("Latest");
   const [pinnedPosts, setPinnedPosts] = useState([]);
+  const [referredData, setReferredData] = useState({});
+  const [isReferralPending, setIsReferralPending] = useState(false);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
 
-  useEffect(() => {}, [activeTab]);
+  useEffect(() => {
+    checkIfAcceptedReferralIsPending(userSession.email);
+  }, [activeTab]);
 
   const fetchPosts = async () => {
     try {
@@ -53,14 +58,32 @@ function Home() {
       setLoading(false);
     }
   };
-  /* Handling unauthenticated users */
-  // if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
-  //   return <Load route="login" />;
-  // }
 
-  // if (userSession && userSession.role !== "student") {
-  //   return <Load route={userSession.role} />;
-  // }
+  const checkIfAcceptedReferralIsPending = async (email) => {
+    try {
+      const referred = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.CHECK_REFERRAL_PRESENT}${email}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+
+      const referrData = await referred.json();
+      setReferredData(referrData);
+      if (referredData) {
+        setIsReferralPending(true);
+      }
+    } catch (error) {
+      console.error(
+        "Error checking if accepted referral is pending.",
+        error.message
+      );
+    }
+  };
 
   useEffect(() => {
     fetchPosts();
@@ -185,6 +208,34 @@ function Home() {
 
       <Footer />
       <FloatingIcon />
+      {isReferralPending && (
+        <div className="h-screen w-full flex justify-center items-center">
+          <div className="flex flex-col justify-center items-center h-40 mb-12">
+            <h1 className="text-lg font-bold">Referral Pending</h1>
+            <p>
+              We have noticed you have accepted a referral. Please make an
+              appointment with the counselor.
+            </p>
+            <div className="w-10/12 flex flex-col items-center mt-4 gap-1.5">
+              <FullButton
+                onClick={() => {
+                  router.push("/student/appointment");
+                }}
+              >
+                Schedule an Appointment{" "}
+              </FullButton>
+              <div
+                className="text-xs cursor-pointer hover:scale-95 hover:text-[#8a252c]"
+                onClick={() => {
+                  setIsReferralPending(false);
+                }}
+              >
+                Later.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
