@@ -60,15 +60,16 @@ const Appointment = () => {
   const [selectedStatus, setSelectedStatus] = useState("Pending");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [queryParams, setQueryParams] = useState({});
+  const params = new URLSearchParams(window.location.search);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const typeRoute = params.get("typeRoute");
-    const purposeRoute = params.get("purposeRoute");
+    if (params.size > 0) {
+      const typeRoute = params.get("typeRoute");
+      const purposeRoute = params.get("purposeRoute");
 
-    setAppointmentType(typeRoute);
-    setPurpose(purposeRoute);
+      setAppointmentType(typeRoute);
+      setPurpose(purposeRoute);
+    }
   }, []);
 
   useEffect(() => {
