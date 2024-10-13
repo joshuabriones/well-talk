@@ -125,6 +125,8 @@ export default function ContextWrapper(props) {
 
 	// notifications
 	const [showNotifications, setShowNotifications] = useState(false);
+	const [unreadCount, setUnreadCount] = useState(0);
+
 
 	// get request
 	const filteredEvents = useMemo(() => {
@@ -319,6 +321,8 @@ export default function ContextWrapper(props) {
 				setViewEvents,
 				showNotifications,
 				setShowNotifications,
+				unreadCount,
+                setUnreadCount,
 			}}
 		>
 			{props.children}

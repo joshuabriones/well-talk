@@ -12,6 +12,7 @@ export default function Notifications() {
 	const router = useRouter();
 	const userSession = getUserSession();
 	const { setShowNotifications } = useContext(GlobalContext);
+	const [unreadCount, updateUnreadCount] = useState(0);
 
 	const [user, setUser] = useState(null);
 	const [notifications, setNotifications] = useState([]);
@@ -116,6 +117,9 @@ export default function Notifications() {
 				);
 
 				setNotifications(sortedNotifications);
+
+				const count = sortedNotifications.filter((noti) => !noti.read).length;
+				updateUnreadCount(count);
 			} catch (error) {
 				console.error("Error fetching notifications:", error);
 			}
@@ -213,12 +217,17 @@ export default function Notifications() {
 				: "text-zinc-700 font-semibold";
 
 		return (
-			<div>
-				<div className={readStyle}>{generateNotification(notification)}</div>
+			<div className="flex flex-row">
+				<div className="flex flex-col">
+					<div className={readStyle}>{generateNotification(notification)}</div>
 
-				<div className="text-xs text-zinc-400 italic mt-1">
-					{dateFormatter(notification?.date)}
+					<div className="text-xs text-zinc-400 italic mt-1">
+						{dateFormatter(notification?.date)}
+					</div>
 				</div>
+				{!notification.read && (
+					<span className="w-3 h-2 mt-1 bg-maroon rounded-full"></span>
+				)}
 			</div>
 		);
 	};
@@ -239,14 +248,33 @@ export default function Notifications() {
 						notification?.sender?.id === user?.id &&
 						notification?.receiver?.id === user?.id
 					) {
-						text = `You have scheduled an appointment for ${date} at ${time}.`;
+						text = (
+							<span>
+								You have scheduled an appointment for{" "}
+								<span className="font-bold">{date}</span> at{" "}
+								<span className="font-bold">{time}</span>.
+							</span>
+						);
 					} else if (notification?.receiver?.id === user?.id) {
-						text = `Counselor ${senderName} has scheduled an appointment with you on ${date} at ${time}.`;
+						text = (
+							<span>
+								Counselor <span className="font-bold">{senderName}</span> has
+								scheduled an appointment with you on{" "}
+								<span className="font-bold">{date}</span> at{" "}
+								<span className="font-bold">{time}</span>.
+							</span>
+						);
 					}
 					break;
 				case "referral":
 					if (notification?.receiver?.id === user?.id) {
-						text = `Prof. ${senderName} has referred you for an appointment for reason: ${notification?.referral?.reason}.`;
+						text = (
+							<span>
+								Prof. <span className="font-bold">{senderName}</span> has referred
+								you for an appointment for reason:{" "}
+								<span className="font-bold">{notification?.referral?.reason}</span>.
+							</span>
+						);
 					}
 					break;
 				case "referral_accepted":
@@ -254,7 +282,12 @@ export default function Notifications() {
 					break;
 				case "post":
 					if (notification?.receiver?.id === user?.id) {
-						text = `Counselor ${senderName} has posted a new announcement.`;
+						text = (
+							<span>
+								Counselor <span className="font-bold">{senderName}</span> has posted
+								a new announcement.
+							</span>
+						);
 					}
 					break;
 			}
@@ -267,18 +300,48 @@ export default function Notifications() {
 						notification?.sender?.id === user?.id &&
 						notification?.receiver?.id === user?.id
 					) {
-						text = `You have scheduled an appointment with ${notification?.appointment?.student?.firstName} ${notification?.appointment?.student?.lastName} on ${date} at ${time}.`;
+						text = (
+							<span>
+								You have scheduled an appointment with{" "}
+								<span className="font-bold">
+									{notification?.appointment?.student?.firstName}{" "}
+									{notification?.appointment?.student?.lastName}
+								</span>{" "}
+								on <span className="font-bold">{date}</span> at{" "}
+								<span className="font-bold">{time}</span>.
+							</span>
+						);
 						break;
 					} else if (notification?.receiver?.id === user?.id) {
-						text = `${senderName} have scheduled an appointment with you on ${date} at ${time}.`;
+						text = (
+							<span>
+								<span className="font-bold">{senderName}</span> has scheduled an
+								appointment with you on <span className="font-bold">{date}</span> at{" "}
+								<span className="font-bold">{time}</span>.
+							</span>
+						);
 						break;
 					}
 				case "referral":
 					if (
 						notification?.receiver?.id === user?.id &&
-						notification?.sender?.role == "teacher"
+						notification?.sender?.role === "teacher"
 					) {
-						text = `Prof. ${senderName} has referred student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} (${notification?.referral?.studentId}) for an appointment.`;
+						text = (
+							<span>
+								Prof. <span className="font-bold">{senderName}</span> has referred
+								student{" "}
+								<span className="font-bold">
+									{notification?.referral?.studentFirstName}{" "}
+									{notification?.referral?.studentLastName}
+								</span>{" "}
+								(
+								<span className="font-bold">
+									{notification?.referral?.studentId}
+								</span>
+								) for an appointment.
+							</span>
+						);
 					}
 				case "referral_accepted":
 					text = `Student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} have accepted the your referral for appointment.`;
@@ -293,7 +356,21 @@ export default function Notifications() {
 						notification?.sender?.id === user?.id &&
 						notification?.receiver?.id === user?.id
 					) {
-						text = `You have referred student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} (${notification?.referral?.studentId}) for an appointment for reason: ${notification?.referral?.reason}.`;
+						text = (
+							<span>
+								You have referred student{" "}
+								<span className="font-bold">
+									{notification?.referral?.studentFirstName}{" "}
+									{notification?.referral?.studentLastName}
+								</span>{" "}
+								(
+								<span className="font-bold">
+									{notification?.referral?.studentId}
+								</span>
+								) for an appointment for reason:{" "}
+								<span className="font-bold">{notification?.referral?.reason}</span>.
+							</span>
+						);
 					}
 					break;
 				case "referral_accepted":
@@ -341,6 +418,11 @@ export default function Notifications() {
 		<div className="bg-white absolute z-10 w-full max-w-lg md:max-w-xl h-[50vh] top-16 right-0 md:right-44 md:top-14 rounded-lg drop-shadow-2xl flex flex-col">
 			<div className="flex justify-between text-sm border-b border-slate-200 p-3 md:p-5">
 				<div className="font-semibold">{user?.firstName}'s Notifications</div>
+				{unreadCount > 0 && (
+					<span className="bg-maroon text-white text-xs rounded-full p-2">
+						{unreadCount} New
+					</span>
+				)}
 			</div>
 
 			{/* Notifications*/}
