@@ -209,21 +209,26 @@ function Home() {
       <Footer />
       <FloatingIcon />
       {isReferralPending && (
-        <div className="h-screen w-full flex justify-center items-center">
-          <div className="flex flex-col justify-center items-center h-40 mb-12">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 w-11/12 max-w-lg">
             <h1 className="text-lg font-bold">Referral Pending</h1>
             <p>
               We have noticed you have accepted a referral. Please make an
               appointment with the counselor.
             </p>
             <div className="w-10/12 flex flex-col items-center mt-4 gap-1.5">
-              <FullButton
+              <button
                 onClick={() => {
-                  router.push("/student/appointment");
+                  const query = new URLSearchParams({
+                    typeRoute: "Referral",
+                    purposeRoute: "Referred by teacher",
+                  }).toString();
+
+                  router.push(`/student/appointment?${query}`);
                 }}
               >
                 Schedule an Appointment{" "}
-              </FullButton>
+              </button>
               <div
                 className="text-xs cursor-pointer hover:scale-95 hover:text-[#8a252c]"
                 onClick={() => {
