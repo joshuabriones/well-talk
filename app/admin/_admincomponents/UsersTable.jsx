@@ -6,7 +6,7 @@ import ReassignModal from "./ReassignModal";
 
 const UsersTable = ({ users, handleDeleteUser }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRole, setSelectedRole] = useState("All");
+  const [selectedRole, setSelectedRole] = useState("all");
   const [isEditing, setIsEditing] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,14 +16,16 @@ const UsersTable = ({ users, handleDeleteUser }) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const filteredUsers = users?.filter((user) => {
-    const matchesRole = selectedRole === "All" || user.role === selectedRole;
+    const matchesRole = selectedRole === "all" || user.role === selectedRole;
 
     const matchesSearch =
       user.idNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (user.firstName + " " + user.lastName)
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      user.institutionalEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.institutionalEmail
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       user.idNumber.toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesRole && matchesSearch;
@@ -154,10 +156,11 @@ const UsersTable = ({ users, handleDeleteUser }) => {
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`${currentPage === 1
+                className={`${
+                  currentPage === 1
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:text-slate-400"
-                  } mr-2`}
+                } mr-2`}
               >
                 Prev{" "}
               </button>
@@ -170,10 +173,11 @@ const UsersTable = ({ users, handleDeleteUser }) => {
                 <li key={index + 1}>
                   <button
                     onClick={() => paginate(index + 1)}
-                    className={`${currentPage === index + 1
+                    className={`${
+                      currentPage === index + 1
                         ? "bg-lightMaroon text-white px-3 py-2 rounded-md"
                         : ""
-                      }`}
+                    }`}
                   >
                     {index + 1}
                   </button>
@@ -188,10 +192,11 @@ const UsersTable = ({ users, handleDeleteUser }) => {
                 disabled={
                   currentPage === Math.ceil(filteredUsers.length / usersPerPage)
                 }
-                className={`${currentPage === Math.ceil(filteredUsers.length / usersPerPage)
+                className={`${
+                  currentPage === Math.ceil(filteredUsers.length / usersPerPage)
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:text-slate-400"
-                  } ml-2`}
+                } ml-2`}
               >
                 Next
               </button>

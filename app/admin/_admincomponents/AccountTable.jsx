@@ -5,7 +5,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRole, setSelectedRole] = useState("All");
+  const [selectedRole, setSelectedRole] = useState("all");
 
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
@@ -14,14 +14,16 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const filteredUsers = users?.filter((user) => {
-    const matchesRole = selectedRole === "All" || user.role === selectedRole;
+    const matchesRole = selectedRole === "all" || user.role === selectedRole;
 
     const matchesSearch =
       user.idNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (user.firstName + " " + user.lastName)
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      user.institutionalEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.institutionalEmail
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       user.idNumber.toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesRole && matchesSearch;
@@ -104,7 +106,7 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
                 Actions
               </th>
             </tr>
-            {filteredUsers.map((user) => (
+            {currentUsers.map((user) => (
               <tr className="border-b-2 border-lightMaroon">
                 <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-white dark:bg-bgDark2 stroke-slate-500 text-navgray ">
                   {user.firstName} {user.lastName}
@@ -148,10 +150,11 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`${currentPage === 1
+                className={`${
+                  currentPage === 1
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:text-slate-400"
-                  } mr-2`}
+                } mr-2`}
               >
                 Prev{" "}
               </button>
@@ -164,10 +167,11 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
                 <li key={index + 1}>
                   <button
                     onClick={() => paginate(index + 1)}
-                    className={`${currentPage === index + 1
+                    className={`${
+                      currentPage === index + 1
                         ? "bg-lightMaroon text-white px-3 py-2 rounded-md"
                         : ""
-                      }`}
+                    }`}
                   >
                     {index + 1}
                   </button>
@@ -182,10 +186,11 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
                 disabled={
                   currentPage === Math.ceil(filteredUsers.length / usersPerPage)
                 }
-                className={`${currentPage === Math.ceil(filteredUsers.length / usersPerPage)
+                className={`${
+                  currentPage === Math.ceil(filteredUsers.length / usersPerPage)
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:text-slate-400"
-                  } ml-2`}
+                } ml-2`}
               >
                 Next
               </button>
