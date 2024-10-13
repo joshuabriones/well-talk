@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-import DeleteIcon from "@mui/icons-material/Delete";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRole, setSelectedRole] = useState("all");
+  const [selectedRole, setSelectedRole] = useState("All");
 
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
@@ -13,11 +13,19 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
   // Handle page change
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedRole === "all" || user.role === selectedRole)
-  );
+  const filteredUsers = users?.filter((user) => {
+    const matchesRole = selectedRole === "All" || user.role === selectedRole;
+
+    const matchesSearch =
+      user.idNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.firstName + " " + user.lastName)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      user.institutionalEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.idNumber.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesRole && matchesSearch;
+  });
 
   const handleDelete = (userId) => {
     const isConfirmed = window.confirm(
@@ -96,7 +104,7 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
                 Actions
               </th>
             </tr>
-            {currentUsers.map((user) => (
+            {filteredUsers.map((user) => (
               <tr className="border-b-2 border-lightMaroon">
                 <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-white dark:bg-bgDark2 stroke-slate-500 text-navgray ">
                   {user.firstName} {user.lastName}
@@ -112,13 +120,6 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
                 </td>
                 <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-white dark:bg-bgDark2 stroke-slate-500  ">
                   <button
-                    onClick={() => handleDelete(user.id)}
-                    className="hover:bg-red-400 p-2 rounded-md"
-                    title="Delete"
-                  >
-                    <DeleteIcon sx={{ color: "#fecaca", stroke: "#f87171" }} />
-                  </button>
-                  <button
                     onClick={() => handleAccept(user.id)}
                     className="hover:bg-green-400 p-2 rounded-md"
                     title="Accept"
@@ -126,6 +127,13 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
                     <CheckCircleIcon
                       sx={{ color: "#dcfce7", stroke: "#4ade80" }}
                     />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(user.id)}
+                    className="hover:bg-red-400 p-2 rounded-md"
+                    title="Delete"
+                  >
+                    <DeleteIcon sx={{ color: "#fecaca", stroke: "#f87171" }} />
                   </button>
                 </td>
               </tr>
@@ -140,11 +148,10 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`${
-                  currentPage === 1
+                className={`${currentPage === 1
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:text-slate-400"
-                } mr-2`}
+                  } mr-2`}
               >
                 Prev{" "}
               </button>
@@ -157,11 +164,10 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
                 <li key={index + 1}>
                   <button
                     onClick={() => paginate(index + 1)}
-                    className={`${
-                      currentPage === index + 1
+                    className={`${currentPage === index + 1
                         ? "bg-lightMaroon text-white px-3 py-2 rounded-md"
                         : ""
-                    }`}
+                      }`}
                   >
                     {index + 1}
                   </button>
@@ -176,11 +182,10 @@ const AccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
                 disabled={
                   currentPage === Math.ceil(filteredUsers.length / usersPerPage)
                 }
-                className={`${
-                  currentPage === Math.ceil(filteredUsers.length / usersPerPage)
+                className={`${currentPage === Math.ceil(filteredUsers.length / usersPerPage)
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:text-slate-400"
-                } ml-2`}
+                  } ml-2`}
               >
                 Next
               </button>

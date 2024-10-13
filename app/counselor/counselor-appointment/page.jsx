@@ -202,9 +202,14 @@ const Appointment = () => {
 		}
 	};
 
-	const filteredStudents = students.filter((user) =>
-		user?.firstName?.toLowerCase().includes(searchTerm.toLowerCase())
+	const filteredStudents = students.filter((student) =>
+		(student?.firstName + " " + student?.lastName)
+			.toLowerCase()
+			.includes(searchTerm.toLowerCase()) ||
+		student?.idNumber.toLowerCase().includes(searchTerm.toLowerCase())
 	);
+
+
 
 	// handle reschedule // TO BE ADDED AFTER CALENDAR IMPLEMENTATION
 	// const handleReschedule = () => {
@@ -447,6 +452,14 @@ const Appointment = () => {
 		return `${formattedHour}:00 ${period}`;
 	};
 
+	const finalDateFormatter = (date) => {
+		const dateObject = new Date(date);
+		const options = { year: "numeric", month: "long", day: "numeric" };
+		const formattedDate = dateObject.toLocaleDateString("en-US", options);
+
+		return formattedDate;
+	};
+	
 	const handlePurposeChange = (e) => {
 		setPurpose(e.target.value);
 	};
@@ -495,6 +508,8 @@ const Appointment = () => {
 
 		return matchesStatus && matchesSearch;
 	});
+
+	const selectedStudentData = students.find((student) => student.id === selectedStudentId);
 
 	return (
 		<div className="min-h-screen w-full">
@@ -599,7 +614,7 @@ const Appointment = () => {
 							<table className="table bg-gray-100 rounded-xl">
 								{/* head */}
 								<thead className="bg-silver px-2 border-b-2 border-maroon rounded-t-2xl">
-								<tr className="font-bold text-center py-4 rounded-t-2xl">
+									<tr className="font-bold text-center py-4 rounded-t-2xl">
 										{/* <th className="text-center p-5">ID</th> */}
 										<th className="py-4">Date and Time</th>
 										<th className="py-4">ID Number</th>
@@ -832,6 +847,7 @@ const Appointment = () => {
 												onClick={() => {
 													toast.success(
 														`Student selected: ${student.firstName} ${student.lastName}`
+
 													);
 													setSelectedStudentId(student.id);
 													setSelectedStudent(student.id); // Update the selected student
@@ -872,10 +888,10 @@ const Appointment = () => {
 										<div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-5 rounded-xl px-4 py-2 font-Merriweather gap-4 md:gap-6">
 											<div className="flex flex-col md:flex-row justify-between items-start md:items-center border-2 border-black  rounded-xl md:rounded-full px-4 py-2 font-Merriweather gap-4 md:gap-0 w-full h-auto md:h-[56px]">
 												<div className="font-bold w-full md:w-auto">
-													STUDENT: {selectedStudentId}
+													STUDENT: {selectedStudentData ? `${selectedStudentData.firstName} ${selectedStudentData.lastName}` : " "}
 												</div>
 												<div className="font-bold w-full md:w-auto">
-													DATE: {appointmentDate}
+													DATE:  {finalDateFormatter(appointmentDate)}
 												</div>
 												<div className="font-bold w-full md:w-auto">
 													TIME: {timeFormatter(selectedTime)}
@@ -961,7 +977,7 @@ function SearchInput({ searchTerm, setSearchTerm }) {
 				placeholder="Search students..."
 				value={searchTerm}
 				onChange={(e) => setSearchTerm(e.target.value)}
-				class="relative w-full h-12 px-4 transition-all border rounded-xl text-slate-500 autofill:bg-white"
+				class="relative w-full h-12 px-4 transition-all rounded-xl text-slate-500 autofill:bg-white focus-within:border-black focus-within:ring-1 focus-within:ring-black"
 			/>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"

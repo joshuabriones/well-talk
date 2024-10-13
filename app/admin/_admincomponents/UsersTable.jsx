@@ -1,12 +1,12 @@
 import { useState } from "react";
 
-import DeleteIcon from "@mui/icons-material/Delete";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
+import DeleteIcon from "@mui/icons-material/Delete";
 import ReassignModal from "./ReassignModal";
 
 const UsersTable = ({ users, handleDeleteUser }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRole, setSelectedRole] = useState("all");
+  const [selectedRole, setSelectedRole] = useState("All");
   const [isEditing, setIsEditing] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,11 +15,19 @@ const UsersTable = ({ users, handleDeleteUser }) => {
   // Handle page change
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedRole === "all" || user.role === selectedRole)
-  );
+  const filteredUsers = users?.filter((user) => {
+    const matchesRole = selectedRole === "All" || user.role === selectedRole;
+
+    const matchesSearch =
+      user.idNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.firstName + " " + user.lastName)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      user.institutionalEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.idNumber.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesRole && matchesSearch;
+  });
 
   const handleDelete = (userId) => {
     const isConfirmed = window.confirm(
@@ -108,13 +116,6 @@ const UsersTable = ({ users, handleDeleteUser }) => {
                   {user.role}
                 </td>
                 <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-white dark:bg-bgDark2 stroke-slate-500  ">
-                  <button
-                    onClick={() => handleDelete(user.id)}
-                    className="hover:bg-red-400 p-2 rounded-md"
-                    title="Delete"
-                  >
-                    <DeleteIcon sx={{ color: "#fecaca", stroke: "#f87171" }} />
-                  </button>
                   {user.role === "counselor" && (
                     <button
                       onClick={() => setIsEditing((prev) => !prev)}
@@ -126,6 +127,13 @@ const UsersTable = ({ users, handleDeleteUser }) => {
                       />
                     </button>
                   )}
+                  <button
+                    onClick={() => handleDelete(user.id)}
+                    className="hover:bg-red-400 p-2 rounded-md"
+                    title="Delete"
+                  >
+                    <DeleteIcon sx={{ color: "#fecaca", stroke: "#f87171" }} />
+                  </button>
                 </td>
                 {isEditing && (
                   <ReassignModal
@@ -146,11 +154,10 @@ const UsersTable = ({ users, handleDeleteUser }) => {
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`${
-                  currentPage === 1
+                className={`${currentPage === 1
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:text-slate-400"
-                } mr-2`}
+                  } mr-2`}
               >
                 Prev{" "}
               </button>
@@ -163,11 +170,10 @@ const UsersTable = ({ users, handleDeleteUser }) => {
                 <li key={index + 1}>
                   <button
                     onClick={() => paginate(index + 1)}
-                    className={`${
-                      currentPage === index + 1
+                    className={`${currentPage === index + 1
                         ? "bg-lightMaroon text-white px-3 py-2 rounded-md"
                         : ""
-                    }`}
+                      }`}
                   >
                     {index + 1}
                   </button>
@@ -182,11 +188,10 @@ const UsersTable = ({ users, handleDeleteUser }) => {
                 disabled={
                   currentPage === Math.ceil(filteredUsers.length / usersPerPage)
                 }
-                className={`${
-                  currentPage === Math.ceil(filteredUsers.length / usersPerPage)
+                className={`${currentPage === Math.ceil(filteredUsers.length / usersPerPage)
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:text-slate-400"
-                } ml-2`}
+                  } ml-2`}
               >
                 Next
               </button>
