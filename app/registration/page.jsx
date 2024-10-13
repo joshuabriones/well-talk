@@ -438,9 +438,9 @@ const Registration = () => {
 				if (response.ok) {
 
 					if (data === "Email exists.") {
-						setEmailStatus("Email exists.");
+						setEmailStatus("Email already taken");
 					} else {
-						setEmailStatus("Email does not exist.");
+						setEmailStatus("Email is available");
 					}
 				} else {
 					setEmailStatus(data || "Error occurred while checking email.");
@@ -477,9 +477,9 @@ const Registration = () => {
 
 				if (response.ok) {
 					if (data === "ID number exists.") {
-						setIdNumberStatus("ID number exists.");
+						setIdNumberStatus("ID number already taken");
 					} else {
-						setIdNumberStatus("ID number does not exist.");
+						setIdNumberStatus("ID number is available");
 					}
 				} else {
 					setIdNumberStatus(data || "Error occurred while checking ID number.");
@@ -631,7 +631,7 @@ const Registration = () => {
 													type="email"
 													id="email"
 												/>
-												<p className = "text-xs">{emailStatus}</p>
+												<p className = "text-xs pt-2">{emailStatus}</p>
 												{errors.idno && (
 													<p className="text-red-500 text-sm font-Jaldi font-semibold">
 														{
@@ -650,7 +650,7 @@ const Registration = () => {
 													type="text"
 													id="idno"
 												/>
-												<p className = "text-xs">{idNumberStatus}</p>
+												<p className = "text-xs pt-2">{idNumberStatus}</p>
 												{errors.idno && errors.idno._errors && errors.idno._errors.length > 0 && (
 													<p className="text-red-500 text-sm font-Jaldi font-semibold">
 														{errors.idno._errors[0]}

@@ -59,9 +59,9 @@ const Login = () => {
         if (response.ok) {
 
           if (data === "Email exists.") {
-            setEmailStatus("Email exists.");
+            setEmailStatus("Email is active");
           } else {
-            setEmailStatus("Email does not exist.");
+            setEmailStatus(" ");
           }
         } else {
           setEmailStatus(data || "Error occurred while checking email.");
