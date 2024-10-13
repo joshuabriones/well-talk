@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PinnedPost from "@/components/ui/PinnedPost";
 import FullButton from "@/components/ui/buttons/FullButton";
+import referredUser from "@/public/images/refer.png";
+import ModalReferralPending from "@/components/ui/modals/student/ModalReferralPending";
 
 function Home() {
   const [selectedButton, setSelectedButton] = useState("featured");
@@ -209,37 +211,10 @@ function Home() {
       <Footer />
       <FloatingIcon />
       {isReferralPending && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 w-11/12 max-w-lg">
-            <h1 className="text-lg font-bold">Referral Pending</h1>
-            <p>
-              We have noticed you have accepted a referral. Please make an
-              appointment with the counselor.
-            </p>
-            <div className="w-10/12 flex flex-col items-center mt-4 gap-1.5">
-              <button
-                onClick={() => {
-                  const query = new URLSearchParams({
-                    typeRoute: "Referral",
-                    purposeRoute: "Referred by teacher",
-                  }).toString();
-
-                  router.push(`/student/appointment?${query}`);
-                }}
-              >
-                Schedule an Appointment{" "}
-              </button>
-              <div
-                className="text-xs cursor-pointer hover:scale-95 hover:text-[#8a252c]"
-                onClick={() => {
-                  setIsReferralPending(false);
-                }}
-              >
-                Later.
-              </div>
-            </div>
-          </div>
-        </div>
+        <ModalReferralPending 
+          setIsReferralPending={setIsReferralPending} 
+          router={router} 
+        />
       )}
     </div>
   );
