@@ -16,7 +16,7 @@ export default function Notifications() {
 	const [user, setUser] = useState(null);
 	const [notifications, setNotifications] = useState([]);
 	const [notificationToDelete, setNotificationToDelete] = useState(null);
-	// console.log("notifications:", notifications);
+	console.log("notifications:", notifications);
 	// console.log("User Session Id: ", userSession.id);
 
 	useEffect(() => {
@@ -249,6 +249,9 @@ export default function Notifications() {
 						text = `Prof. ${senderName} has referred you for an appointment for reason: ${notification?.referral?.reason}.`;
 					}
 					break;
+				case "referral_accepted":
+					text = `You have accepted the referral for appointment. Please set an appointment with your counselor.`;
+					break;
 				case "post":
 					if (notification?.receiver?.id === user?.id) {
 						text = `Counselor ${senderName} has posted a new announcement.`;
@@ -277,6 +280,9 @@ export default function Notifications() {
 					) {
 						text = `Prof. ${senderName} has referred student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} (${notification?.referral?.studentId}) for an appointment.`;
 					}
+				case "referral_accepted":
+					text = `Student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} have accepted the your referral for appointment.`;
+					break;
 			}
 		}
 
@@ -289,6 +295,9 @@ export default function Notifications() {
 					) {
 						text = `You have referred student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} (${notification?.referral?.studentId}) for an appointment for reason: ${notification?.referral?.reason}.`;
 					}
+					break;
+				case "referral_accepted":
+					text = `Student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} have accepted the your referral for appointment.`;
 					break;
 			}
 		}
