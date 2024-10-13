@@ -249,6 +249,11 @@ export default function Notifications() {
 						text = `Prof. ${senderName} has referred you for an appointment for reason: ${notification?.referral?.reason}.`;
 					}
 					break;
+				case "post":
+					if (notification?.receiver?.id === user?.id) {
+						text = `Counselor ${senderName} has posted a new announcement.`;
+					}
+					break;
 			}
 		}
 
