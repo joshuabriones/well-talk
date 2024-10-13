@@ -36,22 +36,17 @@ const TableTitle = ({ addReferral }) => {
 
 const TableHeaders = ({ handleSort }) => {
   return (
-    <thead>
-      <tr className="bg-gray-200 font-bold">
-        <th>Referred Student</th>
-        <th>College, Program and Year</th>
+    <thead className="bg-silver px-2 border-b-2 border-maroon rounded-t-2xl">
+                    <tr className="font-bold text-center py-4 rounded-t-2xl">
+        <th className="py-4">Referred Student</th>
+        <th className="py-4">College, Program and Year</th>
         {/* <th className="p-5">ID Number</th> */}
-        <th>Assigned Counselor</th>
-        <th className="">Reason</th>
-        <th
-          className="hover:bg-gray-300 cursor-pointer p-5 text-center"
-          onClick={() => handleSort("status")}
-          style={{ width: "10%" }}
-        >
+        <th className="py-4">Assigned Counselor</th>
+        <th className="py-4">Reason</th>
+        <th className="py-4">
           Status
         </th>
-        {/* Delete and Edit*/}
-        <th className="no-hover-highlight"></th>
+        <th className="py-4">Action</th>
       </tr>
     </thead>
   );
@@ -64,7 +59,9 @@ const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
         <tr
           key={referrals.referralId}
           onClick={() => handleRowClick(referrals.referralId)}
-          className="cursor-pointer hover:bg-gray-200 transition duration-300 ease-in-out"
+         className={`border-slate-100 border-b-2
+                          hover:bg-slate-100 cursor-pointer 
+                          transition duration-300 ease-in-out`}
         >
           <td>
             <div className="flex items-center gap-3">
