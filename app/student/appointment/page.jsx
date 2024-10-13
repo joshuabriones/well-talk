@@ -618,18 +618,17 @@ const Appointment = () => {
                     </select>
                   </div>
                 </div>
-                <table className="table bg-gray-100">
+                <table className="table bg-gray-100 rounded-xl">
                   {/* head */}
-                  <thead className="bg-gray-200">
-                    <tr className="font-bold text-center border-b-2 border-yellow-500">
-                      <th className="py-2">Date</th>
-                      <th className="py-2">Time</th>
-                      <th className="py-2">Appointment Type</th>
-                      <th className="py-2">Reason</th>
-                      <th className="">Feedback</th>
-                      <th className="py-2">Status</th>
-                      {/* Delete and Edit*/}
-                      <th className="no-hover-highlight"></th>
+                  <thead className="bg-silver px-2 border-b-2 border-maroon rounded-t-2xl">
+                    <tr className="font-bold text-center py-4 rounded-t-2xl">
+                      <th className="py-4">Date</th>
+                      <th className="py-4">Time</th>
+                      <th className="py-4">Appointment Type</th>
+                      <th className="py-4">Reason</th>
+                      <th className="py-4">Feedback</th>
+                      <th className="py-4">Status</th>
+                      <th className="py-4">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -639,9 +638,8 @@ const Appointment = () => {
                         onClick={() =>
                           handleRowClick(appointment.appointmentId)
                         }
-                        className={`border-yellow-500 border-b-2 border-x-2
-                          hover:border-b-4 hover:border-x-4
-                          hover:border-lightMaroon cursor-pointer 
+                        className={`border-slate-100 border-b-2
+                          hover:bg-slate-100 cursor-pointer 
                           transition duration-300 ease-in-out`}
                       >
                         <td>
@@ -705,7 +703,7 @@ const Appointment = () => {
 
                         {/* Delete and Edit */}
                         <td>
-                          <div className="text-center py-2 flex">
+                          <div className="flex justify-center text-center py-2 flex">
                             <button
                               className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
                               onClick={(e) => {
