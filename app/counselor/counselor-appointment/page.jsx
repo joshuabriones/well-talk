@@ -596,19 +596,18 @@ const Appointment = () => {
 									</select>
 								</div>
 							</div>
-							<table className="table bg-gray-100">
+							<table className="table bg-gray-100 rounded-xl">
 								{/* head */}
-								<thead className="bg-gray-200">
-									<tr className="font-bold text-center border-b-2 border-yellow-500">
+								<thead className="bg-silver px-2 border-b-2 border-maroon rounded-t-2xl">
+								<tr className="font-bold text-center py-4 rounded-t-2xl">
 										{/* <th className="text-center p-5">ID</th> */}
-										<th>Date and Time</th>
-										<th className="p-5">ID Number</th>
-										<th>Student</th>
-										<th className="">Reason</th>
-										<th className="">Feedback</th>
-										<th className="">Status</th>
-										{/* Delete and Edit*/}
-										<th className="no-hover-highlight"></th>
+										<th className="py-4">Date and Time</th>
+										<th className="py-4">ID Number</th>
+										<th className="py-4">Student</th>
+										<th className="py-4">Reason</th>
+										<th className="py-4">Feedback</th>
+										<th className="py-4">Status</th>
+										<th className="py-4">Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -616,23 +615,22 @@ const Appointment = () => {
 										<tr
 											key={appointments.appointmentId}
 											onClick={() => handleRowClick(appointments.appointmentId)}
-											className={`border-yellow-500 border-b-2 border-x-2
-												hover:border-b-4 hover:border-x-4
-												hover:border-lightMaroon cursor-pointer 
+											className={`border-slate-100 border-b-2
+												hover:bg-slate-100 cursor-pointer 
 												transition duration-300 ease-in-out`}
 										>
 											{/* <td className="text-center">
 												{appointments.appointmentId}
 											</td> */}
-											<td className="text-center">
+											<td className="text-center py-2">
 												{/* <div className="flex flex-row gap-x-2"> */}
-												<div className="text-sm p-5">
+												<div className="text-sm py-2">
 													{formatDate(appointments.appointmentDate)}{" "}
 													{appointments.appointmentStartTime}
 												</div>
 												{/* </div> */}
 											</td>
-											<td className="text-center">
+											<td className="text-center py-2">
 												{/* <div className="flex flex-row gap-x-3"> */}
 												<div>{appointments.student?.idNumber}</div>
 												{/* </div> */}
