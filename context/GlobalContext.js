@@ -86,6 +86,9 @@ const GlobalContext = React.createContext({
 	setEndDateCalendar: () => {},
 	showNotifications: false,
 	setShowNotifications: () => {},
+	unreadCount: 0,
+	setUnreadCount: () => {},
+
 });
 
 export default GlobalContext;

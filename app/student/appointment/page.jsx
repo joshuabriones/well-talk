@@ -10,6 +10,7 @@ import StudentAddAppointment from "@/components/ui/modals/counselor/appointments
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import ModalConfirmResponseAppointment from "@/components/ui/modals/student/appointments/ModalConfirmedResponseAppointment";
 import ModalReschedule from "@/components/ui/modals/student/appointments/ModalReschedule";
+import ModalParentInfo from "@/components/ui/modals/student/appointments/ModalParentInfo";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import "@/styles/counselor.css";
@@ -34,6 +35,7 @@ const Appointment = () => {
   const [isAddAppointment, setIsAddAppointment] = useState(true);
   const [isViewAppointment, setIsViewAppointment] = useState(false);
   const [rescheduleModal, setRescheduleModal] = useState(false);
+  const [isParentModalOpen, setIsParentModalOpen] = useState(false);
 
   const [appointments, setAppointments] = useState([]);
   const [appointmentDate, setAppointmentDate] = useState(
@@ -59,6 +61,18 @@ const Appointment = () => {
 
   const [selectedStatus, setSelectedStatus] = useState("Pending");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const params = new URLSearchParams(window.location.search);
+
+  useEffect(() => {
+    if (params.size > 0) {
+      const typeRoute = params.get("typeRoute");
+      const purposeRoute = params.get("purposeRoute");
+
+      setAppointmentType(typeRoute);
+      setPurpose(purposeRoute);
+    }
+  }, []);
 
   useEffect(() => {
     if (userSession) {
@@ -307,7 +321,7 @@ const Appointment = () => {
       (studentData && studentData.parentGuardianName === null) ||
       studentData.parentGuardianContactNumber === null
     ) {
-      (() => document.getElementById("parentInfoModal").showModal())();
+      setIsParentModalOpen(true);
     } else {
       setConfirmResponseModal(true);
     }
@@ -347,7 +361,7 @@ const Appointment = () => {
         fetchStudentById(userSession.id);
         toast.success("Student profile updated successfully");
         setConfirmResponseModal(true);
-        document.getElementById("parentInfoModal").close();
+        setIsParentModalOpen(false);
       }
     } catch (error) {
       console.error("Error updating student profile: ", error);
@@ -564,19 +578,21 @@ const Appointment = () => {
         <div>
           <div className="w-full pt-24 flex items-center gap-3 justify-center">
             <button
-              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
+              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+                isAddAppointment
                   ? "bg-maroon text-white"
                   : "border-2 border-maroon text-maroon"
-                }`}
+              }`}
               onClick={handleAddAppointmentClick}
             >
               Set Appointment
             </button>
             <button
-              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
+              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+                isViewAppointment
                   ? "bg-maroon text-white"
                   : "border-2 border-maroon text-maroon"
-                }`}
+              }`}
               onClick={handleViewAppointmentClick}
             >
               View Appointments
@@ -657,9 +673,9 @@ const Appointment = () => {
                           <p className="truncate">
                             {appointment.appointmentPurpose.length > 50
                               ? `${appointment.appointmentPurpose.substring(
-                                0,
-                                40
-                              )}...`
+                                  0,
+                                  40
+                                )}...`
                               : appointment.appointmentPurpose}
                           </p>
                         </td>
@@ -667,11 +683,11 @@ const Appointment = () => {
                           <p>
                             {appointment?.appointmentNotes?.length > 50
                               ? `${appointment?.appointmentNotes?.substring(
-                                0,
-                                40
-                              )}...`
+                                  0,
+                                  40
+                                )}...`
                               : appointment?.appointmentNotes ||
-                              "No feedback yet"}
+                                "No feedback yet"}
                           </p>
                         </td>
                         <td className="h-full">
@@ -747,8 +763,9 @@ const Appointment = () => {
                     ].map((_, index) => (
                       <button
                         key={index}
-                        className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
-                          }`}
+                        className={`join-item btn ${
+                          currentPage === index + 1 ? "btn-active" : ""
+                        }`}
                         onClick={() => setCurrentPage(index + 1)}
                       >
                         {index + 1}
@@ -799,18 +816,19 @@ const Appointment = () => {
                     🛑 Do note that you can only select a time slot that has not
                     been taken yet.
                   </p>
-                  <div className="flex flex-wrap gap-2 mt-8">
+                  <div className="flex flex-wrap gap-2 my-6">
                     {timeSlots.map((time, index) => (
                       <button
                         key={index}
                         disabled={isTimeSlotTaken(time)}
                         onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-                        className={`time-slot-button ${isTimeSlotTaken(time)
+                        className={`time-slot-button ${
+                          isTimeSlotTaken(time)
                             ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
                             : time === selectedTimeSlot
-                              ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-                              : "bg-maroon text-white hover:bg-maroon duration-300"
-                          }  py-2 px-3 rounded-md`}
+                            ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+                            : "bg-maroon text-white hover:bg-maroon duration-300"
+                        }  py-2 px-3 rounded-md`}
                       >
                         {timeFormatter(time)}
                       </button>
@@ -829,7 +847,29 @@ const Appointment = () => {
 												label="Appointment Type"
 											/> */}
 
-                      <FormControl fullWidth>
+                      <FormControl
+                        fullWidth
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": {
+                              borderColor: "black",
+                            },
+                            "&:hover fieldset": {
+                              borderColor: "default",
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "black",
+                            },
+                          },
+                          "& .MuiInputLabel-root": {
+                            color: "inherit", // Keep the label color unchanged
+                            "&.Mui-focused": {
+                              color: "inherit", // Prevent label color change on focus
+                            },
+                            fontSize: "0.75 rem",
+                          },
+                        }}
+                      >
                         <InputLabel id="appointment-type">
                           Appointment Type
                         </InputLabel>
@@ -862,7 +902,7 @@ const Appointment = () => {
                         onChange={(e) => setPurpose(e.target.value)}
                         placeholder="Purpose"
                         label="Purpose"
-                        className="w-full mb-4 rounded-md "
+                        className="w-full text-md mb-6 rounded-md "
                         id={purpose}
                       />
                     </div>
@@ -887,49 +927,26 @@ const Appointment = () => {
                       </div>
                     </div>
 
-                    <dialog id="parentInfoModal" className="modal">
-                      <div className="modal-box overflow-scroll">
-                        <form method="dialog">
-                          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                            ✕
-                          </button>
-                        </form>
-                        <div className="flex flex-col gap-4 items-center justify-center">
-                          <h1 className="text-lg font-bold">
-                            Parent/Guardian Information
-                          </h1>
-                          <p>
-                            To proceed, please fill this information first to
-                            proceed.
-                          </p>
-                          <div className="flex flex-col gap-2 w-full">
-                            <TextInput
-                              value={guardianName}
-                              onChange={(e) => setGuardianName(e.target.value)}
-                              placeholder="Jane Doe"
-                              label="Parent/Guardian Name"
-                              id="parent-guardian-name"
-                            />
-
-                            <TextInput
-                              value={guardianContact}
-                              onChange={(e) =>
-                                setGuardianContact(e.target.value)
-                              }
-                              placeholder="09123456789"
-                              label="Parent/Guardian Contact Number"
-                              id="parent-guardian-contact"
-                            />
-                            <button
-                              onClick={handleParentInfoSubmit}
-                              className="mt-2 w-full bg-maroon border-2 font-Merriweather text-sm text-white font-semibold rounded-3xl px-4 py-3 hover:scale-95 transition-transform duration-300"
-                            >
-                              Submit
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </dialog>
+                    {isParentModalOpen && (
+											<ModalParentInfo
+												setIsParentModalOpen={
+													setIsParentModalOpen
+												}
+												guardianName={guardianName}
+												setGuardianName={
+													setGuardianName
+												}
+												guardianContact={
+													guardianContact
+												}
+												setGuardianContact={
+													setGuardianContact
+												}
+												handleParentInfoSubmit={
+													handleParentInfoSubmit
+												}
+											/>
+										)}
 
                     {isLoading && (
                       <div className="flex gap-2 items-center mt-5">
@@ -972,7 +989,7 @@ const Appointment = () => {
           appointments={appointments}
           handleReschedule={handleReschedule}
           handleDelete={showDeleteModal}
-        //handleUpdateStatus={handleUpdateStatus}
+          //handleUpdateStatus={handleUpdateStatus}
         ></StudentModalAppointmentInfo>
       )}
 
