@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { API_ENDPOINT } from "@/lib/api";
 import Cookies from "js-cookie";
 import { collegeOptions } from "@/lib/inputOptions";
+import Link from "next/link";
 
 import Header from "../_admincomponents/Header";
 
@@ -16,7 +17,6 @@ const AppointmentRecords = () => {
   useEffect(() => {
     const fetchAllCounselors = async () => {
       try {
-        setIsLoading(true);
         const response = await fetch(
           `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_COUNSELORS}`,
           {
@@ -41,6 +41,7 @@ const AppointmentRecords = () => {
     if (counselors.length > 0) {
       const fetchAppointmentsPerCounselor = async () => {
         try {
+          setIsLoading(true);
           const updatedAppointments = await Promise.all(
             counselors.map(async (counselor) => {
               try {
@@ -72,6 +73,7 @@ const AppointmentRecords = () => {
                 const appointments = await response.json();
 
                 return {
+                  id: counselor.id,
                   counselorName: `${counselor.firstName} ${counselor.lastName}`,
                   appointmentCount: appointments.length,
                   image: counselor.image,
@@ -84,6 +86,7 @@ const AppointmentRecords = () => {
                 );
                 // In case of error, return counselor info with 0 appointments
                 return {
+                  id: counselor.id,
                   counselorName: `${counselor.firstName} ${counselor.lastName}`,
                   appointmentCount: 0,
                   image: counselor.image,
@@ -111,8 +114,8 @@ const AppointmentRecords = () => {
   );
 
   return (
-    <div className="min-h-screen w-full">
-      <Header title="Counselor Appointment Records" />
+    <div className="min-h-screen flex-1">
+      <Header title="Counselor Records" />
       <select
         value={selectedCollege}
         onChange={(e) => {
@@ -128,7 +131,10 @@ const AppointmentRecords = () => {
         ))}
       </select>
       {isLoading ? (
-        <p>Loading...</p>
+        <div className="text-white flex items-center justify-center gap-3">
+          Loading
+          <span className="loading loading-dots loading-lg"></span>
+        </div>
       ) : (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1 gap-6 mt-6 overflow-scroll">
           {filteredCounselors.map((counselor) => (
@@ -149,6 +155,12 @@ const AppointmentRecords = () => {
                   {counselor.appointmentCount} appointments 🗓
                 </p>
               </div>
+              <Link
+                href={`/admin/appointmentrecords/${counselor.id}`}
+                className="text-white text-xs bg-gold px-4 py-2 rounded-full"
+              >
+                View Details
+              </Link>
               <p className="text-xs text-lightMaroon py-1 px-2 bg-gold rounded-full absolute top-6 right-6">
                 {counselor.college}
               </p>
