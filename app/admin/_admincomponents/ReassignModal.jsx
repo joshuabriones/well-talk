@@ -37,6 +37,11 @@ const ReassignModal = ({ isEditing, setIsEditing, user }) => {
 
     let yearsAssigned = selectedYearLevels.join(", ");
 
+    if (!college || selectedPrograms.length === 0 || !yearsAssigned) {
+      toast.error("Please fill out all fields");
+      return;
+    }
+
     try {
       setIsLoading(true);
       const response = await fetch(
@@ -53,7 +58,7 @@ const ReassignModal = ({ isEditing, setIsEditing, user }) => {
             lastName: user.lastName,
             gender: user.gender,
             image: user.image,
-            role: user.role,
+            // role: user.role,
             college: college,
             program: selectedPrograms
               .map((program) => program.value)

@@ -116,36 +116,37 @@ const CounselorDetails = ({ params }) => {
               Students Assigned
             </h2>
             <div>
-              {assignedStudents.map((student) => (
-                <div
-                  key={student.id}
-                  className="flex md:flex-row xs:flex-col items-center justify-between bg-transparent border border-white px-4 py-2 rounded-lg mt-2"
-                >
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={student.image}
-                      alt="student profile"
-                      className="w-10 h-10 rounded-full"
-                    />
+              {assignedStudents.length > 0 &&
+                assignedStudents.map((student) => (
+                  <div
+                    key={student.id}
+                    className="flex md:flex-row xs:flex-col items-center justify-between bg-transparent border border-white px-4 py-2 rounded-lg mt-2"
+                  >
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={student.image}
+                        alt="student profile"
+                        className="w-10 h-10 rounded-full"
+                      />
+                      <div>
+                        <h3 className="text-lg text-gold">
+                          {student.firstName} {student.lastName}
+                        </h3>
+                        <p className="text-sm text-slate-300">
+                          {student.institutionalEmail}
+                        </p>
+                      </div>
+                    </div>
                     <div>
-                      <h3 className="text-lg text-gold">
-                        {student.firstName} {student.lastName}
-                      </h3>
+                      <p className="text-center md:text-right mt-2 md:mt-0 text-sm text-slate-300">
+                        {student.college}
+                      </p>
                       <p className="text-sm text-slate-300">
-                        {student.institutionalEmail}
+                        {student.program} - {student.year}
                       </p>
                     </div>
                   </div>
-                  <div>
-                    <p className="text-center md:text-right mt-2 md:mt-0 text-sm text-slate-300">
-                      {student.college}
-                    </p>
-                    <p className="text-sm text-slate-300">
-                      {student.program} - {student.year}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           </section>
         </>
