@@ -7,9 +7,11 @@ import { error } from "jquery";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-
-import AppointmentHighlight from "@/components/ui/modals/notifications/AppointmentHighlight";
-import AppointmentDone from "./modals/notifications/AppointmentDone";
+import AppointmentDone from "./modals/notifications/appointment/AppointmentDone";
+import AppointmentHighlight from "./modals/notifications/appointment/AppointmentHighlight";
+import ReferralAccepted from "./modals/notifications/referral/ReferralAccepted";
+import ReferralDeclined from "./modals/notifications/referral/ReferralDeclined";
+import ReferralWait from "./modals/notifications/referral/ReferralWait";
 
 export default function Notifications() {
 	const router = useRouter();
@@ -24,6 +26,11 @@ export default function Notifications() {
 	const [appointment, setAppointment] = useState(null);
 	const [appointmentModal, setAppointmentModal] = useState(false);
 	const [appointmentDoneModal, setAppointmentDoneModal] = useState(false);
+
+	const [referral, setReferral] = useState(null);
+	const [referralWaitModal, setReferralWaitModal] = useState(false);
+	const [referralAcceptedModal, setReferralAcceptedModal] = useState(false);
+	const [referralDeclinedModal, setReferralDeclinedModal] = useState(false);
 
 	console.log("notifications:", notifications);
 	// console.log("User Session Id: ", userSession.id);
@@ -223,17 +230,44 @@ export default function Notifications() {
 				setAppointmentDoneModal(true);
 
 			case "referral":
-				if (user?.role === "student") {
-					const token = await fetchReferralToken(notification?.referral?.referralId);
-
-					if (token) {
-						router.push(`/referral/${token}/pendingreferral`);
-						setShowNotifications(false);
-					} else {
-						console.error("Failed to retrieve referral token");
-					}
+				switch (user?.role) {
+					case "student":
+						const token = await fetchReferralToken(notification?.referral?.referralId);
+						if (token) {
+							router.push(`/referral/${token}/pendingreferral`);
+							setShowNotifications(false);
+						} else {
+							console.error("Failed to retrieve referral token");
+						}
+						break;
+					case "teacher":
+						setReferral(notification?.referral);
+						setReferralWaitModal(true);
+						break;
 				}
 				break;
+			case "referral_accepted":
+				switch (user?.role) {
+					case "student":
+						router.push("/student/appointment");
+						break;
+					case "teacher":
+						setReferral(notification?.referral);
+						setReferralAcceptedModal(true);
+						break;
+				}
+				break;
+			case "referral_declined":
+				switch (user?.role) {
+					case "student":
+						setReferral(notification?.referral);
+						setReferralDeclinedModal(true);
+						break;
+					case "teacher":
+						setReferral(notification?.referral);
+						setReferralDeclinedModal(true);
+						break;
+				}
 		}
 	};
 
@@ -592,6 +626,30 @@ export default function Notifications() {
 
 			{appointmentDoneModal && (
 				<AppointmentDone setShowModal={setAppointmentDoneModal} appointment={appointment} />
+			)}
+
+			{referralWaitModal && (
+				<ReferralWait
+					setShowModal={setReferralWaitModal}
+					referral={referral}
+					role={userSession?.role}
+				/>
+			)}
+
+			{referralAcceptedModal && (
+				<ReferralAccepted
+					setShowModal={setReferralAcceptedModal}
+					referral={referral}
+					role={userSession?.role}
+				/>
+			)}
+
+			{referralDeclinedModal && (
+				<ReferralDeclined
+					setShowModal={setReferralDeclinedModal}
+					referral={referral}
+					role={userSession?.role}
+				/>
 			)}
 		</div>
 	);
