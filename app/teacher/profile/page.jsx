@@ -5,6 +5,7 @@ import { Navbar } from "@/components/ui/Navbar";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextInput from "@/components/ui/inputs/TextInput";
+import ConfirmationModal from "@/components/ui/modals/ModalProfileConfirm";
 import { imgDB } from "@/firebaseConfig";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession, logout } from "@/lib/helperFunctions";
@@ -15,6 +16,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { v4 } from "uuid"; // Make sure this is configured correctly
 import styles from "../../../css/landing.module.css";
+import { default as LoadingState } from "@/components/Load";
 
 export default function Profile() {
 	const [isEditMode, setIsEditMode] = useState(false);
@@ -23,6 +25,7 @@ export default function Profile() {
 	const [teacherProfile, setTeacherProfile] = useState(null);
 	const [updatedProfile, setUpdatedProfile] = useState({});
 	const [loading, setLoading] = useState(true);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [passwords, setPasswords] = useState({
 		currentPassword: "",
 		newPassword: "",
@@ -98,7 +101,12 @@ export default function Profile() {
 		setUpdatedProfile(teacherProfile);
 	};
 
-	const handleSaveProfile = async (e) => {
+	const handleSaveProfile = (e) => {
+		e.preventDefault();
+		setIsModalOpen(true);
+	  };
+
+	const handleConfirmSave = async (e) => {
 		e.preventDefault();
 		if (passwords.newPassword !== passwords.confirmPassword) {
 			setShowInvalidPassword((prevShowInvalidPassword) => ({
@@ -147,6 +155,10 @@ export default function Profile() {
 				throw new Error(
 					`Failed to update teacher profile: ${response.statusText}`
 				);
+			} else {
+				toast.success(
+					"Profile information updated successfully."
+				);
 			}
 
 			if (passwords.newPassword && passwords.confirmPassword) {
@@ -189,6 +201,7 @@ export default function Profile() {
 			const data = await response.json();
 			setTeacherProfile(data);
 			setIsEditMode(false);
+			setIsModalOpen(false);
 		} catch (error) {
 			console.error("Error updating teacher profile:", error);
 		}
@@ -226,7 +239,7 @@ export default function Profile() {
 	};
 
 	if (loading) {
-		return <Loading />;
+		return <LoadingState />;
 	}
 
 	return (
@@ -535,6 +548,11 @@ export default function Profile() {
 					</div>
 				</section>
 			</ScrollAnimationWrapper>
+			<ConfirmationModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={handleConfirmSave}
+        />
 		</div>
 	);
 }
