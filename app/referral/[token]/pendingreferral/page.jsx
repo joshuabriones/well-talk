@@ -6,6 +6,8 @@ import { API_ENDPOINT } from "@/lib/api";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ConfirmationPopup from "@/components/ui/modals/Confirmation";
+import { default as LoadingState } from "@/components/Load";
+import styles from "../../../../css/landing.module.css";
 
 const PendingReferral = () => {
   const router = useRouter();
@@ -56,7 +58,7 @@ const PendingReferral = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
+        <LoadingState />
       </div>
     );
   }
@@ -111,25 +113,28 @@ const PendingReferral = () => {
     }
   };
 
-  if (isTokenValid) {
+  if (isTokenValid) { 
     return (
-      <div className="h-screen w-full flex justify-center items-center">
-        <div className="w-[600px] h-[400px] rounded-xl py-2 px-10 flex flex-col justify-center items-center gap-y-2 shadow-xl">
+      <section className={`${styles.hero} parallax`}>
+      <div
+			className={`fixed inset-0 flex items-center justify-center bg-white bg-opacity-25 z-50 backdrop-blur ${styles.floating}`}
+			role="dialog">
+        <div className="modal-box relative p-4 sm:p-6 lg:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white dark:bg-slate-800 rounded-2xl shadow-lg transform transition-transform duration-300 scale-95">
           <div className="">
-            <img src="/images/loggo.png" alt="" className="h-28" />
+            <img src="/images/loggo.png" alt="" className="h-20  sm:h-28 mx-auto" />
           </div>
 
-          <div className="font-Merriweather text-center">
+          <p className="text-sm sm:text-base text-gray-600">
             Please confirm if you'd like to proceed with your referral to the
             guidance office. We appreciate your time and assistance.
-          </div>
+          </p>
 
-          <div className="w-10/12 flex flex-col items-center mt-4 gap-1.5">
-            <FullButton onClick={handleConfirm}>
+          <div className="flex flex-col  justify-center gap-y-4 sm:gap-x-4 py-4 sm:py-6 px-6 sm:px-12">
+            <FullButton onClick={confirmedAccept}>
               I would like to proceed.
             </FullButton>
             <div
-              className="text-xs cursor-pointer hover:scale-95 hover:text-[#8a252c]"
+              	className="text-sm font-semibold font-Merriweather cursor-pointer hover:scale-95 hover:text-[#8a252c]"
               onClick={handleDecline}
             >
               Decline
@@ -145,6 +150,7 @@ const PendingReferral = () => {
           />
         )}
       </div>
+      </section>
     );
   } else {
     return <NotFoundPage />;

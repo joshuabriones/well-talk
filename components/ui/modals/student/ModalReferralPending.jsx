@@ -20,7 +20,7 @@ const ModalReferralPending = ({ setIsReferralPending, router }) => {
 					appointment with the counselor.
 				</p>
 
-				<div className="flex flex-col  justify-center gap-y-4 sm:gap-x-4 py-4 sm:py-6 px-6 sm:px-12">
+				<div className="flex flex-col justify-center gap-y-4 sm:gap-x-4 py-4 sm:py-6 px-6 sm:px-12">
 					<FullButton
 						onClick={() => {
 							const query = new URLSearchParams({
