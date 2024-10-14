@@ -271,7 +271,7 @@ export default function JournalPage({ params }) {
                       className="mt-4 text-slate-500"
                       style={{ whiteSpace: "pre-wrap" }}
                     >
-                      {appointment.appointmentNotes}
+                      {appointment.appointmentAdditionalNotes}
                     </p>
                   </details>
                 ))
