@@ -306,6 +306,10 @@ export default function Notifications() {
 						);
 					}
 					break;
+				case "appointment_done":
+					text = `Your appointment with Counselor ${senderName} has been successfully completed!`;
+					break;
+
 				case "referral":
 					if (notification?.receiver?.id === user?.id) {
 						text = (
