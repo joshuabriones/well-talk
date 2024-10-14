@@ -1,16 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Calendar } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
+import { API_ENDPOINT } from "@/lib/api";
+import Cookies from "js-cookie";
 
-const ModalReschedule = ({ setRescheduleModal, appointmentId }) => {
-  const [appointmentDate, setAppointmentDate] = useState("");
+const ModalReschedule = ({
+  setRescheduleModal,
+  appointmentId,
+  sessionId,
+  refreshAppointments,
+}) => {
+  const [appointmentDate, setAppointmentDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [appointmentOnThatDate, setAppointmentOnThatDate] = useState([]);
   const [endTime, setEndTime] = useState("");
+
+  const [appointments, setAppointments] = useState([]);
+  const [counselorIds, setCounselorIds] = useState([]);
 
   const timeSlots = [
     "08:00",
@@ -124,23 +136,47 @@ const ModalReschedule = ({ setRescheduleModal, appointmentId }) => {
     return formattedDate;
   };
 
-  const handleReschedule = async () => {
+  const fetchAppointments = async () => {
+    const response = await fetch(
+      `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_STUDENTID}${sessionId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Error fetching appointments");
+    }
+    const data = await response.json();
+    setAppointments(data);
+
+    // Extract counselor IDs from the appointments
+    const counselorIds = data.map((appointment) => appointment.counselor.id);
+    setCounselorIds(counselorIds);
+  };
+
+  const handleReschedule = async (e) => {
+    e.preventDefault();
+
+    const formattedTime = convertTo24HourFormat(selectedTime);
     try {
       if (!appointmentDate || !selectedTimeSlot) {
         toast.error("Please select both a date and a time.");
         return;
       }
 
-      const response = await fetch(`/api/reschedule/${appointmentId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          newDate: appointmentDate,
-          newTime: selectedTimeSlot,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.RESCHED_APPOINTMENT}${appointmentId}?date=${appointmentDate}&startTime=${formattedTime}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
 
       if (response.ok) {
         setRescheduleModal(false);
@@ -151,8 +187,44 @@ const ModalReschedule = ({ setRescheduleModal, appointmentId }) => {
     } catch (error) {
       console.error(error);
       toast.error(error.message);
+    } finally {
+      refreshAppointments();
     }
   };
+
+  const fetchAppointmentsOnThatDate = async () => {
+    const appointments = [];
+    for (const counselorId of counselorIds) {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE_AND_COUNSELOR}${appointmentDate}&counselorId=${counselorId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        appointments.push(...data);
+      }
+    }
+    setAppointmentOnThatDate(appointments);
+  };
+
+  useEffect(() => {
+    if (sessionId) {
+      try {
+        fetchAppointments();
+      } catch (error) {
+        toast.error("Failed to fetch appointments");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAppointmentsOnThatDate();
+  }, [appointmentDate, counselorIds]);
 
   return (
     <div
