@@ -5,6 +5,7 @@ import { Navbar } from "@/components/ui/Navbar";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextInput from "@/components/ui/inputs/TextInput";
+import ConfirmationModal from "@/components/ui/modals/ModalProfileConfirm";
 import { imgDB } from "@/firebaseConfig";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession, logout } from "@/lib/helperFunctions";
@@ -23,6 +24,7 @@ export default function StudentProfile() {
 	const [studentProfile, setStudentProfile] = useState(null);
 	const [updatedProfile, setUpdatedProfile] = useState({});
 	const [loading, setLoading] = useState(true);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [passwords, setPasswords] = useState({
 		currentPassword: "",
 		newPassword: "",
@@ -101,8 +103,12 @@ export default function StudentProfile() {
 		setIsEditMode(false);
 		setUpdatedProfile(studentProfile);
 	};
+	const handleSaveProfile = (e) => {
+		e.preventDefault();
+		setIsModalOpen(true);
+	  };
 
-	const handleSaveProfile = async (e) => {
+	const handleConfimSave = async (e) => {
 		e.preventDefault();
 
 		if (passwords.newPassword !== passwords.confirmPassword) {
@@ -157,6 +163,10 @@ export default function StudentProfile() {
 				throw new Error(
 					`Failed to update student profile: ${response.statusText}`
 				);
+			} else {
+				toast.success(
+					"Profile information updated successfully."
+				);
 			}
 
 			if (passwords.newPassword && passwords.confirmPassword) {
@@ -199,6 +209,7 @@ export default function StudentProfile() {
 			const data = await response.json();
 			setStudentProfile(data);
 			setIsEditMode(false);
+			setIsModalOpen(false);
 		} catch (error) {
 			console.error("Error updating student profile:", error);
 		}
@@ -578,6 +589,11 @@ export default function StudentProfile() {
 					</div>
 				</section>
 			</ScrollAnimationWrapper>
+			<ConfirmationModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={handleConfimSave}
+        />
 		</div>
 	);
 }

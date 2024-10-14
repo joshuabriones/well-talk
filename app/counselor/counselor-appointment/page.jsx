@@ -640,8 +640,8 @@ const Appointment = () => {
 															"🟢"}
 														{appointments &&
 															appointments.appointmentStatus ===
-																"Assigned" &&
-															"🔵"}
+																"Cancelled" &&
+															"🔴"}
 														<span className="ml-2 text-bold text-sm">
 															{appointments
 																? appointments.appointmentStatus
