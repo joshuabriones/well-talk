@@ -5,9 +5,11 @@ import { Navbar } from "@/components/ui/Navbar";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextInput from "@/components/ui/inputs/TextInput";
+import ConfirmationModal from "@/components/ui/modals/ModalProfileConfirm";
 import { imgDB } from "@/firebaseConfig";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession, logout } from "@/lib/helperFunctions";
+import { programOptions } from "@/lib/inputOptions";
 import { PlusIcon } from "@heroicons/react/solid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import Cookies from "js-cookie";
@@ -21,6 +23,7 @@ export default function Profile() {
 	const [counselorProfile, setCounselorProfile] = useState(null);
 	const [updatedProfile, setUpdatedProfile] = useState({});
 	const [loading, setLoading] = useState(true);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [passwords, setPasswords] = useState({
 		currentPassword: "",
 		newPassword: "",
@@ -36,6 +39,17 @@ export default function Profile() {
 
 	const [previewImage, setPreviewImage] = useState(null);
 	const userSession = getUserSession();
+
+	const getAbbreviation = (program) => {
+		const programEntries = Object.entries(programOptions);
+		for (const [college, programs] of programEntries) {
+			const foundProgram = programs.find((p) => p.value === program);
+			if (foundProgram) {
+				return foundProgram.label; // Return the label (abbreviation)
+			}
+		}
+		return program; // If not found, return the original
+	};
 
 	useEffect(() => {
 		const fetchCounselorProfile = async () => {
@@ -95,7 +109,12 @@ export default function Profile() {
 		setUpdatedProfile(counselorProfile);
 	};
 
-	const handleSaveProfile = async (e) => {
+	const handleSaveProfile = (e) => {
+		e.preventDefault();
+		setIsModalOpen(true);
+	  };
+
+	const handleConfirmSave = async (e) => {
 		e.preventDefault();
 		if (passwords.newPassword !== passwords.confirmPassword) {
 			setShowInvalidPassword((prevShowInvalidPassword) => ({
@@ -142,6 +161,10 @@ export default function Profile() {
 				throw new Error(
 					`Failed to update counselor profile: ${response.statusText}`
 				);
+			}else {
+				toast.success(
+					"Profile information updated successfully."
+				);
 			}
 
 			if (passwords.newPassword && passwords.confirmPassword) {
@@ -184,6 +207,7 @@ export default function Profile() {
 			const data = await response.json();
 			setCounselorProfile(data);
 			setIsEditMode(false);
+			setIsModalOpen(false);
 		} catch (error) {
 			console.error("Error updating counselor profile:", error);
 		}
@@ -394,7 +418,59 @@ export default function Profile() {
 												</div>
 											</div>
 										</div>
-										{/* Additional Details */}
+										<div>
+											<div className="flex flex-col md:flex-row gap-4 pb-6">
+												<div className="w-full md:w-full">
+													<TextInput
+														label="Department"
+														value={
+															updatedProfile.college ||
+															counselorProfile?.college ||
+															""
+														}
+														onChange={(e) =>
+															setUpdatedProfile(
+																(
+																	prevProfile
+																) => ({
+																	...prevProfile,
+																	college:
+																		e.target
+																			.value,
+																})
+															)
+														}
+														readOnly
+														disabled
+														// style={{ display: isEditMode ? "none" : "block" }}
+													/>
+												</div>
+												<div className="w-full md:w-full">
+													<TextInput
+														label="Program"
+														value={getAbbreviation(
+															updatedProfile.program ||
+																""
+														)}
+														onChange={(e) => {
+															const newProgram =
+																e.target.value;
+															setUpdatedProfile(
+																(
+																	prevProfile
+																) => ({
+																	...prevProfile,
+																	program:
+																		newProgram,
+																})
+															);
+														}}
+														readOnly={!isEditMode}
+														disabled={!isEditMode}
+													/>
+												</div>
+											</div>
+										</div>
 									</div>
 									{/* Security Information */}
 									<div className="w-full md:w-2/6">
@@ -484,6 +560,11 @@ export default function Profile() {
 					</div>
 				</section>
 			</ScrollAnimationWrapper>
+			<ConfirmationModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={handleConfirmSave}
+        />
 		</div>
 	);
 }
