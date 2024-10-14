@@ -113,6 +113,8 @@ export default function Notifications() {
 				}
 
 				const data = await response.json();
+				console.log("Notifications: ", data);
+
 				const sortedNotifications = data.sort(
 					(a, b) => new Date(b.date) - new Date(a.date)
 				);
@@ -215,13 +217,15 @@ export default function Notifications() {
 				break;
 
 			case "referral":
-				const token = await fetchReferralToken(notification?.referral?.referralId);
+				if (user?.role === "student") {
+					const token = await fetchReferralToken(notification?.referral?.referralId);
 
-				if (token) {
-					router.push(`/referral/${token}/pendingreferral`);
-					setShowNotifications(false);
-				} else {
-					console.error("Failed to retrieve referral token");
+					if (token) {
+						router.push(`/referral/${token}/pendingreferral`);
+						setShowNotifications(false);
+					} else {
+						console.error("Failed to retrieve referral token");
+					}
 				}
 				break;
 		}
@@ -382,6 +386,8 @@ export default function Notifications() {
 							</span>
 						);
 					}
+					break;
+
 				case "referral_accepted":
 					text = `Student ${notification?.referral?.studentFirstName} ${notification?.referral?.studentLastName} has accepted the referral for appointment.`;
 					break;
