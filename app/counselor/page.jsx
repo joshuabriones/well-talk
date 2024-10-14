@@ -81,7 +81,7 @@ const Home = () => {
         </div>
 
         {/* Posts Section */}
-       
+
         <div className="flex flex-col md:flex-row py-28 px-4 md:px-12">
           {/* Posts Section */}
           <div className="md:block max-w-screen-xl md:max-w-5xl mx-auto sm:px-12 lg:px-14 w-full flex-grow-2 justify-center items-center">
@@ -117,8 +117,11 @@ const Home = () => {
                 <LoadingState />
               ) : (
                 <>
-                <div className="w-11/12 ml-6 md:ml-12 lg:ml-12">
-                  <CreatePostSection userSession={userSession} />
+                  <div className="w-11/12 ml-6 md:ml-12 lg:ml-12">
+                    <CreatePostSection
+                      userSession={userSession}
+                      fetchPosts={fetchPosts}
+                    />
                   </div>
 
                   <div className="w-full p-2 px-4 mx-auto flex-grow mt-4">
@@ -131,7 +134,11 @@ const Home = () => {
                         </p>
                       ) : (
                         posts.map((post) => (
-                          <PostCard key={post.postId} post={post} />
+                          <PostCard
+                            key={post.postId}
+                            post={post}
+                            fetchPosts={fetchPosts}
+                          />
                         ))
                       )
                     ) : pinnedPosts.length === 0 ? (
@@ -152,7 +159,7 @@ const Home = () => {
               )}
             </div>
           </div>
-          </div>
+        </div>
         <Footer />
         <FloatingIcon />
       </main>

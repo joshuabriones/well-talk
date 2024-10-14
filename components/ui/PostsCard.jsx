@@ -13,7 +13,6 @@ import { v4 } from "uuid";
 import PinPostModal from "./modals/counselor/posts/PinPostModal";
 
 const PostCard = ({ post, fetchPosts }) => {
-  console.log(post);
   const [openActions, setOpenActions] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -41,8 +40,56 @@ const PostCard = ({ post, fetchPosts }) => {
 
   const handlePin = async () => {
     try {
-      await pinPost(post.postId);
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.PIN_POST}${post.postId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+          body: JSON.stringify({
+            postContent: post.postContent,
+            postImage: post.postImage,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        toast.error("Failed to pin post");
+        return;
+      }
       setOpenPinModal(false);
+      toast.success("Post pinned");
+      fetchPosts();
+    } catch (error) {
+      console.error("Error pinning post:", error);
+    }
+  };
+
+  const handleUnPin = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.UNPIN_POST}${post.postId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+          body: JSON.stringify({
+            postContent: post.postContent,
+            postImage: post.postImage,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        toast.error("Failed to unpin post");
+        return;
+      }
+      setOpenPinModal(false);
+      toast.success("Post unpinned");
       fetchPosts();
     } catch (error) {
       console.error("Error pinning post:", error);
@@ -56,7 +103,7 @@ const PostCard = ({ post, fetchPosts }) => {
 
   const confirmDeletePost = async (e) => {
     e.preventDefault();
-    setOpenDeleteModal(true);
+
     try {
       const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.DELETE_POST}${post.postId}`,
@@ -132,7 +179,7 @@ const PostCard = ({ post, fetchPosts }) => {
                   </li>
                   <li className="px-4 py-2 hover:bg-slate-200 transition-colors">
                     <button onClick={() => setOpenPinModal(true)}>
-                      Pin Post
+                      {post.isPinned ? "Unpin Post" : "Pin Post"}
                     </button>
                   </li>
                 </ul>
@@ -185,7 +232,12 @@ const PostCard = ({ post, fetchPosts }) => {
 
       {/* Pin Post Modal */}
       {openPinModal && (
-        <PinPostModal setOpenPinModal={setOpenPinModal} handlePin={handlePin} />
+        <PinPostModal
+          setOpenPinModal={setOpenPinModal}
+          handlePin={handlePin}
+          handleUnpin={handleUnPin}
+          isPinned={post.isPinned}
+        />
       )}
     </div>
   );
