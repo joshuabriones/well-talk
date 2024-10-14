@@ -51,6 +51,11 @@ const Appointment = () => {
   const [appointmentOnThatDate, setAppointmentOnThatDate] = useState([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [showAddAppointmentModal, setShowAddAppointmentModal] = useState(false);
+  const [errorMessages, setErrorMessages] = useState({
+  appointmentType: "",
+  purpose: "",
+});
+
 
   const [counselorIds, setCounselorIds] = useState([]);
   const [studentData, setStudentData] = useState({});
@@ -303,16 +308,37 @@ const Appointment = () => {
     return formattedTime;
   };
 
-  const handleTimeSlotClick = (time) => {
-    if (!isTimeSlotTaken(time)) {
-      setSelectedTime(time); // Update the selected time
-      setSelectedTimeSlot(time);
-      const duration = "1:00"; // Duration to add
-      const endTime = addTime(time, duration);
-      setEndTime(endTime);
-      toast.success(`Time slot selected: ${timeFormatter(time)}`);
-    }
-  };
+  const isTimeSlotUnavailable = (time) => {
+		const currentDate = new Date();
+		const selectedDate = new Date(appointmentDate);
+		const [hours, minutes] = time.split(":").map(Number);
+
+		// Set the full date and time for comparison
+		const slotDateTime = new Date(
+			selectedDate.getFullYear(),
+			selectedDate.getMonth(),
+			selectedDate.getDate(),
+			hours,
+			minutes
+		);
+
+		return slotDateTime < currentDate || isTimeSlotTaken(time);
+	};
+
+	const handleTimeSlotClick = (time) => {
+		// Check if the time slot is either taken or unavailable
+		if (!isTimeSlotTaken(time) && !isTimeSlotUnavailable(time)) {
+			setSelectedTime(time); // Update the selected time
+			setSelectedTimeSlot(time);
+			const duration = "1:00"; // Duration to add
+			const endTime = addTime(time, duration);
+			setEndTime(endTime);
+			toast.success(`Time slot selected: ${timeFormatter(time)}`);
+		} else {
+			// Optionally, you can show a message if the time slot is not selectable
+			toast.error(`Time slot ${timeFormatter(time)} is not available.`);
+		}
+	};
 
   const handleAppointmentSubmit = async () => {
     // Open the confirm response modal
@@ -788,23 +814,29 @@ const Appointment = () => {
                     been taken yet.
                   </p>
                   <div className="flex flex-wrap gap-2 my-6">
-                    {timeSlots.map((time, index) => (
-                      <button
-                        key={index}
-                        disabled={isTimeSlotTaken(time)}
-                        onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-                        className={`time-slot-button ${
-                          isTimeSlotTaken(time)
-                            ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
-                            : time === selectedTimeSlot
-                            ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-                            : "bg-maroon text-white hover:bg-maroon duration-300"
-                        }  py-2 px-3 rounded-md`}
-                      >
-                        {timeFormatter(time)}
-                      </button>
-                    ))}
-                  </div>
+										{timeSlots.map((time, index) => (
+											<button
+												key={index}
+												disabled={
+													isTimeSlotTaken(time) ||
+													isTimeSlotUnavailable(time)
+												} // Disable if taken or unavailable
+												onClick={() =>
+													handleTimeSlotClick(time)
+												} // Set the selected time on click
+												className={`time-slot-button ${
+													isTimeSlotTaken(time) ||
+													isTimeSlotUnavailable(time)
+														? "bg-white border-[1px] border-gray text-primary-green cursor-not-allowed"
+														: time ===
+														  selectedTimeSlot
+														? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+														: "bg-maroon text-white hover:bg-maroon duration-300"
+												} py-2 px-3 rounded-md`}>
+												{timeFormatter(time)}
+											</button>
+										))}
+									</div>
                   <hr />
                   <div className="mt-4">
                     <p>
