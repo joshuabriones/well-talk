@@ -34,6 +34,23 @@ const ModalReschedule = ({
     "15:30",
   ];
 
+  const isTimeSlotUnavailable = (time) => {
+    const currentDate = new Date();
+    const selectedDate = new Date(appointmentDate);
+    const [hours, minutes] = time.split(":").map(Number);
+
+    // Set the full date and time for comparison
+    const slotDateTime = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
+      hours,
+      minutes
+    );
+
+    return slotDateTime < currentDate || isTimeSlotTaken(time);
+  };
+
   const isTimeSlotTaken = (time) => {
     return appointmentOnThatDate.some(
       (appointment) => appointment.appointmentStartTime === time
@@ -289,10 +306,12 @@ const ModalReschedule = ({
                   {timeSlots.map((time, index) => (
                     <button
                       key={index}
-                      disabled={isTimeSlotTaken(time)}
+                      disabled={
+                        isTimeSlotTaken(time) || isTimeSlotUnavailable(time)
+                      }
                       onClick={() => handleTimeSlotClick(time)}
                       className={`time-slot-button w-full md:w-1/2 lg:w-full ${
-                        isTimeSlotTaken(time)
+                        isTimeSlotTaken(time) || isTimeSlotUnavailable(time)
                           ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
                           : time === selectedTimeSlot
                           ? "bg-white border-2 border-maroon text-maroon font-semibold"

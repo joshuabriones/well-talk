@@ -3,7 +3,12 @@ import HollowButton from "@/components/ui/buttons/HollowButton";
 import FullButton from "@/components/ui/buttons/FullButton";
 import iconPin from "@/public/images/icons/pin.png";
 
-const PinPostModal = ({ setOpenPinModal, handlePin }) => {
+const PinPostModal = ({
+  setOpenPinModal,
+  handlePin,
+  handleUnpin,
+  isPinned,
+}) => {
   const [isChecked, setIsChecked] = useState(true);
 
   const toggleChecked = () => {
@@ -18,20 +23,24 @@ const PinPostModal = ({ setOpenPinModal, handlePin }) => {
           role="dialog"
         >
           <div className="modal-box relative p-10 border-2 text-center bg-white rounded-2xl shadow-lg">
-          <img
-							src={iconPin.src}
-							alt="Pin post"
-							className="w-20 h-20 sm:w-28 sm:h-28 mx-auto"
-						/>
+            <img
+              src={iconPin.src}
+              alt="Pin post"
+              className="w-20 h-20 sm:w-28 sm:h-28 mx-auto"
+            />
             <h3 className="text-xl font-bold font-Merriweather py-6">
-              Do you want to pin this post?
+              Do you want to {isPinned ? "unpin" : "pin"} this post?
             </h3>
 
             <div className="flex flex-row gap-x-4 py-2 px-12">
               <HollowButton onClick={() => setOpenPinModal(false)}>
                 Cancel
               </HollowButton>
-              <FullButton onClick={handlePin}>Confirm</FullButton>
+              {isPinned ? (
+                <FullButton onClick={handleUnpin}>Unpin</FullButton>
+              ) : (
+                <FullButton onClick={handlePin}>Pin</FullButton>
+              )}
             </div>
 
             {/* Close button overlay */}

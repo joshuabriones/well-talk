@@ -3,7 +3,6 @@
 import Loading from "@/components/Loading";
 import { Navbar } from "@/components/ui/Navbar";
 import FullButton from "@/components/ui/buttons/FullButton";
-import TextAreaInput from "@/components/ui/inputs/TextAreaInput";
 import StudentModalAppointmentInfo from "@/components/ui/modals/counselor/appointments/ModalAppointmentInfo";
 import StudentAddAppointment from "@/components/ui/modals/counselor/appointments/StudentAddAppointment";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
@@ -13,7 +12,14 @@ import ModalReschedule from "@/components/ui/modals/student/appointments/ModalRe
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import "@/styles/counselor.css";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
@@ -51,6 +57,10 @@ const Appointment = () => {
   const [appointmentOnThatDate, setAppointmentOnThatDate] = useState([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [showAddAppointmentModal, setShowAddAppointmentModal] = useState(false);
+  const [errorMessages, setErrorMessages] = useState({
+    appointmentType: "",
+    purpose: "",
+  });
 
   const [counselorIds, setCounselorIds] = useState([]);
   const [studentData, setStudentData] = useState({});
@@ -303,18 +313,59 @@ const Appointment = () => {
     return formattedTime;
   };
 
+  const isTimeSlotUnavailable = (time) => {
+    const currentDate = new Date();
+    const selectedDate = new Date(appointmentDate);
+    const [hours, minutes] = time.split(":").map(Number);
+
+    // Set the full date and time for comparison
+    const slotDateTime = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
+      hours,
+      minutes
+    );
+
+    return slotDateTime < currentDate || isTimeSlotTaken(time);
+  };
+
   const handleTimeSlotClick = (time) => {
-    if (!isTimeSlotTaken(time)) {
+    // Check if the time slot is either taken or unavailable
+    if (!isTimeSlotTaken(time) && !isTimeSlotUnavailable(time)) {
       setSelectedTime(time); // Update the selected time
       setSelectedTimeSlot(time);
       const duration = "1:00"; // Duration to add
       const endTime = addTime(time, duration);
       setEndTime(endTime);
       toast.success(`Time slot selected: ${timeFormatter(time)}`);
+    } else {
+      // Optionally, you can show a message if the time slot is not selectable
+      toast.error(`Time slot ${timeFormatter(time)} is not available.`);
     }
   };
 
   const handleAppointmentSubmit = async () => {
+    setErrorMessages({ appointmentType: "", purpose: "" });
+
+    if (!appointmentType) {
+      setErrorMessages((prev) => ({
+        ...prev,
+        appointmentType: "Please select appointment type!",
+      }));
+      setIsLoading(false);
+      return;
+    }
+
+    if (!purpose) {
+      setErrorMessages((prev) => ({
+        ...prev,
+        purpose: "Please state purpose!",
+      }));
+      setIsLoading(false);
+      return;
+    }
+
     // Open the confirm response modal
     if (
       (studentData && studentData.parentGuardianName === null) ||
@@ -660,7 +711,7 @@ const Appointment = () => {
                                   "🟢"}
                                 {appointment &&
                                   appointment.appointmentStatus ===
-                                    "Assigned" &&
+                                    "On-going" &&
                                   "🔵"}
                                 {appointment &&
                                   appointment.appointmentStatus ===
@@ -679,26 +730,32 @@ const Appointment = () => {
                           {/* Delete and Edit */}
                           <td>
                             <div className="flex justify-center text-center py-2">
-                              <button
-                                className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  showDeleteModal(appointment.appointmentId);
-                                }}
-                              >
-                                Delete
-                              </button>
-                              <button
-                                className="btn btn-xs text-gray hover:text-gray hover:bg-gold"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  showRescheduleModal(
-                                    appointment.appointmentId
-                                  );
-                                }}
-                              >
-                                Reschedule
-                              </button>
+                              {appointment.appointmentStatus === "Pending" && (
+                                <>
+                                  <button
+                                    className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      showDeleteModal(
+                                        appointment.appointmentId
+                                      );
+                                    }}
+                                  >
+                                    Delete
+                                  </button>
+                                  <button
+                                    className="btn btn-xs text-gray hover:text-gray hover:bg-gold"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      showRescheduleModal(
+                                        appointment.appointmentId
+                                      );
+                                    }}
+                                  >
+                                    Reschedule
+                                  </button>
+                                </>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -791,15 +848,17 @@ const Appointment = () => {
                     {timeSlots.map((time, index) => (
                       <button
                         key={index}
-                        disabled={isTimeSlotTaken(time)}
+                        disabled={
+                          isTimeSlotTaken(time) || isTimeSlotUnavailable(time)
+                        } // Disable if taken or unavailable
                         onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
                         className={`time-slot-button ${
-                          isTimeSlotTaken(time)
-                            ? "bg-white border-[1px] border-[#CCE3DE] text-primary-green cursor-not-allowed"
+                          isTimeSlotTaken(time) || isTimeSlotUnavailable(time)
+                            ? "bg-white border-[1px] border-gray text-primary-green cursor-not-allowed"
                             : time === selectedTimeSlot
                             ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
                             : "bg-maroon text-white hover:bg-maroon duration-300"
-                        }  py-2 px-3 rounded-md`}
+                        } py-2 px-3 rounded-md`}
                       >
                         {timeFormatter(time)}
                       </button>
@@ -833,13 +892,14 @@ const Appointment = () => {
                             },
                           },
                           "& .MuiInputLabel-root": {
-                            color: "inherit", // Keep the label color unchanged
+                            color: "inherit",
                             "&.Mui-focused": {
-                              color: "inherit", // Prevent label color change on focus
+                              color: "inherit",
                             },
                             fontSize: "0.75 rem",
                           },
                         }}
+                        error={!!errorMessages.appointmentType}
                       >
                         <InputLabel id="appointment-type">
                           Appointment Type
@@ -866,16 +926,56 @@ const Appointment = () => {
                           <MenuItem value="Referral">Referral</MenuItem>
                           <MenuItem value="Others">Others</MenuItem>
                         </Select>
+                        {errorMessages.appointmentType && (
+                          <FormHelperText>
+                            {errorMessages.appointmentType}
+                          </FormHelperText>
+                        )}
                       </FormControl>
 
-                      <TextAreaInput
-                        value={purpose}
-                        onChange={(e) => setPurpose(e.target.value)}
-                        placeholder="Purpose"
-                        label="Purpose"
-                        className="w-full text-md mb-6 rounded-md "
-                        id={purpose}
-                      />
+                      <FormControl
+                        fullWidth
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": {
+                              borderColor: "black", // Set border color to match Select
+                            },
+                            "&:hover fieldset": {
+                              borderColor: "default", // Match hover border color
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "black", // Keep focus border color black
+                            },
+                            "&.Mui-focused": {
+                              outline: "none", // Remove the blue box outline
+                              borderColor: "none", // Remove
+                            },
+                          },
+                          "& .MuiInputLabel-root": {
+                            color: "inherit", // Match label color
+                            "&.Mui-focused": {
+                              color: "inherit", // Keep label color the same when focused
+                            },
+                            fontSize: "1rem", // Match label font size
+                          },
+                        }}
+                        error={!!errorMessages.purpose}
+                      >
+                        <TextField
+                          value={purpose}
+                          onChange={(e) => setPurpose(e.target.value)}
+                          label="Purpose"
+                          multiline
+                          variant="outlined"
+                          id="purpose"
+                          rows={4}
+                        />
+                        {errorMessages.purpose && (
+                          <FormHelperText>
+                            {errorMessages.purpose}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
                     </div>
                     <hr />
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-5 rounded-xl px-4 py-2 font-Merriweather gap-4 md:gap-6">

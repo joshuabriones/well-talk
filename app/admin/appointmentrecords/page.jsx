@@ -60,6 +60,7 @@ const AppointmentRecords = () => {
                   if (response.status === 404) {
                     // If no appointments found (404 error), return 0 appointments for that counselor
                     return {
+                      id: counselor.id,
                       counselorName: `${counselor.firstName} ${counselor.lastName}`,
                       appointmentCount: 0,
                       image: counselor.image,
@@ -113,6 +114,7 @@ const AppointmentRecords = () => {
       selectedCollege === "all" || counselor.college === selectedCollege
   );
 
+  console.log(filteredCounselors);
   return (
     <div className="min-h-screen flex-1">
       <Header title="Counselor Records" />
