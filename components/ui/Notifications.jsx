@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import AppointmentDone from "./modals/notifications/appointment/AppointmentDone";
 import AppointmentHighlight from "./modals/notifications/appointment/AppointmentHighlight";
+import PostHighlight from "./modals/notifications/post/PostHighlight";
 import ReferralAccepted from "./modals/notifications/referral/ReferralAccepted";
 import ReferralDeclined from "./modals/notifications/referral/ReferralDeclined";
 import ReferralWait from "./modals/notifications/referral/ReferralWait";
@@ -31,6 +32,9 @@ export default function Notifications() {
 	const [referralWaitModal, setReferralWaitModal] = useState(false);
 	const [referralAcceptedModal, setReferralAcceptedModal] = useState(false);
 	const [referralDeclinedModal, setReferralDeclinedModal] = useState(false);
+
+	const [post, setPost] = useState(null);
+	const [postModal, setPostModal] = useState(false);
 
 	console.log("notifications:", notifications);
 	// console.log("User Session Id: ", userSession.id);
@@ -268,6 +272,11 @@ export default function Notifications() {
 						setReferralDeclinedModal(true);
 						break;
 				}
+
+			case "post":
+				setPost(notification?.post);
+				setPostModal(!postModal);
+				break;
 		}
 	};
 
@@ -650,6 +659,10 @@ export default function Notifications() {
 					referral={referral}
 					role={userSession?.role}
 				/>
+			)}
+
+			{postModal && (
+				<PostHighlight setShowModal={setPostModal} post={post} role={userSession?.role} />
 			)}
 		</div>
 	);
