@@ -126,7 +126,7 @@ const PostHighlight = ({ post, setShowModal, role }) => {
 					className="w-full h-full rounded-lg bg-gray-50 fixed inset-0 flex items-center justify-center bg-white bg-opacity-25 z-50 backdrop-blur lg:px-28"
 					onClick={handleOverlayClick}
 				>
-					<div className="bg-white flex border-2 rounded-lg shadow-md mb-6 ml-0 sm:mr-0 sm:mx-3 pl-2 pr-1 flex-col sm:pr-0 sm:px-5 py-2 hover:bg-gray-100 transition duration-200 ease-in-out hover:shadow-lg">
+					<div className="bg-white lg:min-w-[500px] flex border-2 rounded-lg shadow-md mb-6 ml-0 sm:mr-0 sm:mx-3 pl-2 pr-1 flex-col sm:pr-0 sm:px-5 py-2 hover:bg-gray-100 transition duration-200 ease-in-out hover:shadow-lg">
 						{/* Author and Post Meta Information */}
 						<div className="flex items-center mt-3 pl-4">
 							<div className="w-14 h-14 flex-none ml-1">

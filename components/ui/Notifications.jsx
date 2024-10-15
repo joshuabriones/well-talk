@@ -18,11 +18,11 @@ export default function Notifications() {
 	const router = useRouter();
 	const userSession = getUserSession();
 	const { setShowNotifications } = useContext(GlobalContext);
-	const [unreadCount, updateUnreadCount] = useState(0);
 
 	const [user, setUser] = useState(null);
 	const [notifications, setNotifications] = useState([]);
 	const [notificationToDelete, setNotificationToDelete] = useState(null);
+	const [unreadCount, updateUnreadCount] = useState(0);
 
 	const [appointment, setAppointment] = useState(null);
 	const [appointmentModal, setAppointmentModal] = useState(false);
