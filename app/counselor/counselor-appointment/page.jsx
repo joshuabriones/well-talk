@@ -84,13 +84,6 @@ const Appointment = () => {
   useEffect(() => {
     if (userSession) {
       try {
-        if (params.size > 0) {
-          const referral = params.get("referralId");
-          console.log("Referral ID: ", referral);
-
-          setAppointmentType("Referral");
-          setReferralId(referral);
-        }
         fetchAppointments();
         fetchStudents();
       } catch (error) {
@@ -100,28 +93,26 @@ const Appointment = () => {
   }, []);
 
   const fetchAppointments = async () => {
-    const response = await fetch(
-      // `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_GET_ALL_APPOINTMENTS}`,
-      `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_COUNSELORID}${userSession?.id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_COUNSELORID}${userSession?.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error fetching appointments");
       }
-    );
 
-    if (!response.ok) {
-      console.error("Error fetching appointments");
+      const data = await response.json();
+
+      setAppointments(data);
+    } catch (error) {
+      console.error("An error occurred while fetching appointments:", error);
     }
-    const data = await response.json();
-
-    // const filteredData = data.filter(
-    // 	(appointment) =>
-    // 		appointment?.counselor?.id === userSession?.id &&
-    // 		appointment.appointmentStatus === "Assigned"
-    // );
-    console.log("Appointments: ", data);
-    setAppointments(data);
   };
 
   const fetchStudents = async () => {
