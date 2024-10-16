@@ -65,55 +65,66 @@ const ChatWidget = () => {
 			apiEndpoint = `${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_TEACHER_ID}${userSession.id}`;
 		}
 
-		// Fetch counselors based on the user role
-		const response = await fetch(apiEndpoint, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${Cookies.get("token")}`,
-			},
-		});
-
 		try {
-			if (!response.ok) {
-			  throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-		  
-			const data = await response.json();
-
-			if (data) {
-			  setCounselors(data);
-			} else {
-			  console.warn("No data returned from the server.");
-			}
-		  
-		  } catch (error) {
-			console.error("Error fetching counselors:", error);
-		  }
-
-		// Fetch additional counselors based on receiver ID if there are messages
-		const receiverResponse = await fetch(
-			`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_RECEIVER_ID}${userSession.id}`,
-			{
+			// Fetch counselors based on the user role
+			const response = await fetch(apiEndpoint, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${Cookies.get("token")}`,
 				},
-			}
-		);
+			});
 
-		if (receiverResponse.ok) {
-			const receiverData = await receiverResponse.json();
-			setCounselors((prevCounselors) => [
-				...prevCounselors,
-				...receiverData.filter(
-					(counselor) =>
-						!prevCounselors.some(
-							(prevCounselor) => prevCounselor.id === counselor.id
-						)
-				),
-			]);
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+
+			const data = await response.json();
+
+			if (data) {
+				setCounselors(data);
+			} else {
+				console.warn("No data returned from the server.");
+			}
+
+		} catch (error) {
+			console.error("Error fetching counselors:", error);
+		}
+
+
+		const hasMessages = false; 
+
+		if (hasMessages) {
+			// Fetch additional counselors based on receiver ID if there are messages
+			try {
+				const receiverResponse = await fetch(
+					`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_RECEIVER_ID}${userSession.id}`,
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${Cookies.get("token")}`,
+						},
+					}
+				);
+
+				if (receiverResponse.ok) {
+					const receiverData = await receiverResponse.json();
+					setCounselors((prevCounselors) => [
+						...prevCounselors,
+						...receiverData.filter(
+							(counselor) =>
+								!prevCounselors.some(
+									(prevCounselor) => prevCounselor.id === counselor.id
+								)
+						),
+					]);
+				} else if (receiverResponse.status === 404) {
+					console.log("No counselors found for the receiver ID.");
+				}
+			} catch (error) {
+				console.error("Error fetching additional counselors:", error);
+			}
 		}
 	};
 
@@ -246,9 +257,8 @@ const ChatWidget = () => {
 			{/* CHAT BOPX */}
 			<div
 				id="chatBox"
-				className={`fixed bottom-28 right-4 md:right-8 lg:right-8 w-full max-w-sm sm:max-w-md md:max-w-md lg:max-w-md h-[60vh] bg-white border-2 rounded-2xl shadow-lg flex flex-col transition-all duration-300 ${
-					isChatOpen ? "opacity-100 visible" : "opacity-0 invisible"
-				}`}>
+				className={`fixed bottom-28 right-4 md:right-8 lg:right-8 w-full max-w-sm sm:max-w-md md:max-w-md lg:max-w-md h-[60vh] bg-white border-2 rounded-2xl shadow-lg flex flex-col transition-all duration-300 ${isChatOpen ? "opacity-100 visible" : "opacity-0 invisible"
+					}`}>
 				{/* CHAT HEADER */}
 				<div className="flex-none bg-maroon text-white uppercase p-4 rounded-t-xl relative">
 					{activeTab === "conversation" && selectedPerson ? (
@@ -319,17 +329,15 @@ const ChatWidget = () => {
 						{messages.map((msg) => (
 							<div
 								key={msg.id}
-								className={`flex ${
-									msg.senderId === loggedInUser.id
+								className={`flex ${msg.senderId === loggedInUser.id
 										? "justify-end"
 										: ""
-								}`}>
+									}`}>
 								<div
-									className={`relative text-xs rounded-lg p-2 ${
-										msg.senderId === loggedInUser.id
+									className={`relative text-xs rounded-lg p-2 ${msg.senderId === loggedInUser.id
 											? "bg-gold text-gray"
 											: "bg-silver text-gray"
-									}`}>
+										}`}>
 									<p>{msg.content}</p>
 								</div>
 							</div>
