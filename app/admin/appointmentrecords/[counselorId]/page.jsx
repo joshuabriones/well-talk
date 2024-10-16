@@ -49,7 +49,7 @@ const CounselorDetails = ({ params }) => {
         }
       );
       const data = await response.json();
-      setAssignedStudents(data);
+      setAssignedStudents(data.filter((student) => student.role === "student"));
     } catch (error) {
       console.error("Error fetching students:", error);
     }
@@ -116,7 +116,7 @@ const CounselorDetails = ({ params }) => {
               Students Assigned
             </h2>
             <div>
-              {assignedStudents.length > 0 &&
+              {assignedStudents.length > 0 ? (
                 assignedStudents.map((student) => (
                   <div
                     key={student.id}
@@ -146,7 +146,12 @@ const CounselorDetails = ({ params }) => {
                       </p>
                     </div>
                   </div>
-                ))}
+                ))
+              ) : (
+                <p className="text-navgray italic">
+                  Currently no students assigned
+                </p>
+              )}
             </div>
           </section>
         </>
