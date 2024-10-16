@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Badge, Calendar, Popover, Whisper } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
+import Consent from "@/components/ui/modals/Consent";
 
 const Appointment = () => {
   const AppointmentPerPage = 10;
@@ -61,6 +62,8 @@ const Appointment = () => {
     appointmentType: "",
     purpose: "",
   });
+  const [consentAccepted, setConsentAccepted] = useState(false);
+  const [showConsent, setShowConsent] = useState(false);
 
   const [counselorIds, setCounselorIds] = useState([]);
   const [studentData, setStudentData] = useState({});
@@ -82,6 +85,19 @@ const Appointment = () => {
       setPurpose(purposeRoute);
     }
   }, []);
+
+  const handleTermsChange = (e) => {
+		setConsentAccepted(e.target.checked);
+		if (e.target.checked) {
+			setShowConsent(true); // Show Consent when checked
+		} else {
+			setShowConsent(false); // Hide terms when unchecked
+		}
+	};
+
+  const handleCloseModal = () => {
+		setShowConsent(false);
+	};
 
   useEffect(() => {
     if (userSession) {
@@ -977,6 +993,36 @@ const Appointment = () => {
                         )}
                       </FormControl>
                     </div>
+                    <div className="w-full flex items-center gap-x-2 py-2">
+											<input
+												type="checkbox"
+												checked={consentAccepted}
+												onChange={handleTermsChange}
+												disabled={!purpose}
+												className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
+											/>
+											<label className="text-md font-Jaldi text-gray-700 italic">
+                      I have read, understood, and agree to the{" "}
+												<a
+													href="#"
+													className="hover:underline text-maroon"
+													onClick={(e) => {
+														e.preventDefault();
+														setShowConsent(true); // Show terms when the link is clicked
+													}}>
+													Counseling Consent and Agreement
+												</a>
+                        , including the limits to confidentiality and commitment to cooperation.
+											</label>
+											{/* {errors.termsAccepted && (
+												<p className="text-red-500 text-sm font-Jaldi font-semibold">
+													{
+														errors.termsAccepted
+															._errors[0]
+													}
+												</p>
+											)} */}
+										</div>
                     <hr />
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-5 rounded-xl px-4 py-2 font-Merriweather gap-4 md:gap-6">
                       <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-2 border-black  rounded-xl md:rounded-full px-4 py-2 font-Merriweather gap-4 md:gap-0 w-full h-auto md:h-[56px]">
@@ -989,7 +1035,7 @@ const Appointment = () => {
                       </div>
                       <div className="w-full md:w-2/12">
                         <FullButton
-                          disabled={!selectedTime || isLoading}
+                          disabled={!selectedTime || isLoading || !consentAccepted}
                           onClick={handleAppointmentSubmit}
                           className="w-full"
                         >
@@ -1058,6 +1104,9 @@ const Appointment = () => {
           fetchAppointments={fetchAppointments}
         />
       )}
+      {showConsent && (
+							<Consent onClose={handleCloseModal} />
+						)}
     </div>
   );
 };
