@@ -16,24 +16,24 @@ import referredUser from "@/public/images/refer.png";
 import ModalReferralPending from "@/components/ui/modals/student/ModalReferralPending";
 
 function Home() {
-  const [selectedButton, setSelectedButton] = useState("featured");
+  // const [selectedButton, setSelectedButton] = useState("featured");
   const [posts, setPosts] = useState([]);
-  const [showFilterPostModal, setShowFilterModal] = useState(false);
+  // const [showFilterPostModal, setShowFilterModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  // const router = useRouter();
   const userSession = getUserSession();
   const [activeTab, setActiveTab] = useState("Latest");
   const [pinnedPosts, setPinnedPosts] = useState([]);
-  const [referredData, setReferredData] = useState({});
-  const [isReferralPending, setIsReferralPending] = useState(false);
+  // const [referredData, setReferredData] = useState({});
+  // const [isReferralPending, setIsReferralPending] = useState(false);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
 
-  useEffect(() => {
-    checkIfAcceptedReferralIsPending(userSession.email);
-  }, [activeTab]);
+  // useEffect(() => {
+  //   checkIfAcceptedReferralIsPending(userSession.email);
+  // }, [activeTab]);
 
   const fetchPosts = async () => {
     try {
@@ -61,35 +61,36 @@ function Home() {
     }
   };
 
-  const checkIfAcceptedReferralIsPending = async (email) => {
-    try {
-      const referred = await fetch(
-        `${process.env.BASE_URL}${API_ENDPOINT.CHECK_REFERRAL_PRESENT}${email}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
-        }
-      );
+  // const checkIfAcceptedReferralIsPending = async (email) => {
+  //   try {
+  //     const referred = await fetch(
+  //       `${process.env.BASE_URL}${API_ENDPOINT.CHECK_REFERRAL_PRESENT}${email}`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${Cookies.get("token")}`,
+  //         },
+  //       }
+  //     );
 
-      const referrData = await referred.json();
-      setReferredData(referrData);
-      if (referredData) {
-        setIsReferralPending(true);
-      }
-    } catch (error) {
-      console.error(
-        "Error checking if accepted referral is pending.",
-        error.message
-      );
-    }
-  };
+  //     const referrData = await referred.json();
+  //     setReferredData(referrData);
+  //     if (referredData) {
+  //       setIsReferralPending(true);
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       "Error checking if accepted referral is pending.",
+  //       error.message
+  //     );
+  //   }
+  // };
 
   useEffect(() => {
     fetchPosts();
   }, []);
+
   return (
     <div>
       <main className="min-h-screen">
@@ -210,12 +211,12 @@ function Home() {
 
       <Footer />
       <FloatingIcon />
-      {isReferralPending && (
+      {/* {isReferralPending && (
         <ModalReferralPending 
           setIsReferralPending={setIsReferralPending} 
           router={router} 
         />
-      )}
+      )} */}
     </div>
   );
 }
