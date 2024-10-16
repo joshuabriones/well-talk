@@ -139,6 +139,7 @@ function NavList({ userType }) {
 			navigationItems = [
 				{ label: "Home", route: "/student" },
 				{ label: "Appointment", route: "/student/appointment" },
+				{ label: "Referral", route: "/student/referral" },
 				{ label: "Journal", route: "/student/journal" },
 			];
 			break;

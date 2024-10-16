@@ -195,7 +195,7 @@ const Referral = () => {
     return <Load route="login" />;
   }
 
-  if (userSession && userSession.role !== "teacher") {
+  if (userSession && userSession.role !== "student") {
     return <Load route={userSession.role} />;
   }
   // sorting
@@ -307,10 +307,10 @@ const Referral = () => {
 
   return (
     <div className="min-h-screen w-full">
-      <Navbar userType="teacher" />
+      <Navbar userType="student" />
       <Header
         image={hdrReferrals.src}
-        desc="Unlock student potential! Teachers, utilize this referral portal to recommend students who could thrive with counseling support. Your insight fuels our commitment to student well-being and success."
+        desc="Empower your peers! As a student, use this referral portal to recommend friends who may benefit from counseling support. Your understanding and encouragement can help them access the resources they need for personal growth and success."
       />
 
       <div className="flex flex-col px-4 sm:px-10 md:px-20 lg:px-56 py-10">
