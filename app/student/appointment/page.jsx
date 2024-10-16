@@ -627,7 +627,7 @@ const Appointment = () => {
               {/* table*/}
 
               <div className="overflow-x-auto max-w-full py-10 px-8 md:px-28 lg:px-28 xs:px-1 flex flex-col items-center">
-                <div className="flex gap-5 py-4 w-full">
+                <div className="flex flex-col md:flex-row lg:flex-row gap-5 py-4 w-full">
                   <div className="flex items-center">
                     <label htmlFor="search-filter" className="mr-2">
                       Search:
@@ -663,11 +663,11 @@ const Appointment = () => {
                     <tr className="font-bold text-center py-4 rounded-t-2xl">
                       <th className="py-4">Date</th>
                       <th className="py-4">Time</th>
-                      <th className="py-4">Appointment Type</th>
-                      <th className="py-4">Reason</th>
-                      <th className="py-4">Feedback</th>
+                      <th className="py-4 hidden lg:block">Appointment Type</th>
+                      <th className="py-4 hidden lg:block">Reason</th>
+                      <th className="py-4 hidden lg:block">Feedback</th>
                       <th className="py-4">Status</th>
-                      <th className="py-4">Action</th>
+                      <th className="py-4 hidden lg:block">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -690,10 +690,10 @@ const Appointment = () => {
                           <td className="text-center py-2">
                             {appointment.appointmentStartTime}
                           </td>
-                          <td className="text-center py-2">
+                          <td className="text-center py-2 hidden lg:block">
                             {appointment.appointmentType}
                           </td>
-                          <td className="text-center py-2">
+                          <td className="text-center py-2 hidden lg:block">
                             <p className="truncate">
                               {appointment.appointmentPurpose.length > 50
                                 ? `${appointment.appointmentPurpose.substring(
@@ -703,7 +703,7 @@ const Appointment = () => {
                                 : appointment.appointmentPurpose}
                             </p>
                           </td>
-                          <td className="text-center">
+                          <td className="text-center hidden lg:block">
                             <p>
                               {appointment?.appointmentNotes?.length > 50
                                 ? `${appointment?.appointmentNotes?.substring(
@@ -744,7 +744,7 @@ const Appointment = () => {
                           </td>
 
                           {/* Delete and Edit */}
-                          <td>
+                          <td className="hidden lg:block">
                             <div className="flex justify-center text-center py-2">
                               {appointment.appointmentStatus === "Pending" && (
                                 <>
@@ -760,7 +760,7 @@ const Appointment = () => {
                                     Delete
                                   </button>
                                   <button
-                                    className="btn btn-xs text-gray hover:text-gray hover:bg-gold"
+                                    className=" btn btn-xs text-gray hover:text-gray hover:bg-gold"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       showRescheduleModal(
