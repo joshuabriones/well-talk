@@ -663,11 +663,11 @@ const Appointment = () => {
                     <tr className="font-bold text-center py-4 rounded-t-2xl">
                       <th className="py-4">Date</th>
                       <th className="py-4">Time</th>
-                      <th className="py-4 hidden lg:block">Appointment Type</th>
-                      <th className="py-4 hidden lg:block">Reason</th>
-                      <th className="py-4 hidden lg:block">Feedback</th>
+                      <th className="py-4 hidden  lg:table-cell">Appointment Type</th>
+                      <th className="py-4 hidden  lg:table-cell">Reason</th>
+                      <th className="py-4 hidden  lg:table-cell">Feedback</th>
                       <th className="py-4">Status</th>
-                      <th className="py-4 hidden lg:block">Action</th>
+                      <th className="py-4 hidden  lg:table-cell">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -690,10 +690,10 @@ const Appointment = () => {
                           <td className="text-center py-2">
                             {appointment.appointmentStartTime}
                           </td>
-                          <td className="text-center py-2 hidden lg:block">
+                          <td className="text-center py-2 hidden  lg:table-cell">
                             {appointment.appointmentType}
                           </td>
-                          <td className="text-center py-2 hidden lg:block">
+                          <td className="text-center py-2 hidden  lg:table-cell">
                             <p className="truncate">
                               {appointment.appointmentPurpose.length > 50
                                 ? `${appointment.appointmentPurpose.substring(
@@ -703,7 +703,7 @@ const Appointment = () => {
                                 : appointment.appointmentPurpose}
                             </p>
                           </td>
-                          <td className="text-center hidden lg:block">
+                          <td className="text-center hidden  lg:table-cell">
                             <p>
                               {appointment?.appointmentNotes?.length > 50
                                 ? `${appointment?.appointmentNotes?.substring(
@@ -744,7 +744,7 @@ const Appointment = () => {
                           </td>
 
                           {/* Delete and Edit */}
-                          <td className="hidden lg:block">
+                          <td className="hidden  lg:table-cell">
                             <div className="flex justify-center text-center py-2">
                               {appointment.appointmentStatus === "Pending" && (
                                 <>
