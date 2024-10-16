@@ -55,12 +55,12 @@ const ModalParentInfo = ({ setIsParentModalOpen, guardianName, setGuardianName, 
 								label="Parent/Guardian Contact Number"
 								id="parent-guardian-contact"
 							/>
-							<button
+							
+						</div><button
 								onClick={handleParentInfoSubmit}
 								className="mt-2 w-full bg-gray border-2 font-Merriweather text-sm text-white font-semibold rounded-3xl px-4 py-3 hover:scale-95 transition-transform duration-300">
 								Submit
 							</button>
-						</div>
 					</div>
 				</div>
 			</div>

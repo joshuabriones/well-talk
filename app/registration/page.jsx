@@ -55,6 +55,8 @@ const Registration = () => {
 	const [isValidPassword, setIsValidPassword] = useState(true);
 	const [selectedPrograms, setSelectedPrograms] = useState([]);
 	const [selectedYearLevels, setSelectedYearLevels] = useState([]);
+	const [guardianName, setGuardianName] = useState("");
+	const [guardianContact, setGuardianContact] = useState("");
 	const [termsAccepted, setTermsAccepted] = useState(false);
 	const [errors, setErrors] = useState({});
 	const [showTermsNotAccepted, setShowTermsNotAccepted] = useState(false);
@@ -64,9 +66,8 @@ const Registration = () => {
 	const [isMismatchError, setIsMismatchError] = useState(false);
 	const [showTerms, setShowTerms] = useState(false);
 
-	const [emailStatus, setEmailStatus] = useState('');
-	const [idNumberStatus, setIdNumberStatus] = useState('');
-
+	const [emailStatus, setEmailStatus] = useState("");
+	const [idNumberStatus, setIdNumberStatus] = useState("");
 
 	const modalRef = useRef(null);
 
@@ -130,6 +131,8 @@ const Registration = () => {
 					: program,
 			password,
 			passwordCheck,
+			guardianName,
+			guardianContact,
 			termsAccepted,
 		});
 
@@ -150,6 +153,8 @@ const Registration = () => {
 				contactNumber,
 				permanentAddress,
 				year,
+				guardianName,
+				guardianContact,
 			};
 			extraInfoValidation = studentSchema.safeParse(studentData);
 		} else if (role === "counselor") {
@@ -193,7 +198,9 @@ const Registration = () => {
 			const emailData = await emailResponse.text();
 
 			if (emailResponse.ok && emailData === "Email exists.") {
-				setErrors({ email: "This email already exists. Please use a different email." });
+				setErrors({
+					email: "This email already exists. Please use a different email.",
+				});
 				clearErrors();
 				emailExists = true;
 			}
@@ -223,7 +230,9 @@ const Registration = () => {
 			const idData = await idResponse.text();
 
 			if (idResponse.ok && idData === "ID number exists.") {
-				setErrors({ idno: "This ID number already exists. Please use a different ID number." });
+				setErrors({
+					idno: "This ID number already exists. Please use a different ID number.",
+				});
 				clearErrors();
 				idExists = true;
 			}
@@ -265,6 +274,8 @@ const Registration = () => {
 								birthDate: birthdate,
 								contactNumber: contactNumber,
 								permanentAddress: permanentAddress,
+								guardianName: guardianName,
+								guardianContact: guardianContact,
 							}),
 						}
 					);
@@ -412,7 +423,6 @@ const Registration = () => {
 		router.push("/login");
 	};
 
-
 	const handleEmailChange = async (e) => {
 		const enteredEmail = e.target.value;
 		setEmail(enteredEmail);
@@ -432,25 +442,25 @@ const Registration = () => {
 					}
 				);
 
-
 				const data = await response.text();
 
 				if (response.ok) {
-
 					if (data === "Email exists.") {
 						setEmailStatus("Email already taken");
 					} else {
 						setEmailStatus("Email is available");
 					}
 				} else {
-					setEmailStatus(data || "Error occurred while checking email.");
+					setEmailStatus(
+						data || "Error occurred while checking email."
+					);
 				}
 			} catch (error) {
 				console.error("Error checking email:", error);
 				setEmailStatus("Error occurred while checking email.");
 			}
 		} else {
-			setEmailStatus('');
+			setEmailStatus("");
 		}
 	};
 
@@ -482,14 +492,16 @@ const Registration = () => {
 						setIdNumberStatus("ID number is available");
 					}
 				} else {
-					setIdNumberStatus(data || "Error occurred while checking ID number.");
+					setIdNumberStatus(
+						data || "Error occurred while checking ID number."
+					);
 				}
 			} catch (error) {
 				console.error("Error checking ID number:", error);
 				setIdNumberStatus("Error occurred while checking ID number.");
 			}
 		} else {
-			setIdNumberStatus('');
+			setIdNumberStatus("");
 		}
 	};
 
@@ -631,7 +643,9 @@ const Registration = () => {
 													type="email"
 													id="email"
 												/>
-												<p className = "text-xs pt-2">{emailStatus}</p>
+												<p className="text-xs pt-2">
+													{emailStatus}
+												</p>
 												{errors.idno && (
 													<p className="text-red-500 text-sm font-Jaldi font-semibold">
 														{
@@ -644,18 +658,28 @@ const Registration = () => {
 											<div className="flex flex-col w-full">
 												<TextInput
 													value={idno}
-													onChange={handleIdNumberChange}
+													onChange={
+														handleIdNumberChange
+													}
 													placeholder="ID Number"
 													label="ID Number"
 													type="text"
 													id="idno"
 												/>
-												<p className = "text-xs pt-2">{idNumberStatus}</p>
-												{errors.idno && errors.idno._errors && errors.idno._errors.length > 0 && (
-													<p className="text-red-500 text-sm font-Jaldi font-semibold">
-														{errors.idno._errors[0]}
-													</p>
-												)}
+												<p className="text-xs pt-2">
+													{idNumberStatus}
+												</p>
+												{errors.idno &&
+													errors.idno._errors &&
+													errors.idno._errors.length >
+														0 && (
+														<p className="text-red-500 text-sm font-Jaldi font-semibold">
+															{
+																errors.idno
+																	._errors[0]
+															}
+														</p>
+													)}
 											</div>
 										</div>
 
@@ -843,7 +867,7 @@ const Registration = () => {
 													<div className="flex flex-col w-full">
 														<label
 															htmlFor="birthdate"
-															className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full">
+															className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm h-14 focus-within:border-black focus-within:ring-1 focus-within:ring-black">
 															<DatePicker
 																selected={
 																	birthdate
@@ -855,7 +879,7 @@ const Registration = () => {
 																		date
 																	)
 																}
-																className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
+																className="peer border-none bg-white placeholder-transparent focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black p-1 sm:p-3"
 																showMonthDropdown
 																showYearDropdown
 																dropdownMode="select"
@@ -1073,7 +1097,38 @@ const Registration = () => {
 														)}
 													</div>
 												</div>
-
+												<div className="w-full flex flex-row gap-x-6">
+													<div className="flex flex-col w-full">
+														<TextInput
+															value={guardianName}
+															onChange={(e) =>
+																setGuardianName(
+																	e.target
+																		.value
+																)
+															}
+															placeholder="Jane Doe"
+															label="Parent/Guardian Name"
+															id="parent-guardian-name"
+														/>
+													</div>
+													<div className="flex flex-col w-full">
+														<TextInput
+															value={
+																guardianContact
+															}
+															onChange={(e) =>
+																setGuardianContact(
+																	e.target
+																		.value
+																)
+															}
+															placeholder="09123456789"
+															label="Parent/Guardian Contact Number"
+															id="parent-guardian-contact"
+														/>
+													</div>
+												</div>
 												<div className="flex flex-col w-full">
 													<TextInput
 														value={permanentAddress}
@@ -1168,7 +1223,7 @@ const Registration = () => {
 																}
 																options={
 																	programOptions[
-																	college
+																		college
 																	]
 																}
 																onChange={
@@ -1259,7 +1314,7 @@ const Registration = () => {
 															}
 															options={
 																programOptions[
-																college
+																	college
 																]
 															}
 															onChange={
@@ -1341,7 +1396,7 @@ const Registration = () => {
 												disabled={!role}
 												className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
 											/>
-											<label className="text-sm font-bold text-gray-700">
+											<label className="text-md font-semibold font-Jaldi text-gray-700">
 												I accept the{" "}
 												<a
 													href="#"
@@ -1372,7 +1427,7 @@ const Registration = () => {
 													Create Account
 												</FullButton>
 											</div>
-											<div className="w-full mt-4 flex justify-center">
+											<div className="w-full mt-4 text-lg font-Jaldi flex justify-center">
 												<p>
 													Already have an account?{" "}
 													<span

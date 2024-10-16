@@ -12,13 +12,13 @@ function TextInput({
 		<div className="flex flex-col w-full md:px-0">
 			<label
 				htmlFor={id}
-				className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black">
+				className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm h-14 focus-within:border-black focus-within:ring-1 focus-within:ring-black">
 				<input
 					type={type}
 					id={id}
 					value={value}
 					onChange={onChange}
-					className="peer border-none bg-white placeholder-transparent focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black p-2 sm:p-3"
+					className="peer border-none bg-white placeholder-transparent focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black p-1 sm:p-3"
 					placeholder={placeholder}
 					readOnly={readOnly}
 					disabled={disabled}
