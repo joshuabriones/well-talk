@@ -8,8 +8,14 @@ import { Navbar } from "@/components/ui/landing/LandingNav";
 import LandingSlider from "@/components/ui/landing/Slider";
 import { Content } from "@/components/ui/landing/Steps";
 import styles from "./../css/landing.module.css";
+import { useRouter } from "next/navigation";
 
 export default function Landing() {
+	const router = useRouter();
+
+	const handleCreateAccountClick = () => {
+		router.push("/registration");
+	};
 	return (
 		<div className="min-h-screen w-full">
 			<main>
@@ -28,7 +34,7 @@ export default function Landing() {
 								<LandingSlider />
 							</div>
 						</div>
-						<div className="w-full lg:w-5/12 text-left lg:text-right mt-8 md:mt-0">
+						<div className="w-full lg:w-5/12 text-left md:text-right lg:text-right mt-8 md:mt-0">
 							<ScrollAnimationWrapper animationType="fadeInFromRight">
 								<div className="mt-4 md:mt-0 sm:mt-0">
 									<h2 className="text-3xl md:text-3xl lg:text-6xl font-Merriweather">
@@ -60,7 +66,7 @@ export default function Landing() {
 								<p className="font-Jaldi text-gray-50 mt-4 lg:w-10/12 lg:ml-16">
 								Create an account today to easily raise your concerns and get the support you need from the guidance office.
 								</p>
-								<button className="hover:bg-opacity-90 text-gray font-bold border border-gray-50 py-3 px-6 rounded-full transition mt-4 mb-0 bg-gold">
+								<button className="hover:bg-opacity-90 text-gray font-bold border border-gray-50 py-3 px-6 rounded-full transition mt-4 mb-0 bg-gold" onClick={handleCreateAccountClick} >
 									Get in touch
 								</button>
 							</div>

@@ -1,5 +1,5 @@
 import ScrollAnimationWrapper from "@/components/layout/ScrollAnimationWrapper";
-
+import styles from "../../../css/landing.module.css";
 const features = [
 	{
 		icon: (
@@ -66,8 +66,8 @@ const features = [
 
 const Features = () => {
 	return (
-		<section className="w-11/12 lg:w-8/12 relative py-24 md:py-28 lg:py-28 container mx-auto items-center md:px-4">
-			<div className="relative z-10 max-w-screen-xl mx-auto px-4 text-gray-300 lg:flex md:px-8 gap-24 container mx-auto items-center">
+		<section className="w-11/12 md:w-8/12 lg:w-8/12 relative py-16 md:py-28 lg:py-24 container mx-auto items-center ">
+			<div className="relative z-10 max-w-screen-xl mx-auto px-4 text-gray-300 lg:flex md:flex gap-24 container mx-auto items-center">
 				<div className="lg:w-2/5">
 					<ScrollAnimationWrapper animationType="default">
 						<h3 className="font-Merriweather text-gray-700 text-3xl font-semibold sm:text-4xl">
@@ -82,8 +82,8 @@ const Features = () => {
 						</p>
 					</ScrollAnimationWrapper>
 				</div>
-				<div className="lg:w-4/5 mt-12 lg:mt-0">
-					<ul className="grid gap-8 sm:grid-cols-1 lg:grid-cols-2">
+				<div className="md:w-4/5 lg:w-4/5 mt-12 lg:mt-0">
+					<ul className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
 						{features.map((item, idx) => (
 							<ScrollAnimationWrapper
 								animationType="default"
@@ -108,6 +108,69 @@ const Features = () => {
 						))}
 					</ul>
 				</div>
+			</div>
+			<div
+				className={`mt-12 mb-4 max-w-4xl mx-6 md:mx-auto lg:mx-auto border-2 rounded-xl md:${styles.floating} lg:${styles.floating} relative`}>
+				<div className="gallery fixed-size border-gray-400 rounded-xl bg-gray-100 shadow-lg">
+					<div className="window-bar border-b-2 text-gray px-4 py-4 flex justify-between items-center rounded-t-xl">
+						<div className="window-title font-bold"></div>
+						<div className="window-controls flex space-x-2">
+							<div className="w-4 h-4 border-2 bg-yellow-400 rounded-full"></div>
+							<div className="w-4 h-4 border-2 bg-green-400 rounded-full"></div>
+							<div className="w-4 h-4 border-2 bg-red-400 rounded-full"></div>
+						</div>
+					</div>
+
+					<div className="bg-gold rounded-xl h-auto">
+						<div className="bg-gold text-left pt-6 md:pt-4 lg:pt-4">
+							<h2 className="font-Merriweather text-gray-700 text-2xl md:text-4xl lg:text-4xl p-4 text-left ml-2 md:ml-4 lg:ml-4 font-semibold text-gray-800">
+								Guiding You Forward:<br></br> Our{" "}
+								<span className="text-maroon">Mission</span> and{" "}
+								<span className="text-maroon">Services</span>
+							</h2>
+						</div>
+
+						<div className="bg-gold rounded-b-xl p-4 md:px-8 md:pb-8 lg:px-8 lg:pb-8">
+							<div
+								className="relative aspect-w-18"
+								style={{ paddingBottom: "56.25%", height: 0 }}>
+								<video
+									controls
+									autoPlay
+									loop
+									preload="auto"
+									style={{
+										position: "absolute",
+										top: 0,
+										left: 0,
+										width: "100%",
+										height: "100%",
+										borderRadius: "10px",
+									}}>
+									<source
+										src="/images/vid.mp4"
+										type="video/mp4"
+									/>
+									Your browser does not support the video tag.
+								</video>
+							</div>
+							<p className="mt-6 text-lg md:text-xl lg:text-xl text-gray-600 text-justify text-center font-Jaldi">
+								The CIT University Guidance Center aims for the
+								holistic development of our dear Technologians.
+								The office is committed to promulgating services
+								in shaping students to reach their full
+								potential. With that in mind, check out our
+								Mission, Vision, and Guidance services that you
+								can avail!
+							</p>
+						</div>
+					</div>
+				</div>
+				<img
+					src="/images/cursor.png"
+					alt="Cursor"
+					className="absolute hidden lg:block bottom-24 -right-32 w-40 h-40"
+				/>
 			</div>
 		</section>
 	);
