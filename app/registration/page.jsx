@@ -57,6 +57,7 @@ const Registration = () => {
 	const [selectedYearLevels, setSelectedYearLevels] = useState([]);
 	const [guardianName, setGuardianName] = useState("");
 	const [guardianContact, setGuardianContact] = useState("");
+	const [relationship, setRelationship] = useState("");
 	const [termsAccepted, setTermsAccepted] = useState(false);
 	const [errors, setErrors] = useState({});
 	const [showTermsNotAccepted, setShowTermsNotAccepted] = useState(false);
@@ -65,6 +66,8 @@ const Registration = () => {
 	const [isEmptyError, setIsEmptyError] = useState(false);
 	const [isMismatchError, setIsMismatchError] = useState(false);
 	const [showTerms, setShowTerms] = useState(false);
+	const [currentAddress, setCurrentAddress] = useState("");
+	const [useAsCurrent, setUseAsCurrent] = useState(false);
 
 	const [emailStatus, setEmailStatus] = useState("");
 	const [idNumberStatus, setIdNumberStatus] = useState("");
@@ -78,9 +81,17 @@ const Registration = () => {
 	const handleTermsChange = (e) => {
 		setTermsAccepted(e.target.checked);
 		if (e.target.checked) {
-			setShowTerms(true); // Show terms when checked
+			setShowTerms(true);
 		} else {
-			setShowTerms(false); // Hide terms when unchecked
+			setShowTerms(false);
+		}
+	};
+	const handleCheckboxChange = () => {
+		setUseAsCurrent(!useAsCurrent);
+		if (!useAsCurrent) {
+			setCurrentAddress(permanentAddress);
+		} else {
+			setCurrentAddress("");
 		}
 	};
 
@@ -90,7 +101,7 @@ const Registration = () => {
 		return <Load route={userSession.role} />;
 
 	const handleProgramChange = (selectedOptions) => {
-		setSelectedPrograms(selectedOptions); // You will get an array of selected programs
+		setSelectedPrograms(selectedOptions); 
 	};
 
 	const handleYearLevelChange = (event) => {
@@ -133,6 +144,8 @@ const Registration = () => {
 			passwordCheck,
 			guardianName,
 			guardianContact,
+			relationship,
+			currentAddress,
 			termsAccepted,
 		});
 
@@ -155,6 +168,8 @@ const Registration = () => {
 				year,
 				guardianName,
 				guardianContact,
+				relationship,
+				currentAddress,
 			};
 			extraInfoValidation = studentSchema.safeParse(studentData);
 		} else if (role === "counselor") {
@@ -276,6 +291,8 @@ const Registration = () => {
 								permanentAddress: permanentAddress,
 								guardianName: guardianName,
 								guardianContact: guardianContact,
+								relationship: relationship,
+								currentAddress: currentAddress,
 							}),
 						}
 					);
@@ -536,7 +553,7 @@ const Registration = () => {
 					<div className="grid grid-cols-1 lg:grid-cols-5 gap-6 py-2 lg:gap-x-10 justify-content-between h-full">
 						<div className="hidden lg:col-span-3 lg:block rounded-2xl">
 							<div className="relative w-full col-span-3 lg:col-span-3 rounded-2xl">
-								<div className="hidden md:hidden lg:block h-[90vh] w-full rounded-2xl overflow-hidden relative border-2">
+								<div className="hidden md:hidden lg:block h-[95vh] w-full rounded-2xl overflow-hidden relative border-2">
 									<img
 										src="/images/regis.png"
 										alt="pattern"
@@ -1108,10 +1125,12 @@ const Registration = () => {
 																)
 															}
 															placeholder="Jane Doe"
-															label="Parent/Guardian Name"
+															label="Guardian Name"
 															id="parent-guardian-name"
 														/>
 													</div>
+												</div>
+												<div className="w-full flex flex-row gap-x-6">
 													<div className="flex flex-col w-full">
 														<TextInput
 															value={
@@ -1124,33 +1143,102 @@ const Registration = () => {
 																)
 															}
 															placeholder="09123456789"
-															label="Parent/Guardian Contact Number"
+															label="Guardian Contact Number"
 															id="parent-guardian-contact"
 														/>
 													</div>
-												</div>
-												<div className="flex flex-col w-full">
-													<TextInput
-														value={permanentAddress}
-														onChange={(e) =>
-															setPermanentAddress(
-																e.target.value
-															)
-														}
-														placeholder="Permanent Address"
-														label="Permanent Address"
-														type="text"
-														id="permanentAddress"
-													/>
-													{errors.permanentAddress && (
-														<p className="text-red-500 text-sm font-Jaldi font-semibold">
-															{
-																errors
-																	.permanentAddress
-																	._errors[0]
+													<div className="flex flex-col w-full">
+														<TextInput
+															value={relationship}
+															onChange={(e) =>
+																setRelationship(
+																	e.target
+																		.value
+																)
 															}
-														</p>
-													)}
+															placeholder="09123456789"
+															label="Relationship with Guardian"
+															id="relationship"
+														/>
+													</div>
+												</div>
+												<div className="w-full flex flex-row gap-x-6">
+													{/* Permanent Address and Checkbox in Column */}
+													<div className="flex flex-col">
+														<TextInput
+															value={
+																permanentAddress
+															}
+															onChange={(e) => {
+																setPermanentAddress(
+																	e.target
+																		.value
+																);
+																// If the checkbox is checked, update the current address as well
+																if (
+																	useAsCurrent
+																) {
+																	setCurrentAddress(
+																		e.target
+																			.value
+																	);
+																}
+															}}
+															placeholder="Permanent Address"
+															label="Permanent Address"
+															type="text"
+															id="permanentAddress"
+														/>
+														{errors.permanentAddress && (
+															<p className="text-red-500 text-sm font-Jaldi font-semibold">
+																{
+																	errors
+																		.permanentAddress
+																		._errors[0]
+																}
+															</p>
+														)}
+
+														<div className="flex items-center mt-1">
+															<input
+																type="checkbox"
+																id="useAsCurrent"
+																checked={
+																	useAsCurrent
+																}
+																onChange={
+																	handleCheckboxChange
+																}
+																className="mr-1 h-3 w-3 text-black focus:ring-black border-gray-300 rounded"
+															/>
+															<label
+																htmlFor="useAsCurrent"
+																className="text-xs">
+																Use this as
+																current address
+															</label>
+														</div>
+													</div>
+													<div className="flex flex-row">
+														<TextInput
+															value={
+																currentAddress
+															}
+															onChange={(e) =>
+																setCurrentAddress(
+																	e.target
+																		.value
+																)
+															}
+															placeholder="Current Address"
+															label="Current Address"
+															type="text"
+															id="currentAddress"
+															disabled={
+																useAsCurrent
+															}
+														/>
+													</div>
 												</div>
 											</>
 										)}
@@ -1388,13 +1476,13 @@ const Registration = () => {
 												)}
 											</>
 										)}
-										<div className="w-full flex items-center gap-x-2 py-2">
+										<div className="w-full flex items-center gap-x-2 mt-1">
 											<input
 												type="checkbox"
 												checked={termsAccepted}
 												onChange={handleTermsChange}
 												disabled={!role}
-												className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
+												className="h-3 w-3 text-black focus:ring-black border-gray-300 rounded"
 											/>
 											<label className="text-md font-semibold font-Jaldi text-gray-700">
 												I accept the{" "}
@@ -1403,7 +1491,7 @@ const Registration = () => {
 													className="hover:underline text-maroon"
 													onClick={(e) => {
 														e.preventDefault();
-														setShowTerms(true); // Show terms when the link is clicked
+														setShowTerms(true);
 													}}>
 													terms and conditions
 												</a>
@@ -1418,7 +1506,7 @@ const Registration = () => {
 											)}
 										</div>
 
-										<div className="flex flex-col w-full mt-2">
+										<div className="flex flex-col w-full mt-1">
 											<div className="flex flex-col w-full">
 												<FullButton
 													onClick={

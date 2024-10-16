@@ -508,8 +508,9 @@ const Appointment = () => {
 						</button>
 					</div>
 					{appointments && isViewAppointment ? (
-						<div className="overflow-x-auto max-w-full lg:px-28 xs:px-1 flex flex-col items-center">
-							<div className="flex gap-5 py-4 w-full">
+						<div className="w-full flex flex-col">
+						<div className="overflow-x-auto max-w-full py-10 px-8 md:px-28 lg:px-28 xs:px-1 flex flex-col items-center">
+							<div className="flex flex-col md:flex-row lg:flex-row gap-5 py-4 w-full">
 								<div className="flex items-center">
 									<label htmlFor="search-filter" className="mr-2">
 										Search:
@@ -539,18 +540,18 @@ const Appointment = () => {
 									</select>
 								</div>
 							</div>
-							<table className="table bg-gray-100 rounded-xl">
+							<table className="table bg-gray-100 rounded-xl px-2">
 								{/* head */}
 								<thead className="bg-silver px-2 border-b-2 border-maroon rounded-t-2xl">
 									<tr className="font-bold text-center py-4 rounded-t-2xl">
 										{/* <th className="text-center p-5">ID</th> */}
 										<th className="py-4">Date and Time</th>
-										<th className="py-4">ID Number</th>
-										<th className="py-4">Student</th>
-										<th className="py-4">Reason</th>
-										<th className="py-4">Feedback</th>
+										<th className="py-4 hidden  lg:table-cell">ID Number</th>
+										<th className="py-4 w-md">Student</th>
+										<th className="py-4 hidden  lg:table-cell">Reason</th>
+										<th className="py-4 hidden  lg:table-cell">Feedback</th>
 										<th className="py-4">Status</th>
-										<th className="py-4">Action</th>
+										<th className="py-4 hidden  lg:table-cell">Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -569,21 +570,21 @@ const Appointment = () => {
 											</td> */}
 											<td className="text-center py-2">
 												{/* <div className="flex flex-row gap-x-2"> */}
-												<div className="text-sm py-2">
+												<div className="text-xs lg:text-sm py-2">
 													{formatDate(appointments.appointmentDate)}{" "}
 													{appointments.appointmentStartTime}
 												</div>
 												{/* </div> */}
 											</td>
-											<td className="text-center py-2">
+											<td className="text-center py-2 hidden  lg:table-cell">
 												{/* <div className="flex flex-row gap-x-3"> */}
 												<div>{appointments.student?.idNumber}</div>
 												{/* </div> */}
 											</td>
 											<td className="h-full">
 												<div className="flex items-center justify-center gap-3">
-													<div className="avatar">
-														<div className="mask mask-squircle w-12 h-12">
+													<div className="avatar  hidden lg:block">
+														<div className="mask mask-squircle w-12 h-12 hidden lg:block">
 															<img
 																src={appointments.student?.image}
 																alt="Avatar Tailwind CSS Component"
@@ -591,11 +592,11 @@ const Appointment = () => {
 														</div>
 													</div>
 													<div>
-														<div className="font-bold">
+														<div className="text-xs lg:text-sm font-bold">
 															{appointments.student?.firstName}{" "}
 															{appointments.student?.lastName}
 														</div>
-														<div className="text-sm opacity-50">
+														<div className="text-xs lg:text-sm opacity-50">
 															{
 																appointments.student
 																	?.institutionalEmail
@@ -604,7 +605,7 @@ const Appointment = () => {
 													</div>
 												</div>
 											</td>
-											<td className="text-center">
+											<td className="text-center hidden lg:table-cell">
 												<p>
 													{appointments?.appointmentPurpose?.length > 50
 														? `${appointments?.appointmentPurpose?.substring(
@@ -614,7 +615,7 @@ const Appointment = () => {
 														: appointments?.appointmentPurpose}
 												</p>
 											</td>
-											<td className="text-center">
+											<td className="text-center hidden  lg:table-cell">
 												<p>
 													{appointments?.appointmentNotes?.length > 50
 														? `${appointments?.appointmentNotes?.substring(
@@ -628,7 +629,7 @@ const Appointment = () => {
 											<td className="h-full">
 												<div className="flex items-center justify-center">
 													<div
-														className={`w-28 h-6 rounded-lg border border-black text-center`}
+														className={`w-20 lg:w-28 h-6 rounded-lg border border-black text-center`}
 													>
 														{appointments &&
 															appointments.appointmentStatus ===
@@ -642,7 +643,7 @@ const Appointment = () => {
 															appointments.appointmentStatus ===
 																"Cancelled" &&
 															"🔴"}
-														<span className="ml-2 text-bold text-sm">
+														<span className="ml-2 text-bold text-xs ">
 															{appointments
 																? appointments.appointmentStatus
 																: ""}
@@ -652,7 +653,7 @@ const Appointment = () => {
 											</td>
 
 											{/* Delete and Edit */}
-											<td>
+											<td className="hidden  lg:table-cell">
 												<div className="flex lg:flex-row justify-center items-center lg:gap-x-5 xs:gap-2 xs:flex-col">
 													<button
 														className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
@@ -710,6 +711,7 @@ const Appointment = () => {
 									Next
 								</button>
 							</div>
+						</div>
 						</div>
 					) : (
 						<div className="flex w-full py-10 px-8 md:px-28 lg:px-28 gap-10 justify-center md:flex-row flex-col">
