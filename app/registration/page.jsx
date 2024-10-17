@@ -1009,7 +1009,7 @@ const Registration = () => {
                                 setGuardianRelationship(e.target.value)
                               }
                               placeholder="09123456789"
-                              label="guardianRelationship with Guardian"
+                              label="Relationship"
                               id="guardianRelationship"
                             />
                           </div>
