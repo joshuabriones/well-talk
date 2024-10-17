@@ -23,6 +23,7 @@ import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 import { Badge, Calendar, Popover, Whisper } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
+import { useSearchParams } from "next/navigation";
 
 const Appointment = () => {
   const AppointmentPerPage = 10;
@@ -49,6 +50,9 @@ const Appointment = () => {
   const [confirmResponseModal, setConfirmResponseModal] = useState(false);
 
   const userSession = getUserSession();
+  //for referral params
+  const [referralId, setReferralId] = useState();
+  const searchParams = useSearchParams();
 
   const [appointmentDate, setAppointmentDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -69,6 +73,13 @@ const Appointment = () => {
   // if (userSession.role !== "counselor") {
   // 	return <Load role={userSession.role} />;
   // }
+  useEffect(() => {
+    const id = searchParams.get("referralId");
+    if (id) {
+      setReferralId(id);
+      setAppointmentType("Referral");
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (userSession) {
@@ -324,42 +335,79 @@ const Appointment = () => {
     setConfirmResponseModal(false);
     setIsLoading(true);
 
-    try {
-      const response = await fetch(
-        `${process.env.BASE_URL}${API_ENDPOINT.COUNSELOR_CREATE_APPOINTMENT}${userSession.id}?studentId=${selectedStudentId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
-          body: JSON.stringify({
-            appointmentDate: appointmentDate,
-            appointmentStartTime: convertTo24HourFormat(selectedTime),
-            appointmentEndTime: convertTo24HourFormat(endTime),
-            appointmentType: appointmentType,
-            appointmentPurpose: purpose,
-          }),
+    if (appointmentType === "Referral") {
+      try {
+        const response = await fetch(
+          `${process.env.BASE_URL}${API_ENDPOINT.CREATE_REFERRAL_APPOINTMENT}${referralId}&counselorId=${userSession.id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+            body: JSON.stringify({
+              appointmentDate: appointmentDate,
+              appointmentStartTime: convertTo24HourFormat(selectedTime),
+              appointmentType: appointmentType,
+              appointmentPurpose: purpose,
+            }),
+          }
+        );
+        if (response.ok) {
+          toast.success("Appointment created successfully");
         }
-      );
 
-      if (response.ok) {
-        toast.success("Appointment created successfully");
+        setPurpose("");
+        setAppointmentType("");
+        fetchAppointments();
+        fetchAppointmentsOnThatDate();
+        setIsAddAppointment(false);
+        setIsViewAppointment(true);
+        setSelectedTime("");
+        setSelectedTimeSlot(null);
+      } catch (error) {
+        console.log(error);
+        toast.error("Failed to create appointment");
+      } finally {
+        setIsLoading(false);
       }
+    } else {
+      try {
+        const response = await fetch(
+          `${process.env.BASE_URL}${API_ENDPOINT.COUNSELOR_CREATE_APPOINTMENT}${userSession.id}?studentId=${selectedStudentId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+            body: JSON.stringify({
+              appointmentDate: appointmentDate,
+              appointmentStartTime: convertTo24HourFormat(selectedTime),
+              appointmentType: appointmentType,
+              appointmentPurpose: purpose,
+            }),
+          }
+        );
 
-      setPurpose("");
-      setAppointmentType("");
-      fetchAppointments();
-      fetchAppointmentsOnThatDate();
-      setIsAddAppointment(false);
-      setIsViewAppointment(true);
-      setSelectedTime("");
-      setSelectedTimeSlot(null);
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to create appointment");
-    } finally {
-      setIsLoading(false);
+        if (response.ok) {
+          toast.success("Appointment created successfully");
+        }
+
+        setPurpose("");
+        setAppointmentType("");
+        fetchAppointments();
+        fetchAppointmentsOnThatDate();
+        setIsAddAppointment(false);
+        setIsViewAppointment(true);
+        setSelectedTime("");
+        setSelectedTimeSlot(null);
+      } catch (error) {
+        console.log(error);
+        toast.error("Failed to create appointment");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -868,7 +916,7 @@ const Appointment = () => {
                           onClick={handleAppointmentSubmit}
                           className="w-full"
                           disabled={
-                            !selectedStudentId ||
+                            // !selectedStudentId ||
                             !selectedTime ||
                             !appointmentDate ||
                             !purpose ||

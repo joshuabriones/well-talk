@@ -113,43 +113,40 @@ const PendingReferral = () => {
     }
   };
 
-  if (isTokenValid) { 
+  if (isTokenValid) {
     return (
       <section className={`${styles.hero} parallax`}>
-      <div
-			className={`fixed inset-0 flex items-center justify-center bg-white bg-opacity-25 z-50 backdrop-blur ${styles.floating}`}
-			role="dialog">
-        <div className="modal-box relative p-4 sm:p-6 lg:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white dark:bg-slate-800 rounded-2xl shadow-lg transform transition-transform duration-300 scale-95">
-          <div className="">
-            <img src="/images/loggo.png" alt="" className="h-20  sm:h-28 mx-auto" />
-          </div>
+        <div
+          className={`fixed inset-0 flex items-center justify-center bg-white bg-opacity-25 z-50 backdrop-blur ${styles.floating}`}
+          role="dialog"
+        >
+          <div className="modal-box relative p-4 sm:p-6 lg:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white dark:bg-slate-800 rounded-2xl shadow-lg transform transition-transform duration-300 scale-95">
+            <div className="">
+              <img
+                src="/images/loggo.png"
+                alt=""
+                className="h-20  sm:h-28 mx-auto"
+              />
+            </div>
 
-          <p className="text-sm sm:text-base text-gray-600">
-            Please confirm if you'd like to proceed with your referral to the
-            guidance office. We appreciate your time and assistance.
-          </p>
+            <p className="text-sm sm:text-base text-gray-600">
+              Please acknowledge that you have received this message of
+              referral.
+            </p>
 
-          <div className="flex flex-col  justify-center gap-y-4 sm:gap-x-4 py-4 sm:py-6 px-6 sm:px-12">
-            <FullButton onClick={confirmedAccept}>
-              I would like to proceed.
-            </FullButton>
-            <div
-              	className="text-sm font-semibold font-Merriweather cursor-pointer hover:scale-95 hover:text-[#8a252c]"
-              onClick={handleDecline}
-            >
-              Decline
+            <div className="flex flex-col  justify-center gap-y-4 sm:gap-x-4 py-4 sm:py-6 px-6 sm:px-12">
+              <FullButton onClick={confirmedAccept}>Acknowledged</FullButton>
             </div>
           </div>
+          {showConfirm && (
+            <ConfirmationPopup
+              title={title}
+              message={message}
+              onCancel={() => setShowConfirm(false)}
+              onConfirm={accept ? confirmedAccept : confirmedDecline}
+            />
+          )}
         </div>
-        {showConfirm && (
-          <ConfirmationPopup
-            title={title}
-            message={message}
-            onCancel={() => setShowConfirm(false)}
-            onConfirm={accept ? confirmedAccept : confirmedDecline}
-          />
-        )}
-      </div>
       </section>
     );
   } else {

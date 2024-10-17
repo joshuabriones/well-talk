@@ -37,15 +37,13 @@ const TableTitle = ({ addReferral }) => {
 const TableHeaders = ({ handleSort }) => {
   return (
     <thead className="bg-silver px-2 border-b-2 border-maroon rounded-t-2xl">
-                    <tr className="font-bold text-center py-4 rounded-t-2xl">
+      <tr className="font-bold text-center py-4 rounded-t-2xl">
         <th className="py-4">Referred Student</th>
         <th className="py-4">College, Program and Year</th>
         {/* <th className="p-5">ID Number</th> */}
         <th className="py-4">Assigned Counselor</th>
         <th className="py-4">Reason</th>
-        <th className="py-4">
-          Status
-        </th>
+        <th className="py-4">Status</th>
         <th className="py-4">Action</th>
       </tr>
     </thead>
@@ -59,7 +57,7 @@ const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
         <tr
           key={referrals.referralId}
           onClick={() => handleRowClick(referrals.referralId)}
-         className={`border-slate-100 border-b-2
+          className={`border-slate-100 border-b-2
                           hover:bg-slate-100 cursor-pointer 
                           transition duration-300 ease-in-out`}
         >
@@ -292,6 +290,7 @@ const Referral = () => {
         throw new Error("Failed to fetch referrals");
       }
       const data = await response.json();
+      console.log("Data", data);
 
       setReferrals(data);
     } catch (error) {
