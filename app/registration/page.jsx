@@ -123,6 +123,7 @@ const Registration = () => {
     };
 
     let assignedYear = selectedYearLevels.map((item) => item.value).join(", ");
+
     let result;
 
     result = registrationSchema.safeParse({
