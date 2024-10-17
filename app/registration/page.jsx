@@ -55,9 +55,10 @@ const Registration = () => {
   const [isValidPassword, setIsValidPassword] = useState(true);
   const [selectedPrograms, setSelectedPrograms] = useState([]);
   const [selectedYearLevels, setSelectedYearLevels] = useState([]);
-  const [guardianName, setGuardianName] = useState("");
-  const [guardianContact, setGuardianContact] = useState("");
-  const [relationship, setRelationship] = useState("");
+  const [parentGuardianName, setParentGuardianName] = useState("");
+  const [parentGuardianContactNumber, setParentGuardianContactNumber] =
+    useState("");
+  const [guardianRelationship, setGuardianRelationship] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [errors, setErrors] = useState({});
   const [showTermsNotAccepted, setShowTermsNotAccepted] = useState(false);
@@ -122,7 +123,7 @@ const Registration = () => {
       }, 3000);
     };
 
-    let assignedYear = selectedYearLevels.map((item) => item.value).join(", ");
+    let assignedYear = selectedYearLevels.join(", ");
 
     let result;
 
@@ -140,9 +141,9 @@ const Registration = () => {
           : program,
       password,
       passwordCheck,
-      guardianName,
-      guardianContact,
-      relationship,
+      parentGuardianName,
+      parentGuardianContactNumber,
+      guardianRelationship,
       currentAddress,
       termsAccepted,
     });
@@ -164,9 +165,9 @@ const Registration = () => {
         contactNumber,
         permanentAddress,
         year,
-        guardianName,
-        guardianContact,
-        relationship,
+        parentGuardianName,
+        parentGuardianContactNumber,
+        guardianRelationship,
         currentAddress,
       };
       extraInfoValidation = studentSchema.safeParse(studentData);
@@ -287,10 +288,10 @@ const Registration = () => {
                 birthDate: birthdate,
                 contactNumber: contactNumber,
                 permanentAddress: permanentAddress,
+                parentGuardianName: parentGuardianName,
+                parentGuardianContactNumber: parentGuardianContactNumber,
+                guardianRelationship: guardianRelationship,
                 currentAddress: currentAddress,
-                parentGuardianName: guardianName,
-                parentGuardianContactNumber: guardianContact,
-                parentGuardianRelationship: relationship,
               }),
             }
           );
@@ -979,49 +980,38 @@ const Registration = () => {
                         <div className="w-full flex flex-row gap-x-6">
                           <div className="flex flex-col w-full">
                             <TextInput
-                              value={guardianName}
-                              onChange={(e) => setGuardianName(e.target.value)}
+                              value={parentGuardianName}
+                              onChange={(e) =>
+                                setParentGuardianName(e.target.value)
+                              }
                               placeholder="Jane Doe"
                               label="Guardian Name"
                               id="parent-guardian-name"
                             />
-                            {errors.guardianName && (
-                              <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                                {errors.guardianName._errors[0]}
-                              </p>
-                            )}
                           </div>
                         </div>
                         <div className="w-full flex flex-row gap-x-6">
                           <div className="flex flex-col w-full">
                             <TextInput
-                              value={guardianContact}
+                              value={parentGuardianContactNumber}
                               onChange={(e) =>
-                                setGuardianContact(e.target.value)
+                                setParentGuardianContactNumber(e.target.value)
                               }
                               placeholder="09123456789"
                               label="Guardian Contact Number"
                               id="parent-guardian-contact"
                             />
-                            {errors.guardianContact && (
-                              <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                                {errors.guardianContact._errors[0]}
-                              </p>
-                            )}
                           </div>
                           <div className="flex flex-col w-full">
                             <TextInput
-                              value={relationship}
-                              onChange={(e) => setRelationship(e.target.value)}
+                              value={guardianRelationship}
+                              onChange={(e) =>
+                                setGuardianRelationship(e.target.value)
+                              }
                               placeholder="09123456789"
-                              label="Relationship with Guardian"
-                              id="relationship"
+                              label="guardianRelationship with Guardian"
+                              id="guardianRelationship"
                             />
-                            {errors.relationship && (
-                              <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                                {errors.relationship._errors[0]}
-                              </p>
-                            )}
                           </div>
                         </div>
                         <div className="w-full flex flex-row gap-x-6">
@@ -1072,11 +1062,6 @@ const Registration = () => {
                               id="currentAddress"
                               disabled={useAsCurrent}
                             />
-                            {errors.currentAddress && (
-                              <p className="text-red-500 text-sm font-Jaldi font-semibold">
-                                {errors.currentAddress._errors[0]}
-                              </p>
-                            )}
                           </div>
                         </div>
                       </>
