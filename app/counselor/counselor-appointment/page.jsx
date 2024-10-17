@@ -63,7 +63,7 @@ const Appointment = () => {
   const [purpose, setPurpose] = useState(""); // State to store the purpose of the appointment
   const [appointmentOnThatDate, setAppointmentOnThatDate] = useState([]);
 
-  const [selectedStatus, setSelectedStatus] = useState("Pending");
+  const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
   // if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
@@ -611,6 +611,7 @@ const Appointment = () => {
                       onChange={handleStatusChange}
                       className="border rounded pr-[26px]"
                     >
+                       <option value="All">All </option>
                       <option value="Pending">Pending 🟡</option>
                       <option value="Done">Done 🟢</option>
                       <option value="Cancelled">Cancelled 🔴</option>

@@ -17,7 +17,8 @@ const ClientJournal = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await fetch(
+      // Fetch students from the first endpoint
+      const response1 = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_ASSIGNED_STUDENTS}${userSession.id}`,
         {
           method: "GET",
@@ -27,20 +28,55 @@ const ClientJournal = () => {
           },
         }
       );
-      const data = await response.json();
-
-      if (!response.ok) {
+      const data1 = await response1.json();
+  
+      if (!response1.ok) {
         throw new Error("Network response was not ok");
       }
-      setStudents(data.filter((student) => student.role === "student"));
+  
+      // Fetch appointments from the second endpoint
+      const response2 = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_COUNSELORID}${userSession.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      const data2 = await response2.json();
+  
+      if (!response2.ok) {
+        throw new Error("Network response was not ok");
+      }
+  
+      const appointmentStudents = data2.map(appointment => appointment.student);
+  
+      const combinedStudents = [
+        ...data1.filter(student => student.role === "student"),
+        ...appointmentStudents
+      ];
+  
+      const uniqueStudentsMap = new Map();
+      combinedStudents.forEach(student => {
+        if (!uniqueStudentsMap.has(student.id)) {
+          uniqueStudentsMap.set(student.id, student);
+        }
+      });
+  
+      const uniqueStudents = Array.from(uniqueStudentsMap.values());
+  
+      setStudents(uniqueStudents);
     } catch (error) {
       console.error("Error fetching students:", error);
     }
   };
-
+  
   useEffect(() => {
     fetchStudents();
   }, []);
+
 
   const handleSelectedStudent = (studentId) => {
     router.push(`/counselor/clientjournal/${studentId}`);
