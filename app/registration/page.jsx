@@ -988,6 +988,11 @@ const Registration = () => {
                               label="Guardian Name"
                               id="parent-guardian-name"
                             />
+                            {errors.parentGuardianName && (
+                              <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                                {errors.parentGuardianName._errors[0]}
+                              </p>
+                            )}
                           </div>
                         </div>
                         <div className="w-full flex flex-row gap-x-6">
@@ -1001,6 +1006,11 @@ const Registration = () => {
                               label="Guardian Contact Number"
                               id="parent-guardian-contact"
                             />
+                            {errors.parentGuardianContactNumber && (
+                              <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                                {errors.parentGuardianContactNumber._errors[0]}
+                              </p>
+                            )}
                           </div>
                           <div className="flex flex-col w-full">
                             <TextInput
@@ -1012,6 +1022,11 @@ const Registration = () => {
                               label="Relationship"
                               id="guardianRelationship"
                             />
+                            {errors.guardianRelationship && (
+                              <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                                {errors.guardianRelationship._errors[0]}
+                              </p>
+                            )}
                           </div>
                         </div>
                         <div className="w-full flex flex-row gap-x-6">
@@ -1062,6 +1077,11 @@ const Registration = () => {
                               id="currentAddress"
                               disabled={useAsCurrent}
                             />
+                            {errors.currentAddress && (
+                              <p className="text-red-500 text-sm font-Jaldi font-semibold">
+                                {errors.currentAddress._errors[0]}
+                              </p>
+                            )}
                           </div>
                         </div>
                       </>
