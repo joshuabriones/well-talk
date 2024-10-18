@@ -909,16 +909,18 @@ const Appointment = () => {
                         }`}
                         key={student.id}
                       >
-                        <span>
+                        <span className="flex-1 text-left">
                           {student.firstName} {student.lastName}
                         </span>
-                        <p>{student.idNumber}</p>
-                        <p>
+                        <span className="flex-1 text-center">
+                          {student.idNumber}
+                        </span>
+                        <span className="flex-1 text-right">
                           {programOptions[student?.college]?.find(
                             (item) => item.value === student?.program
                           )?.label || "N/A"}
                           - {student.year}
-                        </p>
+                        </span>
                       </button>
                     ))}
                   </div>
