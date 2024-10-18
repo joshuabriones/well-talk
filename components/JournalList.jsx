@@ -4,12 +4,7 @@ import Image from "next/image";
 // import ReactHtmlParser from 'react-html-parser';
 import parse from "html-react-parser";
 
-const JournalList = ({
-	entries,
-	isEditing,
-	handleClickedEntry,
-	handleDeleteEntry,
-}) => {
+const JournalList = ({ entries, isEditing, handleClickedEntry, handleDeleteEntry })=> {
 	return (
 		<div className="flex flex-col-reverse gap-y-6 lg:w-11/12 md:w-3/4 sm:w-full ">
 			{entries.map((entry, i) => (
