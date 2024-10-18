@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Navbar } from "@/components/ui/Navbar";
 import { useRouter } from "next/navigation";
 
-import Cookies from "js-cookie";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
+import Cookies from "js-cookie";
 
 const ClientJournal = () => {
   const userSession = getUserSession();
@@ -29,11 +29,15 @@ const ClientJournal = () => {
         }
       );
       const data1 = await response1.json();
-  
+
       if (!response1.ok) {
         throw new Error("Network response was not ok");
       }
-  
+
+      // Set the initial students
+      const initialStudents = data1.filter(student => student.role === "student");
+      setStudents(initialStudents);
+
       // Fetch appointments from the second endpoint
       const response2 = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_COUNSELORID}${userSession.id}`,
@@ -46,33 +50,35 @@ const ClientJournal = () => {
         }
       );
       const data2 = await response2.json();
-  
+
       if (!response2.ok) {
         throw new Error("Network response was not ok");
       }
-  
+
       const appointmentStudents = data2.map(appointment => appointment.student);
-  
+
+      // Combine and filter unique students
       const combinedStudents = [
-        ...data1.filter(student => student.role === "student"),
+        ...initialStudents,
         ...appointmentStudents
       ];
-  
+
       const uniqueStudentsMap = new Map();
       combinedStudents.forEach(student => {
         if (!uniqueStudentsMap.has(student.id)) {
           uniqueStudentsMap.set(student.id, student);
         }
       });
-  
+
       const uniqueStudents = Array.from(uniqueStudentsMap.values());
-  
+
+      // Update the students state with unique students
       setStudents(uniqueStudents);
     } catch (error) {
       console.error("Error fetching students:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchStudents();
   }, []);
