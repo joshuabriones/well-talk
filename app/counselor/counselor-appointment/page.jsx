@@ -65,6 +65,10 @@ const Appointment = () => {
 
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [errorMessages, setErrorMessages] = useState({
+    appointmentType: "",
+    purpose: "",
+  });
 
   // if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
   // 	return <Load route="login" />;
@@ -344,8 +348,6 @@ const Appointment = () => {
     }
   };
   const handleAppointmentSubmit = async () => {
-    setErrorMessages({ appointmentType: "", purpose: "" });
-
     if (!appointmentType) {
       setErrorMessages((prev) => ({
         ...prev,
@@ -363,8 +365,7 @@ const Appointment = () => {
       setIsLoading(false);
       return;
     }
-      setConfirmResponseModal(true);
-
+    setConfirmResponseModal(true);
   };
 
   const handleAppointmentSubmitConfirmed = async () => {
@@ -647,7 +648,7 @@ const Appointment = () => {
                       onChange={handleStatusChange}
                       className="border rounded pr-[26px]"
                     >
-                       <option value="All">All </option>
+                      <option value="All">All </option>
                       <option value="Pending">Pending 🟡</option>
                       <option value="Done">Done 🟢</option>
                       <option value="Cancelled">Cancelled 🔴</option>
