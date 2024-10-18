@@ -38,7 +38,7 @@ const StatisticsGraph = () => {
 
       if (!data[month]) {
         // Initialize month if not already present
-        data[month] = { OnGoing: 0, Done: 0, Pending: 0 };
+        data[month] = { Cancelled: 0, Done: 0, Pending: 0 };
       }
 
       // Increment count for corresponding status
@@ -65,8 +65,8 @@ const StatisticsGraph = () => {
         data={chartData}
         index="date"
         valueFormatter={dataFormatter}
-        categories={["OnGoing", "Done", "Pending"]}
-        colors={["yellow", "lime", "red"]}
+        categories={["Cancelled", "Done", "Pending"]}
+        colors={["red", "lime", "yellow"]}
         yAxisWidth={60}
         showAnimation={true}
         curveType="monotone"
