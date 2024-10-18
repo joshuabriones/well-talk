@@ -10,7 +10,7 @@ import ScrollAnimationWrapper from "@/components/layout/ScrollAnimationWrapper";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextInput from "@/components/ui/inputs/TextInput";
-
+import {default as LoadingState} from "@/components/Load";
 // modals
 import ModalForgotPassword from "@/components/ui/modals/ForgotPassword/ModalForgotPassword";
 
@@ -122,6 +122,10 @@ const Login = () => {
     e.preventDefault();
     router.push("/registration");
   };
+
+  if (isLoading) {
+		return <LoadingState />;
+	}
 
   return (
     <section className="py-24 md:py-28 dark:bg-[#0b1727] text-zinc-900 dark:text-white flex justify-center items-center h-screen">
