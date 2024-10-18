@@ -115,8 +115,11 @@ const Registration = () => {
 	};
 
 	// create account
+	const [isLoading, setIsLoading] = useState(false); // Add this at the top of your component
+
 	const handleCreateAccount = async (e) => {
 		e.preventDefault();
+		setIsLoading(true); // Start loading
 
 		const clearErrors = () => {
 			setTimeout(() => {
@@ -125,7 +128,6 @@ const Registration = () => {
 		};
 
 		let assignedYear = selectedYearLevels.join(", ");
-
 		let result;
 
 		result = registrationSchema.safeParse({
@@ -150,13 +152,12 @@ const Registration = () => {
 		});
 
 		let extraInfoValidation;
-
 		let formattedBirthdate;
 
 		if (birthdate instanceof Date) {
-			formattedBirthdate = birthdate.toISOString().split("T")[0]; // Convert Date to 'YYYY-MM-DD'
+			formattedBirthdate = birthdate.toISOString().split("T")[0];
 		} else {
-			formattedBirthdate = birthdate; // It's already a string, so use it directly
+			formattedBirthdate = birthdate;
 		}
 
 		/* zod validation */
@@ -186,15 +187,17 @@ const Registration = () => {
 				...result?.error?.format(),
 			});
 			clearErrors();
+			setIsLoading(false); // Stop loading
 			return;
 		}
 
 		if (termsAccepted === false) {
 			setShowTermsNotAccepted(true);
+			setIsLoading(false); // Stop loading
 			return;
 		}
 
-		// check email
+		// Check email
 		let emailExists = false;
 		try {
 			const emailResponse = await fetch(
@@ -204,9 +207,7 @@ const Registration = () => {
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({
-						email: email,
-					}),
+					body: JSON.stringify({ email }),
 				}
 			);
 
@@ -223,6 +224,7 @@ const Registration = () => {
 			console.error("Error checking email:", error);
 			setErrors({ email: "Error occurred while checking email." });
 			clearErrors();
+			setIsLoading(false); // Stop loading
 			return;
 		}
 
@@ -236,9 +238,7 @@ const Registration = () => {
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({
-						idNumber: idno,
-					}),
+					body: JSON.stringify({ idNumber: idno }),
 				}
 			);
 
@@ -255,18 +255,20 @@ const Registration = () => {
 			console.error("Error checking ID number:", error);
 			setErrors({ idno: "Error occurred while checking ID number." });
 			clearErrors();
+			setIsLoading(false); // Stop loading
 			return;
 		}
 
 		if (emailExists || idExists) {
+			setIsLoading(false); // Stop loading
 			return;
 		}
 
-		/* user registration - {role} */
+		/* User registration - {role} */
 		let response;
-		switch (role) {
-			case "student":
-				try {
+		try {
+			switch (role) {
+				case "student":
 					response = await fetch(
 						`${process.env.BASE_URL}${API_ENDPOINT.REGISTER_STUDENT}`,
 						{
@@ -277,32 +279,27 @@ const Registration = () => {
 							body: JSON.stringify({
 								institutionalEmail: email,
 								idNumber: idno,
-								firstName: firstName,
-								lastName: lastName,
-								gender: gender,
-								password: password,
+								firstName,
+								lastName,
+								gender,
+								password,
 								image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
-								role: role,
-								college: college,
-								program: program,
-								year: year,
-								birthDate: birthdate,
-								contactNumber: contactNumber,
-								permanentAddress: permanentAddress,
-								parentGuardianName: parentGuardianName,
-								parentGuardianContactNumber:
-									parentGuardianContactNumber,
-								guardianRelationship: guardianRelationship,
-								currentAddress: currentAddress,
+								role,
+								college,
+								program,
+								year,
+								birthDate: formattedBirthdate,
+								contactNumber,
+								permanentAddress,
+								parentGuardianName,
+								parentGuardianContactNumber,
+								guardianRelationship,
+								currentAddress,
 							}),
 						}
 					);
-				} catch (error) {
-					console.log("Error in creating student user", error);
-				}
-				break;
-			case "teacher":
-				try {
+					break;
+				case "teacher":
 					response = await fetch(
 						`${process.env.BASE_URL}${API_ENDPOINT.REGISTER_TEACHER}`,
 						{
@@ -313,25 +310,21 @@ const Registration = () => {
 							body: JSON.stringify({
 								institutionalEmail: email,
 								idNumber: idno,
-								firstName: firstName,
-								lastName: lastName,
-								gender: gender,
-								password: password,
+								firstName,
+								lastName,
+								gender,
+								password,
 								image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
-								role: role,
-								college: college,
+								role,
+								college,
 								program: selectedPrograms
 									.map((item) => item.value)
 									.join(", "),
 							}),
 						}
 					);
-				} catch (error) {
-					console.log("Error in creating student user", error);
-				}
-				break;
-			case "counselor":
-				try {
+					break;
+				case "counselor":
 					response = await fetch(
 						`${process.env.BASE_URL}${API_ENDPOINT.REGISTER_COUNSELOR}`,
 						{
@@ -342,36 +335,37 @@ const Registration = () => {
 							body: JSON.stringify({
 								institutionalEmail: email,
 								idNumber: idno,
-								firstName: firstName,
-								lastName: lastName,
-								gender: gender,
-								password: password,
+								firstName,
+								lastName,
+								gender,
+								password,
 								image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
-								role: role,
-								college: college,
+								role,
+								college,
 								program: selectedPrograms
 									.map((item) => item.value)
 									.join(", "),
-								assignedYear: selectedYearLevels
-									.map((item) => item)
-									.join(", "),
+								assignedYear: selectedYearLevels.join(", "),
 							}),
 						}
 					);
-				} catch (error) {
-					console.log("Error in creating student user", error);
-				}
-				break;
-		}
+					break;
+			}
 
-		if (!response.ok) console.log("Error status: ", response.status);
-		else {
-			setTimeout(() => {
-				router.push("/login");
-			}, 5000);
-		}
+			if (!response.ok) {
+				console.log("Error status: ", response.status);
+			} else {
+				setTimeout(() => {
+					router.push("/login");
+				}, 5000);
+			}
 
-		setShowRegistrationSuccessful(true);
+			setShowRegistrationSuccessful(true);
+		} catch (error) {
+			console.log("Error in registration", error);
+		} finally {
+			setIsLoading(false); // Stop loading
+		}
 	};
 
 	// password validation function
@@ -442,96 +436,94 @@ const Registration = () => {
 	};
 
 	const handleEmailChange = async (e) => {
-    const enteredEmail = e.target.value;
-    setEmail(enteredEmail);
-  
-    if (enteredEmail) {
-      try {
-        const response = await fetch(
-          `${process.env.BASE_URL}${API_ENDPOINT.CHECK_EMAIL}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: enteredEmail, // Send only the email in the body
-            }),
-          }
-        );
-  
-        const data = await response.text();
-  
-        if (response.ok) {
-          if (data === "Email exists.") {
-            setEmailStatus("Email already taken");
-          } else {
-            setEmailStatus("Email is available");
-          }
-        } else {
-          setEmailStatus(
-            data || "Error occurred while checking email."
-          );
-        }
-      } catch (error) {
-        console.error("Error checking email:", error);
-        setEmailStatus("Error occurred while checking email.");
-      }
+		const enteredEmail = e.target.value;
+		setEmail(enteredEmail);
 
-      setTimeout(() => {
-        setEmailStatus("");
-      }, 3000);
-    } else {
-      setEmailStatus("");
-    }
-  };
-  
+		if (enteredEmail) {
+			try {
+				const response = await fetch(
+					`${process.env.BASE_URL}${API_ENDPOINT.CHECK_EMAIL}`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							email: enteredEmail, // Send only the email in the body
+						}),
+					}
+				);
 
-  const handleIdNumberChange = async (e) => {
-    const enteredIdNo = e.target.value;
-    setIdNo(enteredIdNo);
-  
-    if (enteredIdNo) {
-      try {
-        const response = await fetch(
-          `${process.env.BASE_URL}${API_ENDPOINT.CHECK_IDNUMBER}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              idNumber: enteredIdNo,
-            }),
-          }
-        );
-  
-        const data = await response.text();
-  
-        if (response.ok) {
-          if (data === "ID number exists.") {
-            setIdNumberStatus("ID number already taken");
-          } else {
-            setIdNumberStatus("ID number is available");
-          }
-        } else {
-          setIdNumberStatus(
-            data || "Error occurred while checking ID number."
-          );
-        }
-      } catch (error) {
-        console.error("Error checking ID number:", error);
-        setIdNumberStatus("Error occurred while checking ID number.");
-      }
+				const data = await response.text();
 
-      setTimeout(() => {
-        setIdNumberStatus("");
-      }, 3000); 
-    } else {
-      setIdNumberStatus("");
-    }
-  };
-  
+				if (response.ok) {
+					if (data === "Email exists.") {
+						setEmailStatus("Email already taken");
+					} else {
+						setEmailStatus("Email is available");
+					}
+				} else {
+					setEmailStatus(
+						data || "Error occurred while checking email."
+					);
+				}
+			} catch (error) {
+				console.error("Error checking email:", error);
+				setEmailStatus("Error occurred while checking email.");
+			}
+
+			setTimeout(() => {
+				setEmailStatus("");
+			}, 3000);
+		} else {
+			setEmailStatus("");
+		}
+	};
+
+	const handleIdNumberChange = async (e) => {
+		const enteredIdNo = e.target.value;
+		setIdNo(enteredIdNo);
+
+		if (enteredIdNo) {
+			try {
+				const response = await fetch(
+					`${process.env.BASE_URL}${API_ENDPOINT.CHECK_IDNUMBER}`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							idNumber: enteredIdNo,
+						}),
+					}
+				);
+
+				const data = await response.text();
+
+				if (response.ok) {
+					if (data === "ID number exists.") {
+						setIdNumberStatus("ID number already taken");
+					} else {
+						setIdNumberStatus("ID number is available");
+					}
+				} else {
+					setIdNumberStatus(
+						data || "Error occurred while checking ID number."
+					);
+				}
+			} catch (error) {
+				console.error("Error checking ID number:", error);
+				setIdNumberStatus("Error occurred while checking ID number.");
+			}
+
+			setTimeout(() => {
+				setIdNumberStatus("");
+			}, 3000);
+		} else {
+			setIdNumberStatus("");
+		}
+	};
 
 	return (
 		<section className="p-3 lg:py-16 text-zinc-900 dark:text-white flex justify-center lg:mr-16 items-center py-28 h-full lg:h-screen">
@@ -1528,27 +1520,27 @@ const Registration = () => {
 											</>
 										)}
 										<div className="w-full flex flex-col gap-x-2 mt-1">
-                      <div className="flex flex-row gap-x-2">
-											<input
-												type="checkbox"
-												checked={termsAccepted}
-												onChange={handleTermsChange}
-												disabled={!role}
-												className="h-3 w-3 text-black focus:ring-black border-gray-300 rounded mt-1.5"
-											/>
-											<label className="text-md font-semibold font-Jaldi text-gray-700">
-												I accept the{" "}
-												<a
-													href="#"
-													className="hover:underline text-maroon"
-													onClick={(e) => {
-														e.preventDefault();
-														setShowTerms(true);
-													}}>
-													terms and conditions
-												</a>
-											</label>
-                      </div>
+											<div className="flex flex-row gap-x-2">
+												<input
+													type="checkbox"
+													checked={termsAccepted}
+													onChange={handleTermsChange}
+													disabled={!role}
+													className="h-3 w-3 text-black focus:ring-black border-gray-300 rounded mt-1.5"
+												/>
+												<label className="text-md font-semibold font-Jaldi text-gray-700">
+													I accept the{" "}
+													<a
+														href="#"
+														className="hover:underline text-maroon"
+														onClick={(e) => {
+															e.preventDefault();
+															setShowTerms(true);
+														}}>
+														terms and conditions
+													</a>
+												</label>
+											</div>
 											{errors.termsAccepted && (
 												<p className="text-red-500 text-xs font-Jaldi mt-1">
 													{
@@ -1564,8 +1556,19 @@ const Registration = () => {
 												<FullButton
 													onClick={
 														handleCreateAccount
-													}>
-													Create Account
+													}
+													disabled={isLoading}>
+													{isLoading ? (
+														<span className="flex gap-2 items-center justify-center">
+															Creating Account{" "}
+															<img
+																src="/images/aa.svg"
+																alt="loading"
+															/>
+														</span>
+													) : (
+														"Submit"
+													)}
 												</FullButton>
 											</div>
 											<div className="w-full mt-4 text-lg font-Jaldi flex justify-center">
