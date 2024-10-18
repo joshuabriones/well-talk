@@ -6,10 +6,12 @@ import { useState, useEffect } from "react";
 import { API_ENDPOINT } from "@/lib/api";
 import AccountTable from "../_admincomponents/AccountTable";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 const VerifyUserPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -35,6 +37,7 @@ const VerifyUserPage = () => {
 
   const handleDeleteUser = async (userId) => {
     try {
+      setIsLoading(true);
       const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.DELETE_USER}${userId}`,
         {
@@ -46,16 +49,19 @@ const VerifyUserPage = () => {
       );
 
       if (response.ok) {
-        alert("User deleted successfully");
+        toast.success("User deleted successfully");
         fetchUsers();
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleAcceptUser = async (userId) => {
     try {
+      setIsLoading(true);
       const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.VERIFY_USER}${userId}`,
         {
@@ -71,11 +77,13 @@ const VerifyUserPage = () => {
       );
 
       if (response.ok) {
-        alert("User verified successfully");
+        toast.success("User verified successfully");
         fetchUsers();
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -99,6 +107,7 @@ const VerifyUserPage = () => {
                 users={users}
                 handleDeleteUser={handleDeleteUser}
                 handleAcceptUser={handleAcceptUser}
+                isLoading={isLoading}
               />
             ) : (
               <div className="text-navgray">No users found</div>
