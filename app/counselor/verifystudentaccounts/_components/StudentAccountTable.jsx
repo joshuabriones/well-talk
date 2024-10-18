@@ -4,7 +4,14 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { programOptions } from "@/lib/inputOptions";
 
-const StudentAccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
+import VerifyModal from "@/components/ui/modals/VerifyModal";
+
+const StudentAccountTable = ({
+  users,
+  handleAcceptUser,
+  handleDeleteUser,
+  isLoading,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,6 +19,9 @@ const StudentAccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
 
   // Handle page change
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [isVerify, setIsVerify] = useState(false);
 
   const filteredUsers = users?.filter((user) => {
     const matchesSearch =
@@ -27,22 +37,14 @@ const StudentAccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
     return matchesSearch;
   });
 
-  const handleDelete = (userId) => {
-    const isConfirmed = window.confirm(
-      `Are you sure you want to delete this user?`
-    );
-    if (isConfirmed) {
-      handleDeleteUser(userId);
-    }
+  const handleDelete = () => {
+    setIsOpen(true);
+    setIsVerify(false);
   };
 
-  const handleAccept = (userId) => {
-    const isConfirmed = window.confirm(
-      `Are you sure you want to accept this user?`
-    );
-    if (isConfirmed) {
-      handleAcceptUser(userId);
-    }
+  const handleAccept = () => {
+    setIsOpen(true);
+    setIsVerify(true);
   };
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -131,20 +133,39 @@ const StudentAccountTable = ({ users, handleAcceptUser, handleDeleteUser }) => {
                 </td>
                 <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-white dark:bg-bgDark2 stroke-slate-500  ">
                   <button
-                    onClick={() => handleAccept(user.id)}
+                    onClick={() => handleAccept()}
                     className="hover:bg-green-400 p-2 rounded-md"
                     title="Accept"
                   >
                     <CheckCircleIcon
                       sx={{ color: "#dcfce7", stroke: "#4ade80" }}
                     />
+
+                    {isOpen && isVerify && (
+                      <VerifyModal
+                        isOpen={isOpen}
+                        onClose={() => setIsOpen(false)}
+                        onConfirm={() => handleAcceptUser(user.id)}
+                        text="accept this user"
+                        isLoading={isLoading}
+                      />
+                    )}
                   </button>
                   <button
-                    onClick={() => handleDelete(user.id)}
+                    onClick={() => handleDelete()}
                     className="hover:bg-red-400 p-2 rounded-md"
                     title="Delete"
                   >
                     <DeleteIcon sx={{ color: "#fecaca", stroke: "#f87171" }} />
+                    {isOpen && !isVerify && (
+                      <VerifyModal
+                        isOpen={isOpen}
+                        onClose={() => setIsOpen(false)}
+                        onConfirm={() => handleDeleteUser(user.id)}
+                        text="delete this user"
+                        isLoading={isLoading}
+                      />
+                    )}
                   </button>
                 </td>
               </tr>

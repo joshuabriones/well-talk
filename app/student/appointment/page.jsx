@@ -383,14 +383,14 @@ const Appointment = () => {
     }
 
     // Open the confirm response modal
-    if (
-      (studentData && studentData.parentGuardianName === null) ||
-      studentData.parentGuardianContactNumber === null
-    ) {
-      setIsParentModalOpen(true);
-    } else {
-      setConfirmResponseModal(true);
-    }
+    // if (
+    //   (studentData && studentData.parentGuardianName === null) ||
+    //   studentData.parentGuardianContactNumber === null
+    // ) {
+    //   setIsParentModalOpen(true);
+    // } else {
+    setConfirmResponseModal(true);
+    // }
   };
 
   const handleParentInfoSubmit = async () => {
@@ -601,19 +601,21 @@ const Appointment = () => {
         <div>
           <div className="w-full pt-24 flex items-center gap-3 justify-center">
             <button
-              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
+              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+                isAddAppointment
                   ? "bg-maroon text-white"
                   : "border-2 border-maroon text-maroon"
-                }`}
+              }`}
               onClick={handleAddAppointmentClick}
             >
               Set Appointment
             </button>
             <button
-              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
+              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+                isViewAppointment
                   ? "bg-maroon text-white"
                   : "border-2 border-maroon text-maroon"
-                }`}
+              }`}
               onClick={handleViewAppointmentClick}
             >
               View Appointments
@@ -662,7 +664,9 @@ const Appointment = () => {
                     <tr className="font-bold text-center py-4 rounded-t-2xl">
                       <th className="py-4">Date</th>
                       <th className="py-4">Time</th>
-                      <th className="py-4 hidden  lg:table-cell">Appointment Type</th>
+                      <th className="py-4 hidden  lg:table-cell">
+                        Appointment Type
+                      </th>
                       <th className="py-4 hidden  lg:table-cell">Reason</th>
                       <th className="py-4 hidden  lg:table-cell">Feedback</th>
                       <th className="py-4">Status</th>
@@ -696,9 +700,9 @@ const Appointment = () => {
                             <p className="truncate">
                               {appointment.appointmentPurpose.length > 50
                                 ? `${appointment.appointmentPurpose.substring(
-                                  0,
-                                  40
-                                )}...`
+                                    0,
+                                    40
+                                  )}...`
                                 : appointment.appointmentPurpose}
                             </p>
                           </td>
@@ -706,11 +710,11 @@ const Appointment = () => {
                             <p>
                               {appointment?.appointmentNotes?.length > 50
                                 ? `${appointment?.appointmentNotes?.substring(
-                                  0,
-                                  40
-                                )}...`
+                                    0,
+                                    40
+                                  )}...`
                                 : appointment?.appointmentNotes ||
-                                "No feedback yet"}
+                                  "No feedback yet"}
                             </p>
                           </td>
                           <td className="h-full">
@@ -726,11 +730,11 @@ const Appointment = () => {
                                   "🟢"}
                                 {appointment &&
                                   appointment.appointmentStatus ===
-                                  "On-going" &&
+                                    "On-going" &&
                                   "🔵"}
                                 {appointment &&
                                   appointment.appointmentStatus ===
-                                  "Cancelled" &&
+                                    "Cancelled" &&
                                   "🔴"}{" "}
                                 {/* Added red dot for Cancelled */}
                                 <span className="ml-2 text-bold text-sm">
@@ -806,8 +810,9 @@ const Appointment = () => {
                     ].map((_, index) => (
                       <button
                         key={index}
-                        className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
-                          }`}
+                        className={`join-item btn ${
+                          currentPage === index + 1 ? "btn-active" : ""
+                        }`}
                         onClick={() => setCurrentPage(index + 1)}
                       >
                         {index + 1}
@@ -866,12 +871,13 @@ const Appointment = () => {
                           isTimeSlotTaken(time) || isTimeSlotUnavailable(time)
                         } // Disable if taken or unavailable
                         onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-                        className={`time-slot-button ${isTimeSlotTaken(time) || isTimeSlotUnavailable(time)
+                        className={`time-slot-button ${
+                          isTimeSlotTaken(time) || isTimeSlotUnavailable(time)
                             ? "bg-white border-[1px] border-gray text-primary-green cursor-not-allowed"
                             : time === selectedTimeSlot
-                              ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-                              : "bg-maroon text-white hover:bg-maroon duration-300"
-                          } py-2 px-3 rounded-md`}
+                            ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+                            : "bg-maroon text-white hover:bg-maroon duration-300"
+                        } py-2 px-3 rounded-md`}
                       >
                         {timeFormatter(time)}
                       </button>
@@ -1006,10 +1012,12 @@ const Appointment = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             setShowConsent(true); // Show terms when the link is clicked
-                          }}>
+                          }}
+                        >
                           Counseling Consent and Agreement
                         </a>
-                        , including the limits to confidentiality and commitment to cooperation.
+                        , including the limits to confidentiality and commitment
+                        to cooperation.
                       </label>
                       {/* {errors.termsAccepted && (
 												<p className="text-red-500 text-sm font-Jaldi font-semibold">
@@ -1032,7 +1040,9 @@ const Appointment = () => {
                       </div>
                       <div className="w-full md:w-2/12">
                         <FullButton
-                          disabled={!selectedTime || isLoading || !consentAccepted}
+                          disabled={
+                            !selectedTime || isLoading || !consentAccepted
+                          }
                           onClick={handleAppointmentSubmit}
                           className="w-full"
                         >
@@ -1041,7 +1051,7 @@ const Appointment = () => {
                       </div>
                     </div>
 
-                    {isParentModalOpen && (
+                    {/* {isParentModalOpen && (
                       <ModalParentInfo
                         setIsParentModalOpen={setIsParentModalOpen}
                         guardianName={guardianName}
@@ -1050,7 +1060,7 @@ const Appointment = () => {
                         setGuardianContact={setGuardianContact}
                         handleParentInfoSubmit={handleParentInfoSubmit}
                       />
-                    )}
+                    )} */}
 
                     {isLoading && (
                       <div className="flex gap-2 items-center mt-5">
@@ -1084,7 +1094,7 @@ const Appointment = () => {
           appointments={appointments}
           handleReschedule={handleReschedule}
           handleDelete={showDeleteModal}
-        //handleUpdateStatus={handleUpdateStatus}
+          //handleUpdateStatus={handleUpdateStatus}
         ></StudentModalAppointmentInfo>
       )}
 
@@ -1101,9 +1111,7 @@ const Appointment = () => {
           fetchAppointments={fetchAppointments}
         />
       )}
-      {showConsent && (
-        <Consent onClose={handleCloseModal} />
-      )}
+      {showConsent && <Consent onClose={handleCloseModal} />}
     </div>
   );
 };

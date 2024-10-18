@@ -25,6 +25,8 @@ import { Badge, Calendar, Popover, Whisper } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 import { useSearchParams } from "next/navigation";
 
+import { programOptions } from "@/lib/inputOptions";
+
 const Appointment = () => {
   const AppointmentPerPage = 10;
 
@@ -890,7 +892,7 @@ const Appointment = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 w-full max-h-[10%] overflow-y-scroll text-left">
+                  <div className="mt-4 w-full max-h-[10%] overflow-y-scroll ">
                     {filteredStudents.map((student) => (
                       <button
                         onClick={() => {
@@ -900,15 +902,25 @@ const Appointment = () => {
                           setSelectedStudentId(student.id);
                           setSelectedStudent(student.id); // Update the selected student
                         }}
-                        className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${
+                        className={`flex justify-between bg-maroon text-maroon font-semibold w-full mb-2 px-5 py-2 hover:bg-primary-green-dark duration-150 rounded-lg ${
                           selectedStudent === student.id
                             ? "bg-white border-2 border-maroon text-maroon font-semibold"
                             : "text-white" // Apply a different style to the selected student
                         }`}
                         key={student.id}
                       >
-                        {student.idNumber} ⸺ {student.firstName}{" "}
-                        {student.lastName}
+                        <span className="flex-1 text-left">
+                          {student.firstName} {student.lastName}
+                        </span>
+                        <span className="flex-1 text-center">
+                          {student.idNumber}
+                        </span>
+                        <span className="flex-1 text-right">
+                          {programOptions[student?.college]?.find(
+                            (item) => item.value === student?.program
+                          )?.label || "N/A"}
+                          - {student.year}
+                        </span>
                       </button>
                     ))}
                   </div>
