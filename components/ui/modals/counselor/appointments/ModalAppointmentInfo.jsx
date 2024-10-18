@@ -205,15 +205,17 @@ const ModalAppointmentInfo = ({
                 </div>
               ) : userSession.role === "counselor" ? (
                 <div className="flex gap-x-4 px-8 mx-auto">
-                  <button
-                    className="w-full bg-gray border-2 border-gray text-sm font-Merriweather text-white font-semibold rounded-3xl px-3 py-2 hover:scale-95 transition-transform duration-300"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setOpenModal(true);
-                    }}
-                  >
-                    Provide Feedback
-                  </button>
+                  {appointment?.appointmentStatus === "Pending" && (
+                    <button
+                      className="w-full bg-gray border-2 border-gray text-sm font-Merriweather text-white font-semibold rounded-3xl px-3 py-2 hover:scale-95 transition-transform duration-300"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenModal(true);
+                      }}
+                    >
+                      Provide Feedback
+                    </button>
+                  )}
                 </div>
               ) : null}
             </section>
