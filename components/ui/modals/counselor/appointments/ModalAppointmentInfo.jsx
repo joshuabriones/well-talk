@@ -11,6 +11,7 @@ const ModalAppointmentInfo = ({
   appointments,
   handleReschedule,
   handleDelete,
+  fetchAppointments,
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [appointment, setAppointment] = useState(null);
@@ -69,20 +70,23 @@ const ModalAppointmentInfo = ({
           }),
         }
       );
-
       if (response.ok) {
         toast.success("Appointment status updated!");
+
+        fetchAppointments();
       } else {
         toast.error("Failed to update appointment status");
+        fetchAppointments();
       }
     } catch (error) {
       console.error(error);
+      toast.error("An error occurred");
     } finally {
       setOpenModal(false);
+      setIsVisible(false);
       setIsLoading(false);
     }
   };
-
   const handleModalClose = () => {
     setIsVisible(false);
     setAppointmentModal(false);
@@ -291,7 +295,7 @@ const ModalAppointmentInfo = ({
                           <img src="/images/loading.svg" alt="loading" />
                         </span>
                       ) : (
-                        "Submit"
+                        "Submit Feedback"
                       )}
                     </button>
                   </div>
