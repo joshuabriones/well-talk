@@ -119,15 +119,24 @@ const UsersTable = ({ users, handleDeleteUser }) => {
                 </td>
                 <td class="h-12 px-6 text-sm transition duration-300 border-slate-200 bg-white dark:bg-bgDark2 stroke-slate-500  ">
                   {user.role === "counselor" && (
-                    <button
-                      onClick={() => setIsEditing((prev) => !prev)}
-                      className="hover:bg-green-400 p-2 rounded-md"
-                      title="Edit"
-                    >
-                      <BorderColorIcon
-                        sx={{ color: "#bbf7d0", stroke: "#4ade80" }}
-                      />
-                    </button>
+                    <>
+                      <button
+                        onClick={() => setIsEditing((prev) => !prev)}
+                        className="hover:bg-green-400 p-2 rounded-md"
+                        title="Edit"
+                      >
+                        <BorderColorIcon
+                          sx={{ color: "#bbf7d0", stroke: "#4ade80" }}
+                        />
+                      </button>
+                      {isEditing && (
+                        <ReassignModal
+                          isEditing={isEditing}
+                          setIsEditing={setIsEditing}
+                          user={user}
+                        />
+                      )}
+                    </>
                   )}
                   <button
                     onClick={() => handleDelete(user.id)}
@@ -137,13 +146,6 @@ const UsersTable = ({ users, handleDeleteUser }) => {
                     <DeleteIcon sx={{ color: "#fecaca", stroke: "#f87171" }} />
                   </button>
                 </td>
-                {isEditing && (
-                  <ReassignModal
-                    isEditing={isEditing}
-                    setIsEditing={setIsEditing}
-                    user={user}
-                  />
-                )}
               </tr>
             ))}
           </tbody>

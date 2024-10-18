@@ -19,6 +19,8 @@ const ReassignModal = ({ isEditing, setIsEditing, user }) => {
   const [selectedYearLevels, setSelectedYearLevels] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log(user);
+
   const handleProgramChange = (selectedOptions) => {
     setSelectedPrograms(selectedOptions);
   };
