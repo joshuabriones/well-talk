@@ -90,11 +90,7 @@ const ChatWidget = () => {
 		} catch (error) {
 			console.error("Error fetching counselors:", error);
 		}
-
-
-		const hasMessages = false; 
-
-		if (hasMessages) {
+		{
 			// Fetch additional counselors based on receiver ID if there are messages
 			try {
 				const receiverResponse = await fetch(
@@ -330,13 +326,13 @@ const ChatWidget = () => {
 							<div
 								key={msg.id}
 								className={`flex ${msg.senderId === loggedInUser.id
-										? "justify-end"
-										: ""
+									? "justify-end"
+									: ""
 									}`}>
 								<div
 									className={`relative text-xs rounded-lg p-2 ${msg.senderId === loggedInUser.id
-											? "bg-gold text-gray"
-											: "bg-silver text-gray"
+										? "bg-gold text-gray"
+										: "bg-silver text-gray"
 										}`}>
 									<p>{msg.content}</p>
 								</div>
