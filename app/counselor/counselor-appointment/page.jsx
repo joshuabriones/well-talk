@@ -667,6 +667,7 @@ const Appointment = () => {
                       <th className="py-4">Date and Time</th>
                       <th className="py-4 hidden  lg:table-cell">ID Number</th>
                       <th className="py-4 w-md">Student</th>
+                      <th className="py-4 hidden  lg:table-cell">Type</th>
                       <th className="py-4 hidden  lg:table-cell">Reason</th>
                       <th className="py-4 hidden  lg:table-cell">Feedback</th>
                       <th className="py-4">Status</th>
@@ -720,6 +721,11 @@ const Appointment = () => {
                               </div>
                             </div>
                           </div>
+                        </td>
+                        <td className="text-center hidden  lg:table-cell">
+                          <p>
+                            {appointments ? appointments?.appointmentType : ""}
+                          </p>
                         </td>
                         <td className="text-center hidden lg:table-cell">
                           <p>

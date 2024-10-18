@@ -21,6 +21,7 @@ const ModalAppointmentInfo = ({
   const userSession = getUserSession();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
+  const [feedback, setFeedback] = useState("");
 
   const handleOverlayClick = () => {
     handleModalClose();
@@ -67,6 +68,9 @@ const ModalAppointmentInfo = ({
           body: JSON.stringify({
             appointmentNotes: notes,
             appointmentAdditionalNotes: additionalNotes,
+            referral: {
+              feedback: feedback,
+            },
           }),
         }
       );
@@ -120,6 +124,12 @@ const ModalAppointmentInfo = ({
                         {appointment
                           ? `${appointment.student?.firstName} ${appointment.student?.lastName}`
                           : ""}
+                      </td>
+                    </tr>
+                    <tr className="py-4">
+                      <th className="text-left py-2 pr-4">Type:</th>
+                      <td className="py-2">
+                        {appointment ? appointment.appointmentType : ""}
                       </td>
                     </tr>
                     <tr className="py-4">
@@ -284,6 +294,18 @@ const ModalAppointmentInfo = ({
                     rows="8"
                   ></textarea>
                 </div>
+
+                {appointment.appointmentType === "Referral" && (
+                  <div className="flex flex-col gap-4 overflow-y-scroll">
+                    <textarea
+                      className="border-2 rounded-xl lg:text-md md:text-base xs:text-xs focus:border-maroon w-full"
+                      placeholder="Provide feedback for the referrer..."
+                      value={feedback}
+                      onChange={(e) => setFeedback(e.target.value)}
+                      rows="8"
+                    ></textarea>
+                  </div>
+                )}
 
                 <div className="flex justify-center mt-4">
                   <div className="w-full">
