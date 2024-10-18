@@ -9,9 +9,12 @@ import { getUserSession } from "@/lib/helperFunctions";
 import Header from "../../admin/_admincomponents/Header";
 import StudentAccountTable from "./_components/StudentAccountTable";
 
+import toast from "react-hot-toast";
+
 const VerifyStudentAccounts = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const userSession = getUserSession();
 
   const fetchUsers = async () => {
@@ -38,6 +41,7 @@ const VerifyStudentAccounts = () => {
 
   const handleDeleteUser = async (userId) => {
     try {
+      setIsLoading(true);
       const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.DELETE_USER}${userId}`,
         {
@@ -49,16 +53,19 @@ const VerifyStudentAccounts = () => {
       );
 
       if (response.ok) {
-        alert("User deleted successfully");
+        toast.success("User deleted successfully");
         fetchUsers();
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleAcceptUser = async (userId) => {
     try {
+      setIsLoading(true);
       const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.VERIFY_USER}${userId}`,
         {
@@ -74,11 +81,13 @@ const VerifyStudentAccounts = () => {
       );
 
       if (response.ok) {
-        alert("User verified successfully");
+        toast.success("User verified successfully");
         fetchUsers();
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -120,6 +129,7 @@ const VerifyStudentAccounts = () => {
                 users={users}
                 handleDeleteUser={handleDeleteUser}
                 handleAcceptUser={handleAcceptUser}
+                isLoading={isLoading}
               />
             ) : (
               <div className="text-lightMaroon">
