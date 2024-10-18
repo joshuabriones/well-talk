@@ -316,8 +316,25 @@ const Appointment = () => {
     return formattedTime;
   };
 
+  const isTimeSlotUnavailable = (time) => {
+    const currentDate = new Date();
+    const selectedDate = new Date(appointmentDate);
+    const [hours, minutes] = time.split(":").map(Number);
+
+    // Set the full date and time for comparison
+    const slotDateTime = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
+      hours,
+      minutes
+    );
+
+    return slotDateTime < currentDate || isTimeSlotTaken(time);
+  };
+
   const handleTimeSlotClick = (time) => {
-    if (!isTimeSlotTaken(time)) {
+    if (!isTimeSlotTaken(time) && !isTimeSlotUnavailable(time)) {
       setSelectedTime(time); // Update the selected time
       setSelectedTimeSlot(time);
       const duration = "1:00"; // Duration to add
@@ -327,8 +344,27 @@ const Appointment = () => {
     }
   };
   const handleAppointmentSubmit = async () => {
-    // Open the confirm response modal
-    setConfirmResponseModal(true);
+    setErrorMessages({ appointmentType: "", purpose: "" });
+
+    if (!appointmentType) {
+      setErrorMessages((prev) => ({
+        ...prev,
+        appointmentType: "Please select appointment type!",
+      }));
+      setIsLoading(false);
+      return;
+    }
+
+    if (!purpose) {
+      setErrorMessages((prev) => ({
+        ...prev,
+        purpose: "Please state purpose!",
+      }));
+      setIsLoading(false);
+      return;
+    }
+      setConfirmResponseModal(true);
+
   };
 
   const handleAppointmentSubmitConfirmed = async () => {
@@ -715,7 +751,7 @@ const Appointment = () => {
                                 appointments.appointmentStatus ===
                                   "Cancelled" &&
                                 "🔴"}
-                              <span className="ml-2 text-bold text-xs ">
+                              <span className="ml-0 md:ml-2 lg:ml-2 text-bold text-xs ">
                                 {appointments
                                   ? appointments.appointmentStatus
                                   : ""}
@@ -824,8 +860,8 @@ const Appointment = () => {
                         disabled={isTimeSlotTaken(time)}
                         onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
                         className={`time-slot-button ${
-                          isTimeSlotTaken(time)
-                            ? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
+                          isTimeSlotTaken(time) || isTimeSlotUnavailable(time)
+                            ? "bg-white border-[1px] border-gray text-primary-green cursor-not-allowed"
                             : time === selectedTimeSlot
                             ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
                             : "bg-maroon text-white hover:bg-primary-green-dark duration-300"
