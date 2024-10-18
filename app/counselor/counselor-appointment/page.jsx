@@ -55,6 +55,7 @@ const Appointment = () => {
   //for referral params
   const [referralId, setReferralId] = useState();
   const searchParams = useSearchParams();
+  const [isReferral, setIsReferral] = useState(false);
 
   const [appointmentDate, setAppointmentDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -84,6 +85,7 @@ const Appointment = () => {
     if (id) {
       setReferralId(id);
       setAppointmentType("Referral");
+      setIsReferral(true);
     }
   }, [searchParams]);
 
@@ -875,55 +877,58 @@ const Appointment = () => {
                     ))}
                   </div>
                   <hr />
-                  <p className="mb-2">
-                    👨🏻‍🎓 Select a student you wish to assign an appointment
-                  </p>
-                  <div className="flex flex-row justify-between items-center space-x-4 pr-2 md:pr-3">
-                    <div className="flex-grow">
-                      <SearchInput
-                        searchTerm={searchTerm}
-                        setSearchTerm={setSearchTerm}
-                      />
-                    </div>
-                    <div className="w-5/12 md:w-2/12">
-                      <HollowButton onClick={() => setOpenAddStudent(true)}>
-                        Add Student
-                      </HollowButton>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 w-full max-h-[10%] overflow-y-scroll ">
-                    {filteredStudents.map((student) => (
-                      <button
-                        onClick={() => {
-                          toast.success(
-                            `Student selected: ${student.firstName} ${student.lastName}`
-                          );
-                          setSelectedStudentId(student.id);
-                          setSelectedStudent(student.id); // Update the selected student
-                        }}
-                        className={`flex justify-between bg-maroon text-maroon font-semibold w-full mb-2 px-5 py-2 hover:bg-primary-green-dark duration-150 rounded-lg ${
-                          selectedStudent === student.id
-                            ? "bg-white border-2 border-maroon text-maroon font-semibold"
-                            : "text-white" // Apply a different style to the selected student
-                        }`}
-                        key={student.id}
-                      >
-                        <span className="flex-1 text-left">
-                          {student.firstName} {student.lastName}
-                        </span>
-                        <span className="flex-1 text-center">
-                          {student.idNumber}
-                        </span>
-                        <span className="flex-1 text-right">
-                          {programOptions[student?.college]?.find(
-                            (item) => item.value === student?.program
-                          )?.label || "N/A"}
-                          - {student.year}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
+                  {!isReferral && (
+                    <>
+                      <p className="mb-2">
+                        👨🏻‍🎓 Select a student you wish to assign an appointment
+                      </p>
+                      <div className="flex flex-row justify-between items-center space-x-4 pr-2 md:pr-3">
+                        <div className="flex-grow">
+                          <SearchInput
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                          />
+                        </div>
+                        <div className="w-5/12 md:w-2/12">
+                          <HollowButton onClick={() => setOpenAddStudent(true)}>
+                            Add Student
+                          </HollowButton>
+                        </div>
+                      </div>
+                      <div className="mt-4 w-full max-h-[10%] overflow-y-scroll ">
+                        {filteredStudents.map((student) => (
+                          <button
+                            onClick={() => {
+                              toast.success(
+                                `Student selected: ${student.firstName} ${student.lastName}`
+                              );
+                              setSelectedStudentId(student.id);
+                              setSelectedStudent(student.id); // Update the selected student
+                            }}
+                            className={`flex justify-between bg-maroon text-maroon font-semibold w-full mb-2 px-5 py-2 hover:bg-primary-green-dark duration-150 rounded-lg ${
+                              selectedStudent === student.id
+                                ? "bg-white border-2 border-maroon text-maroon font-semibold"
+                                : "text-white" // Apply a different style to the selected student
+                            }`}
+                            key={student.id}
+                          >
+                            <span className="flex-1 text-left">
+                              {student.firstName} {student.lastName}
+                            </span>
+                            <span className="flex-1 text-center">
+                              {student.idNumber}
+                            </span>
+                            <span className="flex-1 text-right">
+                              {programOptions[student?.college]?.find(
+                                (item) => item.value === student?.program
+                              )?.label || "N/A"}
+                              - {student.year}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
                   <hr />
                   <div className="mt-4">
                     <p>

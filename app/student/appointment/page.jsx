@@ -942,7 +942,6 @@ const Appointment = () => {
                           <MenuItem value="Wellness Check">
                             Wellness Check
                           </MenuItem>
-                          <MenuItem value="Referral">Referral</MenuItem>
                           <MenuItem value="Others">Others</MenuItem>
                         </Select>
                         {errorMessages.appointmentType && (
