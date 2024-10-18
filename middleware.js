@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 // List of routes that do not require authentication
-const publicRoutes = ["/login", "/registration", "/unverified"];
+const publicRoutes = ["/login", "/registration", "/unverified", "/"];
 
 // Middleware to protect routes
 export async function middleware(req) {
@@ -40,6 +40,11 @@ export async function middleware(req) {
       return NextResponse.redirect(new URL(`/${userRole}`, req.url));
     }
 
+    // New condition: Restrict access to root route `/` for logged-in users
+    if (pathname === "/") {
+      return NextResponse.redirect(new URL(`/${userRole}`, req.url));
+    }
+
     // Role-based route protection
     if (pathname.startsWith("/admin") && userRole !== "admin") {
       return NextResponse.redirect(new URL(`/${userRole}`, req.url));
@@ -73,5 +78,6 @@ export const config = {
     "/login",
     "/registration",
     "/unverified",
+    "/",
   ],
 };
