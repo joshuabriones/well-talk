@@ -12,13 +12,13 @@ function TextInput({
 		<div className="flex flex-col w-full md:px-0">
 			<label
 				htmlFor={id}
-				className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm h-12 focus-within:border-black focus-within:ring-1 focus-within:ring-black">
+				className="relative block rounded-md bg-white border border-gray-400 p-1 text-xs shadow-sm h-12 focus-within:border-black focus-within:ring-1 focus-within:ring-black">
 				<input
 					type={type}
 					id={id}
 					value={value}
 					onChange={onChange}
-					className="peer border-none bg-white placeholder-transparent focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black"
+					className="peer border-none bg-white placeholder-transparent text-xs focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black py-3"
 					placeholder={placeholder}
 					readOnly={readOnly}
 					disabled={disabled}
@@ -28,7 +28,7 @@ function TextInput({
 					className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
     peer-focus:top-0 dark:bg-black`}
-					style={{ fontSize: "11px" }}
+					style={{ fontSize: "10px" }}
 				>
 					{label}
 				</span>
