@@ -13,7 +13,7 @@ import Load from "@/components/Load";
 import { Navbar } from "@/components/ui/Navbar";
 import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import AddReferral from "@/components/ui/modals/teacher/AddReferral";
-import ReferralInfo from "@/components/ui/modals/teacher/ReferralInfo";
+import ModalReferralInfo from "@/components/ui/modals/counselor/referrals/ModalReferralInfo";
 
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
@@ -37,16 +37,14 @@ const TableTitle = ({ addReferral }) => {
 const TableHeaders = ({ handleSort }) => {
   return (
     <thead className="bg-silver px-2 border-b-2 border-maroon rounded-t-2xl">
-                    <tr className="font-bold text-center py-4 rounded-t-2xl">
+      <tr className="font-bold text-center py-4 rounded-t-2xl">
         <th className="py-4">Referred Student</th>
-        <th className="py-4">College, Program and Year</th>
-        {/* <th className="p-5">ID Number</th> */}
+        <th className="py-4 hidden lg:table-cell">College, Program and Year</th>
         <th className="py-4">Assigned Counselor</th>
-        <th className="py-4">Reason</th>
-        <th className="py-4">
-          Status
-        </th>
-        <th className="py-4">Action</th>
+        <th className="py-4 hidden lg:table-cell">Reason</th>
+        <th className="py-4 hidden lg:table-cell">Feedback</th>
+        <th className="py-4">Status</th>
+        <th className="py-4 hidden lg:table-cell">Action</th>
       </tr>
     </thead>
   );
@@ -55,89 +53,84 @@ const TableHeaders = ({ handleSort }) => {
 const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
   return (
     <tbody>
-      {currentList.map((referrals) => (
-        <tr
-          key={referrals.referralId}
-          onClick={() => handleRowClick(referrals.referralId)}
-         className={`border-slate-100 border-b-2
-                          hover:bg-slate-100 cursor-pointer 
-                          transition duration-300 ease-in-out`}
+  {currentList.map((referrals) => (
+    <tr
+      key={referrals.referralId}
+      onClick={() => handleRowClick(referrals.referralId)}
+      className={`border-slate-100 border-b-2 hover:bg-slate-100 cursor-pointer transition duration-300 ease-in-out`}
+    >
+      <td className="text-center"> 
+        <div className="text-center">
+          <div>
+            {referrals.studentLastName}, {referrals.studentFirstName}
+          </div>
+        </div>
+      </td>
+      <td className="hidden lg:table-cell "> 
+        <div className="text-center">
+          <div className="text-sm">
+            {referrals.studentCollege}: {referrals.studentProgram} - {referrals.studentYear}
+          </div>
+        </div>
+      </td>
+      <td className="text-center"> 
+        <div className="text-center">
+          <div className="text-sm">
+            {referrals.counselor?.lastName}, {referrals.counselor?.firstName}
+          </div>
+        </div>
+      </td>
+      <td className="hidden lg:table-cell text-center"> 
+        <p>
+          {referrals?.reason?.length > 50
+            ? `${referrals?.reason?.substring(0, 40)}...`
+            : referrals?.reason}
+        </p>
+      </td>
+      <td className="hidden lg:table-cell text-center"> 
+        <p>
+          {referrals.feedback ? referrals.feedback : "No feedback yet"}
+        </p>
+      </td>
+      <td className="text-center"> 
+        <div
+          className={`w-26 h-6 rounded-lg border border-black flex items-center justify-center ${
+            referrals && referrals.status === "Pending"
+              ? "status-pending"
+              : referrals && referrals.status === "Responded"
+              ? "status-responded"
+              : referrals && referrals.status === "Accepted"
+              ? "status-accepted"
+              : ""
+          }`}
         >
-          <td>
-            <div className="flex items-center gap-3">
-              <div>
-                {referrals.studentLastName}, {referrals.studentFirstName}
-              </div>
-            </div>
-          </td>
-          <td>
-            <div className="flex flex-row gap-x-3">
-              <div className="text-sm">
-                {referrals.studentCollege}: {referrals.studentProgram} -{" "}
-                {referrals.studentYear}
-              </div>
-            </div>
-          </td>
-          <td>
-            <div className="flex flex-row gap-x-3">
-              <div className="text-sm">
-                {referrals.counselor?.lastName},{" "}
-                {referrals.counselor?.firstName}
-              </div>
-            </div>
-          </td>
-          {/* <td>
-            <div className="flex flex-row gap-x-3">
-              <div>{referrals.studentId}</div>
-            </div>
-          </td> */}
-          <td>
-            <p>
-              {referrals?.reason?.length > 50
-                ? `${referrals?.reason?.substring(0, 40)}...`
-                : referrals?.reason}
-            </p>
-          </td>
-          <td className="text-center">
-            <div
-              className={`w-26 h-6 rounded-lg border border-black flex items-center justify-center ${
-                referrals && referrals.status === "Pending"
-                  ? "status-pending"
-                  : referrals && referrals.status === "Responded"
-                  ? "status-responded"
-                  : referrals && referrals.status === "Accepted"
-                  ? "status-accepted"
-                  : ""
-              }`}
-            >
-              {referrals.status === "Pending" && "🟡"}
-              {referrals.status === "Responded" && "🔵"}
-              {referrals.status === "Accepted" && "🟢"}
-              <span className="ml-2">
-                {referrals.status}{" "}
-                {referrals.status === "Responded" &&
-                  (referrals.accepted ? "Accepted" : "Declined")}
-              </span>
-            </div>
-          </td>
+          {referrals.status === "Pending" && "🟡"}
+          {referrals.status === "Responded" && "🔵"}
+          {referrals.status === "Accepted" && "🟢"}
+          <span className="ml-2">
+            {referrals.status}{" "}
+            {referrals.status === "Responded" &&
+              (referrals.accepted ? "Accepted" : "Declined")}
+          </span>
+        </div>
+      </td>
+      <td className="hidden lg:table-cell text-center"> 
+        <div className="flex flex-row justify-center items-center gap-x-5">
+          <button
+            className="btn btn-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              showDeleteModal(referrals.referralId);
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
 
-          <td>
-            <div className="flex flex-row justify-center items-center gap-x-5">
-              <button
-                className="btn btn-xs"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  showDeleteModal(referrals.referralId);
-                }}
-              >
-                Delete
-              </button>
-              <button className="btn btn-xs text-green-700">Edit</button>
-            </div>
-          </td>
-        </tr>
-      ))}
-    </tbody>
   );
 };
 
@@ -156,9 +149,7 @@ const PaginationControls = ({ currentPage, setCurrentPage, list }) => {
       {[...Array(Math.ceil(list.length / ReferralsPerPage))].map((_, index) => (
         <button
           key={index}
-          className={`join-item btn ${
-            currentPage === index + 1 ? "btn-active" : ""
-          }`}
+          className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""}`}
           onClick={() => setCurrentPage(index + 1)}
         >
           {index + 1}
@@ -174,6 +165,7 @@ const PaginationControls = ({ currentPage, setCurrentPage, list }) => {
     </div>
   );
 };
+
 
 const Referral = () => {
   const ReferralsPerPage = 10;
@@ -342,10 +334,11 @@ const Referral = () => {
       )}
 
       {referralModal && (
-        <ReferralInfo
+        <ModalReferralInfo
           setReferralModal={setReferralModal}
           selectedID={selectedID}
           referrals={referrals}
+          userSession={userSession}
         />
       )}
 
