@@ -131,9 +131,7 @@ const ModalReferralInfo = ({
           </div>
 
           {/* Hide button if user is student or teacher */}
-          {!(
-            userSession?.role === "student" || userSession?.role === "teacher"
-          ) &&
+          {userSession?.role === "counselor" &&
             referral &&
             (referral.status === "Pending" ||
               referral.status === "Accepted") && (
