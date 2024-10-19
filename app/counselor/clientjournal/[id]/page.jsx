@@ -6,6 +6,7 @@ import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { default as LoadingState } from "@/components/Load";
 
 export default function JournalPage({ params }) {
   const [student, setStudent] = useState({});
@@ -15,6 +16,7 @@ export default function JournalPage({ params }) {
   const userSession = getUserSession();
   const [showInvalidPassword, setShowInvalidPassword] = useState(false);
   const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchStudent = async () => {
     try {
@@ -133,8 +135,12 @@ export default function JournalPage({ params }) {
   };
 
   useEffect(() => {
-    fetchStudent();
-    fetchPublicJournals();
+    const fetchData = async () => {
+      await Promise.all([fetchStudent(), fetchPublicJournals(), fetchAppointments()]);
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
 
   const convertTo12HourFormat = (time) => {
@@ -143,6 +149,10 @@ export default function JournalPage({ params }) {
     const adjustedHours = hours % 12 || 12; // Convert '0' to '12'
     return `${adjustedHours}:${minutes} ${period}`;
   };
+
+  if (loading) {
+    return <LoadingState />;
+  }
 
   return (
     <div className="w-full pt-32 px-4 md:px-10">
