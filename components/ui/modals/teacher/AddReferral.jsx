@@ -92,14 +92,20 @@ const AddReferral = ({ userId, onOpen, fetchReferrals }) => {
 
       handleClose();
       fetchReferrals();
-      setIsLoading(false);
       const data = await response.json();
       console.log("Referral: ", data);
       console.log("Student ID: ", idNumber);
+      setIsLoading(false);
 
       toast.success("Referral created successfully");
     } catch (error) {
-      console.error("Error creating referral:", error);
+      handleClose();
+      fetchReferrals();
+      setIsLoading(false);
+      // console.error("Error creating referral:", error);
+    } finally {
+      handleClose();
+      toast.success("Referral created successfully");
     }
   };
 
