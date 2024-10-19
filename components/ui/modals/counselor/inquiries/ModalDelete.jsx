@@ -3,55 +3,56 @@ import HollowButton from "@/components/ui/buttons/HollowButton";
 import iconDelete from "@/public/images/icons/deleteconfirm.png";
 import { useState } from "react";
 
-const ModalAction = ({ setDeleteModal, handleAction, prompt, description }) => {
-	const [isChecked, setIsChecked] = useState(true);
+const ModalAction = ({ setDeleteModal, handleDelete, prompt, description }) => {
+  const [isChecked, setIsChecked] = useState(true);
 
-	const toggleChecked = () => {
-		setIsChecked(!isChecked);
-	};
+  const toggleChecked = () => {
+    setIsChecked(!isChecked);
+  };
 
-	return (
-		<>
-			{isChecked && (
-				<div
-					className="fixed inset-0 flex items-center justify-center z-50 bg-white bg-opacity-25 backdrop-blur-sm"
-					role="dialog">
-					<div className="modal-box relative p-6 sm:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white rounded-2xl shadow-lg">
-					<img
-							src={iconDelete.src}
-							alt="delete confirmation"
-							className="w-20 h-20 sm:w-28 sm:h-28 mx-auto"
-						/>
-						<h3 className="text-lg sm:text-xl font-bold font-Merriweather py-4 sm:py-6">
-							Are you sure you want to {prompt} this{" "}
-							{description ? description : "action"}?
-						</h3>
-						<p className="text-sm sm:text-base text-gray-600">
-							This action cannot be undone.
-						</p>
+  return (
+    <>
+      {isChecked && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50 bg-white bg-opacity-25 backdrop-blur-sm"
+          role="dialog"
+        >
+          <div className="modal-box relative p-6 sm:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white rounded-2xl shadow-lg">
+            <img
+              src={iconDelete.src}
+              alt="delete confirmation"
+              className="w-20 h-20 sm:w-28 sm:h-28 mx-auto"
+            />
+            <h3 className="text-lg sm:text-xl font-bold font-Merriweather py-4 sm:py-6">
+              Are you sure you want to {prompt} this{" "}
+              {description ? description : "action"}?
+            </h3>
+            <p className="text-sm sm:text-base text-gray-600">
+              This action cannot be undone.
+            </p>
 
-						<div className="flex flex-col sm:flex-row justify-center gap-y-4 sm:gap-x-4 py-4 sm:py-6 px-6 sm:px-12">
-							<HollowButton
-								onClick={() => setDeleteModal(false)}
-								className="w-full sm:w-auto">
-								Cancel
-							</HollowButton>
-							<FullButton
-								onClick={handleAction}
-								className="w-full sm:w-auto">
-								Submit
-							</FullButton>
-						</div>
-						<button
-							className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none"
-							onClick={() => setDeleteModal(false)}>
-							&times;
-						</button>
-					</div>
-				</div>
-			)}
-		</>
-	);
+            <div className="flex flex-col sm:flex-row justify-center gap-y-4 sm:gap-x-4 py-4 sm:py-6 px-6 sm:px-12">
+              <HollowButton
+                onClick={() => setDeleteModal(false)}
+                className="w-full sm:w-auto"
+              >
+                Cancel
+              </HollowButton>
+              <FullButton onClick={handleDelete} className="w-full sm:w-auto">
+                Submit
+              </FullButton>
+            </div>
+            <button
+              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none"
+              onClick={() => setDeleteModal(false)}
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default ModalAction;
