@@ -259,6 +259,10 @@ export default function Notifications() {
 						setReferral(notification?.referral);
 						setReferralAcceptedModal(true);
 						break;
+					case "counselor":
+						setReferral(notification?.referral);
+						setReferralAcceptedModal(true);
+						break;
 				}
 				break;
 			case "referral_declined":
@@ -418,6 +422,8 @@ export default function Notifications() {
 						);
 						break;
 					}
+					break;
+
 				case "referral":
 					if (
 						notification?.receiver?.id === user?.id &&
@@ -532,9 +538,9 @@ export default function Notifications() {
 				{/* Notifications*/}
 				<div className="flex flex-grow flex-col overflow-y-auto">
 					{notifications?.map((notification, key) => (
-						<div className="relative" onClick={() => handleNotifClick(notification)}>
+						<div className="relative">
 							<div
-								className={` absolute z-10 ${
+								className={`absolute z-10 ${
 									notificationToDelete === notification?.notificationId
 										? "visible bg-zinc-50 w-full h-full flex items-center justify-center gap-x-2"
 										: "invisible"
@@ -583,7 +589,7 @@ export default function Notifications() {
 							<div
 								className={`${
 									notification?.read ? "" : null
-								} flex flex-row px-3 py-4 md:px-5 md:py-5 group
+								} flex flex-row px-3 py-4 md:px-5 md:py-5 group 
 								${
 									notificationToDelete === notification?.notificationId
 										? ""
@@ -591,16 +597,22 @@ export default function Notifications() {
 								}`}
 								key={key}
 							>
-								<div className="w-1/6 md:w-2/12 flex justify-center items-center">
-									<img
-										src={notification?.sender?.image}
-										alt="Avatar"
-										className="rounded-full h-10 w-10 md:h-12 md:w-12"
-									/>
+								<div
+									className="w-full flex flex-row cursor-pointer"
+									onClick={() => handleNotifClick(notification)}
+								>
+									<div className="lg:w-1/6 md:w-2/12 flex justify-center items-center">
+										<img
+											src={notification?.sender?.image}
+											alt="Avatar"
+											className="rounded-full h-10 w-10 md:h-12 md:w-12"
+										/>
+									</div>
+									<div className="lg:w-5/6 md:w-9/12 md:pl-4 flex flex-col justify-center text-xs md:text-sm ">
+										{renderNotifText(notification)}
+									</div>
 								</div>
-								<div className="w-4/6 md:w-9/12 md:pl-4 flex flex-col justify-center text-xs md:text-sm">
-									{renderNotifText(notification)}
-								</div>
+
 								<div
 									className="w-1/6 md:w-1/12 flex items-center justify-end invisible group-hover:visible"
 									onClick={() => handleShowConfirmDelete(notification)}
