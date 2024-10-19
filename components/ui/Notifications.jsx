@@ -362,6 +362,9 @@ export default function Notifications() {
 				case "appointment_done":
 					text = `Your appointment with Counselor ${senderName} is marked done.`;
 					break;
+				case "appointment_cancelled":
+					text = `Your appointment with Counselor ${notification?.appointment?.counselor?.firstName} ${notification?.appointment?.counselor?.lastName} has been cancelled.`;
+					break;
 
 				case "referral":
 					if (notification?.receiver?.id === user?.id) {
@@ -422,8 +425,9 @@ export default function Notifications() {
 						);
 						break;
 					}
+				case "appointment_cancelled":
+					text = `Your appointment with student ${notification?.appointment?.student?.firstName} ${notification?.appointment?.student?.lastName} has been cancelled.`;
 					break;
-
 				case "referral":
 					if (
 						notification?.receiver?.id === user?.id &&

@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-
+import ModalDelete from "@/components/ui/modals/counselor/inquiries/ModalDelete";
 import JournalModal from "./_modal/JournalModal";
 
 const StudentJournal = () => {
@@ -23,9 +23,11 @@ const StudentJournal = () => {
   const [highlightEntry, setHighlightEntry] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [showEntry, setShowEntry] = useState(false); // New state for showing entry
+  const [showEntry, setShowEntry] = useState(false);
 
   const [isPublic, setIsPublic] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [deleteEntryId, setDeleteEntryId] = useState(null);
 
   const handleEntryClick = () => {
     setShowEntry(true);
@@ -135,6 +137,7 @@ const StudentJournal = () => {
         );
         fetchEntries();
         setIsEditing(false);
+        setShowEntry(false);
       } else {
         toast.error(
           `Failed to delete journal entry with title "${deletedEntry.title}".`
@@ -249,7 +252,10 @@ const StudentJournal = () => {
               entries={journalEntries}
               isEditing={isEditing}
               handleClickedEntry={handleClickedEntry}
-              handleDeleteEntry={handleDeleteEntry}
+              handleDeleteEntry={(journalId) => {
+                setDeleteEntryId(journalId);
+                setShowDeleteModal(true);
+              }}
             />
           </section>
 
@@ -424,15 +430,26 @@ const StudentJournal = () => {
         </div>
 
         {showModal && (
-          <JournalModal
-            title={title}
-            entry={entry}
-            setTitle={setTitle}
-            setEntry={setEntry}
-            setShowModal={setShowModal}
-            handleSaveEntry={handleSaveEntry}
-          />
-        )}
+        <JournalModal
+          setModal={setShowModal}
+          title={title}
+          setTitle={setTitle}
+          entry={entry}
+          setEntry={setEntry}
+          handleSaveEntry={handleSaveEntry}
+        />
+      )}
+      {showDeleteModal && (
+        <ModalDelete
+          setDeleteModal={setShowDeleteModal}
+          handleDelete={() => {
+            handleDeleteEntry(deleteEntryId);
+            setShowDeleteModal(false);
+          }}
+          prompt="journal entry"
+          description="This action cannot be undone."
+        />
+      )}
       </div>
     </div>
   );

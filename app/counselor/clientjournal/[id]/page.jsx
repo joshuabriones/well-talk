@@ -37,22 +37,29 @@ export default function JournalPage({ params }) {
   };
 
   const fetchAppointments = async () => {
-    const response = await fetch(
-      `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_STUDENTID}${params.id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_STUDENTID}${params.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error fetching appointments");
       }
-    );
 
-    if (!response.ok) {
-      console.error("Error fetching appointments");
+      const data = await response.json();
+
+      const filteredAppointments = data.filter(appointment => appointment.appointmentStatus === "Done");
+
+      setAppointments(filteredAppointments);
+      console.log(filteredAppointments);
+    } catch (error) {
+      console.error(error.message);
     }
-    const data = await response.json();
-    setAppointments(data);
-    console.log(data);
-
   };
 
   useEffect(() => {
@@ -60,14 +67,14 @@ export default function JournalPage({ params }) {
   }, []);
 
   const formatDate = (date) => {
-		const dateObject = new Date(date);
-		const options = { year: "numeric", month: "long", day: "numeric" };
-		const finalDate = dateObject.toLocaleDateString("en-US", options);
+    const dateObject = new Date(date);
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const finalDate = dateObject.toLocaleDateString("en-US", options);
 
     console.log(finalDate);
-		return finalDate;
+    return finalDate;
 
-	};
+  };
 
 
   const fetchPublicJournals = async () => {
@@ -246,7 +253,14 @@ export default function JournalPage({ params }) {
                     key={appointment.appointmentId}
                   >
                     <summary className="[&::-webkit-details-marker]:hidden relative pr-8 font-medium list-none cursor-pointer text-slate-700 focus-visible:outline-none transition-colors duration-300 group-hover:text-slate-900">
-                      <h2 className="text-xl">{formatDate(appointment.appointmentDate)} ━ {convertTo12HourFormat(appointment.appointmentStartTime)}</h2>
+                      <h2 className="text-xl flex justify-between">
+                        <div>
+                          {formatDate(appointment.appointmentDate)} ━ {convertTo12HourFormat(appointment.appointmentStartTime)}
+                        </div>
+                        <div>
+                          {appointment.counselor?.id ? `${appointment.counselor.firstName} ${appointment.counselor.lastName}` : (appointment.outsideCounselor?.id ? `${appointment.outsideCounselor.firstName} ${appointment.outsideCounselor.lastName}` : "No Counselor")}
+                        </div>
+                      </h2>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="absolute right-0 w-4 h-4 transition duration-300 top-1 stroke-slate-700 shrink-0 group-open:rotate-45"

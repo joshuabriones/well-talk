@@ -25,6 +25,8 @@ import { Badge, Calendar, Popover, Whisper } from "rsuite";
 import "rsuite/dist/rsuite.min.css";
 import { useSearchParams } from "next/navigation";
 
+import { programOptions } from "@/lib/inputOptions";
+
 const Appointment = () => {
   const AppointmentPerPage = 10;
 
@@ -53,6 +55,7 @@ const Appointment = () => {
   //for referral params
   const [referralId, setReferralId] = useState();
   const searchParams = useSearchParams();
+  const [isReferral, setIsReferral] = useState(false);
 
   const [appointmentDate, setAppointmentDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -63,8 +66,12 @@ const Appointment = () => {
   const [purpose, setPurpose] = useState(""); // State to store the purpose of the appointment
   const [appointmentOnThatDate, setAppointmentOnThatDate] = useState([]);
 
-  const [selectedStatus, setSelectedStatus] = useState("Pending");
+  const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [errorMessages, setErrorMessages] = useState({
+    appointmentType: "",
+    purpose: "",
+  });
 
   // if (Cookies.get("token") === undefined || Cookies.get("token") === null) {
   // 	return <Load route="login" />;
@@ -78,6 +85,7 @@ const Appointment = () => {
     if (id) {
       setReferralId(id);
       setAppointmentType("Referral");
+      setIsReferral(true);
     }
   }, [searchParams]);
 
@@ -316,8 +324,25 @@ const Appointment = () => {
     return formattedTime;
   };
 
+  const isTimeSlotUnavailable = (time) => {
+    const currentDate = new Date();
+    const selectedDate = new Date(appointmentDate);
+    const [hours, minutes] = time.split(":").map(Number);
+
+    // Set the full date and time for comparison
+    const slotDateTime = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
+      hours,
+      minutes
+    );
+
+    return slotDateTime < currentDate || isTimeSlotTaken(time);
+  };
+
   const handleTimeSlotClick = (time) => {
-    if (!isTimeSlotTaken(time)) {
+    if (!isTimeSlotTaken(time) && !isTimeSlotUnavailable(time)) {
       setSelectedTime(time); // Update the selected time
       setSelectedTimeSlot(time);
       const duration = "1:00"; // Duration to add
@@ -327,7 +352,23 @@ const Appointment = () => {
     }
   };
   const handleAppointmentSubmit = async () => {
-    // Open the confirm response modal
+    if (!appointmentType) {
+      setErrorMessages((prev) => ({
+        ...prev,
+        appointmentType: "Please select appointment type!",
+      }));
+      setIsLoading(false);
+      return;
+    }
+
+    if (!purpose) {
+      setErrorMessages((prev) => ({
+        ...prev,
+        purpose: "Please state purpose!",
+      }));
+      setIsLoading(false);
+      return;
+    }
     setConfirmResponseModal(true);
   };
 
@@ -611,6 +652,7 @@ const Appointment = () => {
                       onChange={handleStatusChange}
                       className="border rounded pr-[26px]"
                     >
+                      <option value="All">All </option>
                       <option value="Pending">Pending 🟡</option>
                       <option value="Done">Done 🟢</option>
                       <option value="Cancelled">Cancelled 🔴</option>
@@ -625,6 +667,7 @@ const Appointment = () => {
                       <th className="py-4">Date and Time</th>
                       <th className="py-4 hidden  lg:table-cell">ID Number</th>
                       <th className="py-4 w-md">Student</th>
+                      <th className="py-4 hidden  lg:table-cell">Type</th>
                       <th className="py-4 hidden  lg:table-cell">Reason</th>
                       <th className="py-4 hidden  lg:table-cell">Feedback</th>
                       <th className="py-4">Status</th>
@@ -679,6 +722,11 @@ const Appointment = () => {
                             </div>
                           </div>
                         </td>
+                        <td className="text-center hidden  lg:table-cell">
+                          <p>
+                            {appointments ? appointments?.appointmentType : ""}
+                          </p>
+                        </td>
                         <td className="text-center hidden lg:table-cell">
                           <p>
                             {appointments?.appointmentPurpose?.length > 50
@@ -714,7 +762,7 @@ const Appointment = () => {
                                 appointments.appointmentStatus ===
                                   "Cancelled" &&
                                 "🔴"}
-                              <span className="ml-2 text-bold text-xs ">
+                              <span className="ml-0 md:ml-2 lg:ml-2 text-bold text-xs ">
                                 {appointments
                                   ? appointments.appointmentStatus
                                   : ""}
@@ -823,8 +871,8 @@ const Appointment = () => {
                         disabled={isTimeSlotTaken(time)}
                         onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
                         className={`time-slot-button ${
-                          isTimeSlotTaken(time)
-                            ? "bg-white border-2 border-maroon text-maroon cursor-not-allowed"
+                          isTimeSlotTaken(time) || isTimeSlotUnavailable(time)
+                            ? "bg-white border-[1px] border-gray text-primary-green cursor-not-allowed"
                             : time === selectedTimeSlot
                             ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
                             : "bg-maroon text-white hover:bg-primary-green-dark duration-300"
@@ -835,45 +883,58 @@ const Appointment = () => {
                     ))}
                   </div>
                   <hr />
-                  <p className="mb-2">
-                    👨🏻‍🎓 Select a student you wish to assign an appointment
-                  </p>
-                  <div className="flex flex-row justify-between items-center space-x-4 pr-2 md:pr-3">
-                    <div className="flex-grow">
-                      <SearchInput
-                        searchTerm={searchTerm}
-                        setSearchTerm={setSearchTerm}
-                      />
-                    </div>
-                    <div className="w-5/12 md:w-2/12">
-                      <HollowButton onClick={() => setOpenAddStudent(true)}>
-                        Add Student
-                      </HollowButton>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 w-full max-h-[10%] overflow-y-scroll text-left">
-                    {filteredStudents.map((student) => (
-                      <button
-                        onClick={() => {
-                          toast.success(
-                            `Student selected: ${student.firstName} ${student.lastName}`
-                          );
-                          setSelectedStudentId(student.id);
-                          setSelectedStudent(student.id); // Update the selected student
-                        }}
-                        className={`bg-maroon text-maroon font-semibold block w-full mb-2 px-5 py-2 text-left hover:bg-primary-green-dark duration-150 rounded-lg ${
-                          selectedStudent === student.id
-                            ? "bg-white border-2 border-maroon text-maroon font-semibold"
-                            : "text-white" // Apply a different style to the selected student
-                        }`}
-                        key={student.id}
-                      >
-                        {student.idNumber} ⸺ {student.firstName}{" "}
-                        {student.lastName}
-                      </button>
-                    ))}
-                  </div>
+                  {!isReferral && (
+                    <>
+                      <p className="mb-2">
+                        👨🏻‍🎓 Select a student you wish to assign an appointment
+                      </p>
+                      <div className="flex flex-row justify-between items-center space-x-4 pr-2 md:pr-3">
+                        <div className="flex-grow">
+                          <SearchInput
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                          />
+                        </div>
+                        <div className="w-5/12 md:w-2/12">
+                          <HollowButton onClick={() => setOpenAddStudent(true)}>
+                            Add Student
+                          </HollowButton>
+                        </div>
+                      </div>
+                      <div className="mt-4 w-full max-h-[10%] overflow-y-scroll ">
+                        {filteredStudents.map((student) => (
+                          <button
+                            onClick={() => {
+                              toast.success(
+                                `Student selected: ${student.firstName} ${student.lastName}`
+                              );
+                              setSelectedStudentId(student.id);
+                              setSelectedStudent(student.id); // Update the selected student
+                            }}
+                            className={`flex justify-between bg-maroon text-maroon font-semibold w-full mb-2 px-5 py-2 hover:bg-primary-green-dark duration-150 rounded-lg ${
+                              selectedStudent === student.id
+                                ? "bg-white border-2 border-maroon text-maroon font-semibold"
+                                : "text-white" // Apply a different style to the selected student
+                            }`}
+                            key={student.id}
+                          >
+                            <span className="flex-1 text-left">
+                              {student.firstName} {student.lastName}
+                            </span>
+                            <span className="flex-1 text-center">
+                              {student.idNumber}
+                            </span>
+                            <span className="flex-1 text-right">
+                              {programOptions[student?.college]?.find(
+                                (item) => item.value === student?.program
+                              )?.label || "N/A"}
+                              - {student.year}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
                   <hr />
                   <div className="mt-4">
                     <p>

@@ -11,6 +11,7 @@ const ModalAppointmentInfo = ({
   appointments,
   handleReschedule,
   handleDelete,
+  fetchAppointments,
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [appointment, setAppointment] = useState(null);
@@ -20,6 +21,7 @@ const ModalAppointmentInfo = ({
   const userSession = getUserSession();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
+  const [feedback, setFeedback] = useState("");
 
   const handleOverlayClick = () => {
     handleModalClose();
@@ -66,23 +68,29 @@ const ModalAppointmentInfo = ({
           body: JSON.stringify({
             appointmentNotes: notes,
             appointmentAdditionalNotes: additionalNotes,
+            referral: {
+              feedback: feedback,
+            },
           }),
         }
       );
-
       if (response.ok) {
         toast.success("Appointment status updated!");
+
+        fetchAppointments();
       } else {
         toast.error("Failed to update appointment status");
+        fetchAppointments();
       }
     } catch (error) {
       console.error(error);
+      toast.error("An error occurred");
     } finally {
       setOpenModal(false);
+      setIsVisible(false);
       setIsLoading(false);
     }
   };
-
   const handleModalClose = () => {
     setIsVisible(false);
     setAppointmentModal(false);
@@ -116,6 +124,12 @@ const ModalAppointmentInfo = ({
                         {appointment
                           ? `${appointment.student?.firstName} ${appointment.student?.lastName}`
                           : ""}
+                      </td>
+                    </tr>
+                    <tr className="py-4">
+                      <th className="text-left py-2 pr-4">Type:</th>
+                      <td className="py-2">
+                        {appointment ? appointment.appointmentType : ""}
                       </td>
                     </tr>
                     <tr className="py-4">
@@ -201,15 +215,17 @@ const ModalAppointmentInfo = ({
                 </div>
               ) : userSession.role === "counselor" ? (
                 <div className="flex gap-x-4 px-8 mx-auto">
-                  <button
-                    className="w-full bg-gray border-2 border-gray text-sm font-Merriweather text-white font-semibold rounded-3xl px-3 py-2 hover:scale-95 transition-transform duration-300"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setOpenModal(true);
-                    }}
-                  >
-                    Provide Feedback
-                  </button>
+                  {appointment?.appointmentStatus === "Pending" && (
+                    <button
+                      className="w-full bg-gray border-2 border-gray text-sm font-Merriweather text-white font-semibold rounded-3xl px-3 py-2 hover:scale-95 transition-transform duration-300"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenModal(true);
+                      }}
+                    >
+                      Provide Feedback
+                    </button>
+                  )}
                 </div>
               ) : null}
             </section>
@@ -279,6 +295,18 @@ const ModalAppointmentInfo = ({
                   ></textarea>
                 </div>
 
+                {appointment.appointmentType === "Referral" && (
+                  <div className="flex flex-col gap-4 overflow-y-scroll">
+                    <textarea
+                      className="border-2 rounded-xl lg:text-md md:text-base xs:text-xs focus:border-maroon w-full"
+                      placeholder="Provide feedback for the referrer..."
+                      value={feedback}
+                      onChange={(e) => setFeedback(e.target.value)}
+                      rows="8"
+                    ></textarea>
+                  </div>
+                )}
+
                 <div className="flex justify-center mt-4">
                   <div className="w-full">
                     <button
@@ -291,7 +319,7 @@ const ModalAppointmentInfo = ({
                           <img src="/images/loading.svg" alt="loading" />
                         </span>
                       ) : (
-                        "Submit"
+                        "Submit Feedback"
                       )}
                     </button>
                   </div>

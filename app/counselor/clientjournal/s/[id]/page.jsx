@@ -131,7 +131,7 @@ const StudentDetailsPage = ({ params }) => {
                   </li>
                   <li>
                     <strong>Relationship:</strong>{" "}
-                    {student?.parentGuardianRelationship}
+                    {student?.guardianRelationship}
                   </li>
                   <li>
                     <strong>Contact Number:</strong>{" "}

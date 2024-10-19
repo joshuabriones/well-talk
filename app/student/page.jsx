@@ -52,7 +52,7 @@ function Home() {
       }
       const data = await response.json();
       setPosts(data);
-      setPosts(data.filter((post) => !post.isPinned));
+      // setPosts(data.filter((post) => !post.isPinned));
       setPinnedPosts(data.filter((post) => post.isPinned));
       setLoading(false);
     } catch (error) {
