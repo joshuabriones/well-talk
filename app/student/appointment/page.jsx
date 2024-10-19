@@ -439,6 +439,29 @@ const Appointment = () => {
     setConfirmResponseModal(false);
     setIsLoading(true);
 
+    // try {
+    //   const response = await fetch(
+    //     `${process.env.BASE_URL}${
+    //       API_ENDPOINT.CHECK_APPOINTMENT_IS_TAKEN
+    //     }${appointmentDate}&appointmentStartTime=${convertTo24HourFormat(
+    //       appointmentStartTime
+    //     )}&counselorId=${counselorId}`,
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${Cookies.get("token")}`,
+    //       },
+    //     }
+    //   );
+    //   if (response) {
+    //     toast.error("Appointment is already taken");
+    //     setIsLoading(false);
+    //     return;
+    //   }
+    // } catch (error) {
+    //   console.error("Error checking appointment: ", error);
+    //   toast.error("Failed to check appointment");
+    // }
+
     try {
       const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.STUDENT_CREATE_APPOINTMENT}${userSession.id}`,
