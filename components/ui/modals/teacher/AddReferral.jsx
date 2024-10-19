@@ -98,10 +98,10 @@ const AddReferral = ({ userId, onOpen, fetchReferrals }) => {
 
       toast.success("Referral created successfully");
     } catch (error) {
-      console.error("Error creating referral:", error);
+      setIsLoading(false);
+      // console.error("Error creating referral:", error);
     } finally {
       toast.success("Referral created successfully");
-      setIsLoading(false);
     }
   };
 
