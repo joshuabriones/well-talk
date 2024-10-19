@@ -196,7 +196,7 @@ const ModalAppointmentInfo = ({
                             handleModalClose();
                           }}
                         >
-                          Delete
+                          Cancel
                         </button>
 
                         <button

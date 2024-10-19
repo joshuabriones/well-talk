@@ -226,7 +226,8 @@ const PostCard = ({ post, fetchPosts }) => {
         <ModalDelete
           setDeleteModal={setOpenDeleteModal}
           handleDelete={confirmDeletePost}
-          prompt="post"
+          prompt="delete"
+          description="post"
         />
       )}
 

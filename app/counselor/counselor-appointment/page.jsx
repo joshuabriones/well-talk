@@ -1013,7 +1013,7 @@ const Appointment = () => {
           handleDelete={handleDelete}
           prompt={"appointment"}
         ></ModalDelete>
-      )}
+      )}c 
 
       {appointmentModal && (
         <ModalAppointmentInfo

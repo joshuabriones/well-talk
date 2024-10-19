@@ -204,14 +204,14 @@ const Appointment = () => {
 			);
 
 			if (!response.ok) {
-				throw new Error("Failed to delete appointment");
+				throw new Error("Failed to cancel appointment");
 			}
 
-			toast.success("Appointment deleted successfully");
+			toast.success("Appointment cancelled successfully");
 			fetchAppointments();
 		} catch (err) {
 			console.log(err);
-			toast.error("Error deleting appointment");
+			toast.error("Error cancelling appointment");
 		} finally {
 			setDeleteModal(false);
 			setSelectedID(null);
@@ -780,7 +780,7 @@ const Appointment = () => {
 																			);
 																		}}
 																	>
-																		Delete
+																		Cancel
 																	</button>
 																	<button
 																		className=" btn btn-xs text-gray hover:text-gray hover:bg-gold"
@@ -1151,7 +1151,9 @@ const Appointment = () => {
 			{deleteModal && (
 				<ModalDelete
 					setDeleteModal={setDeleteModal}
+					prompt="cancel"
 					handleDelete={handleDelete}
+					description="scheduled appointment"
 				></ModalDelete>
 			)}
 

@@ -328,7 +328,9 @@ export default function Home() {
 			{deleteModal && (
 				<ModalDelete
 					setDeleteModal={setDeleteModal}
-					handleDelete={handleDelete}></ModalDelete>
+					handleDelete={handleDelete}
+					prompt="delete">
+					</ModalDelete>
 			)}
 
 			{inquiryModal && (

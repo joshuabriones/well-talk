@@ -123,7 +123,7 @@ const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
               showDeleteModal(referrals.referralId);
             }}
           >
-            Delete
+            Cancel
           </button>
         </div>
       </td>
@@ -329,7 +329,9 @@ const Referral = () => {
       {deleteModal && (
         <ModalDelete
           setDeleteModal={setDeleteModal}
+          prompt="cancel"
           handleDelete={handleDelete}
+          description="referral"
         />
       )}
 

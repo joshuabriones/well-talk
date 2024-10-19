@@ -431,7 +431,7 @@ const [deleteEntryId, setDeleteEntryId] = useState(null);
 
         {showModal && (
         <JournalModal
-          setModal={setShowModal}
+        setShowModal={setShowModal}
           title={title}
           setTitle={setTitle}
           entry={entry}
@@ -446,8 +446,8 @@ const [deleteEntryId, setDeleteEntryId] = useState(null);
             handleDeleteEntry(deleteEntryId);
             setShowDeleteModal(false);
           }}
-          prompt="journal entry"
-          description="This action cannot be undone."
+          prompt="delete"
+          description="journal entry"
         />
       )}
       </div>
