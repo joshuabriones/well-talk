@@ -13,7 +13,7 @@ const PostHighlight = ({ post, setShowModal, role }) => {
 	};
 
 	const formatTime = () => {
-		const [hours, minutes] = post.postTime.split(":");
+		const [hours, minutes] = post?.postTime?.split(":");
 		const ampm = hours >= 12 ? "PM" : "AM";
 		const formattedHours = (hours % 12 || 12).toString().padStart(2, "0");
 		return `${formattedHours}:${minutes} ${ampm}`;
