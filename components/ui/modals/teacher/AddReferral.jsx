@@ -104,6 +104,7 @@ const AddReferral = ({ userId, onOpen, fetchReferrals }) => {
       setIsLoading(false);
       // console.error("Error creating referral:", error);
     } finally {
+      handleClose();
       toast.success("Referral created successfully");
     }
   };
