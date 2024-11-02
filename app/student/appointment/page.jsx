@@ -110,28 +110,6 @@ const Appointment = () => {
 		}
 	}, []);
 
-	const fetchAppointments = async () => {
-		const response = await fetch(
-			`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_STUDENTID}${userSession.id}`,
-			{
-				headers: {
-					Authorization: `Bearer ${Cookies.get("token")}`,
-				},
-			}
-		);
-
-		if (!response.ok) {
-			console.error("Error fetching appointments");
-		}
-		const data = await response.json();
-		setAppointments(data);
-		console.log(data);
-
-		// Extract counselor IDs from the appointments
-		const counselorIds = data.map((appointment) => appointment.counselor.id);
-		setCounselorIds(counselorIds);
-	};
-
 	const fetchStudentById = async (studentId) => {
 		const response = await fetch(
 			`${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_BY_ID}${studentId}`,
@@ -149,29 +127,82 @@ const Appointment = () => {
 		setStudentData(data);
 	};
 
-	useEffect(() => {
-		fetchAppointmentsOnThatDate();
-	}, [appointmentDate, counselorIds]);
-
-	const fetchAppointmentsOnThatDate = async () => {
-		const appointments = [];
-		for (const counselorId of counselorIds) {
+	const fetchCounselorIds = async () => {
+		try {
 			const response = await fetch(
-				`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE_AND_COUNSELOR}${appointmentDate}&counselorId=${counselorId}`,
+				`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_STUDENT_ID}${userSession?.id}`,
 				{
 					headers: {
-						"Content-Type": "application/json",
 						Authorization: `Bearer ${Cookies.get("token")}`,
 					},
 				}
 			);
-			const data = await response.json();
-			if (Array.isArray(data)) {
-				appointments.push(...data);
+
+			if (!response.ok) {
+				throw new Error("Error fetching counselor IDs");
 			}
+
+			const data = await response.json();
+			return data.map((counselor) => counselor.id);
+		} catch (error) {
+			console.error("An error occurred while fetching counselor IDs:", error);
+			return [];
 		}
-		setAppointmentOnThatDate(appointments);
 	};
+
+	const fetchAppointments = async () => {
+		const response = await fetch(
+			`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_STUDENTID}${userSession.id}`,
+			{
+				headers: {
+					Authorization: `Bearer ${Cookies.get("token")}`,
+				},
+			}
+		);
+
+		if (!response.ok) {
+			console.error("Error fetching appointments");
+		}
+		const data = await response.json();
+		setAppointments(data);
+	};
+
+	const fetchAppointmentsOnThatDate = async () => {
+		try {
+			const counselorIds = await fetchCounselorIds();
+			const appointments = [];
+
+			for (const counselorId of counselorIds) {
+				const response = await fetch(
+					`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE_AND_COUNSELOR}${appointmentDate}&counselorId=${counselorId}`,
+					{
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${Cookies.get("token")}`,
+						},
+					}
+				);
+
+				if (!response.ok) {
+					throw new Error("Error fetching appointments on that date");
+				}
+
+				const data = await response.json();
+				if (Array.isArray(data)) {
+					appointments.push(...data);
+				}
+			}
+
+			setAppointmentOnThatDate(appointments);
+		} catch (error) {
+			console.error("An error occurred while fetching appointments on that date:", error);
+		}
+	};
+
+
+	useEffect(() => {
+		fetchAppointmentsOnThatDate();
+	}, [appointmentDate]);
 
 	const formatDate = (date) => {
 		const dateObject = new Date(date);
@@ -614,21 +645,19 @@ const Appointment = () => {
 				<div>
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isAddAppointment
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
 									? "bg-maroon text-white"
 									: "border-2 border-maroon text-maroon"
-							}`}
+								}`}
 							onClick={handleAddAppointmentClick}
 						>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isViewAppointment
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
 									? "bg-maroon text-white"
 									: "border-2 border-maroon text-maroon"
-							}`}
+								}`}
 							onClick={handleViewAppointmentClick}
 						>
 							View Appointments
@@ -714,24 +743,24 @@ const Appointment = () => {
 													<td className="text-center py-2 hidden  lg:table-cell">
 														<p className="truncate">
 															{appointment.appointmentPurpose.length >
-															50
+																50
 																? `${appointment.appointmentPurpose.substring(
-																		0,
-																		40
-																  )}...`
+																	0,
+																	40
+																)}...`
 																: appointment.appointmentPurpose}
 														</p>
 													</td>
 													<td className="text-center hidden  lg:table-cell">
 														<p>
 															{appointment?.appointmentNotes?.length >
-															50
+																50
 																? `${appointment?.appointmentNotes?.substring(
-																		0,
-																		40
-																  )}...`
+																	0,
+																	40
+																)}...`
 																: appointment?.appointmentNotes ||
-																  "No feedback yet"}
+																"No feedback yet"}
 														</p>
 													</td>
 													<td className="h-full">
@@ -741,19 +770,19 @@ const Appointment = () => {
 															>
 																{appointment &&
 																	appointment.appointmentStatus ===
-																		"Pending" &&
+																	"Pending" &&
 																	"🟡"}
 																{appointment &&
 																	appointment.appointmentStatus ===
-																		"Done" &&
+																	"Done" &&
 																	"🟢"}
 																{appointment &&
 																	appointment.appointmentStatus ===
-																		"On-going" &&
+																	"On-going" &&
 																	"🔵"}
 																{appointment &&
 																	appointment.appointmentStatus ===
-																		"Cancelled" &&
+																	"Cancelled" &&
 																	"🔴"}{" "}
 																{/* Added red dot for Cancelled */}
 																<span className="ml-2 text-bold text-sm">
@@ -770,31 +799,31 @@ const Appointment = () => {
 														<div className="flex justify-center text-center py-2">
 															{appointment.appointmentStatus ===
 																"Pending" && (
-																<>
-																	<button
-																		className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
-																		onClick={(e) => {
-																			e.stopPropagation();
-																			showDeleteModal(
-																				appointment.appointmentId
-																			);
-																		}}
-																	>
-																		Cancel
-																	</button>
-																	<button
-																		className=" btn btn-xs text-gray hover:text-gray hover:bg-gold"
-																		onClick={(e) => {
-																			e.stopPropagation();
-																			showRescheduleModal(
-																				appointment.appointmentId
-																			);
-																		}}
-																	>
-																		Reschedule
-																	</button>
-																</>
-															)}
+																	<>
+																		<button
+																			className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
+																			onClick={(e) => {
+																				e.stopPropagation();
+																				showDeleteModal(
+																					appointment.appointmentId
+																				);
+																			}}
+																		>
+																			Cancel
+																		</button>
+																		<button
+																			className=" btn btn-xs text-gray hover:text-gray hover:bg-gold"
+																			onClick={(e) => {
+																				e.stopPropagation();
+																				showRescheduleModal(
+																					appointment.appointmentId
+																				);
+																			}}
+																		>
+																			Reschedule
+																		</button>
+																	</>
+																)}
 														</div>
 													</td>
 												</tr>
@@ -830,9 +859,8 @@ const Appointment = () => {
 										].map((_, index) => (
 											<button
 												key={index}
-												className={`join-item btn ${
-													currentPage === index + 1 ? "btn-active" : ""
-												}`}
+												className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
+													}`}
 												onClick={() => setCurrentPage(index + 1)}
 											>
 												{index + 1}
@@ -920,14 +948,13 @@ const Appointment = () => {
 															isTimeSlotUnavailable(time)
 														}
 														onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-														className={`time-slot-button ${
-															isTimeSlotTaken(time) ||
-															isTimeSlotUnavailable(time)
+														className={`time-slot-button ${isTimeSlotTaken(time) ||
+																isTimeSlotUnavailable(time)
 																? "bg-white border-[1px] border-gray text-primary-green cursor-not-allowed"
 																: time === selectedTimeSlot
-																? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-																: "bg-maroon text-white hover:bg-maroon duration-300"
-														} py-2 px-3 rounded-md`}
+																	? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+																	: "bg-maroon text-white hover:bg-maroon duration-300"
+															} py-2 px-3 rounded-md`}
 													>
 														{timeFormatter(time)}
 													</button>
@@ -1164,7 +1191,7 @@ const Appointment = () => {
 					appointments={appointments}
 					handleReschedule={handleReschedule}
 					handleDelete={showDeleteModal}
-					//handleUpdateStatus={handleUpdateStatus}
+				//handleUpdateStatus={handleUpdateStatus}
 				></StudentModalAppointmentInfo>
 			)}
 
