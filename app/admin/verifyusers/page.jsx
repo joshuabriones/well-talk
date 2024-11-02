@@ -2,11 +2,11 @@
 
 import Header from "../_admincomponents/Header";
 
-import { useState, useEffect } from "react";
 import { API_ENDPOINT } from "@/lib/api";
-import AccountTable from "../_admincomponents/AccountTable";
 import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import AccountTable from "../_admincomponents/AccountTable";
 
 const VerifyUserPage = () => {
   const [users, setUsers] = useState([]);
@@ -108,6 +108,7 @@ const VerifyUserPage = () => {
                 handleDeleteUser={handleDeleteUser}
                 handleAcceptUser={handleAcceptUser}
                 isLoading={isLoading}
+                setIsLoading={setIsLoading}
               />
             ) : (
               <div className="text-navgray">No users found</div>

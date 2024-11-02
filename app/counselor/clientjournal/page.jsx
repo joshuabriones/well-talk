@@ -28,16 +28,12 @@ const ClientJournal = () => {
           },
         }
       );
-      const data1 = await response1.json();
-
-      if (!response1.ok) {
-        throw new Error("Network response was not ok");
+  
+      let data1 = [];
+      if (response1.ok) {
+        data1 = await response1.json();
       }
-
-      // Set the initial students
-      const initialStudents = data1.filter(student => student.role === "student");
-      setStudents(initialStudents);
-
+  
       // Fetch appointments from the second endpoint
       const response2 = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_COUNSELORID}${userSession.id}`,
@@ -49,36 +45,37 @@ const ClientJournal = () => {
           },
         }
       );
-      const data2 = await response2.json();
-
-      if (!response2.ok) {
-        throw new Error("Network response was not ok");
+  
+      let data2 = [];
+      if (response2.ok) {
+        data2 = await response2.json();
       }
-
-      const appointmentStudents = data2.map(appointment => appointment.student);
-
+  
       // Combine and filter unique students
+      const initialStudents = data1.filter(student => student.role === "student");
+      const appointmentStudents = data2.map(appointment => appointment.student);
+  
       const combinedStudents = [
         ...initialStudents,
         ...appointmentStudents
       ];
-
+  
       const uniqueStudentsMap = new Map();
       combinedStudents.forEach(student => {
         if (!uniqueStudentsMap.has(student.id)) {
           uniqueStudentsMap.set(student.id, student);
         }
       });
-
+  
       const uniqueStudents = Array.from(uniqueStudentsMap.values());
-
+  
       // Update the students state with unique students
       setStudents(uniqueStudents);
     } catch (error) {
       console.error("Error fetching students:", error);
     }
   };
-
+  
   useEffect(() => {
     fetchStudents();
   }, []);
