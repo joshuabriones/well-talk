@@ -7,11 +7,13 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import AccountTable from "../_admincomponents/AccountTable";
+import { useRouter } from "next/navigation";
 
 const VerifyUserPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const fetchUsers = async () => {
     try {
@@ -94,6 +96,18 @@ const VerifyUserPage = () => {
   return (
     <div className="flex-1 min-h-screen ">
       <Header title="Verify User Accounts" />
+      <p className="text-slate-200 text-sm pl-4 mb-6">
+        Verify the accounts below by clicking the checkmark button to approve or
+        the delete button to remove the user. Please ensure you verify each user
+        before proceeding. You can also speed up the process of creating
+        accounts for students by clicking this button{" "}
+        <span
+          className="text-gold hover:underline cursor-pointer"
+          onClick={() => router.push("/admin/excelupload")}
+        >
+          Create Student Accounts
+        </span>
+      </p>
       <div className="flex justify-center items-center mt-10 overflow-x-hidden">
         {loading ? (
           <div className="text-navgray flex items-center justify-center gap-3">
