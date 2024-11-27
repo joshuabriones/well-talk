@@ -48,6 +48,8 @@ const Login = () => {
     }
   }, [isLoading]);
 
+  console.log("ok");
+
   const handleLogin = async (e) => {
     e.preventDefault();
 

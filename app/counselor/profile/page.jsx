@@ -242,6 +242,8 @@ export default function Profile() {
     return <LoadingState />;
   }
 
+  console.log("ok");
+
   return (
     <div className="p-4 md:p-8">
       <Navbar userType="counselor" />
