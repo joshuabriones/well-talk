@@ -10,7 +10,7 @@ import ScrollAnimationWrapper from "@/components/layout/ScrollAnimationWrapper";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextInput from "@/components/ui/inputs/TextInput";
-import {default as LoadingState} from "@/components/Load";
+import { default as LoadingState } from "@/components/Load";
 // modals
 import ModalForgotPassword from "@/components/ui/modals/ForgotPassword/ModalForgotPassword";
 
@@ -29,11 +29,6 @@ const Login = () => {
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
-
-
-  
-
-
   useEffect(() => {
     if (isLoading) {
       const token = Cookies.get("token");
@@ -47,7 +42,7 @@ const Login = () => {
         role: role,
         isVerified: isVerified,
       };
-      Cookies.set("user", JSON.stringify(userData));
+      Cookies.set("user", JSON.stringify(userData), { expires: 10 / 24 });
 
       router.push(`/${user.role}`);
     }
@@ -74,7 +69,7 @@ const Login = () => {
       if (result.ok) {
         const data = await result.json();
 
-        Cookies.set("token", data.token);
+        Cookies.set("token", data.token, { expires: 10 / 24, secure: true });
         setIsLoading(true);
       } else {
         setShowInvalidCredentials(true);
@@ -124,8 +119,8 @@ const Login = () => {
   };
 
   if (isLoading) {
-		return <LoadingState />;
-	}
+    return <LoadingState />;
+  }
 
   return (
     <section className="py-24 md:py-28 dark:bg-[#0b1727] text-zinc-900 dark:text-white flex justify-center items-center h-screen">
