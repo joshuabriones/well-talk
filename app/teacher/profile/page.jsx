@@ -371,28 +371,6 @@ export default function Profile() {
                           />
                         </div>
                         <div className="w-full">
-                          {/* {editCollege ? (
-										<Dropdown
-											label="Department"
-											value={
-												updatedProfile.college ||
-												teacherProfile?.college ||
-												""
-											}
-											onChange={(value) =>
-												setUpdatedProfile(
-													(prevProfile) => ({
-														...prevProfile,
-														college: value,
-													})
-												)
-											}
-											readOnly={!isEditMode}
-											disabled={!isEditMode}
-											dropdownOptions={collegeOptions}
-											isEditMode={isEditMode}
-										/>
-									) : ( */}
                           <div className="w-full md:w-full">
                             <TextInput
                               label="Gender"
@@ -406,7 +384,6 @@ export default function Profile() {
                               disabled
                             />
                           </div>
-                          {/* )} */}
                         </div>
                       </div>
                     </div>

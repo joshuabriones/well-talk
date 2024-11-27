@@ -398,7 +398,7 @@ export default function StudentProfile() {
                     </div>
 
                     {/* Personal Information */}
-                    <div className="flex md:flex-row gap-4 pb-6">
+                    <div className="flex flex-col md:flex-row gap-4 pb-6">
                       <TextInput
                         label="Gender"
                         value={
@@ -433,8 +433,8 @@ export default function StudentProfile() {
                     </div>
 
                     {/* College Details */}
-                    <div className="flex md:flex-row gap-4 pb-6">
-                      <div className="flex-1">
+                    <div className="flex flex-col md:flex-row gap-4 pb-6">
+                      <div className="w-full">
                         <label
                           htmlFor="college"
                           className="relative block rounded-md bg-white border border-gray-400 h12 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
@@ -470,7 +470,7 @@ export default function StudentProfile() {
                         </label>
                       </div>
 
-                      <div className="flex-1">
+                      <div className="w-full">
                         <label
                           htmlFor="program"
                           className="relative block rounded-md bg-white border border-gray-400 h12 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
@@ -507,7 +507,7 @@ export default function StudentProfile() {
                           </span>
                         </label>
                       </div>
-                      <div className="flex-1">
+                      <div className="w-full">
                         <label
                           htmlFor="yearlevel"
                           className="relative block rounded-md bg-white border border-gray-400 h12 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
@@ -545,7 +545,7 @@ export default function StudentProfile() {
                     </div>
 
                     {/* Additional Information */}
-                    <div className="flex md:flex-row gap-4 pb-6">
+                    <div className="flex flex-col md:flex-row gap-4 pb-6">
                       <div className="flex-1">
                         <TextInput
                           label="Permanent Address"
@@ -575,7 +575,7 @@ export default function StudentProfile() {
                     </div>
 
                     {/* Parents Information */}
-                    <div className="flex md:flex-row gap-4 pb-6">
+                    <div className="flex flex-col md:flex-row gap-4 pb-6">
                       <div className="flex-1">
                         <TextInput
                           label="Parent Name"
