@@ -95,10 +95,6 @@ export default function Profile() {
     }));
   };
 
-  console.log(passwords.confirmPassword);
-  console.log(passwords.newPassword);
-  console.log(passwords.currentPassword);
-
   const handleCancelEdit = () => {
     setIsEditMode(false);
     setUpdatedProfile(counselorProfile);
@@ -146,6 +142,9 @@ export default function Profile() {
             lastName: updatedProfile.lastName,
             gender: updatedProfile.gender,
             image: updatedProfile.image,
+            college: updatedProfile.college,
+            program: updatedProfile.program,
+            assignedYear: updatedProfile.assignedYear,
           }),
         }
       );
