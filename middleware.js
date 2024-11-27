@@ -10,7 +10,6 @@ export async function middleware(req) {
   // Extract token from cookies
   const cookie = req.cookies.get("user");
   const token = cookie ? cookie.value : null;
-  console.log("User cookie:", token);
 
   // If no token, allow access to public routes (login, registration, unverified)
   if (!token) {

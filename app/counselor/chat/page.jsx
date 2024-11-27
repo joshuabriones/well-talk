@@ -4,6 +4,7 @@ import { Navbar } from "@/components/ui/Navbar";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
 import Cookies from "js-cookie";
+import { parse } from "path";
 import { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
@@ -26,6 +27,7 @@ export default function Chat() {
   const [inputNewStudent, setInputNewStudent] = useState("");
 
   const [socketMessages, setSocketMessages] = useState([]);
+  const [mostRecentChat, setMostRecentChat] = useState(null);
 
   // Fetch both students and teachers
   const fetchUsers = async () => {
@@ -131,8 +133,6 @@ export default function Chat() {
     }
   }, [selectedUser]);
 
-  console.log(messages);
-
   // Select a user (student or teacher)
   const handleSelectUser = (user) => {
     setNewChat(false);
@@ -159,8 +159,6 @@ export default function Chat() {
         recipientID: selectedUser?.id,
         timestamp: new Date().toISOString(),
       };
-
-      console.log("New Message Data:", newMessage);
 
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       setInputMessage(""); // Clear the input field after sending the message
@@ -197,13 +195,44 @@ export default function Chat() {
         timestamp: new Date().toISOString(),
       };
 
-      console.log("New Message Data:", newMessage);
-
       setMessages((prevMessages) => [...prevMessages, newMessage]);
 
       setInputMessage("");
     }
   };
+
+  useEffect(() => {
+    // Process the messages to find the most recent chat
+    const lastMessageByPerson = {};
+
+    messages.forEach((msg) => {
+      const personId =
+        msg.senderId === userSession.id ? msg.receiverId : msg.senderId;
+      if (
+        !lastMessageByPerson[personId] ||
+        msg.timestamp > lastMessageByPerson[personId].timestamp
+      ) {
+        lastMessageByPerson[personId] = msg;
+      }
+    });
+
+    // Find the person with the most recent message
+    const recentPerson = Object.keys(lastMessageByPerson).reduce(
+      (latest, personId) => {
+        if (
+          !latest ||
+          lastMessageByPerson[personId].timestamp >
+            lastMessageByPerson[latest].timestamp
+        ) {
+          return personId;
+        }
+        return latest;
+      },
+      null
+    );
+
+    setMostRecentChat(recentPerson);
+  }, [messages]);
 
   return (
     <div className="min-h-screen">
@@ -275,28 +304,41 @@ export default function Chat() {
 
           {/* List */}
           <div className="w-full flex-grow overflow-scroll">
-            {filteredUsers.map((user) => (
-              <div
-                key={user.id}
-                className={`w-full h-24 px-4 flex flex-row items-center gap-x-1.5 hover:bg-gray-100 rounded-lg cursor-pointer ${selectedUser?.id === user.id ? "bg-gray-100" : ""
+            {filteredUsers.map((user) => {
+              const isRecentChat = user.id === parseInt(mostRecentChat);
+              console.log("isRecentChat:", isRecentChat);
+              return (
+                <div
+                  key={user.id}
+                  className={`w-full h-24 px-4 flex flex-row items-center gap-x-1.5 hover:bg-gray-100 rounded-lg cursor-pointer ${
+                    selectedUser?.id === user.id ? "bg-gray-100" : ""
                   }`}
-                onClick={() => handleSelectUser(user)}
-              >
-                <div>
-                  <img
-                    src={user.image}
-                    alt="randomperson"
-                    className="rounded-full h-[65px] w-[65px] mx-3"
-                  />
+                  onClick={() => handleSelectUser(user)}
+                >
+                  <div>
+                    <img
+                      src={user.image}
+                      alt="randomperson"
+                      className="rounded-full h-[65px] w-[65px] mx-3"
+                    />
+                  </div>
+                  <div>
+                    <h1 className="text-lg font-semibold">
+                      {user.firstName} {user.lastName}
+                    </h1>
+                    <p className="text-sm text-gray-400">
+                      {user.idNumber}
+                      {isRecentChat && (
+                        <span className="text-xs text-green-400">
+                          {" "}
+                          • New Message
+                        </span>
+                      )}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h1 className="text-lg font-semibold">
-                    {user.firstName} {user.lastName}
-                  </h1>
-                  <p className="text-sm text-gray-400">{user.idNumber}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -322,10 +364,11 @@ export default function Chat() {
                 {messages.map((message, index) => (
                   <div
                     key={index}
-                    className={`w-full min-h-9 flex flex-row gap-x-3 ${message.senderId === loggedUser?.id
+                    className={`w-full min-h-9 flex flex-row gap-x-3 ${
+                      message.senderId === loggedUser?.id
                         ? "justify-end"
                         : "justify-start"
-                      }`}
+                    }`}
                   >
                     {message.senderId !== loggedUser?.id && (
                       <div className="flex items-end gap-x-3">
@@ -410,7 +453,9 @@ export default function Chat() {
               </div>
 
               <div className="px-3 pt-3 pb-4 flex-grow flex flex-col gap-y-2 justify-end overflow-auto">
-                <p className="font-medium text-sm text-center">Start a new chat</p>
+                <p className="font-medium text-sm text-center">
+                  Start a new chat
+                </p>
               </div>
 
               {/* Message Input */}
@@ -423,10 +468,7 @@ export default function Chat() {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={(event) => {
-                      if (
-                        event.key === "Enter" &&
-                        !event.shiftKey
-                      ) {
+                      if (event.key === "Enter" && !event.shiftKey) {
                         event.preventDefault();
                         sendMessage();
                       }
@@ -455,7 +497,6 @@ export default function Chat() {
         </section>
       </section>
     </div>
-
   );
 }
 
