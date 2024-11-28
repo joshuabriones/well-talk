@@ -123,7 +123,7 @@ const Login = () => {
   }
 
   return (
-    <section className="py-24 md:py-28 dark:bg-[#0b1727] text-zinc-900 dark:text-white flex justify-center items-center h-screen">
+    <section className="py-24 md:py-28 text-zinc-900 flex justify-center items-center h-screen">
       <div
         className="pattern-overlay pattern-left absolute top-0 left-0 -z-10"
         style={{ transform: "scaleY(-1)", top: "-50px" }}
@@ -177,8 +177,8 @@ const Login = () => {
                 <div className="relative">
                   <div className="absolute inset-0 rounded-3xl bg-gold shadow-lg transform -skew-y-6 sm:skew-y-0 -rotate-6 sm:rounded-3xl w-full h-full border border-2"></div>
                   <div className="absolute inset-0 -z-10 rounded-3xl bg-maroon shadow-lg transform skew-y-6 rotate-6 sm:skew-y-0 sm:rotate-0 w-full h-full border border-2 md:hidden lg:hidden"></div>
-                  <div className="relative bg-white border border-2 dark:bg-slate-800 shadow-xl rounded-2xl p-12 md:p-12 lg:py-10">
-                    <h2 className="font-Merriweather dark:text-white text-2xl font-bold mb-3">
+                  <div className="relative bg-white border border-2 shadow-xl rounded-2xl p-12 md:p-12 lg:py-10">
+                    <h2 className="font-Merriweather text-2xl font-bold mb-3">
                       Sign In
                     </h2>
                     <form
@@ -222,7 +222,7 @@ const Login = () => {
                       </div>
                       <div className="relative">
                         <hr className="my-8 border-t border-gray-300" />
-                        <span className="px-2 text-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-800">
+                        <span className="px-2 text-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white">
                           Or
                         </span>
                       </div>

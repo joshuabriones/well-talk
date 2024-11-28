@@ -27,7 +27,7 @@ function TextInput({
 				<span
 					className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-    peer-focus:top-0 dark:bg-black`}
+    peer-focus:top-0 `}
 					style={{ fontSize: "10px" }}
 				>
 					{label}

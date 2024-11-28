@@ -31,7 +31,7 @@ const Questions = () => {
 	];
 
 	return (
-		<section className="ezy__faq15 py-12 md:py-24 sm:py-32 bg-silver dark:bg-[#0b1727] text-zinc-900 dark:text-white mt-12 border-t-2 border-b-2 border-zinc-900 dark:border-white">
+		<section className="ezy__faq15 py-12 md:py-24 sm:py-32 bg-silver  text-zinc-900  mt-12 border-t-2 border-b-2 border-zinc-900">
 			<div className="w-10/12 container mx-auto md:px-8 lg:px-28">
 				<ScrollAnimationWrapper animationType="default">
 					<div className="text-center md:text-start">
@@ -48,7 +48,7 @@ const Questions = () => {
 					<div className="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
 						{faqList.map((faq, i) => (
 							<div
-								className="flex flex-col items-center dark:bg-[#1a202c] rounded-lg p-6 cursor-pointer hover:bg-gold hover:border-2 dark:hover:bg-gray-800 transition"
+								className="flex flex-col items-center  rounded-lg p-6 cursor-pointer hover:bg-gold hover:border-2 transition"
 								key={i}
 								{...getScrollAnimation()}
 								role="region"
@@ -62,12 +62,12 @@ const Questions = () => {
 									/>
 								</div>
 								<h3
-									className="font-Merriweather text-xl font-bold mb-2 text-gray-900 dark:text-white"
+									className="font-Merriweather text-xl font-bold mb-2 text-gray-900"
 									id={`faq-question-${i}`}
 								>
 									{faq.question}
 								</h3>
-								<p className="font-Jaldi text-lg leading-snug opacity-80 mb-4 text-gray-700 dark:text-gray-300">
+								<p className="font-Jaldi text-lg leading-snug opacity-80 mb-4 text-gray-700">
 									{faq.answer}
 								</p>
 							</div>

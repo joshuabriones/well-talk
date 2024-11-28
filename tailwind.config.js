@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-const { bg } = require("date-fns/locale");
 const colors = require("tailwindcss/colors");
 const defaultTheme = require("tailwindcss/defaultTheme");
 
@@ -30,19 +29,11 @@ module.exports = {
       },
       animation: {
         bell: "ring 0.5s ease-in-out",
-        bounce: 'bounce 1s infinite',
-      },
-      transitionDelay: {
-        '75': '75ms',
-        '150': '150ms',
-        '225': '225ms',
-        '300': '300ms',
-        '375': '375ms',
+        bounce: "bounce 1s infinite",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "gradient-red-card": "linear-gradient(245deg, #FF6F61, #FFB6B6)",
         "gradient-green-card": "linear-gradient(245deg, #66C97F, #A3E6BB)",
         "gradient-blue-card": "linear-gradient(245deg, #6EA9FF, #B3D4FF)",
@@ -53,7 +44,6 @@ module.exports = {
         Jaldi: ["Jaldi", "sans-serif"],
       },
       colors: {
-        // light mode
         maroon: "#8A252C",
         gold: "#F4C522",
         silver: "#DFDEDE",
@@ -94,51 +84,11 @@ module.exports = {
             inverted: colors.white,
           },
         },
-        // dark mode
-        "dark-tremor": {
-          brand: {
-            faint: "#0B1229",
-            muted: colors.blue[950],
-            subtle: colors.blue[800],
-            DEFAULT: colors.blue[500],
-            emphasis: colors.blue[400],
-            inverted: colors.blue[950],
-          },
-          background: {
-            muted: "#131A2B",
-            subtle: colors.gray[800],
-            DEFAULT: colors.gray[900],
-            emphasis: colors.gray[300],
-          },
-          border: {
-            DEFAULT: colors.gray[800],
-          },
-          ring: {
-            DEFAULT: colors.gray[800],
-          },
-          content: {
-            subtle: colors.gray[600],
-            DEFAULT: colors.gray[500],
-            emphasis: colors.gray[200],
-            strong: colors.gray[50],
-            inverted: colors.gray[950],
-          },
-        },
-        "white/25": "rgba(255, 255, 255, 0.25)", // Add this line to include custom color
       },
       boxShadow: {
-        // light
         "tremor-input": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-        "tremor-card":
-          "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-        "tremor-dropdown":
-          "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
-        // dark
-        "dark-tremor-input": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-        "dark-tremor-card":
-          "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-        "dark-tremor-dropdown":
-          "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+        "tremor-card": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+        "tremor-dropdown": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
       },
       borderRadius: {
         "tremor-small": "0.375rem",
@@ -194,4 +144,7 @@ module.exports = {
     require("@headlessui/tailwindcss"),
     require("@tailwindcss/forms"),
   ],
+  daisyui: {
+    themes: ["light"], // Enforce light theme from daisyUI
+  },
 };
