@@ -10,6 +10,8 @@ const LineChartAppointmentsReferrals = ({}) => {
 	const [appointmentsByYear, setAppointmentsByYear] = useState([]);
 	const [appointmentsByMonth, setAppointmentsByMonth] = useState(new Array(12).fill(0));
 
+	console.log("appointments by month", appointmentsByMonth);
+
 	const [referrals, setReferrals] = useState([]);
 	const [referralsByYear, setReferralsByYear] = useState([]);
 	const [referralsByMonth, setReferralsByMonth] = useState(new Array(12).fill(0));
