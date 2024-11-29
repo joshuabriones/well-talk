@@ -50,7 +50,7 @@ const ReferralInfo = ({ setReferralModal, selectedID, referrals }) => {
 						onClick={handleModalClose}>
 						Close
 					</label>
-					<div className="bg-white dark:bg-slate-800 shadow-xl border border-slate-200 border-2 rounded-xl hover:-translate-y-1 duration-500 w-full lg:w-3/12 p-2 lg:p-4 relative">
+					<div className="bg-white shadow-xl border border-slate-200 border-2 rounded-xl hover:-translate-y-1 duration-500 w-full lg:w-3/12 p-2 lg:p-4 relative">
 						<section className="items-center md:gap-4 mb-8 justify-center w-full">
 							<div className="w-full flex justify-center avatar absolute -top-16 md:-top-24">
 								<div className="w-32 md:w-40 rounded-full ring ring-[#6B9080] ring-offset-base-100 ring-offset-1">

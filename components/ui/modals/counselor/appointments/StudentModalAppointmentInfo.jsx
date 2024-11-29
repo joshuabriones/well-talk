@@ -196,7 +196,7 @@ const ModalAppointmentInfo = ({
 
         {/* ------------------------------------------------------------ */}
         {openModal && (
-          <div className="w-2/5 h-2/3 absolute bg-white rounded-2xl flex flex-col p-16 justify-between dark:bg-slate-950">
+          <div className="w-2/5 h-2/3 absolute bg-white rounded-2xl flex flex-col p-16 justify-between ">
             <span className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-5xl">
               ⭐️ ⭐️ ⭐️ ⭐️ ⭐️
             </span>
@@ -227,7 +227,7 @@ const ModalAppointmentInfo = ({
               ></textarea>
             </div>
             <button
-              className="w-1/3 p-2 bg-green-500 text-black dark:text-white rounded-lg self-end"
+              className="w-1/3 p-2 bg-green-500 text-black  rounded-lg self-end"
               onClick={handleDone}
             >
               Submit

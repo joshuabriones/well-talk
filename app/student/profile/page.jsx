@@ -448,7 +448,7 @@ export default function StudentProfile() {
                             onChange={handleChange("college")}
                             readOnly={!isEditMode}
                             disabled={!isEditMode}
-                            className="peer border-none bg-white placeholder-white focus:border-gray-800 text-xs focus:outline-none focus:ring-0 rounded-md w-full dark:text-black py-3.5"
+                            className="peer border-none bg-white placeholder-white focus:border-gray-800 text-xs focus:outline-none focus:ring-0 rounded-md w-full  py-3.5"
                             required
                           >
                             {collegeOptions.map((option) => (
@@ -460,7 +460,7 @@ export default function StudentProfile() {
                           <span
                             className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-    peer-focus:top-0 dark:bg-black`}
+    peer-focus:top-0`}
                             style={{
                               fontSize: "11px",
                             }}
@@ -484,7 +484,7 @@ export default function StudentProfile() {
                             onChange={handleChange("program")}
                             readOnly={!isEditMode}
                             disabled={!isEditMode}
-                            className="peer border-none bg-white placeholder-white focus:border-gray-800 text-xs focus:outline-none focus:ring-0 rounded-md w-full dark:text-black py-3.5"
+                            className="peer border-none bg-white placeholder-white focus:border-gray-800 text-xs focus:outline-none focus:ring-0 rounded-md w-full  py-3.5"
                             required
                           >
                             {programOptions[updatedProfile.college].map(
@@ -498,7 +498,7 @@ export default function StudentProfile() {
                           <span
                             className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-    peer-focus:top-0 dark:bg-black`}
+    peer-focus:top-0`}
                             style={{
                               fontSize: "11px",
                             }}
@@ -521,7 +521,7 @@ export default function StudentProfile() {
                             onChange={handleChange("year")}
                             readOnly={!isEditMode}
                             disabled={!isEditMode}
-                            className="peer border-none bg-white placeholder-white focus:border-gray-800 text-xs focus:outline-none focus:ring-0 rounded-md w-full dark:text-black py-3.5"
+                            className="peer border-none bg-white placeholder-white focus:border-gray-800 text-xs focus:outline-none focus:ring-0 rounded-md w-full  py-3.5"
                             required
                           >
                             <option value={1}>1</option>
@@ -533,7 +533,7 @@ export default function StudentProfile() {
                           <span
                             className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-    peer-focus:top-0 dark:bg-black`}
+    peer-focus:top-0`}
                             style={{
                               fontSize: "11px",
                             }}
