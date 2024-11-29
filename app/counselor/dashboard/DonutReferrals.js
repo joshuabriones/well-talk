@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 const DonutReferrals = ({ counselorId }) => {
 	const [referrals, setReferrals] = useState(null);
 	const [pendingCount, setPendingCount] = useState(0);
+	const [acceptedCount, setAcceptedCount] = useState(0);
 	const [appointedCount, setAppointedCount] = useState(0);
 
 	useEffect(() => {
@@ -43,6 +44,9 @@ const DonutReferrals = ({ counselorId }) => {
 					case "Pending":
 						pending += 1;
 						break;
+					case "Accepted":
+						accepted += 1;
+						break;
 					case "Appointed":
 						appointed += 1;
 						break;
@@ -68,12 +72,13 @@ const DonutReferrals = ({ counselorId }) => {
 		chartContainer.chartInstance = new Chart(ctx, {
 			type: "doughnut",
 			data: {
-				labels: ["Pending", "Appointed"],
+				labels: ["Pending", "Accepted", "Appointed"],
 				datasets: [
 					{
 						label: "Status",
-						data: [pendingCount, appointedCount],
-						backgroundColor: ["#FFA500", "#28A745"],
+						data: [30, 30, 23],
+						// data: [pendingCount, acceptedCount, appointedCount],
+						backgroundColor: ["#FFA500", "#007BFF", "#28A745"],
 						hoverOffset: 10,
 					},
 				],
