@@ -130,31 +130,31 @@ const Appointment = () => {
 		setStudentData(data);
 	};
 
-	const fetchCounselorIds = async () => {
-		try {
-			const response = await fetch(
-				`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_STUDENT_ID}${userSession?.id}`,
-				{
-					headers: {
-						Authorization: `Bearer ${Cookies.get("token")}`,
-					},
-				}
-			);
+	// const fetchCounselorIds = async () => {
+	// 	try {
+	// 		const response = await fetch(
+	// 			`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_STUDENT_ID}${userSession?.id}`,
+	// 			{
+	// 				headers: {
+	// 					Authorization: `Bearer ${Cookies.get("token")}`,
+	// 				},
+	// 			}
+	// 		);
 
-			if (!response.ok) {
-				throw new Error("Error fetching counselor IDs");
-			}
+	// 		if (!response.ok) {
+	// 			throw new Error("Error fetching counselor IDs");
+	// 		}
 
-			const data = await response.json();
-			return data.map((counselor) => counselor.id);
-		} catch (error) {
-			console.error(
-				"An error occurred while fetching counselor IDs:",
-				error
-			);
-			return [];
-		}
-	};
+	// 		const data = await response.json();
+	// 		return data.map((counselor) => counselor.id);
+	// 	} catch (error) {
+	// 		console.error(
+	// 			"An error occurred while fetching counselor IDs:",
+	// 			error
+	// 		);
+	// 		return [];
+	// 	}
+	// };
 
 	const fetchAppointments = async () => {
 		const response = await fetch(
@@ -175,31 +175,25 @@ const Appointment = () => {
 
 	const fetchAppointmentsOnThatDate = async () => {
 		try {
-			const counselorIds = await fetchCounselorIds();
-			const appointments = [];
-
-			for (const counselorId of counselorIds) {
-				const response = await fetch(
-					`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE_AND_COUNSELOR}${appointmentDate}&counselorId=${counselorId}`,
-					{
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${Cookies.get("token")}`,
-						},
+			const response = await fetch(
+				`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_DATE_AND_ASSIGNED_COUNSELORS}?date=${appointmentDate}&studentId=${userSession.id}`,
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${Cookies.get("token")}`,
 					}
-				);
-
-				if (!response.ok) {
-					throw new Error("Error fetching appointments on that date");
 				}
+			);
 
-				const data = await response.json();
-				if (Array.isArray(data)) {
-					appointments.push(...data);
-				}
+			if (!response.ok) {
+				throw new Error("Error fetching appointments on that date");
 			}
 
-			setAppointmentOnThatDate(appointments);
+			const data = await response.json();
+			if (Array.isArray(data)) {
+				setAppointmentOnThatDate(data);
+				console.log("Appointments on that date:", data);
+			}
 		} catch (error) {
 			console.error(
 				"An error occurred while fetching appointments on that date:",
@@ -211,6 +205,8 @@ const Appointment = () => {
 	useEffect(() => {
 		fetchAppointmentsOnThatDate();
 	}, [appointmentDate]);
+
+
 
 	const formatDate = (date) => {
 		const dateObject = new Date(date);
@@ -309,10 +305,13 @@ const Appointment = () => {
 
 	// Helper function to check if a time slot is taken
 	const isTimeSlotTaken = (time) => {
-		return appointmentOnThatDate.some(
+		const counselorsWithAppointments = appointmentOnThatDate.filter(
 			(appointment) => appointment.appointmentStartTime === time
 		);
+
+		return counselorsWithAppointments.length === appointmentOnThatDate.length;
 	};
+
 
 	const addTime = (startTime, duration) => {
 		// Split the start time and duration into hours and minutes
@@ -399,6 +398,7 @@ const Appointment = () => {
 			toast.error(`Time slot ${timeFormatter(time)} is not available.`);
 		}
 	};
+
 
 	const handleAppointmentSubmit = async () => {
 		setErrorMessages({ appointmentType: "", purpose: "" });
@@ -676,20 +676,18 @@ const Appointment = () => {
 				<div>
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isAddAppointment
-									? "bg-maroon text-white"
-									: "border-2 border-maroon text-maroon"
-							}`}
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
+								? "bg-maroon text-white"
+								: "border-2 border-maroon text-maroon"
+								}`}
 							onClick={handleAddAppointmentClick}>
 							Set Appointment
 						</button>
 						<button
-							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
-								isViewAppointment
-									? "bg-maroon text-white"
-									: "border-2 border-maroon text-maroon"
-							}`}
+							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
+								? "bg-maroon text-white"
+								: "border-2 border-maroon text-maroon"
+								}`}
 							onClick={handleViewAppointmentClick}>
 							View Appointments
 						</button>
@@ -800,9 +798,9 @@ const Appointment = () => {
 																	.appointmentPurpose
 																	.length > 50
 																	? `${appointment.appointmentPurpose.substring(
-																			0,
-																			40
-																	  )}...`
+																		0,
+																		40
+																	)}...`
 																	: appointment.appointmentPurpose}
 															</p>
 														</td>
@@ -811,13 +809,13 @@ const Appointment = () => {
 																{appointment
 																	?.appointmentNotes
 																	?.length >
-																50
+																	50
 																	? `${appointment?.appointmentNotes?.substring(
-																			0,
-																			40
-																	  )}...`
+																		0,
+																		40
+																	)}...`
 																	: appointment?.appointmentNotes ||
-																	  "No feedback yet"}
+																	"No feedback yet"}
 															</p>
 														</td>
 														<td className="h-full">
@@ -826,19 +824,19 @@ const Appointment = () => {
 																	className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}>
 																	{appointment &&
 																		appointment.appointmentStatus ===
-																			"Pending" &&
+																		"Pending" &&
 																		"🟡"}
 																	{appointment &&
 																		appointment.appointmentStatus ===
-																			"Done" &&
+																		"Done" &&
 																		"🟢"}
 																	{appointment &&
 																		appointment.appointmentStatus ===
-																			"On-going" &&
+																		"On-going" &&
 																		"🔵"}
 																	{appointment &&
 																		appointment.appointmentStatus ===
-																			"Cancelled" &&
+																		"Cancelled" &&
 																		"🔴"}{" "}
 																	{/* Added red dot for Cancelled */}
 																	<span className="ml-2 text-bold text-sm">
@@ -855,33 +853,33 @@ const Appointment = () => {
 															<div className="flex justify-center text-center py-2">
 																{appointment.appointmentStatus ===
 																	"Pending" && (
-																	<>
-																		<button
-																			className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
-																			onClick={(
-																				e
-																			) => {
-																				e.stopPropagation();
-																				showDeleteModal(
-																					appointment.appointmentId
-																				);
-																			}}>
-																			Cancel
-																		</button>
-																		<button
-																			className=" btn btn-xs text-gray hover:text-gray hover:bg-gold"
-																			onClick={(
-																				e
-																			) => {
-																				e.stopPropagation();
-																				showRescheduleModal(
-																					appointment.appointmentId
-																				);
-																			}}>
-																			Reschedule
-																		</button>
-																	</>
-																)}
+																		<>
+																			<button
+																				className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
+																				onClick={(
+																					e
+																				) => {
+																					e.stopPropagation();
+																					showDeleteModal(
+																						appointment.appointmentId
+																					);
+																				}}>
+																				Cancel
+																			</button>
+																			<button
+																				className=" btn btn-xs text-gray hover:text-gray hover:bg-gold"
+																				onClick={(
+																					e
+																				) => {
+																					e.stopPropagation();
+																					showRescheduleModal(
+																						appointment.appointmentId
+																					);
+																				}}>
+																				Reschedule
+																			</button>
+																		</>
+																	)}
 															</div>
 														</td>
 													</tr>
@@ -926,17 +924,16 @@ const Appointment = () => {
 											...Array(
 												Math.ceil(
 													appointments.length /
-														AppointmentPerPage
+													AppointmentPerPage
 												)
 											),
 										].map((_, index) => (
 											<button
 												key={index}
-												className={`join-item btn ${
-													currentPage === index + 1
-														? "btn-active"
-														: ""
-												}`}
+												className={`join-item btn ${currentPage === index + 1
+													? "btn-active"
+													: ""
+													}`}
 												onClick={() =>
 													setCurrentPage(index + 1)
 												}>
@@ -1058,19 +1055,18 @@ const Appointment = () => {
 																	time
 																)
 															} // Set the selected time on click
-															className={`time-slot-button ${
-																isTimeSlotTaken(
-																	time
-																) ||
+															className={`time-slot-button ${isTimeSlotTaken(
+																time
+															) ||
 																isTimeSlotUnavailable(
 																	time
 																)
-																	? "bg-white border-[1px] border-gray text-primary-green cursor-not-allowed"
-																	: time ===
-																	  selectedTimeSlot
+																? "bg-white border-[1px] border-gray text-primary-green cursor-not-allowed"
+																: time ===
+																	selectedTimeSlot
 																	? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
 																	: "bg-maroon text-white hover:bg-maroon duration-300"
-															} py-2 px-3 rounded-md`}>
+																} py-2 px-3 rounded-md`}>
 															{timeFormatter(
 																time
 															)}
@@ -1096,33 +1092,33 @@ const Appointment = () => {
 														fullWidth
 														sx={{
 															"& .MuiOutlinedInput-root":
+															{
+																"& fieldset":
 																{
-																	"& fieldset":
-																		{
-																			borderColor:
-																				"black",
-																		},
-																	"&:hover fieldset":
-																		{
-																			borderColor:
-																				"default",
-																		},
-																	"&.Mui-focused fieldset":
-																		{
-																			borderColor:
-																				"black",
-																		},
+																	borderColor:
+																		"black",
 																},
+																"&:hover fieldset":
+																{
+																	borderColor:
+																		"default",
+																},
+																"&.Mui-focused fieldset":
+																{
+																	borderColor:
+																		"black",
+																},
+															},
 															"& .MuiInputLabel-root":
+															{
+																color: "inherit",
+																"&.Mui-focused":
 																{
 																	color: "inherit",
-																	"&.Mui-focused":
-																		{
-																			color: "inherit",
-																		},
-																	fontSize:
-																		"0.75 rem",
 																},
+																fontSize:
+																	"0.75 rem",
+															},
 														}}
 														error={
 															!!errorMessages.appointmentType
@@ -1177,40 +1173,40 @@ const Appointment = () => {
 														fullWidth
 														sx={{
 															"& .MuiOutlinedInput-root":
+															{
+																"& fieldset":
 																{
-																	"& fieldset":
-																		{
-																			borderColor:
-																				"black", // Set border color to match Select
-																		},
-																	"&:hover fieldset":
-																		{
-																			borderColor:
-																				"default", // Match hover border color
-																		},
-																	"&.Mui-focused fieldset":
-																		{
-																			borderColor:
-																				"black", // Keep focus border color black
-																		},
-																	"&.Mui-focused":
-																		{
-																			outline:
-																				"none", // Remove the blue box outline
-																			borderColor:
-																				"none", // Remove
-																		},
+																	borderColor:
+																		"black", // Set border color to match Select
 																},
+																"&:hover fieldset":
+																{
+																	borderColor:
+																		"default", // Match hover border color
+																},
+																"&.Mui-focused fieldset":
+																{
+																	borderColor:
+																		"black", // Keep focus border color black
+																},
+																"&.Mui-focused":
+																{
+																	outline:
+																		"none", // Remove the blue box outline
+																	borderColor:
+																		"none", // Remove
+																},
+															},
 															"& .MuiInputLabel-root":
+															{
+																color: "inherit", // Match label color
+																"&.Mui-focused":
 																{
-																	color: "inherit", // Match label color
-																	"&.Mui-focused":
-																		{
-																			color: "inherit", // Keep label color the same when focused
-																		},
-																	fontSize:
-																		"1rem", // Match label font size
+																	color: "inherit", // Keep label color the same when focused
 																},
+																fontSize:
+																	"1rem", // Match label font size
+															},
 														}}
 														error={
 															!!errorMessages.purpose
@@ -1380,7 +1376,7 @@ const Appointment = () => {
 					appointments={appointments}
 					handleReschedule={handleReschedule}
 					handleDelete={showDeleteModal}
-					//handleUpdateStatus={handleUpdateStatus}
+				//handleUpdateStatus={handleUpdateStatus}
 				></StudentModalAppointmentInfo>
 			)}
 
