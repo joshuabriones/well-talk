@@ -9,6 +9,8 @@ const BarAppointmentsReferrals = () => {
 	const [appointments, setAppointments] = useState([]);
 	const [referrals, setReferrals] = useState([]);
 
+	console.log(referrals);
+
 	const [appointmentCount, setAppointmentCount] = useState(0);
 	const [referralCount, setReferralCount] = useState(0);
 
