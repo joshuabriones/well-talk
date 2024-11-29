@@ -6,6 +6,8 @@ const TodaysAppointments = ({ counselorId }) => {
 	const [appointments, setAppointments] = useState(null);
 	const [filteredAppointments, setFilteredAppointments] = useState([]);
 
+	console.log("appointments", appointments);
+
 	useEffect(() => {
 		const fetchCounselorAppointments = async () => {
 			try {
