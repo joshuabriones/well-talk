@@ -24,7 +24,7 @@ export default function Dashboard() {
 		const fetchCounselorProfile = async () => {
 			try {
 				const response = await fetch(
-					`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_ID}${userSession.id}`,
+					`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_ID}${userSession?.id}`,
 					{
 						method: "GET",
 						headers: {
@@ -51,7 +51,7 @@ export default function Dashboard() {
 			const fetchStudentCount = async () => {
 				try {
 					const response = await fetch(
-						`${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_COUNT}${userSession.id}`,
+						`${process.env.BASE_URL}${API_ENDPOINT.GET_STUDENT_COUNT}${userSession?.id}`,
 						{
 							method: "GET",
 							headers: {
@@ -73,7 +73,7 @@ export default function Dashboard() {
 			const fetchTeacherCount = async () => {
 				try {
 					const response = await fetch(
-						`${process.env.BASE_URL}${API_ENDPOINT.GET_TEACHER_COUNT}${userSession.id}`,
+						`${process.env.BASE_URL}${API_ENDPOINT.GET_TEACHER_COUNT}${userSession?.id}`,
 						{
 							method: "GET",
 							headers: {
