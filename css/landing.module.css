@@ -1,17 +1,4 @@
 /* css/landing.module.css */
-
-/*.hero {
-	height: 100vh;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	position: relative;
-	overflow: hidden;
-	background-image: url("/images/landing/aa.mp4");
-	background-attachment: fixed;
-	background-size: cover;
-	background-position: center;
-}*/
 .hero {
 	height: 100vh;
 	position: relative;
@@ -28,11 +15,17 @@
 		#FFFFFF;
 	background-size: cover;
 	background-position: center;
-}
-
-.parallax {
 	background-attachment: fixed;
 }
+
+/* Parallax effect */
+.parallax {
+	background-attachment: fixed;
+	background-size: cover;
+	background-position: center;
+	height: 100vh;
+  }
+  
 
 .floating {
 	animation-name: floating;

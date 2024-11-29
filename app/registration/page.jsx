@@ -526,7 +526,8 @@ const Registration = () => {
 	};
 
 	return (
-		<section className="p-3 lg:py-16 text-zinc-900 dark:text-white flex justify-center lg:mr-16 items-center py-28 h-full lg:h-screen">
+		<section className="p-3 lg:py-16 text-zinc-900 flex justify-center items-center py-28 h-full lg:h-screen mx-auto">
+
 			<div className="block lg:hidden">
 				<Navbar userType="landing" />
 			</div>
@@ -602,7 +603,8 @@ const Registration = () => {
 
 										<div className="flex gap-4 mt-4">
 											<div
-												className={`w-64 h-64 bg-maroon rounded-3xl border-2 border-gray relative ${styles["floating-4"]}`}>
+												className={`w-32 sm:w-40 md:w-48 lg:w-64  h-32 sm:h-40 md:h-48 lg:h-64 bg-maroon rounded-3xl border-2 border-gray relative ${styles["floating-4"]}`}>
+
 												<div className="w-6 h-6 bg-white text-maroon rounded-full flex items-center justify-center text-sm font-bold absolute top-7 left-7 border-2 border-gray">
 													1
 												</div>
@@ -646,9 +648,9 @@ const Registration = () => {
 								<div className="absolute inset-0 -z-10 rounded-3xl bg-maroon shadow-lg transform skew-y-6 rotate-6 sm:skew-y-0 sm:rotate-0 w-full h-full border border-2 hidden md:block lg:hidden"></div>
 
 								<form
-									className="relative h-full flex flex-col bg-white dark:bg-transparent border-2 rounded-2xl p-5 lg:overflow-y-auto lg:max-h-[90vh]"
+									className="relative h-full flex flex-col bg-white  border-2 rounded-2xl p-5 lg:overflow-y-auto lg:max-h-[90vh]"
 									onSubmit={handleCreateAccount}>
-									<p className="text-black text-3xl font-Merriweather dark:text-white">
+									<p className="text-black text-3xl font-Merriweather">
 										Registration
 									</p>
 									{/* Form Fields */}
@@ -666,7 +668,7 @@ const Registration = () => {
 												<p className="text-xs pt-2">
 													{emailStatus}
 												</p>
-												{errors.idno && (
+												{errors.email && (
 													<p className="text-red-500 text-xs font-Jaldi mt-1">
 														{
 															errors?.email
@@ -760,7 +762,7 @@ const Registration = () => {
 															)
 														}
 														placeholder="Gender"
-														className="peer border-none bg-white placeholder-white focus:border-gray-800 text-xs focus:outline-none focus:ring-0 rounded-md w-full dark:text-black pt-4"
+														className="peer border-none bg-white placeholder-white focus:border-gray-800 text-xs focus:outline-none focus:ring-0 rounded-md w-full pt-4"
 														required>
 														{genderOptions.map(
 															(option) => (
@@ -781,7 +783,7 @@ const Registration = () => {
 													<span
 														className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-    peer-focus:top-0 dark:bg-black`}
+    peer-focus:top-0 `}
 														style={{
 															fontSize: "11px",
 														}}>
@@ -849,7 +851,7 @@ const Registration = () => {
 												<select
 													value={role}
 													onChange={handleRoleChange}
-													className="peer border-none bg-white placeholder-white focus:border-gray-800 text-xs focus:outline-none focus:ring-0 rounded-md w-full dark:text-black pt-4"
+													className="peer border-none bg-white placeholder-white focus:border-gray-800 text-xs focus:outline-none focus:ring-0 rounded-md w-full pt-4"
 													required>
 													<option value="">
 														Select
@@ -867,7 +869,7 @@ const Registration = () => {
 												<span
 													className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-    peer-focus:top-0 dark:bg-black`}
+    peer-focus:top-0 `}
 													style={{
 														fontSize: "11px",
 													}}>
@@ -899,7 +901,7 @@ const Registration = () => {
 																		date
 																	)
 																}
-																className="peer border-none bg-white placeholder-transparent focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black pt-2.5"
+																className="peer border-none bg-white placeholder-transparent focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full pt-2.5"
 																showMonthDropdown
 																showYearDropdown
 																dropdownMode="select"
@@ -912,7 +914,7 @@ const Registration = () => {
 															<span
 																className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-    peer-focus:top-0 dark:bg-black`}
+    peer-focus:top-0 `}
 																style={{
 																	fontSize:
 																		"11px",
@@ -971,7 +973,7 @@ const Registration = () => {
 																			.value
 																	)
 																}
-																className="peer border-none bg-white placeholder-white focus:border-gray-800 text-xs focus:outline-none focus:ring-0 rounded-md w-full dark:text-black py-3.5"
+																className="peer border-none bg-white placeholder-white focus:border-gray-800 text-xs focus:outline-none focus:ring-0 rounded-md w-full py-3.5"
 																required>
 																{collegeOptions.map(
 																	(
@@ -994,7 +996,7 @@ const Registration = () => {
 															<span
 																className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-    peer-focus:top-0 dark:bg-black`}
+    peer-focus:top-0 `}
 																style={{
 																	fontSize:
 																		"11px",
@@ -1024,7 +1026,7 @@ const Registration = () => {
 																			.value
 																	)
 																}
-																className="peer border-none bg-white placeholder-white text-xs focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black py-3 pt-3.5"
+																className="peer border-none bg-white placeholder-white text-xs focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full py-3 pt-3.5"
 																required>
 																{programOptions[
 																	college
@@ -1049,7 +1051,7 @@ const Registration = () => {
 															<span
 																className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-    peer-focus:top-0 dark:bg-black`}
+    peer-focus:top-0 `}
 																style={{
 																	fontSize:
 																		"11px",
@@ -1099,7 +1101,7 @@ const Registration = () => {
 														<span
 															className={`pointer-events-none absolute start-2.5 bg-white -translate-y-1/2 p-1 transition-all 
       peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-      peer-focus:top-0 dark:bg-black`}
+      peer-focus:top-0 `}
 															style={{
 																fontSize:
 																	"10px",
@@ -1301,7 +1303,7 @@ const Registration = () => {
 																			.value
 																	)
 																}
-																className="peer border-none bg-white placeholder-white text-xs focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black py-3.5"
+																className="peer border-none bg-white placeholder-white text-xs focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full py-3.5"
 																required>
 																{collegeOptions.map(
 																	(
@@ -1324,7 +1326,7 @@ const Registration = () => {
 															<span
 																className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-    peer-focus:top-0 dark:bg-black`}
+    peer-focus:top-0 `}
 																style={{
 																	fontSize:
 																		"11px",
@@ -1360,7 +1362,7 @@ const Registration = () => {
 																onChange={
 																	handleProgramChange
 																}
-																className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black p-1"
+																className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full p-1"
 																required
 																isMulti
 															/>
@@ -1368,7 +1370,7 @@ const Registration = () => {
 															<span
 																className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 px-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-    peer-focus:top-0 dark:bg-black`}
+    peer-focus:top-0 `}
 																style={{
 																	fontSize:
 																		"11px",
@@ -1404,7 +1406,7 @@ const Registration = () => {
 																		.value
 																)
 															}
-															className="peer border-none bg-white placeholder-white text-xs focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black py-3.5"
+															className="peer border-none bg-white placeholder-white text-xs focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full py-3.5"
 															required>
 															{collegeOptions.map(
 																(option) => (
@@ -1451,7 +1453,7 @@ const Registration = () => {
 															onChange={
 																handleProgramChange
 															}
-															className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black p-1"
+															className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full p-1"
 															required
 															isMulti
 														/>
@@ -1459,7 +1461,7 @@ const Registration = () => {
 														<span
 															className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
     peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
-    peer-focus:top-0 dark:bg-black`}
+    peer-focus:top-0 `}
 															style={{
 																fontSize:
 																	"11px",

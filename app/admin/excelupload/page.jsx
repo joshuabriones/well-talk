@@ -5,6 +5,7 @@ import { useState } from "react";
 import * as XLSX from "xlsx";
 import { API_ENDPOINT } from "@/lib/api";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 function UploadStudentRecords() {
   const [studentRecords, setStudentRecords] = useState([]);
@@ -40,24 +41,40 @@ function UploadStudentRecords() {
     reader.readAsArrayBuffer(file); // Read the file
   };
 
+  console.log("Student Records:", studentRecords);
+
   const handleCreateAllAccounts = async (e) => {
     e.preventDefault();
 
     try {
       setIsLoading(true);
-      for (let record of studentRecords) {
-        const {
-          firstname,
-          lastname,
-          institutionalemail,
-          idnumber,
-          gender,
-          birthdate,
-          department,
-          course,
-          year,
-        } = record;
-
+      // for (let record of studentRecords) {
+      //   const {
+      //     firstname,
+      //     lastname,
+      //     institutionalemail,
+      //     idnumber,
+      //     gender,
+      //     birthdate,
+      //     department,
+      //     course,
+      //     year,
+      //   } = record;
+      for (let {
+        "Cell #": cellNumber,
+        "College of": college,
+        Course: course,
+        "Email Address": email,
+        "Enrollment Status": enrollmentStatus,
+        "First Name": firstName,
+        "Home Address": homeAddress,
+        "Last Name": lastName,
+        "Middle Name": middleName,
+        Province: province,
+        Region: region,
+        "Student Number": studentNumber,
+        YearLevel: yearLevel,
+      } of studentRecords) {
         try {
           const response = await fetch(
             `${process.env.BASE_URL}${API_ENDPOINT.REGISTER_STUDENT}`,
@@ -67,34 +84,55 @@ function UploadStudentRecords() {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                institutionalEmail: institutionalemail,
-                idNumber: idnumber,
-                firstName: firstname,
-                lastName: lastname,
-                gender,
-                password: "Pass1234!",
-                image: `https://ui-avatars.com/api/?name=${firstname}+${lastname}`,
+                institutionalEmail: email,
+                idNumber: studentNumber,
+                firstName: firstName,
+                lastName: lastName,
+                password: "Pass123!",
+                image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
                 role: "student",
-                college: department,
+                college: college,
                 program: course,
-                year,
-                birthDate: birthdate,
+                year: yearLevel,
+                contactNumber: cellNumber,
+                permanendAddress: homeAddress,
+                currentAddress: homeAddress,
                 isVerified: true,
               }),
             }
           );
 
           if (response.ok) {
-            toast.success("1 student account created successfully");
+            const data = await response.json();
+            const { id } = data;
+
+            // verify account
+            const verifyResponse = await fetch(
+              `${process.env.BASE_URL}${API_ENDPOINT.VERIFY_USER}${id}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${Cookies.get("token")}`,
+                },
+                body: JSON.stringify({
+                  isVerified: 1,
+                }),
+              }
+            );
+
+            if (verifyResponse.ok) {
+              toast.success(`Account created for ${firstName} ${lastName}`);
+            }
           } else {
             const errorData = await response.json();
             toast.error(
-              `Failed to create account for ${firstname} ${lastname}: ${errorData.message}`
+              `Failed to create account for ${firstName} ${lastName}: ${errorData.message}`
             );
           }
         } catch (error) {
           console.error("Error creating student accounts:", error);
-          toast.error(`Error creating account for ${firstname} ${lastname}`);
+          toast.error(`Error creating account for ${firstName} ${lastName}`);
         }
       }
 
@@ -118,9 +156,10 @@ function UploadStudentRecords() {
         <p className="text-slate-200 mb-6">
           Speed up student registration by uploading an excel file. Ensure that
           it follows the sequence of{" "}
-          <span className="italic ">
-            [ firstname, lastname, institutionalEmail, idnumber, gender,
-            birthdate, department, course, and year ]
+          <span className="italic text-gold">
+            [ Student Number, Last Name, First Name, Middle Name, College of,
+            Course, YearLevel, Home Address, Region, Province, Cell #, Email
+            Address, Enrollment Status ]
           </span>
         </p>
         {/* <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} /> */}
@@ -172,31 +211,31 @@ function UploadStudentRecords() {
               {studentRecords.slice(0, 5).map((record, index) => (
                 <tr key={index} className="border-b border-slate-200">
                   <td className="h-12 px-6 text-sm transition duration-300 border-t border-l first:border-l-0 border-slate-200 stroke-slate-500 text-slate-500 bg-white">
-                    {record.firstname}
+                    {record["First Name"]}
                   </td>
                   <td className="h-12 px-6 text-sm transition duration-300 border-t border-l first:border-l-0 border-slate-200 stroke-slate-500 text-slate-500 bg-white">
-                    {record.lastname}
+                    {record["Last Name"]}
                   </td>
                   <td className="h-12 px-6 text-sm transition duration-300 border-t border-l first:border-l-0 border-slate-200 stroke-slate-500 text-slate-500 bg-white">
-                    {record.institutionalemail}
+                    {record["Email Address"]}
                   </td>
                   <td className="h-12 px-6 text-sm transition duration-300 border-t border-l first:border-l-0 border-slate-200 stroke-slate-500 text-slate-500 bg-white">
-                    {record.idnumber}
+                    {record["Student Number"]}
                   </td>
                   <td className="h-12 px-6 text-sm transition duration-300 border-t border-l first:border-l-0 border-slate-200 stroke-slate-500 text-slate-500 bg-white">
-                    {record.gender}
+                    {record["Cell #"]}
                   </td>
                   <td className="h-12 px-6 text-sm transition duration-300 border-t border-l first:border-l-0 border-slate-200 stroke-slate-500 text-slate-500 bg-white">
-                    {record.birthdate}
+                    {record["Home Address"]}
                   </td>
                   <td className="h-12 px-6 text-sm transition duration-300 border-t border-l first:border-l-0 border-slate-200 stroke-slate-500 text-slate-500 bg-white">
-                    {record.department}
+                    {record["College of"]}
                   </td>
                   <td className="h-12 px-6 text-sm transition duration-300 border-t border-l first:border-l-0 border-slate-200 stroke-slate-500 text-slate-500 bg-white">
-                    {record.course}
+                    {record["Course"]}
                   </td>
                   <td className="h-12 px-6 text-sm transition duration-300 border-t border-l first:border-l-0 border-slate-200 stroke-slate-500 text-slate-500 bg-white">
-                    {record.year}
+                    {record["YearLevel"]}
                   </td>
                 </tr>
               ))}
@@ -213,7 +252,7 @@ function UploadStudentRecords() {
           </button>
         )}
         {isLoading && (
-          <p className="text-white mt-4">
+          <p className="text-red-500 mt-4">
             Please do not close this tab while the accounts are being created.
             This may take a few moments.
           </p>
@@ -224,53 +263,3 @@ function UploadStudentRecords() {
 }
 
 export default UploadStudentRecords;
-
-// const handleRegisterAllAccounts = async (e) => {
-//   e.preventDefault();
-
-//   for (let record of studentRecords) {
-//     const {
-//       firstname,
-//       lastname,
-//       id,
-//       gender,
-//       birthdate,
-//       department,
-//       course,
-//       year,
-//     } = record;
-
-//   // try {
-//   //   const response = await fetch(
-//   //     `${process.env.BASE_URL}${API_ENDPOINT.REGISTER_STUDENT}`,
-//   //     {
-//   //       method: "POST",
-//   //       headers: {
-//   //         "Content-Type": "application/json",
-//   //       },
-//   //       body: JSON.stringify({
-//   //         institutionalEmail: email,
-//   //         idNumber: idno,
-//   //         firstName,
-//   //         lastName,
-//   //         gender,
-//   //         password,
-//   //         image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
-//   //         role,
-//   //         college,
-//   //         program,
-//   //         year,
-//   //         birthDate: formattedBirthdate,
-//   //         contactNumber,
-//   //         permanentAddress,
-//   //         parentGuardianName,
-//   //         parentGuardianContactNumber,
-//   //         guardianRelationship,
-//   //         currentAddress,
-//   //       }),
-//   //     }
-//   //   );
-//   // } catch (error) {
-//   //   console.error("Error registering student accounts:", error);
-//   // }
-// };

@@ -3,7 +3,7 @@ import HollowButton from "../buttons/HollowButton";
 const ConfirmationPopup = ({ icon, title, message, onConfirm, onCancel }) => {
 	return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-			<div className="bg-white dark:bg-slate-800 shadow-xl border border-slate-200 border-2 rounded-xl hover:-translate-y-1 duration-500 w-full lg:w-3/12 p-2 lg:p-4 relative">
+			<div className="bg-white  shadow-xl border border-slate-200 border-2 rounded-xl hover:-translate-y-1 duration-500 w-full lg:w-3/12 p-2 lg:p-4 relative">
 				<section className="flex flex-col md:flex-col items-center md:gap-4 mb-8 justify-center items-center w-full">
 					{/* Avatar */}
 					<div className="w-full flex justify-center avatar absolute -top-10 md:-top-18">

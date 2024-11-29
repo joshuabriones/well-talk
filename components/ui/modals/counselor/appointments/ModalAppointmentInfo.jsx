@@ -104,7 +104,13 @@ const ModalAppointmentInfo = ({
           role="dialog"
           onClick={handleOverlayClick}
         >
-          <div className="bg-white dark:bg-slate-800 shadow-xl border w-4/5 md:max-w-lg lg:max-w-lg border-gray border-2 rounded-xl relative">
+          <div className="bg-white shadow-xl border w-4/5 md:max-w-lg lg:max-w-lg border-gray border-2 rounded-xl relative">
+          <button
+              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none"
+              onClick={() => setDeleteModal(false)}
+            >
+              &times;
+            </button>
             <section className="text-center items-center md:gap-4 mb-8 justify-center w-full">
               <div className="w-full flex justify-center avatar absolute -top-16 md:-top-24">
                 <div className="w-32 md:w-40 rounded-full ring ring-maroon ring-offset-base-100 ring-offset-1">
@@ -196,7 +202,7 @@ const ModalAppointmentInfo = ({
                             handleModalClose();
                           }}
                         >
-                          Cancel
+                          Cancel Appointment
                         </button>
 
                         <button

@@ -16,6 +16,7 @@ const Hero = () => {
 
 	return (
 		<section className={`${styles.hero} parallax`}>
+			
 			<div className="flex justify-center items-center w-full h-screen">
 				<div className="w-full flex justify-center items-center mt-6 md:mt-0 lg:mt-0">
 					<motion.div

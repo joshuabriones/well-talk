@@ -18,6 +18,7 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 	const [selectedFile, setSelectedFile] = useState(null);
 	const [characterCount, setCharacterCount] = useState(0);
 	const [userData, setUserData] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const MAX_CHARACTERS = 5000;
 
@@ -49,6 +50,7 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 	}, [userSession]);
 
 	const postHandler = async (e) => {
+		setIsLoading(true);
 		e.preventDefault();
 
 		const user = JSON.parse(Cookies.get("user"));
@@ -88,6 +90,8 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 			fetchPosts();
 		} catch (error) {
 			console.error("Error posting:", error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -179,6 +183,7 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 						accept="image/*"
 					/>
 					<BsFillImageFill className="text-maroon text-2xl cursor-pointer mr-2 mt-1" />
+					Select File
 				</label>
 
 				<div className="disabled:cursor-not-allowed pt-3 flex justify-end gap-4 w-40">
@@ -199,7 +204,9 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 									textSize: "40px",
 								})}
 								className={`custom-progress-bar ${
-									characterCount > MAX_CHARACTERS ? "hidden" : ""
+									characterCount > MAX_CHARACTERS
+										? "hidden"
+										: ""
 								}`}
 							/>
 						)}
@@ -211,22 +218,34 @@ const CreatePost = ({ userSession, fetchPosts }) => {
 									fontSize: "13px",
 									color: "red",
 									transition: "opacity 0.5s ease-out",
-									opacity: characterCount > MAX_CHARACTERS ? 1 : 0,
+									opacity:
+										characterCount > MAX_CHARACTERS ? 1 : 0,
 								}}>
 								{remainingCharacters}
 							</div>
 						)}
 					</div>
 					<button
-						className={`w-full py-2 text-lg font-semibold font-Merriweather rounded-full transition-colors duration-300 
-        ${
-			!postContent.trim() || characterCount > MAX_CHARACTERS
+						className={`w-full py-2 text-md font-semibold font-Merriweather rounded-full transition-colors duration-300 
+      ${
+			!postContent.trim() || characterCount > MAX_CHARACTERS || isLoading
 				? "bg-maroon text-white cursor-not-allowed border-silver border-2"
 				: "bg-gold text-gray hover:bg-gold-dark border-2"
 		}`}
-						disabled={!postContent.trim() || characterCount > MAX_CHARACTERS}
+						disabled={
+							!postContent.trim() ||
+							characterCount > MAX_CHARACTERS ||
+							isLoading
+						}
 						onClick={postHandler}>
-						Post
+						{isLoading ? (
+							<span className="flex justify-center items-center">
+								<div className="w-6 h-6 border-t-2 border-white border-dotted rounded-full animate-spin"></div>
+								<span className="ml-2">Posting</span>
+							</span>
+						) : (
+							"Post"
+						)}
 					</button>
 				</div>
 			</div>

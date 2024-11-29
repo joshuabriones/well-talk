@@ -3,7 +3,7 @@ export default function Consent({ onClose }) {
 		<div
 			className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-25 z-50 backdrop-blur"
 			role="dialog">
-			<div className="modal-box relative p-4 sm:p-6 lg:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white rounded-2xl shadow-lg transform transition-transform duration-300 scale-95">
+			<div className="modal-box relative p-4 sm:p-6 lg:p-9 border-2 text-center max-w-md sm:max-w-lg bg-white rounded-2xl shadow-lg transform transition-transform duration-300 scale-95">
 				<div className="h-16 flex flex-col items-center justify-between mb-12 md:mb-6 lg:mb-6">
 					<div className="flex items-center gap-2 mb-2">
 						<img
@@ -16,7 +16,7 @@ export default function Consent({ onClose }) {
 							<span className="text-gold">Talk</span>
 						</h1>
 					</div>
-					<h1 className="font-bold text-md md:text-lg lg:text-lg font-Merriweather">
+					<h1 className="font-bold text-lg lg:text-lg font-Merriweather">
 						COUNSELING CONSENT AND AGREEMENT
 					</h1>
 				</div>

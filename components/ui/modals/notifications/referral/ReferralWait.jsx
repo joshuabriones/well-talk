@@ -27,7 +27,7 @@ const ReferralWait = ({
 					role="dialog"
 					onClick={handleOverlayClick}
 				>
-					<div className="modal-box relative p-4 sm:p-6 lg:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white dark:bg-slate-800 rounded-2xl shadow-lg transform transition-transform duration-300 scale-95">
+					<div className="modal-box relative p-4 sm:p-6 lg:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white rounded-2xl shadow-lg transform transition-transform duration-300 scale-95">
 						{/* <img
 							src={appointment?.sender?.image}
 							alt="Registration Successful"

@@ -49,7 +49,12 @@ const ModalReferralInfo = ({
       role="dialog"
       onClick={handleOverlayClick}
     >
-      <div className="bg-white dark:bg-slate-800 shadow-xl border w-4/5 md:max-w-lg lg:max-w-lg border-gray border-2 rounded-xl relative">
+      <div className="bg-white shadow-xl border w-4/5 md:max-w-lg lg:max-w-lg border-gray border-2 rounded-xl relative">
+      <button
+              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none"
+            >
+              &times;
+            </button>
         <section className="text-center items-center md:gap-4 mb-8 justify-center w-full">
           <div className="w-full flex justify-center avatar absolute -top-16 md:-top-24">
             {/* <div className="w-32 md:w-40 rounded-full ring ring-maroon ring-offset-base-100 ring-offset-1">
@@ -115,10 +120,10 @@ const ModalReferralInfo = ({
                   <th className="text-left py-2 pr-4">Status:</th>
                   <td className="py-2">
                     <div
-                      className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}
+                      className={`w-30 h-6 rounded-lg border border-black flex items-center justify-center`}
                     >
                       {referral && referral.status === "Pending" && "🟡"}
-                      {referral && referral.status === "Appointed" && "🟢"}
+                      {referral && referral.status === "Completed" && "🟢"}
                       {referral && referral.status === "On-going" && "🔵"}
                       <span className="ml-2 font-bold text-sm">
                         {referral ? referral.status : ""}

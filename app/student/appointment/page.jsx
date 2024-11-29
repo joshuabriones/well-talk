@@ -44,7 +44,9 @@ const Appointment = () => {
 	const [isParentModalOpen, setIsParentModalOpen] = useState(false);
 
 	const [appointments, setAppointments] = useState([]);
-	const [appointmentDate, setAppointmentDate] = useState(new Date().toISOString().split("T")[0]);
+	const [appointmentDate, setAppointmentDate] = useState(
+		new Date().toISOString().split("T")[0]
+	);
 
 	const [confirmResponseModal, setConfirmResponseModal] = useState(false);
 
@@ -55,7 +57,8 @@ const Appointment = () => {
 	const [purpose, setPurpose] = useState(""); // State to store the purpose of the appointment
 	const [appointmentOnThatDate, setAppointmentOnThatDate] = useState([]);
 	const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
-	const [showAddAppointmentModal, setShowAddAppointmentModal] = useState(false);
+	const [showAddAppointmentModal, setShowAddAppointmentModal] =
+		useState(false);
 	const [errorMessages, setErrorMessages] = useState({
 		appointmentType: "",
 		purpose: "",
@@ -127,28 +130,31 @@ const Appointment = () => {
 		setStudentData(data);
 	};
 
-	const fetchCounselorIds = async () => {
-		try {
-			const response = await fetch(
-				`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_STUDENT_ID}${userSession?.id}`,
-				{
-					headers: {
-						Authorization: `Bearer ${Cookies.get("token")}`,
-					},
-				}
-			);
+	// const fetchCounselorIds = async () => {
+	// 	try {
+	// 		const response = await fetch(
+	// 			`${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_STUDENT_ID}${userSession?.id}`,
+	// 			{
+	// 				headers: {
+	// 					Authorization: `Bearer ${Cookies.get("token")}`,
+	// 				},
+	// 			}
+	// 		);
 
-			if (!response.ok) {
-				throw new Error("Error fetching counselor IDs");
-			}
+	// 		if (!response.ok) {
+	// 			throw new Error("Error fetching counselor IDs");
+	// 		}
 
-			const data = await response.json();
-			return data.map((counselor) => counselor.id);
-		} catch (error) {
-			console.error("An error occurred while fetching counselor IDs:", error);
-			return [];
-		}
-	};
+	// 		const data = await response.json();
+	// 		return data.map((counselor) => counselor.id);
+	// 	} catch (error) {
+	// 		console.error(
+	// 			"An error occurred while fetching counselor IDs:",
+	// 			error
+	// 		);
+	// 		return [];
+	// 	}
+	// };
 
 	const fetchAppointments = async () => {
 		const response = await fetch(
@@ -169,40 +175,38 @@ const Appointment = () => {
 
 	const fetchAppointmentsOnThatDate = async () => {
 		try {
-			const counselorIds = await fetchCounselorIds();
-			const appointments = [];
-
-			for (const counselorId of counselorIds) {
-				const response = await fetch(
-					`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE_AND_COUNSELOR}${appointmentDate}&counselorId=${counselorId}`,
-					{
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${Cookies.get("token")}`,
-						},
+			const response = await fetch(
+				`${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_DATE_AND_ASSIGNED_COUNSELORS}?date=${appointmentDate}&studentId=${userSession.id}`,
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${Cookies.get("token")}`,
 					}
-				);
-
-				if (!response.ok) {
-					throw new Error("Error fetching appointments on that date");
 				}
+			);
 
-				const data = await response.json();
-				if (Array.isArray(data)) {
-					appointments.push(...data);
-				}
+			if (!response.ok) {
+				throw new Error("Error fetching appointments on that date");
 			}
 
-			setAppointmentOnThatDate(appointments);
+			const data = await response.json();
+			if (Array.isArray(data)) {
+				setAppointmentOnThatDate(data);
+				console.log("Appointments on that date:", data);
+			}
 		} catch (error) {
-			console.error("An error occurred while fetching appointments on that date:", error);
+			console.error(
+				"An error occurred while fetching appointments on that date:",
+				error
+			);
 		}
 	};
-
 
 	useEffect(() => {
 		fetchAppointmentsOnThatDate();
 	}, [appointmentDate]);
+
+
 
 	const formatDate = (date) => {
 		const dateObject = new Date(date);
@@ -274,7 +278,10 @@ const Appointment = () => {
 	// Calculate the index range of appointment to display for the current page
 	const indexOfLastInquiry = currentPage * AppointmentPerPage;
 	const indexOfFirstInquiry = indexOfLastInquiry - AppointmentPerPage;
-	const currentAppointments = appointments?.slice(indexOfFirstInquiry, indexOfLastInquiry);
+	const currentAppointments = appointments?.slice(
+		indexOfFirstInquiry,
+		indexOfLastInquiry
+	);
 
 	const handleAddAppointmentClick = () => {
 		setIsAddAppointment(true);
@@ -286,14 +293,25 @@ const Appointment = () => {
 		setIsViewAppointment(true);
 	};
 
-	const timeSlots = ["08:00", "09:00", "10:00", "11:00", "13:30", "14:30", "15:30"];
+	const timeSlots = [
+		"08:00",
+		"09:00",
+		"10:00",
+		"11:00",
+		"13:30",
+		"14:30",
+		"15:30",
+	];
 
 	// Helper function to check if a time slot is taken
 	const isTimeSlotTaken = (time) => {
-		return appointmentOnThatDate.some(
+		const counselorsWithAppointments = appointmentOnThatDate.filter(
 			(appointment) => appointment.appointmentStartTime === time
 		);
+
+		return counselorsWithAppointments.length === appointmentOnThatDate.length;
 	};
+
 
 	const addTime = (startTime, duration) => {
 		// Split the start time and duration into hours and minutes
@@ -380,6 +398,7 @@ const Appointment = () => {
 			toast.error(`Time slot ${timeFormatter(time)} is not available.`);
 		}
 	};
+
 
 	const handleAppointmentSubmit = async () => {
 		setErrorMessages({ appointmentType: "", purpose: "" });
@@ -493,7 +512,8 @@ const Appointment = () => {
 					},
 					body: JSON.stringify({
 						appointmentDate: appointmentDate,
-						appointmentStartTime: convertTo24HourFormat(selectedTime),
+						appointmentStartTime:
+							convertTo24HourFormat(selectedTime),
 						appointmentEndTime: convertTo24HourFormat(endTime),
 						appointmentType: appointmentType,
 						appointmentPurpose: purpose,
@@ -588,15 +608,26 @@ const Appointment = () => {
 		const formattedDate = formatDate(appointment.appointmentDate);
 
 		const matchesStatus =
-			selectedStatus === "All" || appointment.appointmentStatus === selectedStatus;
+			selectedStatus === "All" ||
+			appointment.appointmentStatus === selectedStatus;
 
 		const matchesSearch =
 			formattedDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			appointment.appointmentDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			appointment.appointmentStartTime.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			appointment.appointmentType.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			appointment.appointmentPurpose.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			appointment.appointmentNotes?.toLowerCase().includes(searchQuery.toLowerCase());
+			appointment.appointmentDate
+				.toLowerCase()
+				.includes(searchQuery.toLowerCase()) ||
+			appointment.appointmentStartTime
+				.toLowerCase()
+				.includes(searchQuery.toLowerCase()) ||
+			appointment.appointmentType
+				.toLowerCase()
+				.includes(searchQuery.toLowerCase()) ||
+			appointment.appointmentPurpose
+				.toLowerCase()
+				.includes(searchQuery.toLowerCase()) ||
+			appointment.appointmentNotes
+				?.toLowerCase()
+				.includes(searchQuery.toLowerCase());
 
 		return matchesStatus && matchesSearch;
 	});
@@ -646,20 +677,18 @@ const Appointment = () => {
 					<div className="w-full pt-24 flex items-center gap-3 justify-center">
 						<button
 							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
-									? "bg-maroon text-white"
-									: "border-2 border-maroon text-maroon"
+								? "bg-maroon text-white"
+								: "border-2 border-maroon text-maroon"
 								}`}
-							onClick={handleAddAppointmentClick}
-						>
+							onClick={handleAddAppointmentClick}>
 							Set Appointment
 						</button>
 						<button
 							className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
-									? "bg-maroon text-white"
-									: "border-2 border-maroon text-maroon"
+								? "bg-maroon text-white"
+								: "border-2 border-maroon text-maroon"
 								}`}
-							onClick={handleViewAppointmentClick}
-						>
+							onClick={handleViewAppointmentClick}>
 							View Appointments
 						</button>
 					</div>
@@ -671,7 +700,9 @@ const Appointment = () => {
 							<div className="overflow-x-auto max-w-full py-10 px-8 md:px-28 lg:px-28 xs:px-1 flex flex-col items-center">
 								<div className="flex flex-col md:flex-row lg:flex-row gap-5 py-4 w-full">
 									<div className="flex items-center">
-										<label htmlFor="search-filter" className="mr-2">
+										<label
+											htmlFor="search-filter"
+											className="mr-2">
 											Search:
 										</label>
 										<input
@@ -684,19 +715,26 @@ const Appointment = () => {
 										/>
 									</div>
 									<div className="flex items-center">
-										<label htmlFor="status-filter" className="mr-2">
+										<label
+											htmlFor="status-filter"
+											className="mr-2">
 											Status:
 										</label>
 										<select
 											id="status-filter"
 											value={selectedStatus}
 											onChange={handleStatusChange}
-											className="border rounded pr-[26px]"
-										>
+											className="border rounded pr-[26px]">
 											<option value="All">All </option>
-											<option value="Pending">Pending 🟡</option>
-											<option value="Done">Done 🟢</option>
-											<option value="Cancelled">Cancelled 🔴</option>
+											<option value="Pending">
+												Pending 🟡
+											</option>
+											<option value="Done">
+												Done 🟢
+											</option>
+											<option value="Cancelled">
+												Cancelled 🔴
+											</option>
 										</select>
 									</div>
 								</div>
@@ -709,189 +747,234 @@ const Appointment = () => {
 											<th className="py-4 hidden  lg:table-cell">
 												Appointment Type
 											</th>
-											<th className="py-4 hidden  lg:table-cell">Reason</th>
-											<th className="py-4 hidden  lg:table-cell">Feedback</th>
+											<th className="py-4 hidden  lg:table-cell">
+												Reason
+											</th>
+											<th className="py-4 hidden  lg:table-cell">
+												Feedback
+											</th>
 											<th className="py-4">Status</th>
-											<th className="py-4 hidden  lg:table-cell">Action</th>
+											<th className="py-4 hidden  lg:table-cell">
+												Action
+											</th>
 										</tr>
 									</thead>
 									<tbody>
-										{filteredAppointments?.map((appointment) => (
-											<>
-												<tr
-													key={appointment.appointmentId}
-													onClick={() =>
-														handleRowClick(appointment.appointmentId)
-													}
-													className={`border-slate-100 border-b-2
+										{filteredAppointments?.map(
+											(appointment) => (
+												<>
+													<tr
+														key={
+															appointment.appointmentId
+														}
+														onClick={() =>
+															handleRowClick(
+																appointment.appointmentId
+															)
+														}
+														className={`border-slate-100 border-b-2
                           hover:bg-slate-100 cursor-pointer 
-                          transition duration-300 ease-in-out`}
-												>
-													<td>
-														<div className="text-center py-2">
-															{formatDate(
-																appointment.appointmentDate
-															)}
-														</div>
-													</td>
-													<td className="text-center py-2">
-														{appointment.appointmentStartTime}
-													</td>
-													<td className="text-center py-2 hidden  lg:table-cell">
-														{appointment.appointmentType}
-													</td>
-													<td className="text-center py-2 hidden  lg:table-cell">
-														<p className="truncate">
-															{appointment.appointmentPurpose.length >
-																50
-																? `${appointment.appointmentPurpose.substring(
-																	0,
-																	40
-																)}...`
-																: appointment.appointmentPurpose}
-														</p>
-													</td>
-													<td className="text-center hidden  lg:table-cell">
-														<p>
-															{appointment?.appointmentNotes?.length >
-																50
-																? `${appointment?.appointmentNotes?.substring(
-																	0,
-																	40
-																)}...`
-																: appointment?.appointmentNotes ||
-																"No feedback yet"}
-														</p>
-													</td>
-													<td className="h-full">
-														<div className="flex justify-center items-center">
-															<div
-																className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}
-															>
-																{appointment &&
-																	appointment.appointmentStatus ===
-																	"Pending" &&
-																	"🟡"}
-																{appointment &&
-																	appointment.appointmentStatus ===
-																	"Done" &&
-																	"🟢"}
-																{appointment &&
-																	appointment.appointmentStatus ===
-																	"On-going" &&
-																	"🔵"}
-																{appointment &&
-																	appointment.appointmentStatus ===
-																	"Cancelled" &&
-																	"🔴"}{" "}
-																{/* Added red dot for Cancelled */}
-																<span className="ml-2 text-bold text-sm">
-																	{appointment
-																		? appointment.appointmentStatus
-																		: ""}
-																</span>
-															</div>
-														</div>
-													</td>
-
-													{/* Delete and Edit */}
-													<td className="hidden  lg:table-cell">
-														<div className="flex justify-center text-center py-2">
-															{appointment.appointmentStatus ===
-																"Pending" && (
-																	<>
-																		<button
-																			className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
-																			onClick={(e) => {
-																				e.stopPropagation();
-																				showDeleteModal(
-																					appointment.appointmentId
-																				);
-																			}}
-																		>
-																			Cancel
-																		</button>
-																		<button
-																			className=" btn btn-xs text-gray hover:text-gray hover:bg-gold"
-																			onClick={(e) => {
-																				e.stopPropagation();
-																				showRescheduleModal(
-																					appointment.appointmentId
-																				);
-																			}}
-																		>
-																			Reschedule
-																		</button>
-																	</>
+                          transition duration-300 ease-in-out`}>
+														<td>
+															<div className="text-center py-2">
+																{formatDate(
+																	appointment.appointmentDate
 																)}
-														</div>
-													</td>
-												</tr>
-												{rescheduleModal && (
-													<ModalReschedule
-														setRescheduleModal={setRescheduleModal}
-														handleReschedule={handleReschedule}
-														appointmentId={selectedID}
-														sessionId={userSession.id}
-														refreshAppointments={fetchAppointments}
-													/>
-												)}
-											</>
-										))}
+															</div>
+														</td>
+														<td className="text-center py-2">
+															{
+																appointment.appointmentStartTime
+															}
+														</td>
+														<td className="text-center py-2 hidden  lg:table-cell">
+															{
+																appointment.appointmentType
+															}
+														</td>
+														<td className="text-center py-2 hidden  lg:table-cell">
+															<p className="truncate">
+																{appointment
+																	.appointmentPurpose
+																	.length > 50
+																	? `${appointment.appointmentPurpose.substring(
+																		0,
+																		40
+																	)}...`
+																	: appointment.appointmentPurpose}
+															</p>
+														</td>
+														<td className="text-center hidden  lg:table-cell">
+															<p>
+																{appointment
+																	?.appointmentNotes
+																	?.length >
+																	50
+																	? `${appointment?.appointmentNotes?.substring(
+																		0,
+																		40
+																	)}...`
+																	: appointment?.appointmentNotes ||
+																	"No feedback yet"}
+															</p>
+														</td>
+														<td className="h-full">
+															<div className="flex justify-center items-center">
+																<div
+																	className={`w-28 h-6 rounded-lg border border-black flex items-center justify-center`}>
+																	{appointment &&
+																		appointment.appointmentStatus ===
+																		"Pending" &&
+																		"🟡"}
+																	{appointment &&
+																		appointment.appointmentStatus ===
+																		"Done" &&
+																		"🟢"}
+																	{appointment &&
+																		appointment.appointmentStatus ===
+																		"On-going" &&
+																		"🔵"}
+																	{appointment &&
+																		appointment.appointmentStatus ===
+																		"Cancelled" &&
+																		"🔴"}{" "}
+																	{/* Added red dot for Cancelled */}
+																	<span className="ml-2 text-bold text-sm">
+																		{appointment
+																			? appointment.appointmentStatus
+																			: ""}
+																	</span>
+																</div>
+															</div>
+														</td>
+
+														{/* Delete and Edit */}
+														<td className="hidden  lg:table-cell">
+															<div className="flex justify-center text-center py-2">
+																{appointment.appointmentStatus ===
+																	"Pending" && (
+																		<>
+																			<button
+																				className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
+																				onClick={(
+																					e
+																				) => {
+																					e.stopPropagation();
+																					showDeleteModal(
+																						appointment.appointmentId
+																					);
+																				}}>
+																				Cancel
+																			</button>
+																			<button
+																				className=" btn btn-xs text-gray hover:text-gray hover:bg-gold"
+																				onClick={(
+																					e
+																				) => {
+																					e.stopPropagation();
+																					showRescheduleModal(
+																						appointment.appointmentId
+																					);
+																				}}>
+																				Reschedule
+																			</button>
+																		</>
+																	)}
+															</div>
+														</td>
+													</tr>
+													{rescheduleModal && (
+														<ModalReschedule
+															setRescheduleModal={
+																setRescheduleModal
+															}
+															handleReschedule={
+																handleReschedule
+															}
+															appointmentId={
+																selectedID
+															}
+															sessionId={
+																userSession.id
+															}
+															refreshAppointments={
+																fetchAppointments
+															}
+														/>
+													)}
+												</>
+											)
+										)}
 									</tbody>
 								</table>
 
 								{/* Pagination controls */}
 								<div className="join pt-5">
 									<button
-										onClick={() => setCurrentPage(currentPage - 1)}
+										onClick={() =>
+											setCurrentPage(currentPage - 1)
+										}
 										disabled={currentPage === 1}
-										className="join-item btn w-28"
-									>
+										className="join-item btn w-28">
 										Previous
 									</button>
 
 									{appointments &&
 										[
 											...Array(
-												Math.ceil(appointments.length / AppointmentPerPage)
+												Math.ceil(
+													appointments.length /
+													AppointmentPerPage
+												)
 											),
 										].map((_, index) => (
 											<button
 												key={index}
-												className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
+												className={`join-item btn ${currentPage === index + 1
+													? "btn-active"
+													: ""
 													}`}
-												onClick={() => setCurrentPage(index + 1)}
-											>
+												onClick={() =>
+													setCurrentPage(index + 1)
+												}>
 												{index + 1}
 											</button>
 										))}
 
 									<button
-										onClick={() => setCurrentPage(currentPage + 1)}
-										disabled={AppointmentPerPage > appointments?.length}
-										className="join-item btn w-28"
-									>
+										onClick={() =>
+											setCurrentPage(currentPage + 1)
+										}
+										disabled={
+											AppointmentPerPage >
+											appointments?.length
+										}
+										className="join-item btn w-28">
 										Next
 									</button>
 								</div>
 							</div>
 						</div>
 					) : (
-						<div className="flex w-full py-10 px-8 md:px-28 lg:px-28 gap-12 justify-center md:flex-row flex-col">
-							<div className="w-1/2">
+						<div className="flex w-full py-10 px-8 md:px-10 xl:px-28 gap-10 justify-center lg:flex-row flex-col">
+							<div className="flex-1 flex flex-col gap-2">
 								<Calendar
 									bordered
 									renderCell={renderCell}
 									onSelect={(date) => {
 										console.log(date);
-										const today = new Date().toISOString().split("T")[0]; // Today's date in 'YYYY-MM-DD' format
-										const formattedDate = date.toISOString().split("T")[0]; // Selected date in 'YYYY-MM-DD' format
+										const today = new Date()
+											.toISOString()
+											.split("T")[0]; // Today's date in 'YYYY-MM-DD' format
+										const formattedDate = date
+											.toISOString()
+											.split("T")[0]; // Selected date in 'YYYY-MM-DD' format
 
 										if (isUnavailableDate(date)) {
 											// Get the event for the unavailable date
 											const eventName =
-												getHolidayEvent(date) || "an unavailable holiday"; // Fallback if no event is found
+												getHolidayEvent(date) ||
+												"an unavailable holiday"; // Fallback if no event is found
 
 											toast.error(
 												`Appointments are unavailable on this date due to ${eventName}.`
@@ -899,17 +982,30 @@ const Appointment = () => {
 											setIsDayAvailable(false);
 										} else if (formattedDate >= today) {
 											// If it's today or in the future (except unavailable dates), allow the selection
-											setAppointmentDate(formatDateCalendar(date));
-											const displayDate = date.toLocaleDateString("en-US", {
-												month: "long",
-												day: "numeric",
-											});
-											toast.success(`Date selected: ${displayDate}`);
+											setAppointmentDate(
+												formatDateCalendar(date)
+											);
+											const displayDate =
+												date.toLocaleDateString(
+													"en-US",
+													{
+														month: "long",
+														day: "numeric",
+													}
+												);
+											toast.success(
+												`Date selected: ${displayDate}`
+											);
 											setIsDayAvailable(true);
 										}
 									}}
 									disabledDate={(date) => {
-										const today = new Date().setHours(0, 0, 0, 0); // Disable past dates
+										const today = new Date().setHours(
+											0,
+											0,
+											0,
+											0
+										); // Disable past dates
 										const dayOfWeek = date.getDay(); // Get the day of the week (0 = Sunday, 6 = Saturday)
 
 										// Disable past dates, weekends
@@ -925,45 +1021,64 @@ const Appointment = () => {
 							{appointmentOnThatDate && (
 								<>
 									{isDayAvailable ? (
-										<div className="w-1/2">
+										<div className="flex-1">
 											<h2 className="font-semibold text-lg mb-2">
 												Available Time Slots
 											</h2>
 											<p>
-												🛑 To set an appointment, you must first select a
-												valid date in the calendar, then choose your desired
-												time slot.
+												🛑 To set an appointment, you
+												must first select a valid date
+												in the calendar, then choose
+												your desired time slot.
 											</p>
 											<p>
-												🛑 Do note that you can only select a time slot that
-												has not been taken yet.
+												🛑 Do note that you can only
+												select a time slot that has not
+												been taken yet.
 											</p>
 											<div className="flex flex-wrap gap-2 my-6">
-												{timeSlots.map((time, index) => (
-													<button
-														key={index}
-														// Check if the selected `appointmentDate` is a holiday
-														disabled={
-															isTimeSlotTaken(time) ||
-															isTimeSlotUnavailable(time)
-														}
-														onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-														className={`time-slot-button ${isTimeSlotTaken(time) ||
-																isTimeSlotUnavailable(time)
+												{timeSlots.map(
+													(time, index) => (
+														<button
+															key={index}
+															// Check if the selected `appointmentDate` is a holiday
+															disabled={
+																isTimeSlotTaken(
+																	time
+																) ||
+																isTimeSlotUnavailable(
+																	time
+																)
+															}
+															onClick={() =>
+																handleTimeSlotClick(
+																	time
+																)
+															} // Set the selected time on click
+															className={`time-slot-button ${isTimeSlotTaken(
+																time
+															) ||
+																isTimeSlotUnavailable(
+																	time
+																)
 																? "bg-white border-[1px] border-gray text-primary-green cursor-not-allowed"
-																: time === selectedTimeSlot
+																: time ===
+																	selectedTimeSlot
 																	? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
 																	: "bg-maroon text-white hover:bg-maroon duration-300"
-															} py-2 px-3 rounded-md`}
-													>
-														{timeFormatter(time)}
-													</button>
-												))}
+																} py-2 px-3 rounded-md`}>
+															{timeFormatter(
+																time
+															)}
+														</button>
+													)
+												)}
 											</div>
 											<hr />
 											<div className="mt-4">
 												<p>
-													🤗 Please state the type of appointment and your
+													🤗 Please state the type of
+													appointment and your
 													purpose.
 												</p>
 												<div className="w-full flex lg:flex-col gap-5 my-5 flex-col">
@@ -976,47 +1091,65 @@ const Appointment = () => {
 													<FormControl
 														fullWidth
 														sx={{
-															"& .MuiOutlinedInput-root": {
-																"& fieldset": {
-																	borderColor: "black",
+															"& .MuiOutlinedInput-root":
+															{
+																"& fieldset":
+																{
+																	borderColor:
+																		"black",
 																},
-																"&:hover fieldset": {
-																	borderColor: "default",
+																"&:hover fieldset":
+																{
+																	borderColor:
+																		"default",
 																},
-																"&.Mui-focused fieldset": {
-																	borderColor: "black",
+																"&.Mui-focused fieldset":
+																{
+																	borderColor:
+																		"black",
 																},
 															},
-															"& .MuiInputLabel-root": {
+															"& .MuiInputLabel-root":
+															{
 																color: "inherit",
-																"&.Mui-focused": {
+																"&.Mui-focused":
+																{
 																	color: "inherit",
 																},
-																fontSize: "0.75 rem",
+																fontSize:
+																	"0.75 rem",
 															},
 														}}
-														error={!!errorMessages.appointmentType}
-													>
+														error={
+															!!errorMessages.appointmentType
+														}>
 														<InputLabel id="appointment-type">
 															Appointment Type
 														</InputLabel>
 														<Select
 															labelId="appointment-type"
 															id="appointment-type-select"
-															value={appointmentType}
+															value={
+																appointmentType
+															}
 															label="Appointment Type"
 															onChange={(e) =>
-																setAppointmentType(e.target.value)
-															}
-														>
+																setAppointmentType(
+																	e.target
+																		.value
+																)
+															}>
 															<MenuItem value="Academic Counseling">
-																Academic Counseling
+																Academic
+																Counseling
 															</MenuItem>
 															<MenuItem value="Career Counseling">
-																Career Counseling
+																Career
+																Counseling
 															</MenuItem>
 															<MenuItem value="Personal Counseling">
-																Personal Counseling
+																Personal
+																Counseling
 															</MenuItem>
 															<MenuItem value="Wellness Check">
 																Wellness Check
@@ -1030,42 +1163,61 @@ const Appointment = () => {
 														</Select>
 														{errorMessages.appointmentType && (
 															<FormHelperText>
-																{errorMessages.appointmentType}
+																{
+																	errorMessages.appointmentType
+																}
 															</FormHelperText>
 														)}
 													</FormControl>
 													<FormControl
 														fullWidth
 														sx={{
-															"& .MuiOutlinedInput-root": {
-																"& fieldset": {
-																	borderColor: "black", // Set border color to match Select
+															"& .MuiOutlinedInput-root":
+															{
+																"& fieldset":
+																{
+																	borderColor:
+																		"black", // Set border color to match Select
 																},
-																"&:hover fieldset": {
-																	borderColor: "default", // Match hover border color
+																"&:hover fieldset":
+																{
+																	borderColor:
+																		"default", // Match hover border color
 																},
-																"&.Mui-focused fieldset": {
-																	borderColor: "black", // Keep focus border color black
+																"&.Mui-focused fieldset":
+																{
+																	borderColor:
+																		"black", // Keep focus border color black
 																},
-																"&.Mui-focused": {
-																	outline: "none", // Remove the blue box outline
-																	borderColor: "none", // Remove
+																"&.Mui-focused":
+																{
+																	outline:
+																		"none", // Remove the blue box outline
+																	borderColor:
+																		"none", // Remove
 																},
 															},
-															"& .MuiInputLabel-root": {
+															"& .MuiInputLabel-root":
+															{
 																color: "inherit", // Match label color
-																"&.Mui-focused": {
+																"&.Mui-focused":
+																{
 																	color: "inherit", // Keep label color the same when focused
 																},
-																fontSize: "1rem", // Match label font size
+																fontSize:
+																	"1rem", // Match label font size
 															},
 														}}
-														error={!!errorMessages.purpose}
-													>
+														error={
+															!!errorMessages.purpose
+														}>
 														<TextField
 															value={purpose}
 															onChange={(e) =>
-																setPurpose(e.target.value)
+																setPurpose(
+																	e.target
+																		.value
+																)
 															}
 															label="Purpose"
 															multiline
@@ -1075,7 +1227,9 @@ const Appointment = () => {
 														/>
 														{errorMessages.purpose && (
 															<FormHelperText>
-																{errorMessages.purpose}
+																{
+																	errorMessages.purpose
+																}
 															</FormHelperText>
 														)}
 													</FormControl>
@@ -1083,25 +1237,34 @@ const Appointment = () => {
 												<div className="w-full flex items-center gap-x-2 py-2">
 													<input
 														type="checkbox"
-														checked={consentAccepted}
-														onChange={handleTermsChange}
+														checked={
+															consentAccepted
+														}
+														onChange={
+															handleTermsChange
+														}
 														disabled={!purpose}
 														className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
 													/>
 													<label className="text-md font-Jaldi text-gray-700 italic">
-														I have read, understood, and agree to the{" "}
+														I have read, understood,
+														and agree to the{" "}
 														<a
 															href="#"
 															className="hover:underline text-maroon"
 															onClick={(e) => {
 																e.preventDefault();
-																setShowConsent(true); // Show terms when the link is clicked
-															}}
-														>
-															Counseling Consent and Agreement
+																setShowConsent(
+																	true
+																); // Show terms when the link is clicked
+															}}>
+															Counseling Consent
+															and Agreement
 														</a>
-														, including the limits to confidentiality
-														and commitment to cooperation.
+														, including the limits
+														to confidentiality and
+														commitment to
+														cooperation.
 													</label>
 													{/* {errors.termsAccepted && (
                           <p className="text-red-500 text-sm font-Jaldi font-semibold">
@@ -1114,36 +1277,57 @@ const Appointment = () => {
 												</div>
 												<hr />
 												<div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-5 rounded-xl px-4 py-2 font-Merriweather gap-4 md:gap-6">
-													<div className="flex flex-col md:flex-row justify-between items-start md:items-center border-2 border-black  rounded-xl md:rounded-full px-4 py-2 font-Merriweather gap-4 md:gap-0 w-full h-auto md:h-[56px]">
-														<div className="font-bold w-full md:w-auto">
+													{/* Date and Time Container */}
+													<div className="flex flex-col md:flex-row justify-between items-start md:items-center border-2 border-black rounded-xl md:rounded-full px-4 py-2 font-Merriweather gap-4 md:gap-6 w-full">
+														<div className="font-bold w-full text-sm md:w-auto md:text-sm lg:text-base">
 															DATE:{" "}
-															{finalDateFormatter(appointmentDate)}
+															{finalDateFormatter(
+																appointmentDate
+															)}
 														</div>
-														<div className="font-bold w-full md:w-auto">
-															TIME: {timeFormatter(selectedTime)}
+														<div className="font-bold w-full md:w-auto text-sm md:text-sm lg:text-base">
+															TIME:{" "}
+															{timeFormatter(
+																selectedTime
+															)}
 														</div>
 													</div>
-													<div className="w-full md:w-2/12">
+													{/* Submit Button */}
+													<div className="w-full md:w-auto md:flex-shrink-0">
 														<FullButton
 															disabled={
 																!selectedTime ||
 																isLoading ||
 																!consentAccepted
 															}
-															onClick={handleAppointmentSubmit}
-															className="w-full"
-														>
-															{isLoading ? "Submitting..." : "Submit"}
+															onClick={
+																handleAppointmentSubmit
+															}
+															className="w-full px-4 py-2 text-xs md:text-sm lg:text-base">
+															{isLoading
+																? "Submitting..."
+																: "Submit"}
 														</FullButton>
 													</div>
 												</div>
+
 												{isParentModalOpen && (
 													<ModalParentInfo
-														setIsParentModalOpen={setIsParentModalOpen}
-														guardianName={guardianName}
-														setGuardianName={setGuardianName}
-														guardianContact={guardianContact}
-														setGuardianContact={setGuardianContact}
+														setIsParentModalOpen={
+															setIsParentModalOpen
+														}
+														guardianName={
+															guardianName
+														}
+														setGuardianName={
+															setGuardianName
+														}
+														guardianContact={
+															guardianContact
+														}
+														setGuardianContact={
+															setGuardianContact
+														}
 														handleParentInfoSubmit={
 															handleParentInfoSubmit
 														}
@@ -1153,8 +1337,9 @@ const Appointment = () => {
 													<div className="flex gap-2 items-center mt-5">
 														<span className="loading loading-dots loading-lg"></span>
 														<span className="text-lg">
-															Processing your appointment, please wait
-															a moment...
+															Processing your
+															appointment, please
+															wait a moment...
 														</span>
 													</div>
 												)}
@@ -1162,8 +1347,9 @@ const Appointment = () => {
 										</div>
 									) : (
 										<div className="w-1/2 italic flex justify-center items-center">
-											Appointment service unavailable on this date. Please
-											select another day.
+											Appointment service unavailable on
+											this date. Please select another
+											day.
 										</div>
 									)}
 								</>
@@ -1180,8 +1366,7 @@ const Appointment = () => {
 					setDeleteModal={setDeleteModal}
 					prompt="cancel"
 					handleDelete={handleDelete}
-					description="scheduled appointment"
-				></ModalDelete>
+					description="scheduled appointment"></ModalDelete>
 			)}
 
 			{appointmentModal && (
@@ -1196,7 +1381,9 @@ const Appointment = () => {
 			)}
 
 			{showAddAppointmentModal && (
-				<StudentAddAppointment setShowAddAppointmentModal={setShowAddAppointmentModal} />
+				<StudentAddAppointment
+					setShowAddAppointmentModal={setShowAddAppointmentModal}
+				/>
 			)}
 			{confirmResponseModal && (
 				<ModalConfirmResponseAppointment
@@ -1259,8 +1446,7 @@ function renderCell(date) {
 								</p>
 							))}
 						</Popover>
-					}
-				>
+					}>
 					<a>{moreCount} more</a>
 				</Whisper>
 			</li>
