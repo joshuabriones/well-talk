@@ -99,14 +99,14 @@ const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
               ? "status-pending"
               : referrals && referrals.status === "Responded"
               ? "status-responded"
-              : referrals && referrals.status === "Accepted"
+              : referrals && referrals.status === "Completed"
               ? "status-accepted"
               : ""
           }`}
         >
           {referrals.status === "Pending" && "🟡"}
           {referrals.status === "Responded" && "🔵"}
-          {referrals.status === "Accepted" && "🟢"}
+          {referrals.status === "Completed" && "🟢"}
           <span className="ml-2">
             {referrals.status}{" "}
             {referrals.status === "Responded" &&

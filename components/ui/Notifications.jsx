@@ -306,7 +306,7 @@ export default function Notifications() {
 
 		const readStyle =
 			notification?.receiver?.id === user?.id && notification.read
-				? "text-zinc-500"
+				? "text-zinc-500 text-xs"
 				: "text-zinc-700 font-semibold";
 
 		return (
@@ -319,7 +319,7 @@ export default function Notifications() {
 					</div>
 				</div>
 				{!notification.read && (
-					<span className="w-3 h-2 mt-1 bg-maroon rounded-full"></span>
+					<span className="w-2 h-2 mx-2 bg-maroon rounded-full"></span>
 				)}
 			</div>
 		);
@@ -344,17 +344,17 @@ export default function Notifications() {
 						text = (
 							<span>
 								You have scheduled an appointment for{" "}
-								<span className="font-bold">{date}</span> at{" "}
-								<span className="font-bold">{time}</span>.
+								<span className="font-bold text-xs">{date}</span> at{" "}
+								<span className="font-bold text-xs">{time}</span>.
 							</span>
 						);
 					} else if (notification?.receiver?.id === user?.id) {
 						text = (
 							<span>
-								Counselor <span className="font-bold">{senderName}</span> has
+								Counselor <span className="font-bold text-xs">{senderName}</span> has
 								scheduled an appointment with you on{" "}
-								<span className="font-bold">{date}</span> at{" "}
-								<span className="font-bold">{time}</span>.
+								<span className="font-bold text-xs">{date}</span> at{" "}
+								<span className="font-bold text-xs">{time}</span>.
 							</span>
 						);
 					}
@@ -370,9 +370,9 @@ export default function Notifications() {
 					if (notification?.receiver?.id === user?.id) {
 						text = (
 							<span>
-								Prof. <span className="font-bold">{senderName}</span> has referred
+								Prof. <span className="font-bold text-xs">{senderName}</span> has referred
 								you for an appointment for reason:{" "}
-								<span className="font-bold">{notification?.referral?.reason}</span>.
+								<span className="font-bold text-xs">{notification?.referral?.reason}</span>.
 							</span>
 						);
 					}
@@ -387,7 +387,7 @@ export default function Notifications() {
 					if (notification?.receiver?.id === user?.id) {
 						text = (
 							<span>
-								Counselor <span className="font-bold">{senderName}</span> has posted
+								Counselor <span className="font-bold text-xs">{senderName}</span> has posted
 								a new announcement.
 							</span>
 						);
@@ -406,21 +406,21 @@ export default function Notifications() {
 						text = (
 							<span>
 								You have scheduled an appointment with{" "}
-								<span className="font-bold">
+								<span className="font-bold text-xs">
 									{notification?.appointment?.student?.firstName}{" "}
 									{notification?.appointment?.student?.lastName}
 								</span>{" "}
-								on <span className="font-bold">{date}</span> at{" "}
-								<span className="font-bold">{time}</span>.
+								on <span className="font-bold text-xs">{date}</span> at{" "}
+								<span className="font-bold text-xs">{time}</span>.
 							</span>
 						);
 						break;
 					} else if (notification?.receiver?.id === user?.id) {
 						text = (
 							<span>
-								<span className="font-bold">{senderName}</span> has scheduled an
-								appointment with you on <span className="font-bold">{date}</span> at{" "}
-								<span className="font-bold">{time}</span>.
+								<span className="font-bold text-xs">{senderName}</span> has scheduled an
+								appointment with you on <span className="font-bold text-xs">{date}</span> at{" "}
+								<span className="font-bold text-xs">{time}</span>.
 							</span>
 						);
 						break;
@@ -434,15 +434,15 @@ export default function Notifications() {
 						notification?.sender?.role === "teacher"
 					) {
 						text = (
-							<span>
-								Prof. <span className="font-bold">{senderName}</span> has referred
+							<span className="">
+								Prof. <span className="font-bold text-xs">{senderName}</span> has referred
 								student{" "}
-								<span className="font-bold">
+								<span className="font-bold text-xs">
 									{notification?.referral?.studentFirstName}{" "}
 									{notification?.referral?.studentLastName}
 								</span>{" "}
 								(
-								<span className="font-bold">
+								<span className="font-bold text-xs">
 									{notification?.referral?.studentId}
 								</span>
 								) for an appointment.
@@ -470,16 +470,16 @@ export default function Notifications() {
 						text = (
 							<span>
 								You have referred student{" "}
-								<span className="font-bold">
+								<span className="font-bold text-xs ">
 									{notification?.referral?.studentFirstName}{" "}
 									{notification?.referral?.studentLastName}
 								</span>{" "}
 								(
-								<span className="font-bold">
+								<span className="font-bold text-xs">
 									{notification?.referral?.studentId}
 								</span>
 								) for an appointment for reason:{" "}
-								<span className="font-bold">{notification?.referral?.reason}</span>.
+								<span className="font-bold text-xs">{notification?.referral?.reason}</span>.
 							</span>
 						);
 					}
@@ -605,7 +605,7 @@ export default function Notifications() {
 									className="w-full flex flex-row cursor-pointer"
 									onClick={() => handleNotifClick(notification)}
 								>
-									<div className="lg:w-1/6 md:w-2/12 flex justify-center items-center">
+									<div className="w-3/12 lg:w-1/6  mr-2 flex justify-center items-center">
 										<img
 											src={notification?.sender?.image}
 											alt="Avatar"
@@ -618,7 +618,7 @@ export default function Notifications() {
 								</div>
 
 								<div
-									className="w-1/6 md:w-1/12 flex items-center justify-end invisible group-hover:visible"
+									className="w-fulll flex items-center justify-end invisible group-hover:visible"
 									onClick={() => handleShowConfirmDelete(notification)}
 								>
 									<svg
