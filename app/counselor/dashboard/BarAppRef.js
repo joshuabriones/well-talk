@@ -39,7 +39,7 @@ const BarAppointmentsReferrals = () => {
 		};
 
 		fetchCounselorAppointments();
-	}, [userSession.id]);
+	}, [userSession]);
 
 	useEffect(() => {
 		const fetchCounselorReferrals = async () => {
@@ -64,7 +64,7 @@ const BarAppointmentsReferrals = () => {
 		};
 
 		fetchCounselorReferrals();
-	}, [userSession.id]);
+	}, [userSession]);
 
 	useEffect(() => {
 		setAppointmentCount(appointments.length);
