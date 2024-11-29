@@ -22,7 +22,7 @@ const ModalParentInfo = ({ setIsParentModalOpen, guardianName, setGuardianName, 
 			onClick={handleClickOutside}>
 			<div
 				ref={modalRef}
-				className="bg-white dark:bg-slate-800 shadow-xl border w-4/5 md:max-w-lg lg:max-w-lg border-gray border-2 rounded-xl relative">
+				className="bg-white shadow-xl border w-4/5 md:max-w-lg lg:max-w-lg border-gray border-2 rounded-xl relative">
 				<div className="flex justify-between items-center bg-maroon p-4 border-b-2">
 					<div className="flex items-center space-x-2 ml-4">
 						<div className="w-4 h-4 border-2 bg-yellow-400 rounded-full cursor-pointer"></div>

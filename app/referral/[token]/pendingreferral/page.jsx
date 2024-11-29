@@ -120,7 +120,7 @@ const PendingReferral = () => {
           className={`fixed inset-0 flex items-center justify-center bg-white bg-opacity-25 z-50 backdrop-blur ${styles.floating}`}
           role="dialog"
         >
-          <div className="modal-box relative p-4 sm:p-6 lg:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white dark:bg-slate-800 rounded-2xl shadow-lg transform transition-transform duration-300 scale-95">
+          <div className="modal-box relative p-4 sm:p-6 lg:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white rounded-2xl shadow-lg transform transition-transform duration-300 scale-95">
             <div className="">
               <img
                 src="/images/loggo.png"

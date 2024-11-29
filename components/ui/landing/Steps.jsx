@@ -5,7 +5,7 @@ export const Content = () => {
 	return (
 		<div>
 			<ScrollAnimationWrapper animationType="fadeInFromLeft">
-				<div className="mb-12 bg-maroon border-t-2 border-b-2 border-zinc-900 px-8 dark:border-white">
+				<div className="mb-12 bg-maroon border-t-2 border-b-2 border-zinc-900 px-8 ">
 					<div className="py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-full lg:py-20">
 						<div className="w-full mx-auto items-center">
 							<div className="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">

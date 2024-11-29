@@ -6,7 +6,7 @@ const ModalReferralPending = ({ setIsReferralPending, router }) => {
 		<div
 			className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-25 z-50 backdrop-blur"
 			role="dialog">
-			<div className="modal-box relative p-4 sm:p-6 lg:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white dark:bg-slate-800 rounded-2xl shadow-lg transform transition-transform duration-300 scale-95">
+			<div className="modal-box relative p-4 sm:p-6 lg:p-9 border-2 text-center max-w-xs sm:max-w-lg bg-white rounded-2xl shadow-lg transform transition-transform duration-300 scale-95">
 				<img
 					src={referredUser.src}
 					alt="Registration Successful"
