@@ -287,7 +287,7 @@ const ChatWidget = () => {
       {/* CHAT BOPX */}
       <div
         id="chatBox"
-        className={`fixed bottom-28 right-4 md:right-8 lg:right-8 w-full max-w-sm sm:max-w-md md:max-w-md lg:max-w-md h-[60vh] bg-white border-2 rounded-2xl shadow-lg flex flex-col transition-all duration-300 ${
+        className={`fixed bottom-28 right-4 md:right-8 lg:right-8 w-full max-w-xs sm:max-w-sm md:max-w-sm lg:max-w-sm h-[48vh] bg-white border-2 rounded-2xl shadow-lg flex flex-col transition-all duration-300 ${
           isChatOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
