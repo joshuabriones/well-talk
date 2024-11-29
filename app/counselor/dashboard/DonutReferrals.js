@@ -10,6 +10,8 @@ const DonutReferrals = ({ counselorId }) => {
 	const [acceptedCount, setAcceptedCount] = useState(0);
 	const [appointedCount, setAppointedCount] = useState(0);
 
+	console.log("referrals", referrals);
+
 	useEffect(() => {
 		const fetchCounselorReferrals = async () => {
 			try {
