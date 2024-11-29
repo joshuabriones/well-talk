@@ -10,6 +10,8 @@ const DonutAppointments = ({ counselorId }) => {
 	const [doneCount, setDoneCount] = useState(0);
 	const [cancelledCount, setCancelledCount] = useState(0);
 
+	console.log("appointments", appointments);
+
 	useEffect(() => {
 		const fetchCounselorAppointments = async () => {
 			try {
