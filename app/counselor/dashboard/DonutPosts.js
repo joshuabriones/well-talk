@@ -9,6 +9,7 @@ const DonutPosts = ({ counselorId }) => {
 	const [yours, setYours] = useState(0);
 	const [others, setOthers] = useState(0);
 
+	console.log(others);
 	useEffect(() => {
 		const fetchPosts = async () => {
 			try {
