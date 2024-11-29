@@ -76,8 +76,7 @@ const DonutReferrals = ({ counselorId }) => {
 				datasets: [
 					{
 						label: "Status",
-						data: [30, 30, 23],
-						// data: [pendingCount, acceptedCount, appointedCount],
+						data: [pendingCount, acceptedCount, appointedCount],
 						backgroundColor: ["#FFA500", "#007BFF", "#28A745"],
 						hoverOffset: 10,
 					},
