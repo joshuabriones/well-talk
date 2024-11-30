@@ -117,7 +117,7 @@ const AddReferral = ({ userId, onOpen, fetchReferrals }) => {
         role="dialog"
       >
         {/* Modal Content */}
-        <div className="relative w-full max-w-2xl mx-auto bg-white rounded-lg shadow-lg border-2 border-gray-200">
+        <div className="relative w-full max-w-full md:max-w-2xl mx-4 md:mx-auto bg-white rounded-lg shadow-lg border-2 border-gray-200">
           {/* Header */}
           <div className="flex justify-between items-center bg-maroon p-4 border-b-2">
             <div className="flex items-center space-x-2 ml-4">
@@ -126,25 +126,26 @@ const AddReferral = ({ userId, onOpen, fetchReferrals }) => {
               <div className="w-4 h-4 border-2 bg-red-400 rounded-full cursor-pointer"></div>
             </div>
           </div>
-
+  
           {/* Body */}
-          <div className="p-6 md:p-12 flex flex-col overflow-auto justify-center">
+          <div className="p-4 md:p-6 lg:p-12 flex flex-col overflow-auto justify-center">
             {!isLoading ? (
               <>
                 {/* Heading */}
                 <section>
-                  <h3 className="text-2xl font-bold font-Merriweather">
+                  <h3 className="text-xl md:text-2xl font-bold font-Merriweather">
                     Add Referral
                   </h3>
-                  <p className="text-lg font-Jaldi">
+                  <p className="text-base md:text-lg font-Jaldi">
                     Please fill out the required information for the student you
                     wish to refer to a counselor.
                   </p>
                 </section>
-
+  
                 <form onSubmit={handleSubmit}>
                   <div className="pt-5 flex flex-col gap-y-4">
-                    <div className="flex flex-col gap-y-4 md:flex-row md:gap-x-4">
+                    {/* Responsive Row 1 */}
+                    <div className="flex flex-wrap gap-y-4 md:flex-nowrap md:gap-x-4">
                       <TextInput
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
@@ -152,12 +153,10 @@ const AddReferral = ({ userId, onOpen, fetchReferrals }) => {
                         label="First Name"
                         type="text"
                         id="firstName"
-                        className="flex-1"
+                        className="flex-1 min-w-full md:min-w-0"
                       />
                       {errors.firstName && (
-                        <p className="text-red-500 text-sm">
-                          {errors.firstName}
-                        </p>
+                        <p className="text-red-500 text-sm">{errors.firstName}</p>
                       )}
                       <TextInput
                         value={lastName}
@@ -166,36 +165,28 @@ const AddReferral = ({ userId, onOpen, fetchReferrals }) => {
                         label="Last Name"
                         type="text"
                         id="lastName"
-                        className="flex-1"
+                        className="flex-1 min-w-full md:min-w-0"
                       />
                       {errors.lastName && (
-                        <p className="text-red-500 text-sm">
-                          {errors.lastName}
-                        </p>
+                        <p className="text-red-500 text-sm">{errors.lastName}</p>
                       )}
                     </div>
-
-                    <div className="flex flex-col gap-y-4 md:flex-row md:gap-x-4">
-                      <div className="flex-1">
-                        <TextInput
-                          value={idNumber}
-                          onChange={(e) => setIdNumber(e.target.value)}
-                          placeholder="ID Number"
-                          label="ID Number"
-                          type="text"
-                          id="idNumber"
-                          className="w-full" // Ensure it takes the full width of its container
-                        />
-                        {errors.idNumber && (
-                          <p className="text-red-500 text-sm">
-                            {errors.idNumber}
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        {" "}
-                        {/* Add flex-1 here to make this field equal width */}
-                        <div className="relative flex flex-col w-full">
+  
+                    {/* Responsive Row 2 */}
+                    <div className="flex flex-wrap gap-y-4 md:flex-nowrap md:gap-x-4">
+                      <TextInput
+                        value={idNumber}
+                        onChange={(e) => setIdNumber(e.target.value)}
+                        placeholder="ID Number"
+                        label="ID Number"
+                        type="text"
+                        id="idNumber"
+                        className="flex-1 min-w-full md:min-w-0"
+                      />
+                      {errors.idNumber && (
+                        <p className="text-red-500 text-sm">{errors.idNumber}</p>
+                      )}
+                       <div className="relative flex flex-col w-full">
                           <label
                             htmlFor="year"
                             className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
@@ -225,9 +216,8 @@ const AddReferral = ({ userId, onOpen, fetchReferrals }) => {
                           )}
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex flex-col gap-y-4 md:flex-row md:gap-x-4">
+                    <div className="flex gap-y-4 flex-row gap-x-4">
                       <div className="flex-1">
                         <label
                           htmlFor="college"
@@ -283,61 +273,60 @@ const AddReferral = ({ userId, onOpen, fetchReferrals }) => {
                         )}
                       </div>
                     </div>
+  
+                    {/* Other Inputs */}
+                    <TextInput
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Email"
+                      label="Email"
+                      type="text"
+                      id="email"
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm">{errors.email}</p>
+                    )}
+                    <TextInput
+                      value={relationship}
+                      onChange={(e) => setRelationship(e.target.value)}
+                      placeholder="Relationship"
+                      label="Relationship with Referred Student"
+                      type="text"
+                      id="relationship"
+                    />
+                    {errors.relationship && (
+                      <p className="text-red-500 text-sm">
+                        {errors.relationship}
+                      </p>
+                    )}
+                    <label
+  htmlFor="reason"
+  className="relative block rounded-md bg-white border border-gray-400 p-1 text-xs shadow-sm h-20 focus-within:border-black focus-within:ring-1 focus-within:ring-black"
+>
+  <textarea
+    id="reason"
+    value={reason}
+    onChange={(e) => setReason(e.target.value)}
+    placeholder="Reason for referral"
+    className="peer border-none bg-white placeholder-transparent text-xs focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full dark:text-black h-full resize-none"
+    required
+  ></textarea>
+  <span
+    className={`pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 transition-all 
+    peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm 
+    peer-focus:top-0`}
+    style={{ fontSize: "10px" }}
+  >
+    Reason for referral
+  </span>
+</label>
 
-                    <div className="">
-                      <TextInput
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email"
-                        label="Email"
-                        type="text"
-                        id="email"
-                      />
-                      {errors.email && (
-                        <p className="text-red-500 text-sm">{errors.email}</p>
-                      )}
-                    </div>
-
-                    <div className="">
-                      <TextInput
-                        value={relationship}
-                        onChange={(e) => setRelationship(e.target.value)}
-                        placeholder="relationship"
-                        label="Relationship with Referred Student"
-                        type="text"
-                        id="relationship"
-                      />
-                      {errors.relationship && (
-                        <p className="text-red-500 text-sm">
-                          {errors.relationship}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="w-full">
-                      <label
-                        htmlFor="reason"
-                        className="relative block rounded-md bg-white border border-gray-400 p-1 shadow-sm focus-within:border-black focus-within:ring-1 focus-within:ring-black w-full"
-                      >
-                        <textarea
-                          value={reason}
-                          onChange={(e) => setReason(e.target.value)}
-                          placeholder=" "
-                          id="reason"
-                          className="peer border-none bg-white placeholder-white focus:border-gray-800 focus:outline-none focus:ring-0 rounded-md w-full h-24 resize-none dark:text-black"
-                          required
-                        />
-                        <span className="pointer-events-none absolute start-2.5 bg-white top-0 -translate-y-1/2 p-1 text-xs transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-focus:top-0 peer-focus:text-xs">
-                          Reason
-                        </span>
-                      </label>
-                      {errors.reason && (
-                        <p className="text-red-500 text-sm">{errors.reason}</p>
-                      )}
-                    </div>
-
+                    {errors.reason && (
+                      <p className="text-red-500 text-sm">{errors.reason}</p>
+                    )}
+  
                     {/* Submit */}
-                    <div className="mt-3 px-16 h-12 flex flex-row gap-x-6">
+                    <div className="mt-3 flex justify-center gap-x-4">
                       <HollowButton onClick={handleClose}>Cancel</HollowButton>
                       <FullButton type="submit">Refer Student</FullButton>
                     </div>
@@ -347,7 +336,7 @@ const AddReferral = ({ userId, onOpen, fetchReferrals }) => {
             ) : (
               <div className="flex flex-col justify-center items-center h-40 mb-12">
                 <LoadingState />
-                <p className="text-2xl font-Jaldi">Creating Referral...</p>
+                <p className="text-lg md:text-2xl font-Jaldi">Creating Referral...</p>
               </div>
             )}
           </div>
@@ -355,6 +344,7 @@ const AddReferral = ({ userId, onOpen, fetchReferrals }) => {
       </div>
     </>
   );
+  
 };
 
 export default AddReferral;
