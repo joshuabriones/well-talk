@@ -191,7 +191,6 @@ const Appointment = () => {
       const data = await response.json();
       if (Array.isArray(data)) {
         setAppointmentOnThatDate(data);
-        console.log("Appointments on that date:", data);
       }
     } catch (error) {
       console.error(
@@ -258,7 +257,6 @@ const Appointment = () => {
   const handleReschedule = () => {
     const appointmentId = selectedID;
     if (appointmentId) {
-      console.log("Reschedule appointment with ID:", appointmentId);
       setRescheduleModal(true);
     } else {
       console.error("No appointment ID found");
@@ -301,13 +299,31 @@ const Appointment = () => {
   ];
 
   // Helper function to check if a time slot is taken
+
+  console.log("Appointments on that date: ", appointmentOnThatDate);
   const isTimeSlotTaken = (time) => {
     const counselorsWithAppointments = appointmentOnThatDate.filter(
       (appointment) => appointment.appointmentStartTime === time
     );
 
-    console.log(counselorsWithAppointments);
-    return counselorsWithAppointments.length === appointmentOnThatDate.length;
+    let isTaken = false;
+
+    for (let i = 0; i < counselorsWithAppointments.length; i++) {
+      if (counselorsWithAppointments[i].student.id === userSession.id) {
+        isTaken = true;
+        break;
+      }
+    }
+
+    // console.log(
+    //   counselorsWithAppointments.length,
+    //   appointmentOnThatDate.length
+    // );
+
+    return (
+      counselorsWithAppointments.length === appointmentOnThatDate.length ||
+      isTaken
+    );
   };
 
   const addTime = (startTime, duration) => {
@@ -427,6 +443,9 @@ const Appointment = () => {
     setConfirmResponseModal(true);
     // }
   };
+
+  // console.log("Date selected: ", appointmentDate);
+  // console.log("Appointments on that date: ", appointmentOnThatDate);
 
   const handleParentInfoSubmit = async () => {
     try {

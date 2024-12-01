@@ -336,7 +336,7 @@ const ChatWidget = () => {
           <div className="flex-1 overflow-y-auto p-3 text-white text-opacity-50 ml-2 space-y-4 mt-4">
             {counselors.map((person) => {
               const isRecentChat = person.id === parseInt(mostRecentChat);
-              console.log(person.id, mostRecentChat);
+
               return (
                 <div
                   key={person.id}
