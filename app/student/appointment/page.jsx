@@ -191,6 +191,7 @@ const Appointment = () => {
       const data = await response.json();
       if (Array.isArray(data)) {
         setAppointmentOnThatDate(data);
+        console.log("Appointments on that date:", data);
       }
     } catch (error) {
       console.error(
@@ -257,6 +258,7 @@ const Appointment = () => {
   const handleReschedule = () => {
     const appointmentId = selectedID;
     if (appointmentId) {
+      console.log("Reschedule appointment with ID:", appointmentId);
       setRescheduleModal(true);
     } else {
       console.error("No appointment ID found");
@@ -443,9 +445,6 @@ const Appointment = () => {
     setConfirmResponseModal(true);
     // }
   };
-
-  // console.log("Date selected: ", appointmentDate);
-  // console.log("Appointments on that date: ", appointmentOnThatDate);
 
   const handleParentInfoSubmit = async () => {
     try {
@@ -754,6 +753,9 @@ const Appointment = () => {
                       <th className="py-4">Date</th>
                       <th className="py-4">Time</th>
                       <th className="py-4 hidden  lg:table-cell">
+                        Counselor Assigned
+                      </th>
+                      <th className="py-4 hidden  lg:table-cell">
                         Appointment Type
                       </th>
                       <th className="py-4 hidden  lg:table-cell">Reason</th>
@@ -782,6 +784,10 @@ const Appointment = () => {
                           <td className="text-center py-2">
                             {appointment.appointmentStartTime}
                           </td>
+                          <td className="text-center py-2 hidden lg:table-cell">
+                            {`${appointment.counselor.firstName} ${appointment.counselor.lastName}`}
+                          </td>
+
                           <td className="text-center py-2 hidden  lg:table-cell">
                             {appointment.appointmentType}
                           </td>
