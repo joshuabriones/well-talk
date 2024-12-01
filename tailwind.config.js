@@ -11,11 +11,12 @@ module.exports = {
   ],
   theme: {
     screens: {
+      xxs: "375px",
       xs: "475px",
-      sm: '640px',
-      md: '768px',
-      lg: '1024px',
-      xl: '1280px',
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
       ...defaultTheme.screens,
     },
     extend: {
@@ -37,7 +38,8 @@ module.exports = {
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "gradient-red-card": "linear-gradient(245deg, #FF6F61, #FFB6B6)",
         "gradient-green-card": "linear-gradient(245deg, #66C97F, #A3E6BB)",
         "gradient-blue-card": "linear-gradient(245deg, #6EA9FF, #B3D4FF)",
@@ -91,8 +93,10 @@ module.exports = {
       },
       boxShadow: {
         "tremor-input": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-        "tremor-card": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-        "tremor-dropdown": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+        "tremor-card":
+          "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+        "tremor-dropdown":
+          "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
       },
       borderRadius: {
         "tremor-small": "0.375rem",

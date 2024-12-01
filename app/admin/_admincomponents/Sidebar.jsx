@@ -35,7 +35,7 @@ const Sidebar = () => {
   ];
   return (
     <>
-      <div className="w-1/5 min-w-56 bg-white dark:bg-bgDark2 h-auto md:flex xs:hidden flex-col justify-between py-10 px-5 rounded-[20px] shadow-sm ">
+      <div className="w-1/5 min-w-56 bg-white dark:bg-bgDark2 h-auto md:flex xxs:hidden flex-col justify-between py-10 px-5 rounded-[20px] shadow-sm ">
         <div>
           <div className="flex flex-row gap-1 items-center justify-center">
             <img
