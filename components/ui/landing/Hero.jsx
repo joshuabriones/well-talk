@@ -25,10 +25,11 @@ const Hero = () => {
 						transition={{ duration: 0.8 }}
 						className="py-40 px-16 xl:px-32 text-left md:text-center lg:text-center">
 						<img
-							className={`object-contain mb-0 md:mb-6 lg:mb-6 rounded max-h-28 mb-4 sm:max-h-32 md:max-h-40 lg:max-h-48 xl:max-h-56 w-auto mx-auto`}
-							src="/images/landing/cit.png"
-							alt="WellTalk Logo"
-						/>
+  className="object-contain mb-4 rounded w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-auto"
+  src="/images/landing/cit.png"
+  alt="WellTalk Logo"
+/>
+
 
 						<motion.h2
 							initial={{ opacity: 0, y: -100 }}
