@@ -28,12 +28,12 @@ const ClientJournal = () => {
           },
         }
       );
-  
+
       let data1 = [];
       if (response1.ok) {
         data1 = await response1.json();
       }
-  
+
       // Fetch appointments from the second endpoint
       const response2 = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_COUNSELORID}${userSession.id}`,
@@ -45,41 +45,41 @@ const ClientJournal = () => {
           },
         }
       );
-  
+
       let data2 = [];
       if (response2.ok) {
         data2 = await response2.json();
       }
-  
+
       // Combine and filter unique students
-      const initialStudents = data1.filter(student => student.role === "student");
-      const appointmentStudents = data2.map(appointment => appointment.student);
-  
-      const combinedStudents = [
-        ...initialStudents,
-        ...appointmentStudents
-      ];
-  
+      const initialStudents = data1.filter(
+        (student) => student.role === "student"
+      );
+      const appointmentStudents = data2.map(
+        (appointment) => appointment.student
+      );
+
+      const combinedStudents = [...initialStudents, ...appointmentStudents];
+
       const uniqueStudentsMap = new Map();
-      combinedStudents.forEach(student => {
+      combinedStudents.forEach((student) => {
         if (!uniqueStudentsMap.has(student.id)) {
           uniqueStudentsMap.set(student.id, student);
         }
       });
-  
+
       const uniqueStudents = Array.from(uniqueStudentsMap.values());
-  
+
       // Update the students state with unique students
       setStudents(uniqueStudents);
     } catch (error) {
       console.error("Error fetching students:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchStudents();
   }, []);
-
 
   const handleSelectedStudent = (studentId) => {
     router.push(`/counselor/clientjournal/${studentId}`);
@@ -169,7 +169,7 @@ const ClientJournal = () => {
                       <img
                         src={student.image}
                         alt="profile"
-                        className="rounded-md"
+                        className="rounded-md w-14 h-14 border-2 border-lightMaroon"
                       />
                       <h2 className="text-xl font-medium">
                         {student.firstName + " " + student.lastName} {" · "}
