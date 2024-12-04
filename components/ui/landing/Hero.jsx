@@ -16,7 +16,6 @@ const Hero = () => {
 
 	return (
 		<section className={`${styles.hero} parallax`}>
-			
 			<div className="flex justify-center items-center w-full h-screen">
 				<div className="w-full flex justify-center items-center mt-6 md:mt-0 lg:mt-0">
 					<motion.div
@@ -25,7 +24,8 @@ const Hero = () => {
 						transition={{ duration: 0.8 }}
 						className="py-40 px-16 xl:px-32 text-left md:text-center lg:text-center">
 						<img
-  className="object-contain mb-4 rounded w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-auto"
+  className="object-contain mb-4 rounded w-full mx-auto 
+    max-w-xs sm:max-w-sm md:max-w-md lg:max-w-sm xl:max-w-xs"
   src="/images/landing/cit.png"
   alt="WellTalk Logo"
 />
