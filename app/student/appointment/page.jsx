@@ -21,6 +21,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { is } from "date-fns/locale";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
@@ -78,6 +79,8 @@ const Appointment = () => {
 
   const params = new URLSearchParams(window.location.search);
 
+  const [assignedCounselors, setAssignedCounselors] = useState([]);
+
   useEffect(() => {
     if (params.size > 0) {
       const typeRoute = params.get("typeRoute");
@@ -106,6 +109,7 @@ const Appointment = () => {
       try {
         fetchAppointments();
         fetchStudentById(userSession.id);
+        fetchAssignedCounselors();
       } catch (error) {
         console.log(error);
       }
@@ -191,13 +195,33 @@ const Appointment = () => {
       const data = await response.json();
       if (Array.isArray(data)) {
         setAppointmentOnThatDate(data);
-        console.log("Appointments on that date:", data);
       }
     } catch (error) {
       console.error(
         "An error occurred while fetching appointments on that date:",
         error
       );
+    }
+  };
+
+  const fetchAssignedCounselors = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_STUDENT_ID}${userSession.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error fetching counselor IDs");
+      }
+
+      setAssignedCounselors(await response.json());
+    } catch (error) {
+      console.error("An error occurred while fetching counselor IDs:", error);
     }
   };
 
@@ -301,8 +325,6 @@ const Appointment = () => {
   ];
 
   // Helper function to check if a time slot is taken
-
-  console.log("Appointments on that date: ", appointmentOnThatDate);
   const isTimeSlotTaken = (time) => {
     const counselorsWithAppointments = appointmentOnThatDate.filter(
       (appointment) => appointment.appointmentStartTime === time
@@ -316,11 +338,6 @@ const Appointment = () => {
         break;
       }
     }
-
-    // console.log(
-    //   counselorsWithAppointments.length,
-    //   appointmentOnThatDate.length
-    // );
 
     return (
       counselorsWithAppointments.length === appointmentOnThatDate.length ||
@@ -681,6 +698,36 @@ const Appointment = () => {
     })?.event; // Return the event if found, otherwise undefined
   };
 
+  const isDateUnavailableForAllCounselors = (date) => {
+    const formattedDate = formatDateCalendar(date);
+
+    let counselorUnavailableCount = 0;
+
+    for (let i = 0; i < assignedCounselors.length; i++) {
+      const counselor = assignedCounselors[i];
+      const unavailableDates = counselor.unavailableDates
+        ? counselor.unavailableDates.split(", ").map((d) => d.trim())
+        : [];
+
+      // Count counselors who are unavailable on this date
+      if (
+        unavailableDates.includes(formattedDate) &&
+        counselor.status === "Unavailable"
+      ) {
+        counselorUnavailableCount++;
+      }
+    }
+
+    console.log(
+      formattedDate,
+      counselorUnavailableCount == assignedCounselors.length
+    );
+
+    // Return true if ALL counselors are unavailable
+    return counselorUnavailableCount === assignedCounselors.length;
+  };
+
+  console.log("Assigned counselors:", assignedCounselors);
   return (
     <div className="min-h-screen w-full">
       <Navbar userType="student" />
@@ -689,19 +736,21 @@ const Appointment = () => {
         <div>
           <div className="w-full pt-24 flex items-center gap-3 justify-center">
             <button
-              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isAddAppointment
+              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+                isAddAppointment
                   ? "bg-maroon text-white"
                   : "border-2 border-maroon text-maroon"
-                }`}
+              }`}
               onClick={handleAddAppointmentClick}
             >
               Set Appointment
             </button>
             <button
-              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${isViewAppointment
+              className={`font-medium px-4 py-2 rounded-full transition-colors duration-200 ${
+                isViewAppointment
                   ? "bg-maroon text-white"
                   : "border-2 border-maroon text-maroon"
-                }`}
+              }`}
               onClick={handleViewAppointmentClick}
             >
               View Appointments
@@ -793,9 +842,9 @@ const Appointment = () => {
                             <p className="truncate">
                               {appointment.appointmentPurpose.length > 50
                                 ? `${appointment.appointmentPurpose.substring(
-                                  0,
-                                  40
-                                )}...`
+                                    0,
+                                    40
+                                  )}...`
                                 : appointment.appointmentPurpose}
                             </p>
                           </td>
@@ -803,11 +852,11 @@ const Appointment = () => {
                             <p>
                               {appointment?.appointmentNotes?.length > 50
                                 ? `${appointment?.appointmentNotes?.substring(
-                                  0,
-                                  40
-                                )}...`
+                                    0,
+                                    40
+                                  )}...`
                                 : appointment?.appointmentNotes ||
-                                "No feedback yet"}
+                                  "No feedback yet"}
                             </p>
                           </td>
                           <td className="h-full">
@@ -823,11 +872,11 @@ const Appointment = () => {
                                   "🟢"}
                                 {appointment &&
                                   appointment.appointmentStatus ===
-                                  "On-going" &&
+                                    "On-going" &&
                                   "🔵"}
                                 {appointment &&
                                   appointment.appointmentStatus ===
-                                  "Cancelled" &&
+                                    "Cancelled" &&
                                   "🔴"}{" "}
                                 {/* Added red dot for Cancelled */}
                                 <span className="ml-2 text-bold text-sm">
@@ -903,8 +952,9 @@ const Appointment = () => {
                     ].map((_, index) => (
                       <button
                         key={index}
-                        className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""
-                          }`}
+                        className={`join-item btn ${
+                          currentPage === index + 1 ? "btn-active" : ""
+                        }`}
                         onClick={() => setCurrentPage(index + 1)}
                       >
                         {index + 1}
@@ -928,9 +978,15 @@ const Appointment = () => {
                   bordered
                   renderCell={renderCell}
                   onSelect={(date) => {
-                    console.log(date);
                     const today = new Date().toISOString().split("T")[0]; // Today's date in 'YYYY-MM-DD' format
                     const formattedDate = date.toISOString().split("T")[0]; // Selected date in 'YYYY-MM-DD' format
+
+                    // if (isDateUnavailableForAllCounselors(date)) {
+                    //   toast.error(
+                    //     "Appointments are unavailable on this date due to all counselors being unavailable."
+                    //   );
+                    //   setIsDayAvailable(false);
+                    // }
 
                     if (isUnavailableDate(date)) {
                       // Get the event for the unavailable date
@@ -960,8 +1016,9 @@ const Appointment = () => {
                     return (
                       date < today ||
                       dayOfWeek === 0 || // Sunday
-                      dayOfWeek === 6 // Saturday
+                      dayOfWeek === 6 || // Saturday
                       // || isUnavailableDate(date) // Holiday
+                      isDateUnavailableForAllCounselors(date) // All counselors are unavailable
                     );
                   }}
                 />
@@ -992,13 +1049,14 @@ const Appointment = () => {
                               isTimeSlotUnavailable(time)
                             }
                             onClick={() => handleTimeSlotClick(time)} // Set the selected time on click
-                            className={`time-slot-button ${isTimeSlotTaken(time) ||
-                                isTimeSlotUnavailable(time)
+                            className={`time-slot-button ${
+                              isTimeSlotTaken(time) ||
+                              isTimeSlotUnavailable(time)
                                 ? "bg-white border-[1px] border-gray text-primary-green cursor-not-allowed"
                                 : time === selectedTimeSlot
-                                  ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
-                                  : "bg-maroon text-white hover:bg-maroon duration-300"
-                              } py-2 px-3 rounded-md`}
+                                ? "bg-white border-2 border-maroon text-maroon font-semibold" // Apply a different style to the selected time slot
+                                : "bg-maroon text-white hover:bg-maroon duration-300"
+                            } py-2 px-3 rounded-md`}
                           >
                             {timeFormatter(time)}
                           </button>
@@ -1227,7 +1285,7 @@ const Appointment = () => {
           appointments={appointments}
           handleReschedule={handleReschedule}
           handleDelete={showDeleteModal}
-        //handleUpdateStatus={handleUpdateStatus}
+          //handleUpdateStatus={handleUpdateStatus}
         ></StudentModalAppointmentInfo>
       )}
 

@@ -15,12 +15,9 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   return (
     <html lang="en" className="light">
-		<head>
-				<link
-					rel="icon"
-					href="/images/loggoword.png"
-				/>
-			</head>
+      <head>
+        <link rel="icon" href="/images/loggoword.png" />
+      </head>
       <body className={inter.className}>
         <Toaster position="top-center" />
         <FloatingIcon />

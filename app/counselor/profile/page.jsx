@@ -5,6 +5,7 @@ import { Navbar } from "@/components/ui/Navbar";
 import FullButton from "@/components/ui/buttons/FullButton";
 import HollowButton from "@/components/ui/buttons/HollowButton";
 import TextInput from "@/components/ui/inputs/TextInput";
+import SelectInput from "@/components/ui/inputs/SelectInput";
 import ConfirmationModal from "@/components/ui/modals/ModalProfileConfirm";
 import { imgDB } from "@/firebaseConfig";
 import { API_ENDPOINT } from "@/lib/api";
@@ -17,6 +18,10 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { v4 } from "uuid"; // Make sure this is configured correctly
 import styles from "../../../css/landing.module.css";
+import "react-date-range/dist/styles.css"; // main css file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { DateRangePicker } from "react-date-range";
+import { addDays, eachDayOfInterval, format } from "date-fns";
 
 export default function Profile() {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -39,6 +44,30 @@ export default function Profile() {
 
   const [previewImage, setPreviewImage] = useState(null);
   const userSession = getUserSession();
+
+  // selected dates
+  const [state, setState] = useState([
+    {
+      startDate: new Date(),
+      endDate: addDays(new Date()),
+      key: "selection",
+    },
+  ]);
+
+  const getRangeOfDates = () => {
+    const { startDate, endDate } = state[0];
+
+    if (startDate && endDate) {
+      // Generate array of dates
+      const dates = eachDayOfInterval({ start: startDate, end: endDate });
+      return dates.map((date) => format(date, "yyyy-MM-dd")); // Format dates as strings
+    }
+    return [];
+  };
+
+  const handleSelection = (ranges) => {
+    setState([ranges.selection]);
+  };
 
   const getAbbreviation = (program) => {
     const programEntries = Object.entries(programOptions);
@@ -145,6 +174,11 @@ export default function Profile() {
             college: updatedProfile.college,
             program: updatedProfile.program,
             assignedYear: updatedProfile.assignedYear,
+            status: updatedProfile.status,
+            unavailableDates:
+              updatedProfile.status === "Available"
+                ? null
+                : getRangeOfDates().join(", "),
           }),
         }
       );
@@ -240,6 +274,23 @@ export default function Profile() {
 
   if (loading) {
     return <LoadingState />;
+  }
+
+  function getDatesInRange(range) {
+    const { startDate, endDate } = range[0]; // Assuming the first object in the array
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const dates = [];
+    while (start <= end) {
+      // Format the date as YYYY-MM-DD
+      const formattedDate = start.toISOString().split("T")[0];
+      dates.push(formattedDate);
+
+      // Increment the date by one day
+      start.setDate(start.getDate() + 1);
+    }
+    return dates;
   }
 
   return (
@@ -431,6 +482,74 @@ export default function Profile() {
                           />
                         </div>
                       </div>
+                    </div>
+                    {/* Availability Status */}
+                    <div>
+                      <h1 className="font-Merriweather text-slate-600 text-2xl font-semibold tracking-tight py-4">
+                        Availability Status
+                      </h1>
+
+                      {!isEditMode ? (
+                        <div>
+                          <p className="font-medium text-gray-700">
+                            Status:{" "}
+                            <span
+                              className={`${
+                                (counselorProfile.status === "Available" &&
+                                  counselorProfile.unavailableDates === null) ||
+                                counselorProfile.unavailableDates === ""
+                                  ? "text-green-500"
+                                  : "text-slate-500"
+                              }`}
+                            >
+                              {counselorProfile.status}
+                            </span>
+                          </p>
+                          <p className="font-medium text-gray-700">
+                            {counselorProfile?.unavailableDates?.length > 0
+                              ? "Unavailable Dates: "
+                              : "No unavailable dates."}
+
+                            <span className="text-slate-500">
+                              {(counselorProfile.unavailableDates &&
+                                counselorProfile.unavailableDates
+                                  .split(", ")
+                                  .join(" · ")) ||
+                                ""}
+                            </span>
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col gap-2">
+                          <p className="font-medium text-gray-700">
+                            🔴 Select the dates you are unavailable.
+                          </p>
+                          <p className="font-medium text-gray-700">
+                            🔴 Don't forget to update your status to{" "}
+                            <span className="text-yellow-500">
+                              "Unavailable"
+                            </span>
+                          </p>
+                          <DateRangePicker
+                            onChange={handleSelection}
+                            showSelectionPreview={true}
+                            moveRangeOnFirstSelection={false}
+                            months={1}
+                            ranges={state}
+                            direction="vertical"
+                          />
+                          <SelectInput
+                            label="Status"
+                            options={[
+                              { label: "Available", value: "Available" },
+                              { label: "Unavailable", value: "Unavailable" },
+                            ]}
+                            value={updatedProfile.status}
+                            placeholder="Status"
+                            onChange={handleChange("status")}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                   {/* Security Information */}
