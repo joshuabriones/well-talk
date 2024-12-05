@@ -3,8 +3,10 @@
 import { Navbar } from "@/components/ui/Navbar";
 import { API_ENDPOINT } from "@/lib/api";
 import { getUserSession } from "@/lib/helperFunctions";
+import { toPng } from "html-to-image";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
+import jsPDF from "jspdf";
+import { useEffect, useRef, useState } from "react";
 import BarAppointmentsReferrals from "./BarAppRef";
 import DonutAppointments from "./DonutAppointments";
 import DonutPosts from "./DonutPosts";
@@ -19,6 +21,24 @@ export default function Dashboard() {
 	const [counselor, setCounselor] = useState(null);
 	const [studentCount, setStudentCount] = useState(null);
 	const [teacherCount, setTeacherCount] = useState(null);
+
+	const chartRef = useRef();
+
+	const handleExport = async () => {
+		if (!chartRef.current) {
+			console.error("Chart reference is null.");
+			return;
+		}
+
+		try {
+			const imgData = await toPng(chartRef.current, { cacheBust: true });
+			const pdf = new jsPDF();
+			pdf.addImage(imgData, "PNG", 10, 10, 190, 0); // Adjust the dimensions as needed
+			pdf.save("CounselorDashboard.pdf");
+		} catch (error) {
+			console.error("Error exporting chart:", error);
+		}
+	};
 
 	useEffect(() => {
 		const fetchCounselorProfile = async () => {
@@ -100,7 +120,7 @@ export default function Dashboard() {
 	return (
 		<div className="min-h-screen w-full px-28 pt-24 flex flex-col gap-y-4 overflow-y-scroll">
 			<Navbar userType="counselor" />
-			<div className="mb-8 flex flex-col gap-7">
+			<div ref={chartRef} className="mb-8 flex flex-col gap-7">
 				<div className="w-full h-36 flex flex-row mt-4 tracking-wider gap-4">
 					<HelloCounselor counselor={counselor} />
 					<StatsCount studentCount={studentCount} teacherCount={teacherCount} />
@@ -133,13 +153,19 @@ export default function Dashboard() {
 						</div>
 
 						<div className="w-4/12 p-4 flex flex-col border border-zinc-200 rounded-lg shadow-sm font-Merriweather text-lg">
-							<p className="mb-2 text-base text-zinc-500">
-								Appointments and Referrals
-							</p>
+							<p className="mb-2 text-base text-zinc-500">Appointments and Referrals</p>
 							<BarAppointmentsReferrals />
 						</div>
 					</div>
 				</div>
+			</div>
+			<div className="flex justify-center">
+				<button
+					onClick={handleExport}
+					className="text-xl bg-white text-lightMaroon font-bold flex items-center gap-2 p-3 hover:bg-gold dark:hover:bg-bgDark1 rounded-lg transition-all duration-300"
+				>
+					Export to PDF
+				</button>
 			</div>
 		</div>
 	);

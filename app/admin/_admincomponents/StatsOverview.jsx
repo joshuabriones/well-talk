@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { API_ENDPOINT } from "@/lib/api";
 import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 
 const StatsOverview = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,16 +20,16 @@ const StatsOverview = () => {
       color: "bg-blue-500",
     },
     {
+      title: "Teachers",
+      value: 0,
+      icon: "/images/icons/newuser.svg",
+      color: "bg-[#F54F5F]",
+    },
+    {
       title: "Appointments",
       value: 0,
       icon: "/images/icons/activeappt.svg",
       color: "bg-[#F4C522]",
-    },
-    {
-      title: "New Users",
-      value: 0,
-      icon: "/images/icons/newuser.svg",
-      color: "bg-[#F54F5F]",
     },
   ]);
 
@@ -53,7 +53,7 @@ const StatsOverview = () => {
       color: "bg-[#F4C522]",
     },
     {
-      title: "New Users",
+      title: "Teachers",
       value: 0,
       icon: "/images/icons/newuser.svg",
       color: "bg-[#F54F5F]",
@@ -87,6 +87,12 @@ const StatsOverview = () => {
               return {
                 ...stat,
                 value: data.filter((user) => user.role === "counselor").length,
+              };
+            }
+            if (stat.title === "Teachers") {
+              return {
+                ...stat,
+                value: data.filter((user) => user.role === "teacher").length,
               };
             }
             return stat; // Always return stat
@@ -127,39 +133,9 @@ const StatsOverview = () => {
       }
     };
 
-    const fetchNewUsers = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.BASE_URL}${API_ENDPOINT.GET_ALL_UNVERIFIED_USERS}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${Cookies.get("token")}`,
-            },
-          }
-        );
-        const data = await response.json();
-
-        setStats((prevStats) =>
-          prevStats.map((stat) => {
-            if (stat.title === "New Users") {
-              return {
-                ...stat,
-                value: data.length,
-              };
-            }
-            return stat; // Always return stat
-          })
-        );
-      } catch (error) {
-        console.error("Error fetching new users:", error);
-      }
-    };
-
     const fetchAllData = async () => {
       setIsLoading(true);
-      await Promise.all([fetchUsers(), fetchAppointments(), fetchNewUsers()]);
+      await Promise.all([fetchUsers(), fetchAppointments()]);
       setIsLoading(false);
     };
 
@@ -189,7 +165,7 @@ const StatsOverview = () => {
                   {stat?.title || " "}
                 </h3>
                 <p className="text-3xl text-navlight dark:text-navgray mt-2">
-                  {stat?.value || 0}{" "}
+                  {stat?.value || 0}
                   {stat?.value > 0 && (
                     <span>
                       <img
@@ -225,7 +201,7 @@ const StatsOverview = () => {
                   {stat?.title || " "}
                 </h3>
                 <p className="text-3xl text-navlight dark:text-navgray mt-2">
-                  {stat?.value || 0}{" "}
+                  {stat?.value || 0}
                   {stat?.value > 0 && (
                     <span>
                       <img
