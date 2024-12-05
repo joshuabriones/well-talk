@@ -29,6 +29,8 @@ export default function Page() {
     }
   };
 
+  console.log("Sample");
+
   return (
     <div className="flex-1 flex min-h-screen text-white">
       <div className="w-full flex flex-col gap-10">
