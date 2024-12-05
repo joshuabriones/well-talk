@@ -7,14 +7,13 @@ import { useEffect, useState } from "react";
 const countUsersPerProgram = (userData, selectedCollege) => {
   const counts = {};
   userData.forEach((user) => {
-    if (user.college === selectedCollege) {
+    if (user.college === selectedCollege && user.role === "student") {
       const { program } = user;
       counts[program] = (counts[program] || 0) + 1;
     }
   });
   return counts;
 };
-
 const dataFormatter = (number) =>
   Intl.NumberFormat("us").format(number).toString();
 
@@ -58,7 +57,7 @@ export const TotalUsersGraph = ({ userSession }) => {
   return (
     <div className="col-span-2 bg-white dark:bg-bgDark2 p-7 rounded-3xl shadow-md">
       <h2 className="text-xl font-medium mb-4 text-textDark dark:text-white">
-        Total Users by Program
+        Total Students by Program
       </h2>
       <div>
         <label htmlFor="college">Select College/Department:</label>
