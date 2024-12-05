@@ -89,6 +89,7 @@ const ModalAppointmentInfo = ({
       setOpenModal(false);
       setIsVisible(false);
       setIsLoading(false);
+      setAppointmentModal(false);
     }
   };
   const handleModalClose = () => {
