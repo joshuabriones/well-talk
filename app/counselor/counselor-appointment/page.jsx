@@ -779,18 +779,22 @@ const Appointment = () => {
                         {/* Delete and Edit */}
                         <td className="hidden  lg:table-cell">
                           <div className="flex lg:flex-row justify-center items-center lg:gap-x-5 xs:gap-2 xs:flex-col">
-                            <button
-                              className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                showDeleteModal(appointments.appointmentId);
-                              }}
-                            >
-                              Delete
-                            </button>
-                            <button className="btn btn-xs text-green-700">
-                              Edit
-                            </button>
+                            {appointments.appointmentStatus === "Pending" && (
+                              <>
+                                <button
+                                  className="btn btn-xs text-maroon hover:text-silver hover:bg-maroon mr-2"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    showDeleteModal(appointments.appointmentId);
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                                <button className="btn btn-xs text-green-700">
+                                  Edit
+                                </button>
+                              </>
+                            )}
                           </div>
                         </td>
                       </tr>
