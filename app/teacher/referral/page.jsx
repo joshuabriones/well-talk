@@ -108,11 +108,7 @@ const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
               {referrals.status === "Pending" && "🟡"}
               {referrals.status === "Responded" && "🔵"}
               {referrals.status === "Accepted" && "🟢"}
-              <span className="ml-2">
-                {referrals.status}{" "}
-                {referrals.status === "Responded" &&
-                  (referrals.accepted ? "Accepted" : "Declined")}
-              </span>
+              <span className="ml-2">{referrals.status} </span>
             </div>
           </td>
           <td className="hidden lg:table-cell text-center">

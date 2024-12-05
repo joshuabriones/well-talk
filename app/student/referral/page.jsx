@@ -53,84 +53,79 @@ const TableHeaders = ({ handleSort }) => {
 const TableBody = ({ currentList, handleRowClick, showDeleteModal }) => {
   return (
     <tbody>
-  {currentList.map((referrals) => (
-    <tr
-      key={referrals.referralId}
-      onClick={() => handleRowClick(referrals.referralId)}
-      className={`border-slate-100 border-b-2 hover:bg-slate-100 cursor-pointer transition duration-300 ease-in-out`}
-    >
-      <td className="text-center"> 
-        <div className="text-center">
-          <div>
-            {referrals.studentLastName}, {referrals.studentFirstName}
-          </div>
-        </div>
-      </td>
-      <td className="hidden lg:table-cell "> 
-        <div className="text-center">
-          <div className="text-sm">
-            {referrals.studentCollege}: {referrals.studentProgram} - {referrals.studentYear}
-          </div>
-        </div>
-      </td>
-      <td className="text-center"> 
-        <div className="text-center">
-          <div className="text-sm">
-            {referrals.counselor?.lastName}, {referrals.counselor?.firstName}
-          </div>
-        </div>
-      </td>
-      <td className="hidden lg:table-cell text-center"> 
-        <p>
-          {referrals?.reason?.length > 50
-            ? `${referrals?.reason?.substring(0, 40)}...`
-            : referrals?.reason}
-        </p>
-      </td>
-      <td className="hidden lg:table-cell text-center"> 
-        <p>
-          {referrals.feedback ? referrals.feedback : "No feedback yet"}
-        </p>
-      </td>
-      <td className="text-center"> 
-        <div
-          className={`w-26 h-6 rounded-lg border border-black flex items-center justify-center ${
-            referrals && referrals.status === "Pending"
-              ? "status-pending"
-              : referrals && referrals.status === "Responded"
-              ? "status-responded"
-              : referrals && referrals.status === "Completed"
-              ? "status-accepted"
-              : ""
-          }`}
+      {currentList.map((referrals) => (
+        <tr
+          key={referrals.referralId}
+          onClick={() => handleRowClick(referrals.referralId)}
+          className={`border-slate-100 border-b-2 hover:bg-slate-100 cursor-pointer transition duration-300 ease-in-out`}
         >
-          {referrals.status === "Pending" && "🟡"}
-          {referrals.status === "Responded" && "🔵"}
-          {referrals.status === "Completed" && "🟢"}
-          <span className="ml-2">
-            {referrals.status}{" "}
-            {referrals.status === "Responded" &&
-              (referrals.accepted ? "Accepted" : "Declined")}
-          </span>
-        </div>
-      </td>
-      <td className="hidden lg:table-cell text-center"> 
-        <div className="flex flex-row justify-center items-center gap-x-5">
-          <button
-            className="btn btn-xs"
-            onClick={(e) => {
-              e.stopPropagation();
-              showDeleteModal(referrals.referralId);
-            }}
-          >
-            Cancel
-          </button>
-        </div>
-      </td>
-    </tr>
-  ))}
-</tbody>
-
+          <td className="text-center">
+            <div className="text-center">
+              <div>
+                {referrals.studentLastName}, {referrals.studentFirstName}
+              </div>
+            </div>
+          </td>
+          <td className="hidden lg:table-cell ">
+            <div className="text-center">
+              <div className="text-sm">
+                {referrals.studentCollege}: {referrals.studentProgram} -{" "}
+                {referrals.studentYear}
+              </div>
+            </div>
+          </td>
+          <td className="text-center">
+            <div className="text-center">
+              <div className="text-sm">
+                {referrals.counselor?.lastName},{" "}
+                {referrals.counselor?.firstName}
+              </div>
+            </div>
+          </td>
+          <td className="hidden lg:table-cell text-center">
+            <p>
+              {referrals?.reason?.length > 50
+                ? `${referrals?.reason?.substring(0, 40)}...`
+                : referrals?.reason}
+            </p>
+          </td>
+          <td className="hidden lg:table-cell text-center">
+            <p>{referrals.feedback ? referrals.feedback : "No feedback yet"}</p>
+          </td>
+          <td className="text-center">
+            <div
+              className={`w-26 h-6 rounded-lg border border-black flex items-center justify-center ${
+                referrals && referrals.status === "Pending"
+                  ? "status-pending"
+                  : referrals && referrals.status === "Responded"
+                  ? "status-responded"
+                  : referrals && referrals.status === "Completed"
+                  ? "status-accepted"
+                  : ""
+              }`}
+            >
+              {referrals.status === "Pending" && "🟡"}
+              {referrals.status === "Responded" && "🔵"}
+              {referrals.status === "Completed" && "🟢"}
+              <span className="ml-2">{referrals.status} </span>
+            </div>
+          </td>
+          <td className="hidden lg:table-cell text-center">
+            <div className="flex flex-row justify-center items-center gap-x-5">
+              <button
+                className="btn btn-xs"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  showDeleteModal(referrals.referralId);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </td>
+        </tr>
+      ))}
+    </tbody>
   );
 };
 
@@ -149,7 +144,9 @@ const PaginationControls = ({ currentPage, setCurrentPage, list }) => {
       {[...Array(Math.ceil(list.length / ReferralsPerPage))].map((_, index) => (
         <button
           key={index}
-          className={`join-item btn ${currentPage === index + 1 ? "btn-active" : ""}`}
+          className={`join-item btn ${
+            currentPage === index + 1 ? "btn-active" : ""
+          }`}
           onClick={() => setCurrentPage(index + 1)}
         >
           {index + 1}
@@ -165,7 +162,6 @@ const PaginationControls = ({ currentPage, setCurrentPage, list }) => {
     </div>
   );
 };
-
 
 const Referral = () => {
   const ReferralsPerPage = 10;
