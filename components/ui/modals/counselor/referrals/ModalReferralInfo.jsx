@@ -50,11 +50,9 @@ const ModalReferralInfo = ({
       onClick={handleOverlayClick}
     >
       <div className="bg-white shadow-xl border w-4/5 md:max-w-lg lg:max-w-lg border-gray border-2 rounded-xl relative">
-      <button
-              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none"
-            >
-              &times;
-            </button>
+        <button className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 focus:outline-none">
+          &times;
+        </button>
         <section className="text-center items-center md:gap-4 mb-8 justify-center w-full">
           <div className="w-full flex justify-center avatar absolute -top-16 md:-top-24">
             {/* <div className="w-32 md:w-40 rounded-full ring ring-maroon ring-offset-base-100 ring-offset-1">
@@ -124,7 +122,7 @@ const ModalReferralInfo = ({
                     >
                       {referral && referral.status === "Pending" && "🟡"}
                       {referral && referral.status === "Completed" && "🟢"}
-                      {referral && referral.status === "On-going" && "🔵"}
+                      {referral && referral.status === "Responded" && "🔵"}
                       <span className="ml-2 font-bold text-sm">
                         {referral ? referral.status : ""}
                       </span>
@@ -139,7 +137,7 @@ const ModalReferralInfo = ({
           {userSession?.role === "counselor" &&
             referral &&
             (referral.status === "Pending" ||
-              referral.status === "Accepted") && (
+              referral.status === "Responded") && (
               <div className="flex justify-center mt-3 px-10">
                 <FullButton onClick={handleSelectAppointment}>
                   Select Appointment
