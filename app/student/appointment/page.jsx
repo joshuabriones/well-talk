@@ -249,6 +249,7 @@ const Appointment = () => {
 
   const handleDelete = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.DELETE_APPOINTMENT}${selectedID}`,
         {
@@ -269,6 +270,7 @@ const Appointment = () => {
       console.log(err);
       toast.error("Error cancelling appointment");
     } finally {
+      setIsLoading(false);
       setDeleteModal(false);
       setSelectedID(null);
     }
@@ -927,6 +929,7 @@ const Appointment = () => {
                             appointmentId={selectedID}
                             sessionId={userSession.id}
                             refreshAppointments={fetchAppointments}
+                            assignedCounselors={assignedCounselors}
                           />
                         )}
                       </>
@@ -1275,6 +1278,7 @@ const Appointment = () => {
           prompt="cancel"
           handleDelete={handleDelete}
           description="scheduled appointment"
+          isLoading={isLoading}
         ></ModalDelete>
       )}
 

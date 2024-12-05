@@ -3,7 +3,13 @@ import HollowButton from "@/components/ui/buttons/HollowButton";
 import iconDelete from "@/public/images/icons/deleteconfirm.png";
 import { useState } from "react";
 
-const ModalAction = ({ setDeleteModal, handleDelete, prompt, description }) => {
+const ModalAction = ({
+  setDeleteModal,
+  handleDelete,
+  prompt,
+  description,
+  isLoading,
+}) => {
   const [isChecked, setIsChecked] = useState(true);
 
   const toggleChecked = () => {
@@ -39,7 +45,7 @@ const ModalAction = ({ setDeleteModal, handleDelete, prompt, description }) => {
                 Cancel
               </HollowButton>
               <FullButton onClick={handleDelete} className="w-full sm:w-auto">
-                Submit
+                {isLoading ? "Cancelling..." : "Confirm"}
               </FullButton>
             </div>
             <button

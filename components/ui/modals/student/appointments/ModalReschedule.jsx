@@ -12,6 +12,7 @@ const ModalReschedule = ({
   appointmentId,
   sessionId,
   refreshAppointments,
+  assignedCounselors,
 }) => {
   const [appointmentDate, setAppointmentDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -55,6 +56,35 @@ const ModalReschedule = ({
     return appointmentOnThatDate.some(
       (appointment) => appointment.appointmentStartTime === time
     );
+  };
+
+  const isDateUnavailableForAllCounselors = (date) => {
+    const formattedDate = formatDateCalendar(date);
+
+    let counselorUnavailableCount = 0;
+
+    for (let i = 0; i < assignedCounselors.length; i++) {
+      const counselor = assignedCounselors[i];
+      const unavailableDates = counselor.unavailableDates
+        ? counselor.unavailableDates.split(", ").map((d) => d.trim())
+        : [];
+
+      // Count counselors who are unavailable on this date
+      if (
+        unavailableDates.includes(formattedDate) &&
+        counselor.status === "Unavailable"
+      ) {
+        counselorUnavailableCount++;
+      }
+    }
+
+    console.log(
+      formattedDate,
+      counselorUnavailableCount == assignedCounselors.length
+    );
+
+    // Return true if ALL counselors are unavailable
+    return counselorUnavailableCount === assignedCounselors.length;
   };
 
   const addTime = (startTime, duration) => {
@@ -210,10 +240,9 @@ const ModalReschedule = ({
   };
 
   const fetchAppointmentsOnThatDate = async () => {
-    const appointments = [];
-    for (const counselorId of counselorIds) {
+    try {
       const response = await fetch(
-        `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENT_BY_DATE_AND_COUNSELOR}${appointmentDate}&counselorId=${counselorId}`,
+        `${process.env.BASE_URL}${API_ENDPOINT.GET_APPOINTMENTS_BY_DATE_AND_ASSIGNED_COUNSELORS}?date=${appointmentDate}&studentId=${sessionId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -221,12 +250,21 @@ const ModalReschedule = ({
           },
         }
       );
+
+      if (!response.ok) {
+        throw new Error("Error fetching appointments on that date");
+      }
+
       const data = await response.json();
       if (Array.isArray(data)) {
-        appointments.push(...data);
+        setAppointmentOnThatDate(data);
       }
+    } catch (error) {
+      console.error(
+        "An error occurred while fetching appointments on that date:",
+        error
+      );
     }
-    setAppointmentOnThatDate(appointments);
   };
 
   useEffect(() => {
@@ -284,7 +322,19 @@ const ModalReschedule = ({
                     toast.success(`Date selected: ${formattedDate}`);
                   }
                 }}
-                disabledDate={(date) => date < new Date().setHours(0, 0, 0, 0)}
+                disabledDate={(date) => {
+                  const today = new Date().setHours(0, 0, 0, 0); // Disable past dates
+                  const dayOfWeek = date.getDay(); // Get the day of the week (0 = Sunday, 6 = Saturday)
+
+                  // Disable past dates, weekends
+                  return (
+                    date < today ||
+                    dayOfWeek === 0 || // Sunday
+                    dayOfWeek === 6 || // Saturday
+                    // || isUnavailableDate(date) // Holiday
+                    isDateUnavailableForAllCounselors(date)
+                  );
+                }}
               />
             </div>
 
