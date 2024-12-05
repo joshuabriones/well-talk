@@ -88,7 +88,7 @@ function UploadStudentRecords() {
                 idNumber: studentNumber,
                 firstName: firstName,
                 lastName: lastName,
-                password: "Pass123!",
+                password: `${lastName + studentNumber.slice(-3)}`,
                 image: `https://ui-avatars.com/api/?name=${firstName}+${lastName}`,
                 role: "student",
                 college: college,
