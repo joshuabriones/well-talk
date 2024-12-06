@@ -707,7 +707,7 @@ const Appointment = () => {
                           {/* </div> */}
                         </td>
                         <td className="h-full">
-                          <div className="flex items-center justify-center gap-3">
+                          <div className="flex items-center justify-start gap-3">
                             <div className="avatar  hidden lg:block">
                               <div className="mask mask-squircle w-12 h-12 hidden lg:block">
                                 <img
