@@ -80,6 +80,8 @@ const Appointment = () => {
   const params = new URLSearchParams(window.location.search);
 
   const [assignedCounselors, setAssignedCounselors] = useState([]);
+  const [isLoadingAssignedCounselors, setIsLoadingAssignedCounselors] =
+    useState(false);
 
   useEffect(() => {
     if (params.size > 0) {
@@ -206,6 +208,7 @@ const Appointment = () => {
 
   const fetchAssignedCounselors = async () => {
     try {
+      setIsLoadingAssignedCounselors(true);
       const response = await fetch(
         `${process.env.BASE_URL}${API_ENDPOINT.GET_COUNSELOR_BY_STUDENT_ID}${userSession.id}`,
         {
@@ -222,6 +225,8 @@ const Appointment = () => {
       setAssignedCounselors(await response.json());
     } catch (error) {
       console.error("An error occurred while fetching counselor IDs:", error);
+    } finally {
+      setIsLoadingAssignedCounselors(false);
     }
   };
 
@@ -720,10 +725,10 @@ const Appointment = () => {
       }
     }
 
-    console.log(
-      formattedDate,
-      counselorUnavailableCount == assignedCounselors.length
-    );
+    // console.log(
+    //   formattedDate,
+    //   counselorUnavailableCount == assignedCounselors.length
+    // );
 
     // Return true if ALL counselors are unavailable
     return counselorUnavailableCount === assignedCounselors.length;
@@ -977,54 +982,61 @@ const Appointment = () => {
           ) : (
             <div className="flex w-full py-10 px-8 md:px-10 xl:px-28 gap-10 justify-center lg:flex-row flex-col">
               <div className="flex-1 flex flex-col gap-2">
-                <Calendar
-                  bordered
-                  renderCell={renderCell}
-                  onSelect={(date) => {
-                    const today = new Date().toISOString().split("T")[0]; // Today's date in 'YYYY-MM-DD' format
-                    const formattedDate = date.toISOString().split("T")[0]; // Selected date in 'YYYY-MM-DD' format
+                {isLoadingAssignedCounselors ? (
+                  <div className="flex h-20 items-center justify-center gap-2">
+                    Loading available dates{" "}
+                    <img src="/images/aa.svg" alt="loading" />
+                  </div>
+                ) : (
+                  <Calendar
+                    bordered
+                    renderCell={renderCell}
+                    onSelect={(date) => {
+                      const today = new Date().toISOString().split("T")[0]; // Today's date in 'YYYY-MM-DD' format
+                      const formattedDate = date.toISOString().split("T")[0]; // Selected date in 'YYYY-MM-DD' format
 
-                    // if (isDateUnavailableForAllCounselors(date)) {
-                    //   toast.error(
-                    //     "Appointments are unavailable on this date due to all counselors being unavailable."
-                    //   );
-                    //   setIsDayAvailable(false);
-                    // }
+                      // if (isDateUnavailableForAllCounselors(date)) {
+                      //   toast.error(
+                      //     "Appointments are unavailable on this date due to all counselors being unavailable."
+                      //   );
+                      //   setIsDayAvailable(false);
+                      // }
 
-                    if (isUnavailableDate(date)) {
-                      // Get the event for the unavailable date
-                      const eventName =
-                        getHolidayEvent(date) || "an unavailable holiday"; // Fallback if no event is found
+                      if (isUnavailableDate(date)) {
+                        // Get the event for the unavailable date
+                        const eventName =
+                          getHolidayEvent(date) || "an unavailable holiday"; // Fallback if no event is found
 
-                      toast.error(
-                        `Appointments are unavailable on this date due to ${eventName}.`
+                        toast.error(
+                          `Appointments are unavailable on this date due to ${eventName}.`
+                        );
+                        setIsDayAvailable(false);
+                      } else if (formattedDate >= today) {
+                        // If it's today or in the future (except unavailable dates), allow the selection
+                        setAppointmentDate(formatDateCalendar(date));
+                        const displayDate = date.toLocaleDateString("en-US", {
+                          month: "long",
+                          day: "numeric",
+                        });
+                        toast.success(`Date selected: ${displayDate}`);
+                        setIsDayAvailable(true);
+                      }
+                    }}
+                    disabledDate={(date) => {
+                      const today = new Date().setHours(0, 0, 0, 0); // Disable past dates
+                      const dayOfWeek = date.getDay(); // Get the day of the week (0 = Sunday, 6 = Saturday)
+
+                      // Disable past dates, weekends
+                      return (
+                        date < today ||
+                        dayOfWeek === 0 || // Sunday
+                        dayOfWeek === 6 || // Saturday
+                        // || isUnavailableDate(date) // Holiday
+                        isDateUnavailableForAllCounselors(date) // All counselors are unavailable
                       );
-                      setIsDayAvailable(false);
-                    } else if (formattedDate >= today) {
-                      // If it's today or in the future (except unavailable dates), allow the selection
-                      setAppointmentDate(formatDateCalendar(date));
-                      const displayDate = date.toLocaleDateString("en-US", {
-                        month: "long",
-                        day: "numeric",
-                      });
-                      toast.success(`Date selected: ${displayDate}`);
-                      setIsDayAvailable(true);
-                    }
-                  }}
-                  disabledDate={(date) => {
-                    const today = new Date().setHours(0, 0, 0, 0); // Disable past dates
-                    const dayOfWeek = date.getDay(); // Get the day of the week (0 = Sunday, 6 = Saturday)
-
-                    // Disable past dates, weekends
-                    return (
-                      date < today ||
-                      dayOfWeek === 0 || // Sunday
-                      dayOfWeek === 6 || // Saturday
-                      // || isUnavailableDate(date) // Holiday
-                      isDateUnavailableForAllCounselors(date) // All counselors are unavailable
-                    );
-                  }}
-                />
+                    }}
+                  />
+                )}
               </div>
               {appointmentOnThatDate && (
                 <>
