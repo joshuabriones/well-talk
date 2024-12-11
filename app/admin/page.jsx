@@ -1,7 +1,7 @@
 "use client";
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import AppointmentsCount from "./_admincomponents/AppointmentsCount";
 import { GenderChart } from "./_admincomponents/GenderChart";
 import Header from "./_admincomponents/Header";
@@ -12,6 +12,7 @@ import { TotalUsersGraph } from "./_admincomponents/TotalUsersGraph";
 
 export default function Page() {
   const chartRef = useRef();
+  const [isExporting, setIsExporting] = useState(false);
 
   const handleExport = async () => {
     if (!chartRef.current) {
@@ -19,17 +20,23 @@ export default function Page() {
       return;
     }
 
+    setIsExporting(true);
+
     try {
       const imgData = await toPng(chartRef.current, { cacheBust: true });
       const pdf = new jsPDF();
       pdf.addImage(imgData, 'PNG', 10, 10, 180, 160);
-      pdf.save('Welltalk Report.pdf');
+    
+      const date = new Date();
+      const formattedDate = date.toLocaleDateString('fil-PH');
+    
+      pdf.save(`WellTalk Report - ${formattedDate}.pdf`);
     } catch (error) {
       console.error('Error exporting chart:', error);
+    } finally {
+      setIsExporting(false);
     }
   };
-
-  console.log("Sample");
 
   return (
     <div className="flex-1 flex min-h-screen text-white">
@@ -39,7 +46,7 @@ export default function Page() {
           <StatsOverview />
           <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-x-6 md:gap-x-0 gap-y-6 mt-6">
             <StatisticsGraph />
-            <NewUsersTab />
+            {!isExporting && <NewUsersTab />}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-x-6 md:gap-x-0 gap-y-6 mt-6">
             <TotalUsersGraph />
@@ -49,8 +56,10 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <div className = "flex justify-center ">
-        <button onClick={handleExport} className="text-xl bg-white text-lightMaroon font-bold flex items-center gap-2 p-3 hover:bg-gold dark:hover:bg-bgDark1 rounded-lg transition-all duration-300">Export to PDF</button>
+        <div className="flex justify-center">
+          <button onClick={handleExport} className="text-xl bg-white text-lightMaroon font-bold flex items-center gap-2 p-3 hover:bg-gold dark:hover:bg-bgDark1 rounded-lg transition-all duration-300">
+            Export to PDF
+          </button>
         </div>
       </div>
     </div>

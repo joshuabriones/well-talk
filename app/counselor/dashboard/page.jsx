@@ -25,16 +25,20 @@ export default function Dashboard() {
 	const chartRef = useRef();
 
 	const handleExport = async () => {
-		if (!chartRef.current) {
-			console.error("Chart reference is null.");
+		if (!chartRef.current || !counselor) {
+			console.error("Chart reference or counselor is null.");
 			return;
 		}
 
 		try {
+			const currentDate = new Date().toLocaleDateString('fil-PH');
+
+			const fileName = `${counselor.firstName} ${counselor.lastName} - ${counselor.college} - ${currentDate}.pdf`;
+
 			const imgData = await toPng(chartRef.current, { cacheBust: true });
 			const pdf = new jsPDF();
-			pdf.addImage(imgData, "PNG", 10, 10, 190, 0); // Adjust the dimensions as needed
-			pdf.save("CounselorDashboard.pdf");
+			pdf.addImage(imgData, "PNG", 10, 10, 190, 0);
+			pdf.save(fileName);
 		} catch (error) {
 			console.error("Error exporting chart:", error);
 		}
